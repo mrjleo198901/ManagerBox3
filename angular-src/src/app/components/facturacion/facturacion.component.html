@@ -1,0 +1,235 @@
+<h2 class="page-header">Facturacion</h2>
+
+<div (click)="$event.preventDefault()">
+    <!--left DIV-->
+
+    <div class="left" id="left">
+        <div class="row">
+
+            <tabset [justified]="true">
+                <!-- *******************TIPO 1***********************-->
+                <tab heading="Tipo 1">
+                    <hr>
+                    <h3 style="text-align: center">Tipo de producto 1</h3>
+                    <hr>
+                    <!-- Promociones -->
+                    <div class="form-group">
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <!-- Tabla de Promociones -->
+                                <div class="container">
+                                    <p>La tipificacion de los productos ha sido creada por el administrador.</p>
+                                    <table class="table table-striped" style="max-width: 70%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center">Descripcion</th>
+                                                <th style="text-align: center">Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                            <tr>
+                                                <td>Producto 1</td>
+                                                <td>12.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Producto 2</td>
+                                                <td>50.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <!-- *******************TIPO2***********************-->
+                <tab heading="Tipo 2">
+                    <hr>
+                    <h3 style="text-align: center">Tipo de producto 2</h3>
+                    <hr>
+                    <!-- Produtos -->
+                    <div class="form-group">
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <!-- Tabla de Promociones -->
+                                <div class="container">
+                                    <p>La tipificacion de los productos ha sido creada por el administrador.</p>
+                                    <table class="table table-striped" style="max-width: 70%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center">Descripcion</th>
+                                                <th style="text-align: center">Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                            <tr>
+                                                <td>Producto 3</td>
+                                                <td>15.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Producto 4</td>
+                                                <td>60.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <!-- *******************TIPO3***********************-->
+                <tab heading="Tipo 3">
+                    <hr>
+                    <h3 style="text-align: center">Tipo de producto 3</h3>
+                    <hr>
+                    <!-- Promociones -->
+                    <div class="form-group">
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <!-- Tabla de Promociones -->
+                                <div class="container">
+                                    <p>La tipificacion de los productos ha sido creada por el administrador.</p>
+                                    <table class="table table-striped" style="max-width: 70%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center">Descripcion</th>
+                                                <th style="text-align: center">Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                            <tr>
+                                                <td>Producto 5</td>
+                                                <td>6.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Producto 6</td>
+                                                <td>8.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <!-- *******************TIPO4***********************-->
+                <tab heading="Tipo 4">
+                    <hr>
+                    <h3 style="text-align: center">Tipo de producto 4</h3>
+                    <hr>
+                    <!-- Promociones -->
+                    <div class="form-group">
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <!-- Tabla de Promociones -->
+                                <div class="container">
+                                    <p>La tipificacion de los productos ha sido creada por el administrador.</p>
+                                    <table class="table table-striped" style="max-width: 70%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center">Descripcion</th>
+                                                <th style="text-align: center">Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="text-align: center">
+                                            <tr>
+                                                <td>Producto 7</td>
+                                                <td>20.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Producto 8</td>
+                                                <td>90.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </tab>
+            </tabset>
+
+        </div>
+    </div>
+
+    <!--right DIV-->
+    <div class="right" id="right" style="width: 220px">
+        <form class="form-inline">
+            <h4 style="text-align: center">Productos Seleccionados</h4>
+        </form>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <form class="form-inline">
+                    <label for="addProd1" style="display: inline-block">Producto 1</label>
+                    <span style="display: inline-block" (click)="addProd1()" class="input-group-addon" id="addProd1" style="width: 20px">
+                    <i class="fa fa-plus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" (click)="lessProd1()" class="input-group-addon" id="addProd2" style="width: 20px">
+                    <i class="fa fa-minus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" class="input-group-addon" style="width: 20px">
+                    <font size="5">{{cant1}}</font></span>
+                </form>
+            </li>
+            <li class="list-group-item">
+                <form class="form-inline">
+                    <label for="addProd1" style="display: inline-block">Producto 2</label>
+                    <span style="display: inline-block" (click)="addProd2()" class="input-group-addon" id="addProd2" style="width: 20px">
+                    <i class="fa fa-plus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" (click)="lessProd2()" class="input-group-addon" id="addProd3" style="width: 20px">
+                    <i class="fa fa-minus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" class="input-group-addon" style="width: 20px">
+                    <font size="5">{{cant2}}</font></span>
+                </form>
+            </li>
+            <li class="list-group-item">
+                <form class="form-inline">
+                    <label for="addProd1" style="display: inline-block">Producto 3</label>
+                    <span style="display: inline-block" (click)="addProd3()" class="input-group-addon" id="addProd4" style="width: 20px">
+                    <i class="fa fa-plus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" (click)="lessProd3()" class="input-group-addon" id="addProd5" style="width: 20px">
+                    <i class="fa fa-minus" aria-hidden="true"></i></span>
+                    <span style="display: inline-block" class="input-group-addon" style="width: 20px">
+                    <font size="5">{{cant3}}</font></span>
+                </form>
+            </li>
+        </ul>
+        <button (click)="showDialogConfirmar = !showDialogConfirmar; doRobot()" class="btn btn-primary" style="width: 100%">Confirmar</button>
+        <!--Control venta(Cajero % tarjeta)-->
+        <app-dialog [(visible)]="showDialogConfirmar" (visibleChange)="change($event)" #dialog="dialog">
+            <h3 class="page-header" style="text-align: center">Confirmacion de venta</h3>
+            <!-- Validacion Tarjeta -->
+            <div class="form-group">
+                <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                        <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
+                            name="cardNumber" id="cardNumber" placeholder="Codigo unico de tarjeta" />
+                        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                        <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+            </div>
+            <!-- Control cajero -->
+            <div class="form-group">
+                <div class="col-sm-12 col-xs-12">
+                    <label>Control mesero</label>
+                </div>
+                <div class="col-sm-6 col-xs-6">
+                    <select class="form-control"></select>
+                </div>
+                <div class="col-sm-6 col-xs-6">
+                    <input [(ngModel)]="password" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario"
+                    />
+                    <br>
+                </div>
+            </div>
+            <!-- Button -->
+            <div class="form-group">
+                <button class="btn btn-primary" style="width: 100%">CONFIRMAR</button>
+            </div>
+
+
+        </app-dialog>
+    </div>
+</div>

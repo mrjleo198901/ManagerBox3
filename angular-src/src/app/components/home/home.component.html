@@ -1,0 +1,31 @@
+<div class="jumbotron text-center">
+  <img class="center-block" src="../../../assets/img/ManagerBox1.svg" style="max-width: 15%; max-height: 15%;">
+  <img class="center-block" src="assets/img/ManagerBox1.svg" style="max-width: 15%; max-height: 15%;">
+  <h1>ManagerBox App</h1>
+  <p class="lead">Bienvenido al sistema de administracion integral de tu negocio</p>
+  <div>
+    <a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/register']">Registro</a>
+    <a *ngIf="!authService.loggedIn()" class="btn btn-default" [routerLink]="['/login']">Ingresar</a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h3>Flexible</h3>
+    <p>Accede a traves de tu navegador, no necesitas instalar la aplicacion</p>
+  </div>
+  <div class="col-md-4">
+    <h3>Rapido</h3>
+    <p>El uso de tecnologias nuevas asegura tiempos de respuesta minimos</p>
+  </div>
+  <div class="col-md-4">
+    <h3>Seguro</h3>
+    <p>El sistema esta asegurado con tokens, lo que vuelve al sistema infranqueable</p>
+  </div>
+</div>
+
+<div style="text-align: center">
+  <p>© 2017 Riobytes Solutions, Cia. Ltda., Todos los derechos reservados. Managerbox es una marca registrada de Riobytes Solutions,
+    Cia. Ltda.</p>
+  <p>Contactos e Informacion: <a href="http://www.riobytes.com">riobytes.com</a></p>
+</div>
