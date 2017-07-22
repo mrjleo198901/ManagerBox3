@@ -2,7 +2,7 @@
 <ng2-smart-table id="dtClientes" [settings]="settings" [source]="source" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
     (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()"></ng2-smart-table>
 <!-- ADD CLIENT -->
-<app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog" id="dlgAddClient">
+<app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog">
     <h3 style="text-align: center">
         Registrar Cliente
     </h3>
@@ -76,7 +76,7 @@
 </app-dialog>
 
 <!-- UPDATE CLIENT -->
-<app-dialog [(visible)]="showDialog1" (visibleChange)="changeU($event)" #dialog1="dialog" id="dlgUpdateClient">
+<app-dialog [(visible)]="showDialog1" (visibleChange)="changeU($event)" #dialog1="dialog">
     <h3 style="text-align: center">
         Actualizar Cliente
     </h3>

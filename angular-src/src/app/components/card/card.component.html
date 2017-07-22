@@ -25,57 +25,6 @@
                   (keyup.enter)="enterKey1()" />
                 <span (click)="checkClient()" class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <span (click)="showDialog = !showDialog" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                <app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog">
-                  <h3>
-                    Registrar Cliente
-                  </h3>
-                  <div class="form-group">
-                    <!-- ID Tarjeta -->
-                    <label class="cols-sm-2 control-label" for="card" style="display: inline-block">Tarjeta Nro.</label>
-                    <input type="text" [(ngModel)]="cardNumber" id="card" name="card" class="form-control input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Cedula -->
-                    <label class="cols-sm-2 control-label" for="ci" style="display: inline-block">Cedula</label>
-                    <input type="text" [(ngModel)]="cedula" id="ci" name="ci" placeholder="Cedula del cliente" class="form-control input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Nombre -->
-                    <label class="cols-sm-2 control-label" for="username">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Apellido -->
-                    <label class="cols-sm-2 control-label" for="apellido">Apellido</label>
-                    <input type="text" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Telefono -->
-                    <label class="cols-sm-2 control-label" for="telefono">Telefono</label>
-                    <input type="text" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- E-mail -->
-                    <label class="control-label" for="email">E-mail</label>
-                    <input type="text" id="email" name="email" placeholder="Correo del cliente" class="form-control  input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Fecha de nacimiento -->
-                    <label class="control-label" for="fecha">Fecha de nacimiento</label>
-                    <input type="text" id="fecha" name="fecha" placeholder="Cumpleaños del cliente" class="form-control  input-sm">
-                  </div>
-                  <div class="form-group">
-                    <!-- Sexo -->
-                    <label class="control-label" for="fecha">Sexo</label>
-                    <input type="text" id="sexo" name="sexo" placeholder="Sexo del cliente" class="form-control  input-sm">
-                  </div>
-                  <br>
-                  <!-- Button -->
-                  <div class="form-group" style="text-align: center">
-                    <button class="btn btn-primary">Registrar</button>
-                    <button class="btn btn-default">Cancelar</button>
-                  </div>
-                </app-dialog>
               </div>
             </div>
           </div>
@@ -262,10 +211,11 @@
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
                 <ul class="list-group">
                   <li class="list-group-item" style="height: 100px">
-                    <div class="col-lg-6" style="text-align: center">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center">
                       <p>Nro. Mujeres</p>
-                      <span class="badge">{{cantMujeres}}</span></div>
-                    <div class="col-lg-6">
+                      <span class="badge">{{cantMujeres}}</span>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center">
                       <p>Salen Mujeres</p>
                       <div class="input-group spinner">
                         <input [(ngModel)]="cantSalenM" type="text" class="form-control input-sm" name="cantSalenM" id="cantSalenM" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
@@ -278,10 +228,11 @@
                     </div>
                   </li>
                   <li class="list-group-item" style="height: 100px">
-                    <div class="col-lg-6" style="text-align: center">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center">
                       <p>Nro. Hombres</p>
-                      <span class="badge">{{cantHombres}}</span></div>
-                    <div class="col-lg-6">
+                      <span class="badge">{{cantHombres}}</span>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <p>Salen Hombres</p>
                       <div class="input-group spinner">
                         <input [(ngModel)]="cantSalenH" type="text" class="form-control input-sm" name="cantSalenH" id="cantSalenH" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
@@ -292,7 +243,6 @@
                         </div>
                       </div>
                     </div>
-
                   </li>
                 </ul>
               </div>
@@ -374,3 +324,76 @@
     </tab>
   </tabset>
 </div>
+<!-- ADD CLIENT -->
+<app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog">
+  <h3 style="text-align: center">
+    Registrar Cliente
+  </h3>
+  <hr>
+  <flash-messages *ngIf="flagCreate"></flash-messages>
+  <!-- Cedula -->
+  <div class="col-lg-6 col-md-6">
+    <label for="ci" style="display: inline-block">Cedula</label>
+    <input type="text" [(ngModel)]="cedula" id="ci" name="ci" placeholder="Cedula del cliente" class="form-control input-sm">
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- Telefono -->
+    <label for="telefono">Telefono</label>
+    <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
+    <br>
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- Nombre -->
+    <label class="cols-sm-2 control-label" for="username">Nombre</label>
+    <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- Apellido -->
+    <label class="cols-sm-2 control-label" for="apellido">Apellido</label>
+    <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
+    <br>
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- E-mail -->
+    <label class="control-label" for="email">E-mail</label>
+    <input type="text" [(ngModel)]="email" id="email" name="email" placeholder="Correo del cliente" class="form-control  input-sm">
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- Sexo -->
+    <label class="control-label" for="fecha">Sexo</label><br>
+    <div class="radio">
+      &nbsp;&nbsp;&nbsp;<label class="form-check-inline">
+                <input class="form-check-input" type="radio" name="mode" [value]="1" [(ngModel)]="sexo">
+            Masculino&nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+      <label class="form-check-inline">
+                <input class="form-check-input" type="radio" name="mode" [value]="2" [(ngModel)]="sexo">
+            Femenino
+            </label>
+    </div>
+    <br>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!-- Fecha de nacimiento -->
+    <div class="input-group col-lg-12 col-md-12">
+      <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fechaNacimientoString" id="fecha" name="fecha"
+        placeholder="MM/DD/YYYY" class="form-control  input-sm">
+      <span class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-6">
+    <!--calendar-->
+    <div style="display:inline-block;text-align: center">
+      <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
+    </div>
+  </div>
+  <br>
+  <!-- Button -->
+  <div class="form-group" style="text-align: center">
+    <button class="btn btn-primary" (click)="saveUser()" style="width: 25%">Registrar</button>
+    <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>

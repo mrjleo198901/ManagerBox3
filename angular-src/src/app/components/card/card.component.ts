@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer } from '@angular/core';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import * as moment from 'moment';
+import { ValidateService } from '../../services/validate.service';
 
 @Component({
   selector: 'app-card',
@@ -7,33 +9,6 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./card.component.css']
 })
 export class CardComponent implements OnInit {
-  settings = {
-    actions: false,
-    columns: {
-      tipo: {
-        title: 'Tipo', type: 'html', filter: false, valuePrepareFunction: (value) => { return '<div class="wide">' + value + '</div>'; }
-      },
-      descripcion: {
-        width: '100px',
-        title: 'Descripcion', type: 'html', filter: false, valuePrepareFunction: (value) => { return '<div class="wide">' + value + '</div>'; }
-      }
-    }
-  };
-  data = [
-    {
-      tipo: 1,
-      descripcion: "tipo1"
-    },
-    {
-      tipo: 2,
-      descripcion: "tipo2"
-    },
-    {
-      tipo: 3,
-      descripcion: "tipo3"
-    }
-  ];
-
   cardNumber: string;
   validCard: String;
   baseColor: String;
@@ -45,36 +20,54 @@ export class CardComponent implements OnInit {
   email: String;
   fechaNacimiento: Date;
   fechaShow: String;
-  sexo: String;
+  sexo: number;
   cantHombres: number;
   cantMujeres: number;
   cantSalenM: number;
   cantSalenH: number;
   showDialog = false;
   showDialogPrint = false;
-  //showCliente = false;
   flagUserFound = false;
   nfLael = "";
   selectedTab: number;
+  fechaNacimientoString: string;
+  sexoString: string;
+  public dt: Date = new Date();
   change($event) {
-    //alert($event)
     $event = false;
   }
 
-  constructor(private flashMessage: FlashMessagesService) {
+  constructor(
+    private validateService: ValidateService,
+    private flashMessagesService: FlashMessagesService,
+    public el: ElementRef, public renderer: Renderer
+  ) {
+    renderer.listenGlobal('document', 'change', (event) => {
+      //Set time in datepicker
+      this.dt = moment(this.fechaNacimientoString, 'MM/DD/YYYY').toDate();
+    });
+    this.sexo = 1;
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
-    //Default component color rgb(248, 245, 240)
+
     this.baseColor = "#f8f5f0";
     this.validCedula = "0502926819";
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.fechaNacimientoString = [initial[1], initial[0], initial[2]].join('/');
+    this.sexo = 1;
+    this.cedula = "";
+    this.nombre = "";
+    this.apellido = "";
+    this.telefono = "";
+    this.email = "";
     //usuario fictisio
-    this.nombre = "Jorge";
+    /*this.nombre = "Jorge";
     this.apellido = "Muñoz";
     this.telefono = "0987327418";
     this.cedula;
     this.email = "jmunoz@riobytes.com";
     this.fechaShow = formatDate(new Date());
-    this.sexo = "M";
+    this.sexo = 1;*/
   }
 
   ngOnInit() {
@@ -86,7 +79,58 @@ export class CardComponent implements OnInit {
     this.cantSalenH = 0;
     this.selectedTab = 0;
   }
-
+  setCursorAdd() {
+    setTimeout(function () {
+      document.getElementById('ci').focus();
+    }, 500)
+  }
+  onCreate(event: any) {
+    this.ngOnInit();
+    this.dt = new Date();
+  }
+  saveUser() {
+    let nSexo;
+    if (this.sexo === 1) {
+      nSexo = "M"
+    } else {
+      nSexo = "F"
+    }
+    let fecha = new Date(this.getDate()).toLocaleDateString().split("/");
+    let f1 = [fecha[1], fecha[0], fecha[2]].join('/');
+    const newClient = {
+      cedula: this.cedula,
+      nombre: this.nombre,
+      apellido: this.apellido,
+      telefono: this.telefono,
+      email: this.email,
+      fechaNacimientoString: f1,
+      sexo: nSexo
+    }
+    //Required fields
+    if (!this.validateService.validateClient(newClient)) {
+      this.flashMessagesService.show('Campos vacios', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    // Validate Email
+    if (!this.validateService.validateEmail(newClient.email)) {
+      this.flashMessagesService.show('Porfavor ingresa un mail valido', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Validate cedula
+    let valRes = this.validateService.validadorCedula(newClient.cedula).split('/');
+    if (valRes[1].localeCompare('success') === 0) {
+      this.flashMessagesService.show(valRes[0], { cssClass: 'alert-success', timeout: 2000 });
+    } else {
+      this.flashMessagesService.show(valRes[0], { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    this.flashMessagesService.show('Ingreso Exitoso', { cssClass: 'alert-success', timeout: 2000 });
+    this.ngOnInit();
+    this.showDialog = false;
+  }
+  public getDate(): number {
+    return this.dt && this.dt.getTime() || new Date().getTime();
+  }
   enterKey() {
     let o = "ñ";
     let f = "_";
@@ -166,21 +210,6 @@ export class CardComponent implements OnInit {
     if (this.cantSalenH < this.cantHombres)
       this.cantSalenH++;
   }
-  //on select a tab do something
-  /*public doOnTabSelect(selectedTab) {
-    if (selectedTab === 2) {
-      setTimeout(function () {
-        let v = document.getElementById('numeroS');
-        v.click();
-      }, 200);
-    } else {
-      alert("inside")
-      setTimeout(function () {
-        let v = document.getElementById('cedula');
-        v.click();
-      }, 200);
-    }
-  };*/
 
   public alertMe1(st) {
 
@@ -202,6 +231,7 @@ export class CardComponent implements OnInit {
     }
     this.selectedTab = 2;
   };
+
 }
 
 function formatDate(date) {

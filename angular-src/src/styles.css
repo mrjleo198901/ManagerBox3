@@ -6,6 +6,15 @@
 .alert-success{
   background-color: lightgreen;
 }
+table > thead > tr > th {
+  text-align: center;
+  font-size: 14px;
+}
+ng2-smart-table{
+    text-align: center;
+    background-color: pink;
+}
+/*bootswatch*/
 html{
     font-family:sans-serif;
     -ms-text-size-adjust:100%;
@@ -145,6 +154,8 @@ optgroup{
     font-weight:bold
 }
 table{
+    text-align: center;
+    font-size: 14px;
     border-collapse:collapse;
     border-spacing:0
 }
