@@ -117,7 +117,7 @@ export class ClientesComponent implements OnInit {
     //Load data to localDataSource
     this.source = new LocalDataSource();
     this.source.load(this.data);
-    this.validateService.getScreen();
+    //this.validateService.getScreen();
 
   }
 
@@ -132,10 +132,6 @@ export class ClientesComponent implements OnInit {
   setCursorAdd() {
     setTimeout(function () {
       document.getElementById('ci').focus();
-      //get dialog dimensions
-      /*let h = document.getElementById("dlgMain").style.position;
-      let w = document.getElementById("dlgMain").style.width;
-      console.log(w + "x" + h)*/
     }, 500)
   }
 

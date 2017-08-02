@@ -30,6 +30,49 @@ export class ValidateService {
     }
   }
 
+  validateTipoProducto(tipoProducto) {
+    if (tipoProducto.desc_tipo_producto == undefined ||
+      tipoProducto.desc_tipo_producto == "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  validateProducto(producto) {
+    if (producto.nombre == "" || producto.precio_unitario == null || producto.utilidad == null
+      || producto.cant_existente == null || producto.selected_tipo_producto == "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  customValidateProducto(producto) {
+    let res = true;
+    if (producto.nombre == "") {
+      document.getElementById("nombrePC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.precio_unitario == null) {
+      document.getElementById("puPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.utilidad == null) {
+      document.getElementById("utilidadPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.cant_existente == null) {
+      document.getElementById("cantPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.selected_tipo_producto == "") {
+      document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
   validadorCedula(cedula) {
     let message;
     let type;
@@ -111,6 +154,7 @@ export class ValidateService {
     }
     return message + "/" + type;
   }
+
   formatDate(date) {
     var monthNames = [
       "Enero", "Febrero", "Marzo",

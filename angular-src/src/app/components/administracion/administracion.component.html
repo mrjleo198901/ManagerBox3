@@ -1,20 +1,195 @@
 <h2 class="page-header">Administracion</h2>
 
-<div>
-  <pre class="card card-block card-header">Selected date is: <em *ngIf="dt">{{ getDate() | date:'shortDate'}}</em></pre>
-  <h4>Inline</h4>
-  <div style="display:inline-block; min-height:290px;">
-    <datepicker [(ngModel)]="dt" [minDate]="minDate" [showWeeks]="true"></datepicker>
-  </div>
-
-  <hr />
-  <button type="button" class="btn btn-sm btn-info" (click)="today()">Today</button>
-  <button type="button" class="btn btn-sm btn-default btn-secondary" (click)="d20090824();">2009-08-24</button>
-  <button type="button" class="btn btn-sm btn-danger" (click)="clear()">Clear</button>
-  <button type="button" class="btn btn-sm btn-default btn-secondary" (click)="toggleMin()" tooltip="After today restriction">Min date</button>
+<div (click)="$event.preventDefault()">
+  <tabset [justified]="true">
+    <tab heading="Produtos">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3>Tipos de Productos</h3>
+        <hr>
+      </div>
+      <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+        <ng2-smart-table id="dtTP" [settings]="settingsTP" [source]="sourceTP" (create)="showDialogTPC = !showDialogTPC;onCreateTP($event);setCursorAddTP()"
+          (edit)="showDialogTPU = !showDialogTPU;onUpdateTP($event);setCursorUpdateTP()">
+        </ng2-smart-table>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3>Productos</h3>
+        <hr>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ng2-smart-table id="dtP" [settings]="settingsP" [source]="sourceP" (create)="showDialogPC = !showDialogPC;onCreateP($event);setCursorAddP()"
+          (edit)="showDialogPU = !showDialogPU;onUpdateP($event);setCursorUpdateP()">
+        </ng2-smart-table>
+        <hr>
+      </div>
+    </tab>
+    <tab heading="Promociones">
+    </tab>
+    <tab heading="Configuraciones">
+    </tab>
+  </tabset>
 </div>
 
-<!--<div>
-  <toaster-container [toasterconfig]="config1"></toaster-container>
-  <button (click)="popToast()">pop toast</button><br/>
-</div>-->
+
+<!-- DIALOGS -->
+<app-dialog [(visible)]="showDialogTPC" (visibleChange)="changeTPC($event)" #dialog="dialog">
+  <h3 style="text-align: center">
+    Registrar Tipo Producto
+  </h3>
+  <hr>
+  <flash-messages *ngIf="flagCreateTP"></flash-messages>
+  <!-- ID 
+  <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+    <label for="idTPC" style="display: inline-block">ID</label>
+    <input type="text" [(ngModel)]="id_mostar" id="idTPC" name="idTPC" class="form-control" readonly>
+    <br>
+  </div> -->
+  <!-- Nombre -->
+  <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+    <label for="descTPC" style="display: inline-block">Nombre</label>
+    <input type="text" [(ngModel)]="desc_tipo_producto" id="descTPC" name="descTPC" placeholder="Descripcion de tipo producto"
+      class="form-control">
+    <br>
+  </div>
+  <!-- Buttons -->
+  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+    <button class="btn btn-primary" (click)="onAddTPSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-default" (click)="showDialogTPC = !showDialogTPC" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>
+
+<app-dialog [(visible)]="showDialogTPU" (visibleChange)="changeTPU($event)" #dialog1="dialog">
+  <h3 style="text-align: center">
+    Actualizar Tipo Producto
+  </h3>
+  <hr>
+  <flash-messages *ngIf="flagUpdateTP"></flash-messages>
+  <!-- ID -->
+  <div class="col-lg-6 col-lg-offset-1 col-md-6 col-md-offset-1">
+    <label for="idTPC" style="display: inline-block">ID</label>
+    <input type="text" [(ngModel)]="id_mostar" id="idTPU" name="idTPU" class="form-control" readonly>
+    <br>
+  </div>
+  <!-- Nombre -->
+  <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+    <label for="descTPC" style="display: inline-block">Nombre</label>
+    <input type="text" [(ngModel)]="desc_tipo_producto" id="descTPU" name="descTPU" placeholder="Descripcion de tipo producto"
+      class="form-control">
+    <br>
+  </div>
+  <!-- Buttons -->
+  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+    <button class="btn btn-primary" (click)="onUpdateTPSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-default" (click)="showDialogTPU = !showDialogTPU" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>
+
+<app-dialog [(visible)]="showDialogPC" (visibleChange)="changePC($event)" #dialog2="dialog">
+  <h3 style="text-align: center">
+    Registrar Producto
+  </h3>
+  <hr>
+  <flash-messages *ngIf="flagCreateP"></flash-messages>
+  <!-- ID -->
+  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
+    <label for="idTPC" style="display: inline-block">ID</label>
+    <input type="text" value="1" id="idPU" name="idPU" class="form-control" readonly>
+  </div>
+  <!-- Nombre -->
+  <div class="form-group col-lg-7 col-md-7 col-sm-7 col-xs-12">
+    <label for="nombrePC" style="display: inline-block">Nombre</label>
+    <input type="text" [(ngModel)]="nombre" id="nombrePC" name="nombrePC" class="form-control" required>
+  </div>
+  <!-- Tipo producto -->
+  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
+    <label for="tipoPC" style="display: inline-block">Tipo Producto</label>
+    <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input">
+      <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
+    </select>
+  </div>
+  <!-- Precio Unitario -->
+  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
+    <label for="numero" style="display: inline-block">Precio Unitario</label>
+    <input type="number" [(ngModel)]="precio_unitario" id="puPC" name="puPC" class="form-control" placeholder="0.00">
+  </div>
+  <!-- Utilidad -->
+  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+    <label for="utilidadPC">Utilidad</label>
+    <div class="input-group">
+      <span (click)="fuPorcentaje()" class="input-group-addon input-sm" id="iconPercent"><i class="fa fa-percent" aria-hidden="true"></i></span>
+      <span (click)="fuMoneda()" class="input-group-addon input-sm" id="iconUsd"><i class="fa fa-usd" aria-hidden="true"></i></span>
+      <input type="number" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC" class="form-control">
+    </div>
+  </div>
+  <!-- Cant. Existente -->
+  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
+    <label for="cantPC" style="display: inline-block">Cantidad Existente</label>
+    <input type="number" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" class="form-control">
+  </div>
+  <!-- Subproducto -->
+  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <label for="cantPC" style="display: inline-block">Subproductos</label>
+    <div class="row" style="padding-top: 6px">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <label class="switch">
+      <input type="checkbox" [(ngModel)]="flagSubProd">
+      <span class="slider round"></span>
+      </label>
+    </div>
+  </div>
+  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+    <label for="tipoP" style="display: inline-block">Productos Existentes</label>
+    <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProd">
+      <option *ngFor="let c of productos" [ngValue]="c" >{{c.nombre}}</option>
+    </select>
+  </div>
+  <!--Ingreso a lista subproductos-->
+  <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12" *ngIf="flagSubProd">
+    <label for="subPC" style="display: inline-block">Subproductos</label>
+    <form class="form-inline">
+      &nbsp;&nbsp;(&nbsp;unidades&nbsp;
+      <input type="radio" name="radio1" [value]="1" [(ngModel)]="unidadMedidaSuproducto"> &nbsp;&nbsp;&nbsp;mililitros&nbsp;
+      <input type="radio" name="radio2" [value]="2" [(ngModel)]="unidadMedidaSuproducto">&nbsp;)&nbsp;&nbsp;
+      <div class="input-group spinner">
+        <input [(ngModel)]="cantSubprod" type="text" class="form-control input-sm" name="cantSubprod" id="cantSubprod" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          maxlength="6">
+        <div class="input-group-btn-vertical">
+          <button id="addCant" (click)="addCant()" class="btn btn-default" type="button">
+            <i class="fa fa-caret-up"></i></button>
+          <button id="lessCant" (click)="lessCant()" class="btn btn-default" type="button">
+            <i class="fa fa-caret-down"></i></button>
+        </div>
+      </div>
+      &nbsp;&nbsp;<i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
+    </form>
+    <br>
+    <!--<p>(Productos usados en la preparación del producto preparado)</p>-->
+    <nav *ngIf="flagListaSubProd">
+      <ul class="list-group" id="ulShow">
+        <li class="list-group-item" *ngFor="let item of subproductoV; let i = index" [attr.data-index]="i">
+          {{item.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem()" aria-hidden="true"></i>
+          <span class="badge">{{item.cantidad}}</span>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <!-- Buttons -->
+  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+    <button class="btn btn-primary" (click)="onAddPSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-default" (click)="showDialogPC = !showDialogPC" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>
+
+<app-dialog [(visible)]="showDialogPU" (visibleChange)="changePU($event)" #dialog3="dialog">
+  <h3 style="text-align: center">
+    Actualizar Producto
+  </h3>
+  <hr>
+  <!-- Buttons -->
+  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+    <button class="btn btn-primary" (click)="onUpdatePSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-default" (click)="showDialogPU = !showDialogPU" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>

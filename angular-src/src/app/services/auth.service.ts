@@ -42,7 +42,7 @@ export class AuthService {
   }
   imprimir(token, user) {
     console.log(token);
-      console.log(user)
+    console.log(user)
 
   }
   loadToken() {
@@ -57,6 +57,17 @@ export class AuthService {
     this.authToken = null;
     this.user = null;
     localStorage.clear();
+  }
+
+  //prueba
+  getAll() {
+    let headers = new Headers();
+    this.loadToken();
+    headers.append('Authorization', this.authToken);
+    headers.append('Content-Type', 'application/json');
+    //let ep = this.prepEndpoint('users/profile');
+    return this.http.get('http://localhost:3000/api/tipo_producto', { headers: headers })
+      .map(res => res.json());
   }
 
 }

@@ -22,6 +22,8 @@ import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
+import { TipoProductoService } from './services/tipo-producto.service';
+import { ProductoService } from './services/producto.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -76,7 +78,7 @@ const appRoutes: Routes = [
     Ng2SmartTableModule,
     Ng2CompleterModule,
   ],
-  providers: [ValidateService, AuthService, AuthGuard],
+  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

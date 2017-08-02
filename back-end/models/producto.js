@@ -3,13 +3,13 @@ var mongoose = restful.mongoose;
 
 var productoSchema = new mongoose.Schema({
 
-    precio_unitario : Number,
-    utilidad : Number,
+    nombre: String,
+    precio_unitario: Number,
+    utilidad: Number,
     cant_existente: Number,
-    subproductoV : Array,
-
+    subproductoV: Array,
     id_tipo_producto: mongoose.Schema.Types.ObjectId
 
-}); 
+});
 
-module.exports= restful.model('producto',productoSchema);
+module.exports = restful.model('producto', productoSchema);

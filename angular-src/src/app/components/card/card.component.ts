@@ -54,7 +54,6 @@ export class CardComponent implements OnInit {
     this.validCedula = "0502926819";
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.fechaNacimientoString = [initial[1], initial[0], initial[2]].join('/');
-    this.sexo = 1;
     this.cedula = "";
     this.nombre = "";
     this.apellido = "";
@@ -78,6 +77,9 @@ export class CardComponent implements OnInit {
     this.cantSalenM = 0;
     this.cantSalenH = 0;
     this.selectedTab = 0;
+
+    alert(document.getElementById('cedula').style.backgroundColor);
+    
   }
   setCursorAdd() {
     setTimeout(function () {
