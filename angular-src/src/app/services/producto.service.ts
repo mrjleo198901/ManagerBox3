@@ -15,6 +15,15 @@ export class ProductoService {
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
+
+  updateProducto(producto) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.put('http://localhost:3000/api/producto/' + producto._id, producto, { headers: headers })
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

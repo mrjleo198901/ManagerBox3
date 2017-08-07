@@ -21,4 +21,11 @@ export class TipoProductoService {
     return this.http.get('http://localhost:3000/api/tipo_producto', { headers: headers })
       .map(res => res.json());
   }
+  updateTipoProducto(tipoProducto) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.put('http://localhost:3000/api/tipo_producto/'+ tipoProducto.id, tipoProducto, { headers: headers })
+      .map(res => res.json())
+    /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
+  }
 }

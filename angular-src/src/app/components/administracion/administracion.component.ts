@@ -28,6 +28,15 @@ export class AdministracionComponent implements OnInit {
   desc_tipo_producto;
   id_mostar;
   //Atributos Producto
+  productoUpdate = {
+    "_id": "",
+    "nombre": "",
+    "precio_unitario": 0,
+    "utilidad": 0,
+    "cant_existente": 0,
+    "subproductoV": [],
+    "id_tipo_producto": ""
+  };
   nombre;
   precio_unitario;
   utilidad;
@@ -46,6 +55,7 @@ export class AdministracionComponent implements OnInit {
   tipo_productos: any = [];
   lstShow: any = [];
   flagSubProd;
+  flagSubProdUpdate;
   flagListaSubProd;
   settingsTP = {
     mode: 'external',
@@ -128,6 +138,7 @@ export class AdministracionComponent implements OnInit {
     }
   };*/
   settingsP = {}
+
   constructor(
     private validateService: ValidateService,
     private flashMessagesService: FlashMessagesService,
@@ -163,11 +174,12 @@ export class AdministracionComponent implements OnInit {
         for (let x of tp) {
           let desc = this.search(x.id_tipo_producto, this.tipo_productos);
           this.productos[i].id_tipo_producto = desc;
-          let aux = x.subproductoV[0];
-          console.log(aux);
           if (x.subproductoV != "") {
-            this.productos[i].subproductoV = JSON.stringify(x.subproductoV);
-            
+            let fila = "";
+            for (let entry of x.subproductoV) {
+              fila += "-" + entry.nombre + " " + entry.cantidad + " ";
+              this.productos[i].subproductoV = fila;
+            }
           }
           i++;
         }
@@ -250,6 +262,7 @@ export class AdministracionComponent implements OnInit {
     this.selected_tipo_producto = undefined;
     this.selected_producto = "";
     this.flagSubProd = false;
+    this.flagSubProdUpdate = false;
     this.unidadMedidaSuproducto = 2;
     this.cantSubprod = 1;
     this.flagListaSubProd = false;
@@ -294,7 +307,7 @@ export class AdministracionComponent implements OnInit {
 
   setCursorUpdateP() {
     setTimeout(function () {
-      //document.getElementById('descPC').focus();
+      document.getElementById('nombrePU').focus();
     }, 500)
   }
 
@@ -315,6 +328,9 @@ export class AdministracionComponent implements OnInit {
 
   onUpdateP(event: any) {
     this.flagUpdateP = true;
+    this.productoUpdate = event.data;
+    //let idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos)
+    //this.productoUpdate.id_tipo_producto = idTpBus;
   }
 
   onAddTPSubmit() {
@@ -326,7 +342,7 @@ export class AdministracionComponent implements OnInit {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
-    //Register user
+    //Register Tipo producto
     let a = this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
       this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
     }, err => {
@@ -369,14 +385,55 @@ export class AdministracionComponent implements OnInit {
 
   onUpdateTPSubmit() {
     const tipoProducto = {
+      id: this.id_mostar,
       desc_tipo_producto: this.desc_tipo_producto
     }
+    //Required fields
+    if (!this.validateService.validateTipoProducto(tipoProducto)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Update Tipo producto
+    this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
+      this.flashMessagesService.show('Modificacion exitosa!', { cssClass: 'alert-success', timeout: 2000 });
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+    this.sourceP.refresh();
     this.ngOnInit();
-    this.showDialogTPU = false;
+    //this.showDialogTPU = false;
   }
 
   onUpdatePSubmit() {
-    this.showDialogPU = false;
+    let idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos)
+    const producto = {
+      _id: this.productoUpdate._id,
+      nombre: this.productoUpdate.nombre,
+      precio_unitario: this.productoUpdate.precio_unitario,
+      utilidad: this.productoUpdate.utilidad,
+      cant_existente: this.productoUpdate.cant_existente,
+      subproductoV: this.productoUpdate.subproductoV,
+      id_tipo_producto: idTpBus
+    }
+    console.log(producto);
+    //Required fields
+    if (!this.validateService.customValidateProducto(producto)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Update producto
+    this.productoService.updateProducto(producto).subscribe(data => {
+      this.flashMessagesService.show('Modificacion Existosa!', { cssClass: 'alert-success', timeout: 2000 });
+
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+    this.ngOnInit();
+    //this.showDialogPU = false;
   }
 
   fuPorcentaje() {
@@ -428,6 +485,14 @@ export class AdministracionComponent implements OnInit {
     for (let entry of myArray) {
       if (entry._id === id) {
         return entry.desc_tipo_producto;
+      }
+    }
+  }
+
+  searchByName(nombre, myArray) {
+    for (let entry of myArray) {
+      if (entry.desc_tipo_producto.localeCompare(nombre) === 0) {
+        return entry._id;
       }
     }
   }
