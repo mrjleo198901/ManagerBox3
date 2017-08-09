@@ -57,6 +57,7 @@ export class AdministracionComponent implements OnInit {
   flagSubProd;
   flagSubProdUpdate;
   flagListaSubProd;
+  flagListaSubProdUpdate;
   settingsTP = {
     mode: 'external',
     noDataMessage: 'No existen registros',
@@ -259,13 +260,14 @@ export class AdministracionComponent implements OnInit {
     this.utilidad = null;
     this.cant_existente = null;
     this.subproductoV = [];
-    this.selected_tipo_producto = undefined;
+    this.selected_tipo_producto = "";
     this.selected_producto = "";
     this.flagSubProd = false;
     this.flagSubProdUpdate = false;
     this.unidadMedidaSuproducto = 2;
     this.cantSubprod = 1;
     this.flagListaSubProd = false;
+    this.flagListaSubProdUpdate = false;
   }
 
   /* GESTION DE PRODUCTO */
@@ -327,10 +329,44 @@ export class AdministracionComponent implements OnInit {
   }
 
   onUpdateP(event: any) {
+    console.log(event.data);
+    console.log(JSON.stringify(event.data.subproductoV));
     this.flagUpdateP = true;
-    this.productoUpdate = event.data;
-    //let idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos)
-    //this.productoUpdate.id_tipo_producto = idTpBus;
+    let productoUpdateTemp: any;
+    productoUpdateTemp = event.data;
+
+    console.log(typeof(JSON.stringify(event.data.subproductoV[0])) )
+
+    if (productoUpdateTemp.subproductoV.length == 0) {
+      this.flagSubProdUpdate = false;
+    } else {
+      this.flagSubProdUpdate = true;
+      this.flagListaSubProd = true;
+      if (productoUpdateTemp.subproductoV.length > 0) {
+        let array = productoUpdateTemp.subproductoV.toString().split("-");
+        productoUpdateTemp.subproductoV = [];
+        let index = 0;
+        for (let entry of array) {
+          if (entry.length > 0) {
+            let vec = entry.split(" ");
+            let n = vec.length;
+            let nombre = vec[0];
+            let cant = vec[n - 2];
+            for (let i = 1; i < n; i++) {
+              if (vec[i + 1] != "") {
+                nombre += " " + vec[i];
+              }
+            }
+            //set subproducto to ul format
+            let aux = { nombre: nombre, cantidad: cant };
+            productoUpdateTemp.subproductoV.push(aux);
+            index++;
+          }
+        }
+        this.productoUpdate = productoUpdateTemp;
+      }
+    }
+
   }
 
   onAddTPSubmit() {
@@ -344,7 +380,7 @@ export class AdministracionComponent implements OnInit {
     }
     //Register Tipo producto
     let a = this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
-      this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
     }, err => {
       // Log errors if any
       console.log(err);
@@ -363,7 +399,6 @@ export class AdministracionComponent implements OnInit {
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id
     }
-    console.log(this.selected_tipo_producto);
     console.log(producto);
     //Required fields
     if (!this.validateService.customValidateProducto(producto)) {
@@ -372,8 +407,7 @@ export class AdministracionComponent implements OnInit {
     }
     //Register producto
     this.productoService.registerProducto(producto).subscribe(data => {
-      this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
-
+      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
     }, err => {
       // Log errors if any
       console.log(err);
@@ -395,7 +429,7 @@ export class AdministracionComponent implements OnInit {
     }
     //Update Tipo producto
     this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
-      this.flashMessagesService.show('Modificacion exitosa!', { cssClass: 'alert-success', timeout: 2000 });
+      //this.flashMessagesService.show('Modificacion exitosa!', { cssClass: 'alert-success', timeout: 2000 });
     }, err => {
       // Log errors if any
       console.log(err);
@@ -403,7 +437,12 @@ export class AdministracionComponent implements OnInit {
     });
     this.sourceP.refresh();
     this.ngOnInit();
-    //this.showDialogTPU = false;
+
+    /*setTimeout(function () {
+      this.showDialogTPU = false;
+    }, 2000)*/
+
+    this.showDialogTPU = false;
   }
 
   onUpdatePSubmit() {
@@ -425,15 +464,24 @@ export class AdministracionComponent implements OnInit {
     }
     //Update producto
     this.productoService.updateProducto(producto).subscribe(data => {
-      this.flashMessagesService.show('Modificacion Existosa!', { cssClass: 'alert-success', timeout: 2000 });
-
+      //this.flashMessagesService.show('Modificacion Existosa!', { cssClass: 'alert-success', timeout: 2000 });
     }, err => {
       // Log errors if any
       console.log(err);
       this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
     this.ngOnInit();
-    //this.showDialogPU = false;
+    //console.log(this.productoUpdate.id_tipo_producto);
+    this.showDialogPU = false;
+    this.productoUpdate = {
+      "_id": "",
+      "nombre": "",
+      "precio_unitario": 0,
+      "utilidad": 0,
+      "cant_existente": 0,
+      "subproductoV": [],
+      "id_tipo_producto": ""
+    };
   }
 
   fuPorcentaje() {
@@ -448,8 +496,10 @@ export class AdministracionComponent implements OnInit {
     this.medidaUtilidad = "$";
   }
 
-  deleteItem() {
-    alert("delete");
+  deleteItem(index) {
+    if (index > -1) {
+      this.productoUpdate.subproductoV.splice(index, 1);
+    }
   }
 
   addItem() {
@@ -461,10 +511,28 @@ export class AdministracionComponent implements OnInit {
       } else {
         unidadMedida = "ml"
       }
+      let aux = { nombre: this.selected_producto.nombre, cantidad: this.cantSubprod + unidadMedida };
+      this.subproductoV.push(aux);
+      console.log(this.subproductoV);
+    } else {
+      this.flashMessagesService.show('Selecciona un producto existente!', { cssClass: 'alert-danger', timeout: 2000 });
+      document.getElementById("tipoP").style.borderColor = "#FE2E2E";
+    }
+  }
+
+  addItemUpdate() {
+    if (this.selected_producto != "") {
+      this.flagListaSubProd = true;
+      let unidadMedida: string;
+      if (this.unidadMedidaSuproducto === 1) {
+        unidadMedida = "u";
+      } else {
+        unidadMedida = "ml"
+      }
       let nItem = this.selected_producto.nombre + " " + this.cantSubprod + unidadMedida;
       let aux = { nombre: this.selected_producto.nombre, cantidad: this.cantSubprod + unidadMedida };
       //this.lista_subProductos.push(aux);
-      this.subproductoV.push(aux);
+      this.productoUpdate.subproductoV.push(aux);
     } else {
       this.flashMessagesService.show('Selecciona un producto existente!', { cssClass: 'alert-danger', timeout: 2000 });
       document.getElementById("tipoP").style.borderColor = "#FE2E2E";
@@ -495,6 +563,11 @@ export class AdministracionComponent implements OnInit {
         return entry._id;
       }
     }
+  }
+
+  onChangeUpdtProd($event) {
+    //console.log(this.productoUpdate.id_tipo_producto);
+    //this.productoUpdate.id_tipo_producto = "Wiskey";
   }
 
   /* GESTION DE PROMOCIONES */

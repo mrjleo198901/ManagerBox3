@@ -81,7 +81,7 @@
   </div>
   <!-- Buttons -->
   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onUpdateTPSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-primary" (click)="onUpdateTPSubmit()" style="width: 25%">Actualizar</button>
     <button class="btn btn-default" (click)="showDialogTPU = !showDialogTPU" style="width: 25%">Cancelar</button>
   </div>
 </app-dialog>
@@ -106,6 +106,7 @@
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="tipoPC" style="display: inline-block">Tipo Producto</label>
     <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input">
+      <option value="" disabled selected hidden>Selecciona...</option>
       <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
     </select>
   </div>
@@ -142,6 +143,7 @@
   <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
     <label for="tipoP" style="display: inline-block">Productos Existentes</label>
     <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProd">
+      <option value="" disabled selected hidden>Selecciona...</option>
       <option *ngFor="let c of productos" [ngValue]="c" >{{c.nombre}}</option>
     </select>
   </div>
@@ -201,7 +203,8 @@
   <!-- Tipo producto -->
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="tipoPU" style="display: inline-block">Tipo Producto</label>
-    <select [(ngModel)]="productoUpdate.id_tipo_producto" id="tipoPU" name="tipoPU" class="form-control input">
+    <select [(ngModel)]="productoUpdate.id_tipo_producto" (change)="onChangeUpdtProd($event)" id="tipoPU" name="tipoPU" class="form-control input">
+      <option value="" disabled selected hidden>Selecciona...</option>
       <option *ngFor="let c of tipo_productos">{{c.desc_tipo_producto}}</option>
     </select>
   </div>
@@ -237,20 +240,21 @@
   </div>
   <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
     <label for="tipoP" style="display: inline-block">Productos Existentes</label>
-    <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProd">
+    <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProdUpdate">
+      <option value="" disabled selected hidden>Selecciona...</option>
       <option *ngFor="let c of productos" [ngValue]="c" >{{c.nombre}}</option>
     </select>
   </div>
   <!--Ingreso a lista subproductos-->
-  <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12" *ngIf="flagSubProd">
+  <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12" *ngIf="flagSubProdUpdate">
     <label for="subPC" style="display: inline-block">Subproductos</label>
     <form class="form-inline">
       &nbsp;&nbsp;(&nbsp;unidades&nbsp;
       <input type="radio" name="radio1" [value]="1" [(ngModel)]="unidadMedidaSuproducto"> &nbsp;&nbsp;&nbsp;mililitros&nbsp;
       <input type="radio" name="radio2" [value]="2" [(ngModel)]="unidadMedidaSuproducto">&nbsp;)&nbsp;&nbsp;
       <div class="input-group spinner">
-        <input [(ngModel)]="productoUpdate.cantSubprod" type="text" class="form-control input-sm" name="cantSubprod" id="cantSubprod"
-          onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="6">
+        <input [(ngModel)]="cantSubprod" type="text" class="form-control input-sm" name="cantSubprod" id="cantSubprod" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          maxlength="6">
         <div class="input-group-btn-vertical">
           <button id="addCant" (click)="addCant()" class="btn btn-default" type="button">
             <i class="fa fa-caret-up"></i></button>
@@ -258,14 +262,14 @@
             <i class="fa fa-caret-down"></i></button>
         </div>
       </div>
-      &nbsp;&nbsp;<i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
+      &nbsp;&nbsp;<i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemUpdate()" aria-hidden="true" style="vertical-align: middle"></i>
     </form>
     <br>
     <!--<p>(Productos usados en la preparación del producto preparado)</p>-->
     <nav *ngIf="flagListaSubProd">
-      <ul class="list-group" id="ulShow">
-        <li class="list-group-item" *ngFor="let item of subproductoV; let i = index" [attr.data-index]="i">
-          {{item.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem()" aria-hidden="true"></i>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let item of productoUpdate.subproductoV; let i = index" >
+          {{item.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem(i)" aria-hidden="true"></i>
           <span class="badge">{{item.cantidad}}</span>
         </li>
       </ul>
@@ -273,7 +277,7 @@
   </div>
   <!-- Buttons -->
   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onUpdatePSubmit()" style="width: 25%">Registrar</button>
+    <button class="btn btn-primary" (click)="onUpdatePSubmit()" style="width: 25%">Actualizar</button>
     <button class="btn btn-default" (click)="showDialogPU = !showDialogPU" style="width: 25%">Cancelar</button>
   </div>
 </app-dialog>
