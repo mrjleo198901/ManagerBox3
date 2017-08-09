@@ -329,15 +329,15 @@ export class AdministracionComponent implements OnInit {
   }
 
   onUpdateP(event: any) {
-    console.log(event.data);
+    //console.log(event.data);
     console.log(JSON.stringify(event.data.subproductoV));
     this.flagUpdateP = true;
     let productoUpdateTemp: any;
     productoUpdateTemp = event.data;
 
-    console.log(typeof(JSON.stringify(event.data.subproductoV[0])) )
+    console.log(typeof(event.data.subproductoV));
 
-    if (productoUpdateTemp.subproductoV.length == 0) {
+    /*if (productoUpdateTemp.subproductoV.length == 0) {
       this.flagSubProdUpdate = false;
     } else {
       this.flagSubProdUpdate = true;
@@ -365,7 +365,7 @@ export class AdministracionComponent implements OnInit {
         }
         this.productoUpdate = productoUpdateTemp;
       }
-    }
+    }*/
 
   }
 
