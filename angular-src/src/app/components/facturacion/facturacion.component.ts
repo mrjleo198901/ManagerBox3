@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductoService } from '../../services/producto.service';
 
 @Component({
   selector: 'app-facturacion',
@@ -19,31 +20,25 @@ export class FacturacionComponent implements OnInit {
     //alert($event)
   }
 
-  constructor() {
-    this.paths[0] = "assets/img/marcas/cervezas/1.png";
-    this.paths[1] = "assets/img/marcas/cervezas/2.png";
-    this.paths[2] = "assets/img/marcas/cervezas/3.png";
-    this.paths[3] = "assets/img/marcas/cervezas/4.png";
-    this.paths[4] = "assets/img/marcas/cervezas/5.png";
-    this.paths[5] = "assets/img/marcas/cervezas/6.png";
-    this.paths[6] = "assets/img/marcas/cervezas/7.png";
-    this.paths[7] = "assets/img/marcas/cervezas/8.png";
-    this.paths[8] = "assets/img/marcas/cervezas/9.png";
-    this.paths[9] = "assets/img/marcas/cervezas/10.png";
+  constructor(private productoService: ProductoService) {
+    /*this.paths[0] = "assets/img/marcas/cervezas/1.png";
+    this.paths[1] = "assets/img/marcas/cervezas/2.png";*/
+    this.productoService.getAll().subscribe(tp => {
+      let index = 0;
 
-    this.paths[10] = "assets/img/marcas/cervezas/1.png";
-    this.paths[11] = "assets/img/marcas/cervezas/2.png";
-    this.paths[12] = "assets/img/marcas/cervezas/3.png";
-    this.paths[13] = "assets/img/marcas/cervezas/4.png";
-    this.paths[14] = "assets/img/marcas/cervezas/5.png";
-    this.paths[15] = "assets/img/marcas/cervezas/6.png";
-    this.paths[16] = "assets/img/marcas/cervezas/7.png";
-    this.paths[17] = "assets/img/marcas/cervezas/8.png";
-    this.paths[18] = "assets/img/marcas/cervezas/9.png";
-    this.paths[19] = "assets/img/marcas/cervezas/10.png";
+      for (let entry of tp) {
+        console.log("../../back-end/uploads" + entry.path)
+        this.paths[index] = entry.path;
+        index++;
+      }
+    }, err => {
+      console.log(err);
+      return false;
+    });
   }
 
   ngOnInit() {
+    console.log(this.paths)
     this.cant1 = 1;
     this.cant2 = 1;
     this.cant3 = 1;
@@ -62,7 +57,6 @@ export class FacturacionComponent implements OnInit {
   addProd4() {
     this.cant4++;
   }
-
 
   lessProd1() {
     if (this.cant1 > 1)

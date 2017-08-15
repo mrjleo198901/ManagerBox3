@@ -419,7 +419,7 @@ export class AdministracionComponent implements OnInit {
       cant_existente: this.cant_existente,
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
-      pathLogo: this.pathLogo
+      path: this.pathLogo
     }
     console.log(producto);
     //Required fields
@@ -552,26 +552,15 @@ export class AdministracionComponent implements OnInit {
     } else {
       color = "lightgreen";
     }
-    this.pathLogo = files;
+
     document.getElementById('filesC').style.backgroundColor = color;
     if (files != undefined) {
-      console.log(files);
-      let formData: FormData = new FormData();
-      formData.append('uploadFile', files, files.name);
-      let headers = new Headers();
-      /** No need to include Content-Type in Angular 4 **/
-      //headers.append('Content-Type', 'multipart/form-data');
-      headers.append('Accept', 'application/json');
-      let options = new RequestOptions({ headers: headers });
-      this.http.post(URL, formData, options)
-        .map(res => res.json())
-        .catch(error => Observable.throw(error))
-        .subscribe(
-        data =>
-          console.log(data),
-        //Save in database
-        error => console.log(error)
-        )
+      this.productoService.uploadImage(files).subscribe(tp => {
+        console.log(tp)
+        this.pathLogo = tp
+      }, err => {
+        console.log(err);
+      });
     }
   }
 

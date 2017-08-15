@@ -70,10 +70,10 @@ export class ValidateService {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.pathLogo == undefined) {
+    /*if (producto.path == undefined) {
       document.getElementById("filesC").style.borderColor = "#FE2E2E";
       res = false;
-    }
+    }*/
     return res;
   }
 
