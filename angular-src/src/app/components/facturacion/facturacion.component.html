@@ -6,39 +6,13 @@
             <!--left DIV-->
             <tabset [justified]="true">
                 <!-- *******************TIPO 1***********************-->
-                <tab heading="Tipo 1">
+                <tab heading="Cerveza">
                     <hr>
-                    <h3 style="text-align: center">Tipo de producto 1</h3>
+                    <h3 style="text-align: center">Cerveza</h3>
                     <hr>
-                    <!-- Promociones -->
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <div class="input-group">
-                                <!-- Tabla de Promociones -->
-                                <div class="container">
-                                    <p>La tipificacion de los productos ha sido creada por el administrador.</p>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <table class="table table-striped" style="max-width: inherit">
-                                        <thead>
-                                            <tr>
-                                                <th style="text-align: center">Descripcion</th>
-                                                <th style="text-align: center">Precio</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="text-align: center">
-                                            <tr>
-                                                <td>Producto 1</td>
-                                                <td>12.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Producto 2</td>
-                                                <td>50.00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                </div>
-                            </div>
+                    <div *ngFor="let path of paths; let i = index">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <img src={{path}} (dblclick)="eventEmitDoubleClick($event); passIndex(i)" />
                         </div>
                     </div>
                 </tab>
@@ -54,7 +28,7 @@
                                 <!-- Tabla de Promociones -->
                                 <div class="container">
                                     <p>La tipificacion de los productos ha sido creada por el administrador.</p>
-                                    <table class="table table-striped" style="max-width: 70%">
+                                    <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center">Descripcion</th>
@@ -89,7 +63,7 @@
                                 <!-- Tabla de Promociones -->
                                 <div class="container">
                                     <p>La tipificacion de los productos ha sido creada por el administrador.</p>
-                                    <table class="table table-striped" style="max-width: 70%">
+                                    <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center">Descripcion</th>
@@ -124,7 +98,7 @@
                                 <!-- Tabla de Promociones -->
                                 <div class="container">
                                     <p>La tipificacion de los productos ha sido creada por el administrador.</p>
-                                    <table class="table table-striped" style="max-width: 70%">
+                                    <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center">Descripcion</th>
@@ -152,7 +126,7 @@
     </div>
     <!--right DIV-->
     <br>
-    <div class="col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-1 col-xs-12">
+    <div class="col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-4 col-xs-12">
         <form class="form-inline">
             <h4 style="text-align: center">Productos Seleccionados</h4>
         </form>
@@ -191,41 +165,48 @@
                 </form>
             </li>
         </ul>
-        <button (click)="showDialogConfirmar = !showDialogConfirmar; doRobot()" class="btn btn-primary" style="width: 100%">Confirmar</button>
-        <!--Control venta(Cajero % tarjeta)-->
-        <app-dialog [(visible)]="showDialogConfirmar" (visibleChange)="change($event)" #dialog="dialog">
-            <h3 class="page-header" style="text-align: center">Confirmacion de venta</h3>
-            <!-- Validacion Tarjeta -->
-            <div class="form-group">
-                <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
-                <div class="cols-sm-10">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                        <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-                            name="cardNumber" id="cardNumber" placeholder="Codigo unico de tarjeta" />
-                        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                        <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
-                    </div>
-                </div>
-            </div>
-            <!-- Control cajero -->
-            <div class="form-group">
-                <div class="col-sm-12 col-xs-12">
-                    <label>Control mesero</label>
-                </div>
-                <div class="col-sm-6 col-xs-6">
-                    <select class="form-control"></select>
-                </div>
-                <div class="col-sm-6 col-xs-6">
-                    <input [(ngModel)]="password" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario"
-                    />
-                    <br>
-                </div>
-            </div>
-            <!-- Button -->
-            <div class="form-group">
-                <button class="btn btn-primary" style="width: 100%">CONFIRMAR</button>
-            </div>
-        </app-dialog>
+        <button (click)="showDialogConfirmar = !showDialogConfirmar;" class="btn btn-primary" style="width: 100%">Confirmar</button>
     </div>
+    <!--Control venta(Cajero % tarjeta)-->
+    <app-dialog [(visible)]="showDialogConfirmar" (visibleChange)="change($event)" #dialog="dialog">
+        <h3 style="text-align: center">
+            Confirmacion de venta
+        </h3>
+        <hr>
+        <flash-messages></flash-messages>
+        <!-- Validacion Tarjeta -->
+        <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
+            <div class="cols-sm-10">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                    <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="cardNumber" id="cardNumber" placeholder="Codigo unico de tarjeta" />
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                    <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <!-- Control cajero -->
+        <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                <label>Control mesero</label>
+            </div>
+            <div class="col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
+                <select class="form-control">
+                    <option value="" disabled selected hidden>Selecciona...</option>
+                </select>
+            </div>
+            <div class="col-sm-5 col-xs-5">
+                <input [(ngModel)]="password" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario"
+                />
+                <br>
+            </div>
+        </div>
+        <!-- Button -->
+        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+            <button class="btn btn-primary" style="width: 25%">Confirmar</button>
+            <button class="btn btn-default" (click)="showDialogConfirmar = !showDialogConfirmar" style="width: 25%">Cancelar</button>
+        </div>
+    </app-dialog>
 </div>

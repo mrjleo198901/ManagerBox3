@@ -22,7 +22,7 @@
                 <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cedula" (click)="$event.target.select()" maxlength="10" type="text" class="form-control" name="cedula"
                   id="cedula" placeholder="CI. del cliente, sin guion (-)" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                  (keyup.enter)="enterKey1()" />
+                  (keyup.enter)="enterKey1()">
                 <span (click)="checkClient()" class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <span (click)="showDialog = !showDialog" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
               </div>

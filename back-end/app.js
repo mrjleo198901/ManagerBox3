@@ -5,21 +5,17 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var multer = require('multer');
+var fs = require('fs');
+var crypto = require("crypto");
+var mime = require("mime");
+
+const app = express();
 
 //Connect to database
 mongoose.connect(config.database);
-
-//On connection
-/*mongoose.connection.on('connected', () => {
-    console.log('Connected to database: ' + config.database);
-})*/
-
-//On error
-/*mongoose.connection.on('error', (err) => {
-    console.log('Database error: ' + err);
-})*/
-
-const app = express();
 
 const users = require('./routes/users');
 
@@ -28,7 +24,6 @@ const port = 3000;
 
 //cors middleware
 app.use(cors());
-
 //set static folder
 //app.use(express.static(path.join(__dirname, 'public')));
 
@@ -49,12 +44,7 @@ app.get('/', (req, res) => {
     res.send('Invalid Endpoint');
 })
 
-/*app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname,'public/index.html'));
-})*/
-
-//app.use('/api',passport.authenticate('jwt', { session: false }) ,require('./routes/clienteApi'));
-app.use('/api',require('./routes/clienteApi'));
+app.use('/api', require('./routes/clienteApi'));
 app.use('/api', require('./routes/comprasApi'));
 app.use('/api', require('./routes/configuracionApi'));
 app.use('/api', require('./routes/detalleFacturaApi'));
@@ -66,7 +56,17 @@ app.use('/api', require('./routes/tipoClienteApi'));
 app.use('/api', require('./routes/tipoProductoApi'));
 app.use('/api', require('./routes/tipoPromocionApi'));
 
+
+var profileController = require('./routes/uploadFiles');
+
+app.use(multipartMiddleware);
+
+app.use('/uploads', express.static(__dirname + "/uploads"));
+
+app.post('/api/imagen', multipartMiddleware, profileController.updatePhoto);
+
 //start server
 app.listen(port, () => {
     console.log('Server started on port ' + port);
 })
+

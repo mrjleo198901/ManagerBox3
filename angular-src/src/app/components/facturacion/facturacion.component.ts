@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./facturacion.component.css']
 })
 export class FacturacionComponent implements OnInit {
+
+  paths = [];
   cant1: number;
   cant2: number;
   cant3: number;
@@ -18,6 +20,27 @@ export class FacturacionComponent implements OnInit {
   }
 
   constructor() {
+    this.paths[0] = "assets/img/marcas/cervezas/1.png";
+    this.paths[1] = "assets/img/marcas/cervezas/2.png";
+    this.paths[2] = "assets/img/marcas/cervezas/3.png";
+    this.paths[3] = "assets/img/marcas/cervezas/4.png";
+    this.paths[4] = "assets/img/marcas/cervezas/5.png";
+    this.paths[5] = "assets/img/marcas/cervezas/6.png";
+    this.paths[6] = "assets/img/marcas/cervezas/7.png";
+    this.paths[7] = "assets/img/marcas/cervezas/8.png";
+    this.paths[8] = "assets/img/marcas/cervezas/9.png";
+    this.paths[9] = "assets/img/marcas/cervezas/10.png";
+
+    this.paths[10] = "assets/img/marcas/cervezas/1.png";
+    this.paths[11] = "assets/img/marcas/cervezas/2.png";
+    this.paths[12] = "assets/img/marcas/cervezas/3.png";
+    this.paths[13] = "assets/img/marcas/cervezas/4.png";
+    this.paths[14] = "assets/img/marcas/cervezas/5.png";
+    this.paths[15] = "assets/img/marcas/cervezas/6.png";
+    this.paths[16] = "assets/img/marcas/cervezas/7.png";
+    this.paths[17] = "assets/img/marcas/cervezas/8.png";
+    this.paths[18] = "assets/img/marcas/cervezas/9.png";
+    this.paths[19] = "assets/img/marcas/cervezas/10.png";
   }
 
   ngOnInit() {
@@ -58,4 +81,26 @@ export class FacturacionComponent implements OnInit {
       this.cant4--;
   }
 
+  setBorder(index) {
+    let color = "solid red";
+    if (index == 0) {
+      color = "solid blue";
+    }
+    return color
+  }
+
+  setPadding(index) {
+    let pad = "65px";
+    /*if (index == 0) {
+      pad = "0px";
+    }*/
+    return pad;
+  }
+  eventEmitDoubleClick($event) {
+    console.log("asdasd")
+  }
+  passIndex(i) {
+    console.log(i)
+  }
 }
+

@@ -8,7 +8,8 @@ var productoSchema = new mongoose.Schema({
     utilidad: Number,
     cant_existente: Number,
     subproductoV: Array,
-    id_tipo_producto: mongoose.Schema.Types.ObjectId
+    id_tipo_producto: mongoose.Schema.Types.ObjectId,
+    path: String
 
 });
 

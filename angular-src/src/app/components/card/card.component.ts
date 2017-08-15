@@ -78,7 +78,7 @@ export class CardComponent implements OnInit {
     this.cantSalenH = 0;
     this.selectedTab = 0;
 
-    alert(document.getElementById('cedula').style.backgroundColor);
+    //alert(document.getElementById('cedula').style.backgroundColor);
     
   }
   setCursorAdd() {

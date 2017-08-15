@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive } from '@angular/core';
 import { ValidateService } from '../../services/validate.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
 import { AuthService } from '../../services/auth.service';
@@ -6,14 +6,20 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 import * as moment from 'moment';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ProductoService } from '../../services/producto.service';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+import { ViewChild } from '@angular/core';
 
+const URL = 'http://localhost:3000/api/imagen';
 @Component({
   selector: 'app-administracion',
   templateUrl: './administracion.component.html',
   styleUrls: ['./administracion.component.css']
 })
+
 export class AdministracionComponent implements OnInit {
 
+  auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
   sourceP: LocalDataSource = new LocalDataSource();
   showDialogTPC = false;
@@ -43,6 +49,7 @@ export class AdministracionComponent implements OnInit {
   cant_existente;
   subproductoV;
   selected_tipo_producto;
+  pathLogo;
   //Add product dialog
   selected_producto;
   lista_subProductos: any = [];
@@ -145,12 +152,14 @@ export class AdministracionComponent implements OnInit {
     private flashMessagesService: FlashMessagesService,
     private tipoProductoService: TipoProductoService,
     private productoService: ProductoService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private http: Http) {
     this.flagCreateTP = false;
     this.flagUpdateTP = false;
     this.flagCreateP = false;
     this.flagUpdateP = false;
     this.id_mostar = 0;
+    this.pathLogo = undefined;
   }
 
   ngOnInit() {
@@ -303,6 +312,7 @@ export class AdministracionComponent implements OnInit {
     setTimeout(function () {
       document.getElementById('nombrePC').focus();
       document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+      document.getElementById('filesC').style.backgroundColor = "lightsalmon";
       setOriginalColorsPC();
     }, 500)
   }
@@ -317,7 +327,11 @@ export class AdministracionComponent implements OnInit {
     this.flagCreateTP = true;
   }
 
+  @ViewChild('myInput')
+  myInputVariable: any;
+
   onCreateP(event: any) {
+    this.myInputVariable.nativeElement.value = "";
     this.flagCreateP = true;
   }
 
@@ -329,22 +343,30 @@ export class AdministracionComponent implements OnInit {
   }
 
   onUpdateP(event: any) {
-    //console.log(event.data);
-    console.log(JSON.stringify(event.data.subproductoV));
+
     this.flagUpdateP = true;
-    let productoUpdateTemp: any;
-    productoUpdateTemp = event.data;
+    this.productoUpdate = event.data;
 
-    console.log(typeof(event.data.subproductoV));
-
-    /*if (productoUpdateTemp.subproductoV.length == 0) {
+    if (this.productoUpdate.subproductoV.length == 0) {
       this.flagSubProdUpdate = false;
     } else {
       this.flagSubProdUpdate = true;
       this.flagListaSubProd = true;
-      if (productoUpdateTemp.subproductoV.length > 0) {
-        let array = productoUpdateTemp.subproductoV.toString().split("-");
-        productoUpdateTemp.subproductoV = [];
+      if (this.productoUpdate.subproductoV.length > 0) {
+
+        ///////////////////////////////////////////////////////////////
+        let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
+        this.productoUpdate.subproductoV = [];
+        this.productoUpdate.subproductoV.push(a);
+        console.log(this.productoUpdate.subproductoV);
+        if (this.auxSubprod == undefined) {
+          this.auxSubprod == this.productoUpdate.subproductoV;
+
+        }
+        ///////////////////////////////////////////////////////////////
+
+        let array = this.productoUpdate.subproductoV.toString().split("-");
+        this.productoUpdate.subproductoV = [];
         let index = 0;
         for (let entry of array) {
           if (entry.length > 0) {
@@ -359,14 +381,13 @@ export class AdministracionComponent implements OnInit {
             }
             //set subproducto to ul format
             let aux = { nombre: nombre, cantidad: cant };
-            productoUpdateTemp.subproductoV.push(aux);
+            this.productoUpdate.subproductoV.push(aux);
             index++;
           }
         }
-        this.productoUpdate = productoUpdateTemp;
-      }
-    }*/
 
+      }
+    }
   }
 
   onAddTPSubmit() {
@@ -397,7 +418,8 @@ export class AdministracionComponent implements OnInit {
       utilidad: this.utilidad,
       cant_existente: this.cant_existente,
       subproductoV: this.subproductoV,
-      id_tipo_producto: this.selected_tipo_producto._id
+      id_tipo_producto: this.selected_tipo_producto._id,
+      pathLogo: this.pathLogo
     }
     console.log(producto);
     //Required fields
@@ -414,6 +436,7 @@ export class AdministracionComponent implements OnInit {
       this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
     this.ngOnInit();
+    this.myInputVariable.nativeElement.value = "";
     //this.showDialogPC = false;
   }
 
@@ -520,6 +543,43 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
+  onChangeFileC(event) {
+    var files = event.srcElement.files[0];
+    console.log(files)
+    let color = "";
+    if (files == undefined) {
+      color = "lightsalmon"
+    } else {
+      color = "lightgreen";
+    }
+    this.pathLogo = files;
+    document.getElementById('filesC').style.backgroundColor = color;
+    if (files != undefined) {
+      console.log(files);
+      let formData: FormData = new FormData();
+      formData.append('uploadFile', files, files.name);
+      let headers = new Headers();
+      /** No need to include Content-Type in Angular 4 **/
+      //headers.append('Content-Type', 'multipart/form-data');
+      headers.append('Accept', 'application/json');
+      let options = new RequestOptions({ headers: headers });
+      this.http.post(URL, formData, options)
+        .map(res => res.json())
+        .catch(error => Observable.throw(error))
+        .subscribe(
+        data =>
+          console.log(data),
+        //Save in database
+        error => console.log(error)
+        )
+    }
+  }
+
+  deleteSelectedC() {
+    console.log(document.getElementById("filesC").innerHTML);
+    document.getElementById("filesC").innerHTML = "";
+  }
+
   addItemUpdate() {
     if (this.selected_producto != "") {
       this.flagListaSubProd = true;
@@ -570,6 +630,13 @@ export class AdministracionComponent implements OnInit {
     //this.productoUpdate.id_tipo_producto = "Wiskey";
   }
 
+  onChange($event) {
+    if (this.desc_tipo_producto.length == 1) {
+      this.desc_tipo_producto = this.desc_tipo_producto.charAt(0).toUpperCase();
+    }
+    //console.log(this.desc_tipo_producto);
+  }
+
   /* GESTION DE PROMOCIONES */
   /* GESTION DE CONFIGURACIONES */
 }
@@ -584,5 +651,5 @@ function setOriginalColorsPC() {
   document.getElementById("cantPC").style.borderColor = "#DADAD2";
   document.getElementById("tipoPC").style.borderColor = "#DADAD2";
   document.getElementById("tipoP").style.borderColor = "#DADAD2";
-
+  document.getElementById("filesC").style.borderColor = "#DADAD2";
 }

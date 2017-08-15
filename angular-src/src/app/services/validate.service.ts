@@ -66,8 +66,12 @@ export class ValidateService {
       document.getElementById("cantPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.selected_tipo_producto == "") {
+    if (producto.id_tipo_producto == undefined) {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.pathLogo == undefined) {
+      document.getElementById("filesC").style.borderColor = "#FE2E2E";
       res = false;
     }
     return res;
