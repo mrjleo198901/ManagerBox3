@@ -25,9 +25,7 @@ export class FacturacionComponent implements OnInit {
     this.paths[1] = "assets/img/marcas/cervezas/2.png";*/
     this.productoService.getAll().subscribe(tp => {
       let index = 0;
-
       for (let entry of tp) {
-        console.log("../../back-end/uploads" + entry.path)
         this.paths[index] = entry.path;
         index++;
       }

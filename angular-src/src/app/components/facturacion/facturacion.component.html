@@ -10,9 +10,7 @@
                     <hr>
                     <h3 style="text-align: center">Cerveza</h3>
                     <hr>
-                    <img src="E:/projects/COCOA/mnbx3/ManagerBox3/back-end/uploads/copia.png" />
-                    <img src="assets/img/marcas/cervezas/11.png" />
-                    
+                    <!--<img src="assets/img/marcas/2017-08-15 23_29_46-1.png">-->
                     <div *ngFor="let path of paths; let i = index">
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             <img src={{path}} (dblclick)="eventEmitDoubleClick($event); passIndex(i)" />

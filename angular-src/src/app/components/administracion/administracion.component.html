@@ -39,12 +39,6 @@
   </h3>
   <hr>
   <flash-messages *ngIf="flagCreateTP"></flash-messages>
-  <!-- ID 
-  <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
-    <label for="idTPC" style="display: inline-block">ID</label>
-    <input type="text" [(ngModel)]="id_mostar" id="idTPC" name="idTPC" class="form-control" readonly>
-    <br>
-  </div> -->
   <!-- Nombre -->
   <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
     <label for="descTPC" style="display: inline-block">Nombre</label>
@@ -74,7 +68,7 @@
   <!-- Nombre -->
   <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
     <label for="descTPC" style="display: inline-block">Nombre</label>
-    <input type="text" [(ngModel)]="desc_tipo_producto" id="descTPU" name="descTPU" placeholder="Descripcion de tipo producto"
+    <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChange($event)" id="descTPU" name="descTPU" placeholder="Descripcion de tipo producto"
       class="form-control">
     <br>
   </div>
@@ -94,7 +88,7 @@
   <!-- Nombre -->
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="nombrePC">Nombre</label>
-    <input type="text" [(ngModel)]="nombre" id="nombrePC" name="nombrePC" placeholder="nombre único del producto"
+    <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChange($event)" id="nombrePC" name="nombrePC" placeholder="nombre único del producto"
       class="form-control" required>
   </div>
   <!-- Logotipo -->
@@ -122,13 +116,15 @@
     <div class="input-group">
       <span (click)="fuPorcentaje()" class="input-group-addon input-sm" id="iconPercent"><i class="fa fa-percent" aria-hidden="true"></i></span>
       <span (click)="fuMoneda()" class="input-group-addon input-sm" id="iconUsd"><i class="fa fa-usd" aria-hidden="true"></i></span>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC" class="form-control">
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC" placeholder="0.00"
+        class="form-control">
     </div>
   </div>
   <!-- Cant. Existente -->
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="cantPC" style="display: inline-block">Cantidad Existente</label>
-    <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" class="form-control">
+    <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
+      class="form-control">
   </div>
   <!-- Subproducto -->
   <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -194,7 +190,8 @@
   <!-- Nombre -->
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="nombrePU" style="display: inline-block">Nombre</label>
-    <input type="text" [(ngModel)]="productoUpdate.nombre" id="nombrePU" name="nombrePU" class="form-control" required>
+    <input type="text" [(ngModel)]="productoUpdate.nombre" (ngModelChange)="onChange($event)" id="nombrePU" name="nombrePU" placeholder="nombre único del producto"
+      class="form-control" required>
   </div>
   <!-- Logotipo -->
   <div class="form-group col-lg-7 col-md-7 col-sm-7 col-xs-12">
@@ -212,7 +209,8 @@
   <!-- Precio Unitario -->
   <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
     <label for="puPU" style="display: inline-block">Precio Unitario</label>
-    <input type="number" [(ngModel)]="productoUpdate.precio_unitario" id="puPU" name="puPU" class="form-control" placeholder="0.00">
+    <input type="text" currencyMask type="text" [(ngModel)]="productoUpdate.precio_unitario" id="puPU" name="puPU" class="form-control"
+      placeholder="0.00">
   </div>
   <!-- Utilidad -->
   <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
@@ -220,13 +218,15 @@
     <div class="input-group">
       <span (click)="fuPorcentaje()" class="input-group-addon input-sm" id="iconPercent"><i class="fa fa-percent" aria-hidden="true"></i></span>
       <span (click)="fuMoneda()" class="input-group-addon input-sm" id="iconUsd"><i class="fa fa-usd" aria-hidden="true"></i></span>
-      <input type="number" [(ngModel)]="productoUpdate.utilidad" id="utilidadPU" name="utilidadPU" class="form-control">
+      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.utilidad" id="utilidadPU"
+        name="utilidadPU" placeholder="0.00" class="form-control">
     </div>
   </div>
   <!-- Cant. Existente -->
   <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
     <label for="cantPU" style="display: inline-block">Cantidad Existente</label>
-    <input type="number" [(ngModel)]="productoUpdate.cant_existente" id="cantPU" name="cantPU" class="form-control">
+    <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.cant_existente" id="cantPU"
+      name="cantPU" placeholder="0.00" class="form-control">
   </div>
   <!-- Subproducto -->
   <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-3">

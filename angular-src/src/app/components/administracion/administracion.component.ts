@@ -325,6 +325,7 @@ export class AdministracionComponent implements OnInit {
 
   onCreateTP(event: any) {
     this.flagCreateTP = true;
+    this.desc_tipo_producto = "";
   }
 
   @ViewChild('myInput')
@@ -333,6 +334,7 @@ export class AdministracionComponent implements OnInit {
   onCreateP(event: any) {
     this.myInputVariable.nativeElement.value = "";
     this.flagCreateP = true;
+    this.nombre = "";
   }
 
   onUpdateTP(event: any) {
@@ -352,7 +354,7 @@ export class AdministracionComponent implements OnInit {
     } else {
       this.flagSubProdUpdate = true;
       this.flagListaSubProd = true;
-      if (this.productoUpdate.subproductoV.length > 0) {
+      /*if (this.productoUpdate.subproductoV.length > 0) {
 
         ///////////////////////////////////////////////////////////////
         let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
@@ -385,8 +387,7 @@ export class AdministracionComponent implements OnInit {
             index++;
           }
         }
-
-      }
+      }*/
     }
   }
 
@@ -412,32 +413,40 @@ export class AdministracionComponent implements OnInit {
   }
 
   onAddPSubmit() {
-    const producto = {
-      nombre: this.nombre,
-      precio_unitario: this.precio_unitario,
-      utilidad: this.utilidad,
-      cant_existente: this.cant_existente,
-      subproductoV: this.subproductoV,
-      id_tipo_producto: this.selected_tipo_producto._id,
-      path: this.pathLogo
+    if (this.pathLogo != undefined) {
+      this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
+        //////////////////
+        const producto = {
+          nombre: this.nombre,
+          precio_unitario: this.precio_unitario,
+          utilidad: this.utilidad,
+          cant_existente: this.cant_existente,
+          subproductoV: this.subproductoV,
+          id_tipo_producto: this.selected_tipo_producto._id,
+          path: tp
+        }
+        console.log(producto);
+        //Required fields
+        if (!this.validateService.customValidateProducto(producto)) {
+          this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+          return false;
+        }
+        //Register producto
+        this.productoService.registerProducto(producto).subscribe(data => {
+          //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+        }, err => {
+          // Log errors if any
+          console.log(err);
+          this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+        });
+        this.ngOnInit();
+        this.myInputVariable.nativeElement.value = "";
+        //this.showDialogPC = false;
+        //////////////////
+      }, err => {
+        console.log(err);
+      });
     }
-    console.log(producto);
-    //Required fields
-    if (!this.validateService.customValidateProducto(producto)) {
-      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
-      return false;
-    }
-    //Register producto
-    this.productoService.registerProducto(producto).subscribe(data => {
-      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
-    }, err => {
-      // Log errors if any
-      console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
-    });
-    this.ngOnInit();
-    this.myInputVariable.nativeElement.value = "";
-    //this.showDialogPC = false;
   }
 
   onUpdateTPSubmit() {
@@ -552,16 +561,8 @@ export class AdministracionComponent implements OnInit {
     } else {
       color = "lightgreen";
     }
-
+    this.pathLogo = files;
     document.getElementById('filesC').style.backgroundColor = color;
-    if (files != undefined) {
-      this.productoService.uploadImage(files).subscribe(tp => {
-        console.log(tp)
-        this.pathLogo = tp
-      }, err => {
-        console.log(err);
-      });
-    }
   }
 
   deleteSelectedC() {
@@ -623,7 +624,19 @@ export class AdministracionComponent implements OnInit {
     if (this.desc_tipo_producto.length == 1) {
       this.desc_tipo_producto = this.desc_tipo_producto.charAt(0).toUpperCase();
     }
+    if (this.nombre.length == 1) {
+      this.nombre = this.nombre.charAt(0).toUpperCase();
+    }
+    if (this.productoUpdate.nombre.length == 1) {
+      this.productoUpdate.nombre = this.productoUpdate.nombre.charAt(0).toUpperCase();
+    }
     //console.log(this.desc_tipo_producto);
+  }
+
+  onchangeTPU($event) {
+    if (this.desc_tipo_producto.length == 1) {
+      this.desc_tipo_producto = this.desc_tipo_producto.charAt(0).toUpperCase();
+    }
   }
 
   /* GESTION DE PROMOCIONES */
