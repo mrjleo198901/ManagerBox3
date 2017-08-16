@@ -89,62 +89,6 @@ export class AdministracionComponent implements OnInit {
       class: 'table-bordered table-hover table-responsive'
     }
   };
-  /*settingsP = {
-    mode: 'external',
-    noDataMessage: 'No existen registros',
-    columns: {
-      nombre: {
-        title: 'Nombre',
-        width: '280px',
-        filter: {
-          type: 'completer',
-          config: {
-            completer: {
-              data: this.productos,
-              searchFields: 'nombre',
-              titleField: 'nombre'
-            },
-          },
-        },
-      },
-      precio_unitario: {
-        title: 'Precio Unitario',
-        width: '100px'
-      },
-      utilidad: {
-        title: 'Utilidad',
-        width: '90px'
-      },
-      cant_existente: {
-        title: 'Cantidad Existente',
-        width: '90px'
-      },
-      subproductoV: {
-        title: 'Subproducto',
-        width: '350px'
-      },
-      id_tipo_producto: {
-        title: 'Tipo Producto',
-        width: '140px',
-        filter: {
-          type: 'list',
-          config: {
-            selectText: 'Todos',
-            list: this.tipo_productos,
-          },
-        },
-      },
-    },
-    actions: {
-      columnTitle: '',
-      add: true,
-      edit: true,
-      delete: false
-    },
-    attr: {
-      class: 'table-bordered table-hover table-responsive'
-    }
-  };*/
   settingsP = {}
 
   constructor(
@@ -326,6 +270,7 @@ export class AdministracionComponent implements OnInit {
   onCreateTP(event: any) {
     this.flagCreateTP = true;
     this.desc_tipo_producto = "";
+    console.log("onCreateTP");
   }
 
   @ViewChild('myInput')
@@ -345,22 +290,29 @@ export class AdministracionComponent implements OnInit {
   }
 
   onUpdateP(event: any) {
-
     this.flagUpdateP = true;
     this.productoUpdate = event.data;
-
+    //bug 2 click edit
+    if (typeof (event.data.subproductoV) === 'object') {
+      console.log("ad");
+      let fila = "";
+      for (let entry of event.data.subproductoV) {
+        fila += "-" + entry.nombre + " " + entry.cantidad + " ";
+      }
+      event.data.subproductoV = fila;
+    }
     if (this.productoUpdate.subproductoV.length == 0) {
       this.flagSubProdUpdate = false;
     } else {
       this.flagSubProdUpdate = true;
       this.flagListaSubProd = true;
-      /*if (this.productoUpdate.subproductoV.length > 0) {
+      if (this.productoUpdate.subproductoV.length > 0) {
 
         ///////////////////////////////////////////////////////////////
         let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
         this.productoUpdate.subproductoV = [];
         this.productoUpdate.subproductoV.push(a);
-        console.log(this.productoUpdate.subproductoV);
+        //console.log(this.productoUpdate.subproductoV);
         if (this.auxSubprod == undefined) {
           this.auxSubprod == this.productoUpdate.subproductoV;
 
@@ -387,7 +339,7 @@ export class AdministracionComponent implements OnInit {
             index++;
           }
         }
-      }*/
+      }
     }
   }
 
@@ -631,12 +583,6 @@ export class AdministracionComponent implements OnInit {
       this.productoUpdate.nombre = this.productoUpdate.nombre.charAt(0).toUpperCase();
     }
     //console.log(this.desc_tipo_producto);
-  }
-
-  onchangeTPU($event) {
-    if (this.desc_tipo_producto.length == 1) {
-      this.desc_tipo_producto = this.desc_tipo_producto.charAt(0).toUpperCase();
-    }
   }
 
   /* GESTION DE PROMOCIONES */
