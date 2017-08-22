@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
+import { TipoProductoService } from '../../services/tipo-producto.service';
 
 @Component({
   selector: 'app-facturacion',
@@ -8,69 +9,76 @@ import { ProductoService } from '../../services/producto.service';
 })
 export class FacturacionComponent implements OnInit {
 
-  paths = [];
-  cant1: number;
-  cant2: number;
-  cant3: number;
-  cant4: number;
+  paths: { path: string, tipoProducto: string, nombre: string }[] = [];
+  pathsType: { path: string, tipoProducto: string, nombre: string }[] = [];
+  selectedProductos;
   showDialogConfirmar = false;
   cardNumber: String;
+  mapTP = new Map();
+  public tabs: Array<any> = [];
+  flagProdSeleccionados;
+  position = 'below';
+  listaSize = false;
 
   change($event) {
     //alert($event)
   }
 
-  constructor(private productoService: ProductoService) {
-    /*this.paths[0] = "assets/img/marcas/cervezas/1.png";
-    this.paths[1] = "assets/img/marcas/cervezas/2.png";*/
-    this.productoService.getAll().subscribe(tp => {
+  constructor(
+    private productoService: ProductoService,
+    private tipoProductoService: TipoProductoService) {
+
+    this.tipoProductoService.getAll().subscribe(tp => {
       let index = 0;
       for (let entry of tp) {
-        this.paths[index] = entry.path;
+        let aux = { title: entry.desc_tipo_producto, content: entry.desc_tipo_producto };
+        this.tabs[index] = aux;
+        this.mapTP.set(index, entry._id);
         index++;
       }
+
+      this.productoService.getAll().subscribe(p => {
+        let index = 0;
+        for (let entry of p) {
+          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre };
+          this.paths[index] = aux;
+          index++;
+        }
+
+        this.pathsType = [];
+        let tipo = this.mapTP.get(0);
+        let ind = 0;
+        for (let entry of this.paths) {
+          if (entry.tipoProducto === tipo) {
+            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre };
+            this.pathsType[ind] = aux;
+            ind++;
+          }
+        }
+
+      }, err => {
+        console.log(err);
+      });
+
+
     }, err => {
       console.log(err);
       return false;
-    });
+    })
   }
 
   ngOnInit() {
-    console.log(this.paths)
-    this.cant1 = 1;
-    this.cant2 = 1;
-    this.cant3 = 1;
-    this.cant4 = 1;
+    this.selectedProductos = [];
+    this.flagProdSeleccionados = false;
   }
 
-  addProd1() {
-    this.cant1++;
-  }
-  addProd2() {
-    this.cant2++;
-  }
-  addProd3() {
-    this.cant3++;
-  }
-  addProd4() {
-    this.cant4++;
+  addProd(i) {
+    this.selectedProductos[i].cantidad = this.selectedProductos[i].cantidad + 1;
   }
 
-  lessProd1() {
-    if (this.cant1 > 1)
-      this.cant1--;
-  }
-  lessProd2() {
-    if (this.cant2 > 1)
-      this.cant2--;
-  }
-  lessProd3() {
-    if (this.cant3 > 1)
-      this.cant3--;
-  }
-  lessProd4() {
-    if (this.cant4 > 1)
-      this.cant4--;
+  lessProd(i) {
+    if (this.selectedProductos[i].cantidad > 1)
+      this.selectedProductos[i].cantidad = this.selectedProductos[i].cantidad - 1;
   }
 
   setBorder(index) {
@@ -88,11 +96,44 @@ export class FacturacionComponent implements OnInit {
     }*/
     return pad;
   }
-  eventEmitDoubleClick($event) {
-    console.log("asdasd")
+
+  eventEmitDoubleClick($event, i) {
+    this.flagProdSeleccionados = true;
+    let aux = {
+      path: this.pathsType[i].path,
+      tipoProducto: this.pathsType[i].tipoProducto,
+      nombre: this.pathsType[i].nombre,
+      cantidad: 1
+    };
+    var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
+    if (indexOfInserted == -1) {
+      this.selectedProductos.push(aux);
+    } else {
+      this.addProd(indexOfInserted);
+    }
+    /*let a = this.selectedProductos[i];
+    if (n > 1) {
+      var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === a.nombre);
+      console.log(indexOfInserted)
+    }*/
   }
+
   passIndex(i) {
-    console.log(i)
+    //console.log(i)
+  }
+
+  loadLogos(i) {
+    this.pathsType = [];
+    let tipo = this.mapTP.get(i);
+    let index = 0;
+    for (let entry of this.paths) {
+      if (entry.tipoProducto === tipo) {
+        let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre };
+        this.pathsType[index] = aux;
+        index++;
+      }
+    }
+    // console.log(this.pathsType)
   }
 }
 

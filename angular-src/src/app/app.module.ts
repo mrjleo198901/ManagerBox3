@@ -34,6 +34,8 @@ import { Ng2CompleterModule } from 'ng2-completer';
 import { Angular2FontawesomeModule } from 'angular2-fontawesome'
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { CurrencyMaskModule } from "ng2-currency-mask";
+import { MdTooltipModule } from '@angular/material'
+import { hammerjs } from 'hammerjs'
 
 import { AppComponent } from './app.component';
 
@@ -82,7 +84,8 @@ const appRoutes: Routes = [
     Angular2FontawesomeModule,
     Ng2SmartTableModule,
     Ng2CompleterModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    MdTooltipModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService],
   bootstrap: [AppComponent]

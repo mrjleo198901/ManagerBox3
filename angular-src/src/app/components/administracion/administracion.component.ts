@@ -57,7 +57,6 @@ export class AdministracionComponent implements OnInit {
   unidadMedidaSuproducto: number;
   cantSubprod: number;
   productos: any = [];
-  //productos = new Map;
   //Otras
   tipo_productos: any = [];
   lstShow: any = [];
@@ -510,35 +509,13 @@ export class AdministracionComponent implements OnInit {
     let color = "";
     if (files == undefined) {
       color = "lightsalmon"
+      this.pathLogo = undefined;
     } else {
       color = "lightgreen";
+      this.pathLogo = files;
     }
-    this.pathLogo = files;
+    
     document.getElementById('filesC').style.backgroundColor = color;
-  }
-
-  deleteSelectedC() {
-    console.log(document.getElementById("filesC").innerHTML);
-    document.getElementById("filesC").innerHTML = "";
-  }
-
-  addItemUpdate() {
-    if (this.selected_producto != "") {
-      this.flagListaSubProd = true;
-      let unidadMedida: string;
-      if (this.unidadMedidaSuproducto === 1) {
-        unidadMedida = "u";
-      } else {
-        unidadMedida = "ml"
-      }
-      let nItem = this.selected_producto.nombre + " " + this.cantSubprod + unidadMedida;
-      let aux = { nombre: this.selected_producto.nombre, cantidad: this.cantSubprod + unidadMedida };
-      //this.lista_subProductos.push(aux);
-      this.productoUpdate.subproductoV.push(aux);
-    } else {
-      this.flashMessagesService.show('Selecciona un producto existente!', { cssClass: 'alert-danger', timeout: 2000 });
-      document.getElementById("tipoP").style.borderColor = "#FE2E2E";
-    }
   }
 
   addCant() {

@@ -95,23 +95,6 @@ a:hover,a:focus{
   left: 4px;
 }
 
-/*Directivas Div*/
-/*#container {
-    width:100%;
-    text-align:center;
-}
-#left {
-    float:left;
-}
-#center {
-    display: inline-block;
-    margin:0 auto;
-    width:100px;
-}
-#right {
-    float:right;
-    width:100px;
-}*/
 #container{width:100%;}
 #left{float:left;width:70%;}
 #right{
@@ -119,3 +102,14 @@ a:hover,a:focus{
     /*width:100px;*/
     }
 #center{margin:0 auto;width:5px;}
+
+nav ul{height:400px; width:100%;}
+nav ul{overflow:hidden; overflow-y:scroll;}
+.list-group-item {
+  padding: 3px 10px
+}
+.example-tooltip-host {
+    display: inline-flex;
+    align-items: center;
+    /*margin: 50px;*/
+  }
