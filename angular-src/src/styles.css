@@ -14,8 +14,8 @@ table > thead > tr > th {
 }
 ng2-smart-table{
     text-align: center;
-    background-color: pink;
 }
+
 /*bootswatch*/
 html{
     font-family:sans-serif;

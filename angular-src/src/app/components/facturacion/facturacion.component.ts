@@ -135,5 +135,6 @@ export class FacturacionComponent implements OnInit {
     }
     // console.log(this.pathsType)
   }
+  
 }
 

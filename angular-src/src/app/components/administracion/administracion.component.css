@@ -129,6 +129,17 @@ nav ul{overflow:hidden; overflow-y:scroll;}
   left: 4px;
 }
 
+.customClass{
+  color: red;
+}
+
+:host /deep/ .ng2-smart-filter input{
+  height: 35px;
+  text-align: center;
+}
+:host /deep/ .ng2-smart-filter select{
+  text-align: center;
+}
 
 /*upload images*/
 

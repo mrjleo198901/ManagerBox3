@@ -9,6 +9,7 @@ import { ProductoService } from '../../services/producto.service';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { ViewChild } from '@angular/core';
+import { ImageRenderComponent } from '../image-render/image-render.component';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -79,7 +80,7 @@ export class AdministracionComponent implements OnInit {
       }
     },
     actions: {
-      columnTitle: '',
+      //columnTitle: '',
       add: true,
       edit: true,
       delete: false
@@ -89,6 +90,7 @@ export class AdministracionComponent implements OnInit {
     }
   };
   settingsP = {}
+  position = 'below';
 
   constructor(
     private validateService: ValidateService,
@@ -118,13 +120,12 @@ export class AdministracionComponent implements OnInit {
         selectShow[ind] = aux;
         ind++;
       }
-
       /* Get Productos*/
-      this.productoService.getAll().subscribe(tp => {
-        this.productos = tp;
+      this.productoService.getAll().subscribe(p => {
+        this.productos = p;
         let productosShow: any = [];
         let i = 0;
-        for (let x of tp) {
+        for (let x of p) {
           let desc = this.search(x.id_tipo_producto, this.tipo_productos);
           this.productos[i].id_tipo_producto = desc;
           if (x.subproductoV != "") {
@@ -138,6 +139,7 @@ export class AdministracionComponent implements OnInit {
         }
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
+
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
@@ -183,6 +185,13 @@ export class AdministracionComponent implements OnInit {
                 },
               },
             },
+            path: {
+              title: 'Logotipo',
+              filter: false,
+              type: 'custom',
+              renderComponent: ImageRenderComponent
+              //valuePrepareFunction: (dp) => { return `<img scr="dp" />`; }
+            }
           },
           actions: {
             columnTitle: '',
@@ -364,40 +373,35 @@ export class AdministracionComponent implements OnInit {
   }
 
   onAddPSubmit() {
-    if (this.pathLogo != undefined) {
-      this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
-        //////////////////
-        const producto = {
-          nombre: this.nombre,
-          precio_unitario: this.precio_unitario,
-          utilidad: this.utilidad,
-          cant_existente: this.cant_existente,
-          subproductoV: this.subproductoV,
-          id_tipo_producto: this.selected_tipo_producto._id,
-          path: tp
-        }
-        console.log(producto);
-        //Required fields
-        if (!this.validateService.customValidateProducto(producto)) {
-          this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
-          return false;
-        }
-        //Register producto
-        this.productoService.registerProducto(producto).subscribe(data => {
-          //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
-        }, err => {
-          // Log errors if any
-          console.log(err);
-          this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
-        });
-        this.ngOnInit();
-        this.myInputVariable.nativeElement.value = "";
-        //this.showDialogPC = false;
-        //////////////////
+    const producto = {
+      nombre: this.nombre,
+      precio_unitario: this.precio_unitario,
+      utilidad: this.utilidad,
+      cant_existente: this.cant_existente,
+      subproductoV: this.subproductoV,
+      id_tipo_producto: this.selected_tipo_producto._id,
+      path: this.pathLogo
+    }
+    //Required fields
+    if (!this.validateService.customValidateProducto(producto)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
+      //Register producto
+      producto.path = tp;
+      this.productoService.registerProducto(producto).subscribe(data => {
       }, err => {
         console.log(err);
+        this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
       });
-    }
+      this.ngOnInit();
+      this.myInputVariable.nativeElement.value = "";
+      //this.showDialogPC = false;
+    }, err => {
+      console.log(err);
+    });
+
   }
 
   onUpdateTPSubmit() {
@@ -505,16 +509,16 @@ export class AdministracionComponent implements OnInit {
 
   onChangeFileC(event) {
     var files = event.srcElement.files[0];
-    console.log(files)
     let color = "";
     if (files == undefined) {
       color = "lightsalmon"
-      this.pathLogo = undefined;
+      //this.pathLogo = undefined;
     } else {
       color = "lightgreen";
-      this.pathLogo = files;
+
     }
-    
+    this.pathLogo = files;
+    console.log(this.pathLogo)
     document.getElementById('filesC').style.backgroundColor = color;
   }
 

@@ -17,6 +17,7 @@ import { FacturacionComponent } from './components/facturacion/facturacion.compo
 import { ClientesComponent } from './components/clientes/clientes.component';
 import { PersonalComponent } from './components/personal/personal.component';
 import { AdministracionComponent } from './components/administracion/administracion.component';
+import { ImageRenderComponent } from './components/image-render/image-render.component';
 /*Services*/
 import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
@@ -34,8 +35,8 @@ import { Ng2CompleterModule } from 'ng2-completer';
 import { Angular2FontawesomeModule } from 'angular2-fontawesome'
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { MdTooltipModule } from '@angular/material'
-import { hammerjs } from 'hammerjs'
+import { MdTooltipModule } from '@angular/material';
+import { hammerjs } from 'hammerjs';
 
 import { AppComponent } from './app.component';
 
@@ -69,9 +70,10 @@ const appRoutes: Routes = [
     PersonalComponent,
     AdministracionComponent,
     FileSelectDirective,
-    FileDropDirective
-
+    FileDropDirective,
+    ImageRenderComponent
   ],
+  entryComponents: [ImageRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
