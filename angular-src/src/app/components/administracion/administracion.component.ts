@@ -613,9 +613,6 @@ function setOriginalColorsPC() {
   document.getElementById("filesC").style.borderColor = "#DADAD2";
 }
 function setOriginalColorsPU() {
-  //border Color #dadad2
-  //readonly Color #f8f5f0
-  //error Color FE2E2E
   document.getElementById("nombrePU").style.borderColor = "#DADAD2";
   document.getElementById("puPU").style.borderColor = "#DADAD2";
   document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
