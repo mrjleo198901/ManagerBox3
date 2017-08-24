@@ -29,13 +29,14 @@ import { UploadService } from './services/upload.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
+import { TooltipModule} from './com/tooltip/tooltip.module'
 /*Libraries*/
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { Ng2CompleterModule } from 'ng2-completer';
 import { Angular2FontawesomeModule } from 'angular2-fontawesome'
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { MdTooltipModule } from '@angular/material';
+import { MdTooltipModule,MdDialogModule } from '@angular/material';
 import { hammerjs } from 'hammerjs';
 
 import { AppComponent } from './app.component';
@@ -83,11 +84,13 @@ const appRoutes: Routes = [
     FlashMessagesModule,
     TabsModule,
     DatepickerModule,
+    TooltipModule,
     Angular2FontawesomeModule,
     Ng2SmartTableModule,
     Ng2CompleterModule,
     CurrencyMaskModule,
-    MdTooltipModule
+    MdTooltipModule,
+    MdDialogModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService],
   bootstrap: [AppComponent]

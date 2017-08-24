@@ -79,7 +79,7 @@ export class CardComponent implements OnInit {
     this.selectedTab = 0;
 
     //alert(document.getElementById('cedula').style.backgroundColor);
-    
+
   }
   setCursorAdd() {
     setTimeout(function () {
@@ -218,17 +218,19 @@ export class CardComponent implements OnInit {
     if (this.selectedTab != st && this.selectedTab > 0) {
       setTimeout(function () {
         let v = document.getElementById('cedula');
-        v.click();
+        if (v != null)
+          v.click();
       }, 200);
     }
     this.selectedTab = 1;
   };
   public alertMe2(st) {
-
+    console.log(st)
     if (!this.selectedTab != st && this.selectedTab > 0) {
       setTimeout(function () {
         let v = document.getElementById('numeroS');
-        v.click();
+        if (v != null)
+          v.click();
       }, 200);
     }
     this.selectedTab = 2;

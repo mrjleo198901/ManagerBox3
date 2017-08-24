@@ -20,6 +20,7 @@ const URL = 'http://localhost:3000/api/imagen';
 
 export class AdministracionComponent implements OnInit {
 
+  colorUpdate = "";
   auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
   sourceP: LocalDataSource = new LocalDataSource();
@@ -42,7 +43,8 @@ export class AdministracionComponent implements OnInit {
     "utilidad": 0,
     "cant_existente": 0,
     "subproductoV": [],
-    "id_tipo_producto": ""
+    "id_tipo_producto": "",
+    "path": ""
   };
   nombre;
   precio_unitario;
@@ -190,7 +192,6 @@ export class AdministracionComponent implements OnInit {
               filter: false,
               type: 'custom',
               renderComponent: ImageRenderComponent
-              //valuePrepareFunction: (dp) => { return `<img scr="dp" />`; }
             }
           },
           actions: {
@@ -266,13 +267,15 @@ export class AdministracionComponent implements OnInit {
       document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       document.getElementById('filesC').style.backgroundColor = "lightsalmon";
       setOriginalColorsPC();
-    }, 500)
+    }, 50)
   }
 
   setCursorUpdateP() {
     setTimeout(function () {
       document.getElementById('nombrePU').focus();
-    }, 500)
+      document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+      setOriginalColorsPU();
+    }, 50)
   }
 
   onCreateTP(event: any) {
@@ -285,6 +288,7 @@ export class AdministracionComponent implements OnInit {
   myInputVariable: any;
 
   onCreateP(event: any) {
+    //console.log("before: "+this.myInputVariable.nativeElement.value)
     this.myInputVariable.nativeElement.value = "";
     this.flagCreateP = true;
     this.nombre = "";
@@ -294,15 +298,29 @@ export class AdministracionComponent implements OnInit {
     this.flagUpdateTP = true;
     this.id_mostar = event.data._id;
     this.desc_tipo_producto = event.data.desc_tipo_producto;
-    //this.ngOnInit();
   }
 
+  @ViewChild('myInput1')
+  myInputVariable1: any;
+
   onUpdateP(event: any) {
+    //this.myInputVariable1.nativeElement.value = "";
     this.flagUpdateP = true;
     this.productoUpdate = event.data;
+    console.log(this.productoUpdate)
+    if (this.productoUpdate.path == undefined) {
+      setTimeout(function () {
+        this.colorUpdate = "black";
+        document.getElementById('filesU').style.backgroundColor = "lightsalmon";
+      }, 50)
+    } else {
+      setTimeout(function () {
+        this.colorUpdate = "lightgreen";
+        document.getElementById('filesU').style.backgroundColor = "lightgreen";
+      }, 50)
+    }
     //bug 2 click edit
     if (typeof (event.data.subproductoV) === 'object') {
-      console.log("ad");
       let fila = "";
       for (let entry of event.data.subproductoV) {
         fila += "-" + entry.nombre + " " + entry.cantidad + " ";
@@ -316,16 +334,13 @@ export class AdministracionComponent implements OnInit {
       this.flagListaSubProd = true;
       if (this.productoUpdate.subproductoV.length > 0) {
 
-        ///////////////////////////////////////////////////////////////
         let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
         this.productoUpdate.subproductoV = [];
         this.productoUpdate.subproductoV.push(a);
         //console.log(this.productoUpdate.subproductoV);
         if (this.auxSubprod == undefined) {
           this.auxSubprod == this.productoUpdate.subproductoV;
-
         }
-        ///////////////////////////////////////////////////////////////
 
         let array = this.productoUpdate.subproductoV.toString().split("-");
         this.productoUpdate.subproductoV = [];
@@ -382,6 +397,7 @@ export class AdministracionComponent implements OnInit {
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo
     }
+    console.log(producto)
     //Required fields
     if (!this.validateService.customValidateProducto(producto)) {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
@@ -443,9 +459,9 @@ export class AdministracionComponent implements OnInit {
       subproductoV: this.productoUpdate.subproductoV,
       id_tipo_producto: idTpBus
     }
-    console.log(producto);
+    //console.log(producto);
     //Required fields
-    if (!this.validateService.customValidateProducto(producto)) {
+    if (!this.validateService.customValidateProductoU(producto)) {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
@@ -467,7 +483,8 @@ export class AdministracionComponent implements OnInit {
       "utilidad": 0,
       "cant_existente": 0,
       "subproductoV": [],
-      "id_tipo_producto": ""
+      "id_tipo_producto": "",
+      "path": ""
     };
   }
 
@@ -511,15 +528,26 @@ export class AdministracionComponent implements OnInit {
     var files = event.srcElement.files[0];
     let color = "";
     if (files == undefined) {
-      color = "lightsalmon"
-      //this.pathLogo = undefined;
+      color = "lightsalmon";
     } else {
       color = "lightgreen";
-
     }
     this.pathLogo = files;
-    console.log(this.pathLogo)
     document.getElementById('filesC').style.backgroundColor = color;
+    console.log(document.getElementById('filesC'))
+  }
+
+  onChangeFileU(event) {
+    this.colorUpdate = "black";
+    var files = event.srcElement.files[0];
+    let color = "";
+    if (files == undefined) {
+      color = "lightsalmon"
+    } else {
+      color = "lightgreen";
+    }
+    this.pathLogo = files;
+    document.getElementById('filesU').style.backgroundColor = color;
   }
 
   addCant() {
@@ -581,4 +609,16 @@ function setOriginalColorsPC() {
   document.getElementById("tipoPC").style.borderColor = "#DADAD2";
   document.getElementById("tipoP").style.borderColor = "#DADAD2";
   document.getElementById("filesC").style.borderColor = "#DADAD2";
+}
+function setOriginalColorsPU() {
+  //border Color #dadad2
+  //readonly Color #f8f5f0
+  //error Color FE2E2E
+  document.getElementById("nombrePU").style.borderColor = "#DADAD2";
+  document.getElementById("puPU").style.borderColor = "#DADAD2";
+  document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
+  document.getElementById("cantPU").style.borderColor = "#DADAD2";
+  document.getElementById("tipoPU").style.borderColor = "#DADAD2";
+  document.getElementById("tipoP").style.borderColor = "#DADAD2";
+  document.getElementById("filesU").style.borderColor = "#DADAD2";
 }

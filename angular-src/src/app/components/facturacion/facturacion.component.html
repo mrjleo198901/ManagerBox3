@@ -10,7 +10,7 @@
                 <div *ngFor="let path of pathsType; let i = index">
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         <div class="example-tooltip-host" mdTooltip={{path.nombre}} [mdTooltipPosition]="position">
-                            <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)" />
+                            <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)"/>
                         </div>
                     </div>
                 </div>
