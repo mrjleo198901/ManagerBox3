@@ -36,16 +36,7 @@ export class AdministracionComponent implements OnInit {
   desc_tipo_producto;
   id_mostar;
   //Atributos Producto
-  productoUpdate = {
-    "_id": "",
-    "nombre": "",
-    "precio_unitario": 0,
-    "utilidad": 0,
-    "cant_existente": 0,
-    "subproductoV": [],
-    "id_tipo_producto": "",
-    "path": ""
-  };
+  productoUpdate;
   nombre;
   precio_unitario;
   utilidad;
@@ -217,6 +208,17 @@ export class AdministracionComponent implements OnInit {
     this.desc_tipo_producto = "";
     this.id_mostar = "";
     //Atributos Producto
+    this.productoUpdate = {
+      "_id": "",
+      "nombre": "",
+      "precio_unitario": 0,
+      "utilidad": 0,
+      "cant_existente": 0,
+      "subproductoV": [],
+      "id_tipo_producto": "",
+      "path": ""
+    };
+
     this.nombre = "";
     this.precio_unitario = null;
     this.utilidad = null;
@@ -306,16 +308,16 @@ export class AdministracionComponent implements OnInit {
   onUpdateP(event: any) {
     this.myInputVariable1.nativeElement.value = "";
     this.flagUpdateP = true;
+    console.log(event.data.nombre)
     this.productoUpdate = event.data;
-    console.log(this.productoUpdate)
     if (this.productoUpdate.path == undefined) {
+      this.colorUpdate = "black";
       setTimeout(function () {
-        this.colorUpdate = "black";
         document.getElementById('filesU').style.backgroundColor = "lightsalmon";
       }, 50)
     } else {
+      this.colorUpdate = "lightgreen";
       setTimeout(function () {
-        this.colorUpdate = "lightgreen";
         document.getElementById('filesU').style.backgroundColor = "lightgreen";
       }, 50)
     }
