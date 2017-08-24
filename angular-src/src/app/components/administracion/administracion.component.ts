@@ -9,6 +9,7 @@ import { ProductoService } from '../../services/producto.service';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { ViewChild } from '@angular/core';
+import { ImageRenderComponent } from '../image-render/image-render.component';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -19,6 +20,7 @@ const URL = 'http://localhost:3000/api/imagen';
 
 export class AdministracionComponent implements OnInit {
 
+  colorUpdate = "";
   auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
   sourceP: LocalDataSource = new LocalDataSource();
@@ -34,15 +36,7 @@ export class AdministracionComponent implements OnInit {
   desc_tipo_producto;
   id_mostar;
   //Atributos Producto
-  productoUpdate = {
-    "_id": "",
-    "nombre": "",
-    "precio_unitario": 0,
-    "utilidad": 0,
-    "cant_existente": 0,
-    "subproductoV": [],
-    "id_tipo_producto": ""
-  };
+  productoUpdate;
   nombre;
   precio_unitario;
   utilidad;
@@ -57,7 +51,6 @@ export class AdministracionComponent implements OnInit {
   unidadMedidaSuproducto: number;
   cantSubprod: number;
   productos: any = [];
-  //productos = new Map;
   //Otras
   tipo_productos: any = [];
   lstShow: any = [];
@@ -80,7 +73,7 @@ export class AdministracionComponent implements OnInit {
       }
     },
     actions: {
-      columnTitle: '',
+      //columnTitle: '',
       add: true,
       edit: true,
       delete: false
@@ -89,63 +82,8 @@ export class AdministracionComponent implements OnInit {
       class: 'table-bordered table-hover table-responsive'
     }
   };
-  /*settingsP = {
-    mode: 'external',
-    noDataMessage: 'No existen registros',
-    columns: {
-      nombre: {
-        title: 'Nombre',
-        width: '280px',
-        filter: {
-          type: 'completer',
-          config: {
-            completer: {
-              data: this.productos,
-              searchFields: 'nombre',
-              titleField: 'nombre'
-            },
-          },
-        },
-      },
-      precio_unitario: {
-        title: 'Precio Unitario',
-        width: '100px'
-      },
-      utilidad: {
-        title: 'Utilidad',
-        width: '90px'
-      },
-      cant_existente: {
-        title: 'Cantidad Existente',
-        width: '90px'
-      },
-      subproductoV: {
-        title: 'Subproducto',
-        width: '350px'
-      },
-      id_tipo_producto: {
-        title: 'Tipo Producto',
-        width: '140px',
-        filter: {
-          type: 'list',
-          config: {
-            selectText: 'Todos',
-            list: this.tipo_productos,
-          },
-        },
-      },
-    },
-    actions: {
-      columnTitle: '',
-      add: true,
-      edit: true,
-      delete: false
-    },
-    attr: {
-      class: 'table-bordered table-hover table-responsive'
-    }
-  };*/
   settingsP = {}
+  position = 'below';
 
   constructor(
     private validateService: ValidateService,
@@ -175,13 +113,12 @@ export class AdministracionComponent implements OnInit {
         selectShow[ind] = aux;
         ind++;
       }
-
       /* Get Productos*/
-      this.productoService.getAll().subscribe(tp => {
-        this.productos = tp;
+      this.productoService.getAll().subscribe(p => {
+        this.productos = p;
         let productosShow: any = [];
         let i = 0;
-        for (let x of tp) {
+        for (let x of p) {
           let desc = this.search(x.id_tipo_producto, this.tipo_productos);
           this.productos[i].id_tipo_producto = desc;
           if (x.subproductoV != "") {
@@ -195,6 +132,7 @@ export class AdministracionComponent implements OnInit {
         }
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
+
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
@@ -240,6 +178,12 @@ export class AdministracionComponent implements OnInit {
                 },
               },
             },
+            path: {
+              title: 'Logotipo',
+              filter: false,
+              type: 'custom',
+              renderComponent: ImageRenderComponent
+            }
           },
           actions: {
             columnTitle: '',
@@ -264,6 +208,17 @@ export class AdministracionComponent implements OnInit {
     this.desc_tipo_producto = "";
     this.id_mostar = "";
     //Atributos Producto
+    this.productoUpdate = {
+      "_id": "",
+      "nombre": "",
+      "precio_unitario": 0,
+      "utilidad": 0,
+      "cant_existente": 0,
+      "subproductoV": [],
+      "id_tipo_producto": "",
+      "path": ""
+    };
+
     this.nombre = "";
     this.precio_unitario = null;
     this.utilidad = null;
@@ -314,39 +269,66 @@ export class AdministracionComponent implements OnInit {
       document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       document.getElementById('filesC').style.backgroundColor = "lightsalmon";
       setOriginalColorsPC();
-    }, 500)
+    }, 50)
   }
 
   setCursorUpdateP() {
     setTimeout(function () {
       document.getElementById('nombrePU').focus();
-    }, 500)
+      document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+      setOriginalColorsPU();
+    }, 50)
   }
 
   onCreateTP(event: any) {
     this.flagCreateTP = true;
+    this.desc_tipo_producto = "";
+    console.log("onCreateTP");
   }
 
   @ViewChild('myInput')
   myInputVariable: any;
 
   onCreateP(event: any) {
+    //console.log("before: "+this.myInputVariable.nativeElement.value)
     this.myInputVariable.nativeElement.value = "";
     this.flagCreateP = true;
+    this.nombre = "";
   }
 
   onUpdateTP(event: any) {
     this.flagUpdateTP = true;
     this.id_mostar = event.data._id;
     this.desc_tipo_producto = event.data.desc_tipo_producto;
-    //this.ngOnInit();
   }
 
+  @ViewChild('myInput1')
+  myInputVariable1: any;
+
   onUpdateP(event: any) {
-
+    this.myInputVariable1.nativeElement.value = "";
     this.flagUpdateP = true;
+    console.log(event.data.nombre)
     this.productoUpdate = event.data;
-
+    if (this.productoUpdate.path == undefined) {
+      this.colorUpdate = "black";
+      setTimeout(function () {
+        document.getElementById('filesU').style.backgroundColor = "lightsalmon";
+      }, 50)
+    } else {
+      this.colorUpdate = "lightgreen";
+      setTimeout(function () {
+        document.getElementById('filesU').style.backgroundColor = "lightgreen";
+      }, 50)
+    }
+    //bug 2 click edit
+    if (typeof (event.data.subproductoV) === 'object') {
+      let fila = "";
+      for (let entry of event.data.subproductoV) {
+        fila += "-" + entry.nombre + " " + entry.cantidad + " ";
+      }
+      event.data.subproductoV = fila;
+    }
     if (this.productoUpdate.subproductoV.length == 0) {
       this.flagSubProdUpdate = false;
     } else {
@@ -354,16 +336,13 @@ export class AdministracionComponent implements OnInit {
       this.flagListaSubProd = true;
       if (this.productoUpdate.subproductoV.length > 0) {
 
-        ///////////////////////////////////////////////////////////////
         let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
         this.productoUpdate.subproductoV = [];
         this.productoUpdate.subproductoV.push(a);
-        console.log(this.productoUpdate.subproductoV);
+        //console.log(this.productoUpdate.subproductoV);
         if (this.auxSubprod == undefined) {
           this.auxSubprod == this.productoUpdate.subproductoV;
-
         }
-        ///////////////////////////////////////////////////////////////
 
         let array = this.productoUpdate.subproductoV.toString().split("-");
         this.productoUpdate.subproductoV = [];
@@ -385,7 +364,6 @@ export class AdministracionComponent implements OnInit {
             index++;
           }
         }
-
       }
     }
   }
@@ -419,25 +397,29 @@ export class AdministracionComponent implements OnInit {
       cant_existente: this.cant_existente,
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
-      pathLogo: this.pathLogo
+      path: this.pathLogo
     }
-    console.log(producto);
+    console.log(producto)
     //Required fields
     if (!this.validateService.customValidateProducto(producto)) {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
-    //Register producto
-    this.productoService.registerProducto(producto).subscribe(data => {
-      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+    this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
+      //Register producto
+      producto.path = tp;
+      this.productoService.registerProducto(producto).subscribe(data => {
+      }, err => {
+        console.log(err);
+        this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      });
+      this.ngOnInit();
+      this.myInputVariable.nativeElement.value = "";
+      //this.showDialogPC = false;
     }, err => {
-      // Log errors if any
       console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
-    this.ngOnInit();
-    this.myInputVariable.nativeElement.value = "";
-    //this.showDialogPC = false;
+
   }
 
   onUpdateTPSubmit() {
@@ -479,9 +461,9 @@ export class AdministracionComponent implements OnInit {
       subproductoV: this.productoUpdate.subproductoV,
       id_tipo_producto: idTpBus
     }
-    console.log(producto);
+    //console.log(producto);
     //Required fields
-    if (!this.validateService.customValidateProducto(producto)) {
+    if (!this.validateService.customValidateProductoU(producto)) {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
@@ -503,7 +485,8 @@ export class AdministracionComponent implements OnInit {
       "utilidad": 0,
       "cant_existente": 0,
       "subproductoV": [],
-      "id_tipo_producto": ""
+      "id_tipo_producto": "",
+      "path": ""
     };
   }
 
@@ -545,7 +528,20 @@ export class AdministracionComponent implements OnInit {
 
   onChangeFileC(event) {
     var files = event.srcElement.files[0];
-    console.log(files)
+    let color = "";
+    if (files == undefined) {
+      color = "lightsalmon";
+    } else {
+      color = "lightgreen";
+    }
+    this.pathLogo = files;
+    document.getElementById('filesC').style.backgroundColor = color;
+    console.log(document.getElementById('filesC'))
+  }
+
+  onChangeFileU(event) {
+    this.colorUpdate = "black";
+    var files = event.srcElement.files[0];
     let color = "";
     if (files == undefined) {
       color = "lightsalmon"
@@ -553,50 +549,7 @@ export class AdministracionComponent implements OnInit {
       color = "lightgreen";
     }
     this.pathLogo = files;
-    document.getElementById('filesC').style.backgroundColor = color;
-    if (files != undefined) {
-      console.log(files);
-      let formData: FormData = new FormData();
-      formData.append('uploadFile', files, files.name);
-      let headers = new Headers();
-      /** No need to include Content-Type in Angular 4 **/
-      //headers.append('Content-Type', 'multipart/form-data');
-      headers.append('Accept', 'application/json');
-      let options = new RequestOptions({ headers: headers });
-      this.http.post(URL, formData, options)
-        .map(res => res.json())
-        .catch(error => Observable.throw(error))
-        .subscribe(
-        data =>
-          console.log(data),
-        //Save in database
-        error => console.log(error)
-        )
-    }
-  }
-
-  deleteSelectedC() {
-    console.log(document.getElementById("filesC").innerHTML);
-    document.getElementById("filesC").innerHTML = "";
-  }
-
-  addItemUpdate() {
-    if (this.selected_producto != "") {
-      this.flagListaSubProd = true;
-      let unidadMedida: string;
-      if (this.unidadMedidaSuproducto === 1) {
-        unidadMedida = "u";
-      } else {
-        unidadMedida = "ml"
-      }
-      let nItem = this.selected_producto.nombre + " " + this.cantSubprod + unidadMedida;
-      let aux = { nombre: this.selected_producto.nombre, cantidad: this.cantSubprod + unidadMedida };
-      //this.lista_subProductos.push(aux);
-      this.productoUpdate.subproductoV.push(aux);
-    } else {
-      this.flashMessagesService.show('Selecciona un producto existente!', { cssClass: 'alert-danger', timeout: 2000 });
-      document.getElementById("tipoP").style.borderColor = "#FE2E2E";
-    }
+    document.getElementById('filesU').style.backgroundColor = color;
   }
 
   addCant() {
@@ -634,6 +587,12 @@ export class AdministracionComponent implements OnInit {
     if (this.desc_tipo_producto.length == 1) {
       this.desc_tipo_producto = this.desc_tipo_producto.charAt(0).toUpperCase();
     }
+    if (this.nombre.length == 1) {
+      this.nombre = this.nombre.charAt(0).toUpperCase();
+    }
+    if (this.productoUpdate.nombre.length == 1) {
+      this.productoUpdate.nombre = this.productoUpdate.nombre.charAt(0).toUpperCase();
+    }
     //console.log(this.desc_tipo_producto);
   }
 
@@ -652,4 +611,13 @@ function setOriginalColorsPC() {
   document.getElementById("tipoPC").style.borderColor = "#DADAD2";
   document.getElementById("tipoP").style.borderColor = "#DADAD2";
   document.getElementById("filesC").style.borderColor = "#DADAD2";
+}
+function setOriginalColorsPU() {
+  document.getElementById("nombrePU").style.borderColor = "#DADAD2";
+  document.getElementById("puPU").style.borderColor = "#DADAD2";
+  document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
+  document.getElementById("cantPU").style.borderColor = "#DADAD2";
+  document.getElementById("tipoPU").style.borderColor = "#DADAD2";
+  document.getElementById("tipoP").style.borderColor = "#DADAD2";
+  document.getElementById("filesU").style.borderColor = "#DADAD2";
 }

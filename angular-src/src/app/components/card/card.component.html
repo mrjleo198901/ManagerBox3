@@ -1,341 +1,334 @@
 <h2 class="page-header">Gestion de Tarjetas</h2>
-
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <!-- TAB OPEN -->
     <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
-      <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
         <hr>
-        <!--LEFT SIDE-->
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <!-- Control Cliente-->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="cedula" class="cols-sm-2 control-label">CI. Cliente</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cedula" (click)="$event.target.select()" maxlength="10" type="text" class="form-control" name="cedula"
-                  id="cedula" placeholder="CI. del cliente, sin guion (-)" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                  (keyup.enter)="enterKey1()">
-                <span (click)="checkClient()" class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
-                <span (click)="showDialog = !showDialog" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
-              </div>
+      </div>
+      <!--LEFT SIDE-->
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!-- Control Cliente-->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="cedula" class="cols-sm-2 control-label">CI. Cliente</label>
             </div>
           </div>
-          <!-- Mostrar cliente -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="datosCliente">Datos del cliente</label>
-              </div>
-            </div>
-            <div class="row" *ngIf="flagUserFound">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                    Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}<br>Email:&nbsp;{{email}}
-                    <br>Telefono:&nbsp;{{telefono}}<br>Fecha de Nacimiento:&nbsp;{{fechaShow}}<br>Sexo:&nbsp;{{sexo}}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row" *ngIf="!flagUserFound">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                    <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
-                  </div>
-                </div>
-              </div>
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+              <input [(ngModel)]="cedula" (click)="$event.target.select()" maxlength="10" type="text" class="form-control" name="cedula"
+                id="cedula" placeholder="CI. del cliente, sin guion (-)" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                (keyup.enter)="enterKey1()">
+              <span (click)="checkClient()" class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
+              <span (click)="showDialog = !showDialog" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
             </div>
           </div>
         </div>
-        <!--RIGHT SIDE-->
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <!-- Validacion Tarjeta -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="numero">Numero de tarjeta</label>
-              </div>
+        <!-- Mostrar cliente -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="datosCliente">Datos del cliente</label>
             </div>
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" #numero (click)="numero.select()" type="text" class="form-control"
-                  name="numero" id="numero" placeholder="Codigo unico de tarjeta" (keyup.enter)="enterKey()" />
-                <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+          </div>
+          <div class="row" *ngIf="flagUserFound">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}<br>Email:&nbsp;{{email}}
+                  <br>Telefono:&nbsp;{{telefono}}<br>Fecha de Nacimiento:&nbsp;{{fechaShow}}<br>Sexo:&nbsp;{{sexo}}
+                </div>
               </div>
             </div>
           </div>
-          <!-- Cantidad de personas -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="cantMujeres">Cantidad de personas</label>
-              </div>
-            </div>
-            <div class="input-group col-sm-8 col-sm-offset-2">
-              <form class="form-inline">
-                <label for="cantMujeres">Nro. Mujeres</label>
-                <div class="input-group spinner">
-                  <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                    maxlength="2">
-                  <div class="input-group-btn-vertical">
-                    <button id="addW" (click)="plusWoman1()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                    <button id="lessW" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
-                  </div>
+          <div class="row" *ngIf="!flagUserFound">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
                 </div>
-                <label for="cantHombres">Nro. Hombres</label>
-                <div class="input-group spinner">
-                  <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                    maxlength="2" min="0">
-                  <div class="input-group-btn-vertical">
-                    <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                    <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <!-- Promociones -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="tabla">Promociones activas</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-group input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <!-- Tabla de Promociones -->
-                <!-- Promociones -->
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th style="text-align: center">Tipo de Promocion</th>
-                      <th style="text-align: center">Descripcion</th>
-                    </tr>
-                  </thead>
-                  <tbody style="text-align: center">
-                    <tr>
-                      <td>1</td>
-                      <td>Tipo 1</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Tipo 2</td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <br>
-      <hr>
+      <!--RIGHT SIDE-->
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!-- Validacion Tarjeta -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="numero">Numero de tarjeta</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+              <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" #numero (click)="numero.select()" type="text" class="form-control"
+                name="numero" id="numero" placeholder="Codigo unico de tarjeta" (keyup.enter)="enterKey()" />
+              <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+              <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+        <!-- Cantidad de personas -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="cantMujeres">Cantidad de personas</label>
+            </div>
+          </div>
+          <div class="input-group col-sm-8 col-sm-offset-2">
+            <form class="form-inline">
+              <label for="cantMujeres">Nro. Mujeres</label>
+              <div class="input-group spinner">
+                <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                  maxlength="2">
+                <div class="input-group-btn-vertical">
+                  <button id="addW" (click)="plusWoman1()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                  <button id="lessW" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                </div>
+              </div>
+              <label for="cantHombres">Nro. Hombres</label>
+              <div class="input-group spinner">
+                <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                  maxlength="2" min="0">
+                <div class="input-group-btn-vertical">
+                  <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                  <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Promociones -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="tabla">Promociones activas</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <!-- Tabla de Promociones -->
+              <!-- Promociones -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th style="text-align: center">Tipo de Promocion</th>
+                    <th style="text-align: center">Descripcion</th>
+                  </tr>
+                </thead>
+                <tbody style="text-align: center">
+                  <tr>
+                    <td>1</td>
+                    <td>Tipo 1</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Tipo 2</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Button -->
-      <div class="form-group" style="text-align: center">
-        <button class="btn btn-primary">Ingresar</button>
-        <!--<button class="btn btn-default">Cancelar</button>-->
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+      </div>
+      <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+        <button class="btn btn-primary btn-block">Ingresar</button>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
       </div>
     </tab>
     <!--TAB CLOSE-->
     <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
-      <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
         <hr>
-        <!--LEFT SIDE-->
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <!-- Verificacion de consumo -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="numeroS" class="cols-sm-2 control-label">Numero de tarjeta</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="numeroS" id="numeroS" placeholder="Codigo unico de tarjeta" />
-                <span class="input-group-addon" id="basic-addon5"><i class="fa fa-check" aria-hidden="true"></i></span>
-                <span class="input-group-addon" id="basic-addon6"><i class="fa fa-times" aria-hidden="true"></i></span>
-              </div>
-            </div>
-          </div>
-          <!-- Mostrar cliente -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="datosCliente">Datos del cliente</label>
-              </div>
-            </div>
-            <div class="row" *ngIf="flagUserFound">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                    Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row" *ngIf="!flagUserFound">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                    <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Cantidad de personas -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label class="cols-sm-2 control-label">Cantidad de personas</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <ul class="list-group">
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p>Nro. Mujeres</p>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="badge" style="font-size: 14px">{{cantMujeres}}</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p>Salen Mujeres</p>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group spinner">
-                          <input [(ngModel)]="cantSalenM" type="text" class="form-control input-sm" name="cantSalenM" id="cantSalenM" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                            maxlength={{cantMujeres}} readonly>
-                          <div class="input-group-btn-vertical">
-                            <button (click)="plusTotalM()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                            <button (click)="lessTotalM()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-group-item">
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p>Nro. Hombres</p>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="badge" style="font-size: 14px">{{cantHombres}}</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p>Salen Hombres</p>
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group spinner">
-                          <input [(ngModel)]="cantSalenH" type="text" class="form-control input-sm" name="cantSalenH" id="cantSalenH" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                            maxlength={{cantHombres}} readonly>
-                          <div class="input-group-btn-vertical">
-                            <button (click)="plusTotalH()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                            <button (click)="lessTotalH()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--RIGHT SIDE-->
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <!-- Resumen consumo -->
-          <div class="form-group">
-            <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <label for="tabla" class="cols-sm-2 control-label">Resumen Consumo</label>
-              </div>
-            </div>
-
-            <div class="row">
-              <!-- Tabla de Resumen consumo -->
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-                <p>A continuacion se muestran un informe detallado del consumo:</p>
-                <table class="table table-striped" style="max-width: 100%">
-                  <thead>
-                    <tr>
-                      <th style="text-align: center">Cantidad</th>
-                      <th style="text-align: center">Descripcion</th>
-                      <th style="text-align: center">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody style="text-align: center">
-                    <tr>
-                      <td>1</td>
-                      <td>Producto 1</td>
-                      <td>3</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Producto 2</td>
-                      <td>8</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Producto 3</td>
-                      <td>5</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-          <!-- Total a pagar -->
-          <div class="row" style="text-align: right">
-            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
-              <div class="col-sm-6">
-                <label for="totalPagar" class="cols-sm-2 control-label">Total a pagar. $.</label></div>
-              <div class="col-sm-6">
-                <input type="text" class="form-control" name="totalPagar" id="totalPagar" readonly/></div>
-            </div>
-          </div>
-        </div>
-        <br>
       </div>
-      <br>
-      <hr>
-      <!-- Button -->
-      <div class="form-group" style="text-align: center">
-        <button (click)="showDialogPrint = !showDialogPrint" class="btn btn-primary" id="basic-addonPrint">Aceptar</button>
-        <app-dialog [(visible)]="showDialogPrint" (visibleChange)="change($event)" #dialog="dialog">
-          <br>
-          <h3 style="text-align: center">Imprimiendo...</h3>
-          <div class="progress">
-            <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0"
-              aria-valuemax="100" style="width:100%">
-              100%
+      <!--LEFT SIDE-->
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!-- Verificacion de consumo -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="numeroS" class="cols-sm-2 control-label">Numero de tarjeta</label>
             </div>
           </div>
-        </app-dialog>
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+              <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
+                name="numeroS" id="numeroS" placeholder="Codigo unico de tarjeta" />
+              <span class="input-group-addon" id="basic-addon5"><i class="fa fa-check" aria-hidden="true"></i></span>
+              <span class="input-group-addon" id="basic-addon6"><i class="fa fa-times" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+        <!-- Mostrar cliente -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="datosCliente">Datos del cliente</label>
+            </div>
+          </div>
+          <div class="row" *ngIf="flagUserFound">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="!flagUserFound">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Cantidad de personas -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label class="cols-sm-2 control-label">Cantidad de personas</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <p>Nro. Mujeres</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span class="badge" style="font-size: 14px">{{cantMujeres}}</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <p>Salen Mujeres</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <div class="input-group spinner">
+                        <input [(ngModel)]="cantSalenM" type="text" class="form-control input-sm" name="cantSalenM" id="cantSalenM" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                          maxlength={{cantMujeres}} readonly>
+                        <div class="input-group-btn-vertical">
+                          <button (click)="plusTotalM()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                          <button (click)="lessTotalM()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <p>Nro. Hombres</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span class="badge" style="font-size: 14px">{{cantHombres}}</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <p>Salen Hombres</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <div class="input-group spinner">
+                        <input [(ngModel)]="cantSalenH" type="text" class="form-control input-sm" name="cantSalenH" id="cantSalenH" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                          maxlength={{cantHombres}} readonly>
+                        <div class="input-group-btn-vertical">
+                          <button (click)="plusTotalH()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                          <button (click)="lessTotalH()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--RIGHT SIDE-->
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!-- Resumen consumo -->
+        <div class="form-group">
+          <div class="row">
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <label for="tabla" class="cols-sm-2 control-label">Resumen Consumo</label>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Tabla de Resumen consumo -->
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <p>A continuacion se muestran un informe detallado del consumo:</p>
+              <table class="table table-striped" style="max-width: 100%">
+                <thead>
+                  <tr>
+                    <th style="text-align: center">Cantidad</th>
+                    <th style="text-align: center">Descripcion</th>
+                    <th style="text-align: center">Total</th>
+                  </tr>
+                </thead>
+                <tbody style="text-align: center">
+                  <tr>
+                    <td>1</td>
+                    <td>Producto 1</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Producto 2</td>
+                    <td>8</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Producto 3</td>
+                    <td>5</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Total a pagar -->
+        <div class="row" style="text-align: right">
+          <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+            <div class="col-sm-6">
+              <label for="totalPagar" class="cols-sm-2 control-label">Total a pagar. $.</label></div>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="totalPagar" id="totalPagar" readonly/></div>
+          </div>
+        </div>
+      </div>
+      <!-- Button -->
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+      </div>
+      <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+        <button (click)="showDialogPrint = !showDialogPrint" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
       </div>
     </tab>
   </tabset>
@@ -412,5 +405,15 @@
   <div class="form-group" style="text-align: center">
     <button class="btn btn-primary" (click)="saveUser()" style="width: 25%">Registrar</button>
     <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
+  </div>
+</app-dialog>
+<app-dialog [(visible)]="showDialogPrint" (visibleChange)="change($event)" #dialog1="dialog">
+  <br>
+  <h3 style="text-align: center">Imprimiendo...</h3>
+  <div class="progress">
+    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0"
+      aria-valuemax="100" style="width:100%">
+      100%
+    </div>
   </div>
 </app-dialog>

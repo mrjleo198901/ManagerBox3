@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
 /* My custom FM style*/
 .alert-danger{
   background-color: lightsalmon;
@@ -12,8 +14,8 @@ table > thead > tr > th {
 }
 ng2-smart-table{
     text-align: center;
-    background-color: pink;
 }
+
 /*bootswatch*/
 html{
     font-family:sans-serif;
@@ -220,11 +222,6 @@ td,th{
     border:1px solid #ddd !important
     }
 }
-/*@font-face{
-    font-family:'Glyphicons Halflings';
-    src:url('../fonts/glyphicons-halflings-regular.eot');
-    src:url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'),url('../fonts/glyphicons-halflings-regular.woff') format('woff'),url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'),url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg')
-}*/
     .glyphicon{
         position:relative;
         top:1px;

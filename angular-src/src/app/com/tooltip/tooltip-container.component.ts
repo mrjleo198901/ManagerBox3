@@ -18,9 +18,9 @@ import { TooltipOptions } from './tooltip-options.class';
       </div>
       <div class="tooltip-inner"
            *ngIf="htmlContent && isTemplate">
-        <template [ngTemplateOutlet]="htmlContent"
+        <ng-template [ngTemplateOutlet]="htmlContent"
                   [ngOutletContext]="{model: context}">
-        </template>
+        </ng-template>
       </div>
       <div class="tooltip-inner"
            *ngIf="content">

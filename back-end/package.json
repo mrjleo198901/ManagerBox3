@@ -10,6 +10,7 @@
   "dependencies": {
     "bcryptjs": "*",
     "body-parser": "*",
+    "connect-multiparty": "*",
     "cors": "^2.8.4",
     "del": "^3.0.0",
     "express": "^4.15.4",
@@ -22,7 +23,7 @@
     "ng2-smart-table": "^0.6.0-0",
     "node-restful": "*",
     "passport": "*",
-    "passport-jwt": "*"
+    "passport-jwt": "2.2.1"
   },
   "author": "RioBytes Inc",
   "license": "ISC"

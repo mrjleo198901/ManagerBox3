@@ -17,6 +17,7 @@ import { FacturacionComponent } from './components/facturacion/facturacion.compo
 import { ClientesComponent } from './components/clientes/clientes.component';
 import { PersonalComponent } from './components/personal/personal.component';
 import { AdministracionComponent } from './components/administracion/administracion.component';
+import { ImageRenderComponent } from './components/image-render/image-render.component';
 /*Services*/
 import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
@@ -30,12 +31,15 @@ import { PersonalService } from './services/personal.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
+import { TooltipModule} from './com/tooltip/tooltip.module'
 /*Libraries*/
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { Ng2CompleterModule } from 'ng2-completer';
 import { Angular2FontawesomeModule } from 'angular2-fontawesome'
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { CurrencyMaskModule } from "ng2-currency-mask";
+import { MdTooltipModule,MdDialogModule } from '@angular/material';
+import { hammerjs } from 'hammerjs';
 
 import { AppComponent } from './app.component';
 
@@ -69,9 +73,10 @@ const appRoutes: Routes = [
     PersonalComponent,
     AdministracionComponent,
     FileSelectDirective,
-    FileDropDirective
-
+    FileDropDirective,
+    ImageRenderComponent
   ],
+  entryComponents: [ImageRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -81,10 +86,13 @@ const appRoutes: Routes = [
     FlashMessagesModule,
     TabsModule,
     DatepickerModule,
+    TooltipModule,
     Angular2FontawesomeModule,
     Ng2SmartTableModule,
     Ng2CompleterModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    MdTooltipModule,
+    MdDialogModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService,
   CargoPersonalService, PersonalService],

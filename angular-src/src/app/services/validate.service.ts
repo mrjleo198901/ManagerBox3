@@ -70,8 +70,37 @@ export class ValidateService {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.pathLogo == undefined) {
+    if (producto.path == undefined) {
       document.getElementById("filesC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  customValidateProductoU(producto) {
+    let res = true;
+    if (producto.nombre == "") {
+      document.getElementById("nombrePU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.precio_unitario == null) {
+      document.getElementById("puPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.utilidad == null) {
+      document.getElementById("utilidadPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.cant_existente == null) {
+      document.getElementById("cantPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.id_tipo_producto == undefined) {
+      document.getElementById("tipoPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.path == undefined) {
+      document.getElementById("filesU").style.borderColor = "#FE2E2E";
       res = false;
     }
     return res;

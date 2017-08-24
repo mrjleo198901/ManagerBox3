@@ -1,19 +1,7 @@
-/*:host /deep/ ng2-smart-table .table > thead > tr > th {
+:host /deep/ .ng2-smart-filter input{
+  height: 35px;
   text-align: center;
-  font-size: 12px;
 }
-:host /deep/ ng2-smart-table .table > tbody > tr > td {
+:host /deep/ .ng2-smart-filter select{
   text-align: center;
-  font-size: 12px;
 }
-:host /deep/ ng2-smart-table .input{
-  height: 100%;
-  text-align: center;
-  font-size: 12px;
-}
-:host /deep/ .input{
-  height: 100%;
-  text-align: center;
-  font-size: 12px;
-}
-:host /deep/ ng2-smart-table thead > tr > th { background-color: white; }*/
