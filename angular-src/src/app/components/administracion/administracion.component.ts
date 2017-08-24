@@ -304,7 +304,7 @@ export class AdministracionComponent implements OnInit {
   myInputVariable1: any;
 
   onUpdateP(event: any) {
-    //this.myInputVariable1.nativeElement.value = "";
+    this.myInputVariable1.nativeElement.value = "";
     this.flagUpdateP = true;
     this.productoUpdate = event.data;
     console.log(this.productoUpdate)
