@@ -208,8 +208,6 @@ export class ClientesComponent implements OnInit {
     this.source.add(newClient);
     this.source.refresh();
     this.ngOnInit();
-    this.showDialog = false;
-    //this.flagCreate = false;
   }
 
   updateUser() {

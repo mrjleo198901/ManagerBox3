@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, NgModule, OnInit, OnChanges, ElementRef, Renderer } from '@angular/core';
+//import { Component, OnInit } from '@angular/core';
+import { ValidateService } from '../../services/validate.service';
+import { CargoPersonalService } from '../../services/cargo-personal.service';
+import { AuthService } from '../../services/auth.service';
+import { FlashMessagesService } from 'angular2-flash-messages';
+import * as moment from 'moment';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
+import { PersonalService } from '../../services/personal.service';
 
 @Component({
   selector: 'app-personal',
@@ -7,9 +16,542 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PersonalComponent implements OnInit {
 
-  constructor() { }
+  sourcePer: LocalDataSource = new LocalDataSource();
+  sourceCargoPer: LocalDataSource = new LocalDataSource();
 
+  showDialogCargoPerAdd = false;
+  showDialogCargoPerUp = false;
+  showDialogPerAdd = false;
+  showDialogPerUp = false;
+  flagUpdateCargoPer: boolean;
+  flagCreateCargoPer: boolean;
+  flagUpdatePer: boolean;
+  flagCreatePer: boolean;
+  showDatepicker: boolean;
+  banCalendar: number;
+
+
+  // Atributos del personal
+  idPersona: string;
+  cedula: string;
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  email: string;
+  fechaNacimiento: Date;
+  fechaNacimientoString: string;
+  sexo: number;
+  sexoString: string;
+  cargo: string;
+  oldUser;
+  public dt: Date = new Date();
+
+  //Atributos del cargo personal
+  idCargoPersona: string;
+  descripcionCargoPersonal: string;
+  estado: string;
+
+  // varales como banderas
+  banFechaNac: string;
+
+  // Selecciones
+  selectEstado;
+  selectCargoPer;
+
+  // listas
+  listaEstado: any = [];
+  listaCargoPersonal: any = [];
+  listaPersonal: any = [];
+
+  constructor(
+    private cargoPersonalService: CargoPersonalService,
+    private personalService: PersonalService,
+    private authService: AuthService,
+    private validateService: ValidateService,
+    private flashMessagesService: FlashMessagesService,
+    public el: ElementRef, public renderer: Renderer) {
+    renderer.listenGlobal('document', 'change', (event) => {
+      //Set time in datepicker
+      this.dt = moment(this.fechaNacimientoString, 'DD/MM/YYYY').toDate();
+    });
+    this.sexo = 1;
+    this.flagCreateCargoPer = false;
+    this.flagUpdateCargoPer = false;
+    this.flagCreatePer = false;
+    this.flagUpdatePer = false;
+    this.showDatepicker = false;
+    this.idCargoPersona = "";
+    this.banCalendar = 1;
+
+  }
+
+  // inicializador de variables
   ngOnInit() {
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.fechaNacimientoString = [initial[0], initial[1], initial[2]].join('/');
+    this.sourcePer = new LocalDataSource();
+    this.sourceCargoPer = new LocalDataSource();
+    this.idPersona = "";
+    this.sexo = 1;
+    this.cedula = "";
+    this.nombres = "";
+    this.apellidos = "";
+    this.telefono = "";
+    this.email = "";
+    this.cargo = "";
+
+    // banderas
+    this.banFechaNac = "";
+
+    //Lista de estados
+    this.listaEstado = [
+      {
+        id: "1",
+        estado: "Activo"
+      },
+      {
+        id: "2",
+        estado: "Inactivo"
+      }
+    ];
+    //Load data to localDataSource
+    this.cargoPersonalService.getAll().subscribe(tp => {
+      this.listaCargoPersonal = tp;
+      this.sourceCargoPer = new LocalDataSource();
+      let i = 0;
+      for (let est of tp) {
+        if (est.id_estado == "1")
+          this.listaCargoPersonal[i++].id_estado = this.listaEstado[0].estado;
+        else
+          this.listaCargoPersonal[i++].id_estado = this.listaEstado[1].estado;
+      }
+      this.sourceCargoPer.load(this.listaCargoPersonal);
+      this.selectCargoPer = this.listaCargoPersonal[0];
+
+      /* Get Personal*/
+      this.personalService.getAll().subscribe(tp => {
+        this.listaPersonal = tp;
+        let i = 0;
+        for (let x of tp) {
+          let desc = this.searchId(x.id_cargo, this.listaCargoPersonal);
+          this.listaPersonal[i].id_cargo = desc;
+          if (this.listaPersonal[i].sexo == 1)
+            this.listaPersonal[i].sexo = "Masculino";
+          else
+            this.listaPersonal[i].sexo = "Femenino";
+          i++;
+        }
+        this.sourcePer = new LocalDataSource();
+        this.sourcePer.load(this.listaPersonal);
+      }, err => {
+        console.log(err);
+        return false;
+      });
+    },
+      err => {
+        console.log(err);
+        return false;
+      });
+
+    //this.sourcePer.load(this.data);
+
+    // Selecciones
+    this.selectEstado = this.listaEstado[0];
+
+    // listas
+    //this.listaEstado = [];
+    //this.listaCargoPersonal = [];
+    //this.listaPersonal = [];
+
+  }
+
+  //BUSCAR CARGO PERSONAL
+  // buscar por ID y devuelve una descripcion
+  searchId(id, myArray) {
+    for (let entry of myArray) {
+      if (entry._id === id) {
+        return entry.descripcion_cargo_personal;
+      }
+    }
+  }
+
+  //busca por Nombre y devuelve un objeto
+  searchName(name, myArray) {
+    for (let entry of myArray) {
+      if (entry.descripcion_cargo_personal === name) {
+        return entry;
+      }
+    }
+  }
+
+  // cabesera de la tabla Trabajador
+  settingsPer = {
+    mode: 'external',
+    columns: {
+      cedula: {
+        title: 'Cédula'
+      },
+      nombres: {
+        title: 'Nombres'
+      },
+      apellidos: {
+        title: 'Apellidos'
+      },
+      telefono: {
+        title: 'Teléfono'
+      },
+      email: {
+        title: 'Email'
+      },
+      fecha_nacimiento: {
+        title: 'Fecha Nacimiento'
+      },
+      sexo: {
+        title: 'Sexo'
+      },
+      id_cargo: {
+        title: 'Cargo'
+      }
+    },
+    actions: {
+      add: true,
+      edit: true,
+      delete: false
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+      //class: 'font-size: 200%;'
+    }
+  };
+
+  // cabesera tabla Tipo Personal
+  settingsCargPer = {
+    mode: 'external',
+    columns: {
+      _id: {
+        title: 'ID'
+      },
+      descripcion_cargo_personal: {
+        title: 'Descripción'
+      },
+      id_estado: {
+        title: 'Estado'
+      },
+    },
+    actions: {
+      add: true,
+      edit: true,
+      delete: false
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+    }
+  };
+
+  /* GESTION DE CARGO PERSONAL Y PERSONAL */
+  changeCargoPerAdd($event) {
+    this.flagCreateCargoPer = false;
+  }
+
+  changeCargoPerUp($event) {
+    this.flagUpdateCargoPer = false;
+  }
+
+  changePerAdd($event) {
+    this.flagCreatePer = false;
+  }
+
+  changePerUp($event) {
+    this.flagUpdatePer = false;
+  }
+
+  // MOSTRAR FORMULARIO DE CARGO PERSONAL Y PERSONAL
+  onCreateCargoPer(event: any) {
+    this.flagCreateCargoPer = true;
+  }
+
+  onCreatePer(event: any) {
+    this.flagCreatePer = true;
+  }
+
+  // CARGA DE DATOS EN EL FORMULARIO PARA MODIFICAR CARGO PERSONAL
+  onCargoPerUpdate(event: any) {
+    this.flagUpdateCargoPer = true;
+    this.idCargoPersona = event.data._id;
+    this.descripcionCargoPersonal = event.data.descripcion_cargo_personal;
+    if (event.data.id_estado === 'Activo')
+      this.selectEstado = this.listaEstado[0];
+    else
+      this.selectEstado = this.listaEstado[1];
+  }
+
+  // CARGA DE DATOS EN EL FORMULARIO PARA MODIFICAR PERSONAL
+  onPerUpdate(event: any) {
+
+    this.flagUpdatePer = true;
+    this.idPersona = event.data._id;
+    this.cedula = event.data.cedula;
+    this.telefono = event.data.telefono;
+    this.nombres = event.data.nombres;
+    this.apellidos = event.data.apellidos;
+    this.email = event.data.email;
+    if (event.data.sexo == "Masculino")
+      this.sexo = 1;
+    else
+      this.sexo = 2;
+    this.fechaNacimientoString = event.data.fecha_nacimiento;
+    this.selectCargoPer = this.searchName(event.data.id_cargo, this.listaCargoPersonal);
+
+    this.banFechaNac = this.dt.toLocaleDateString();
+    this.close();
+  }
+
+  //POSICION DEL CURSOR CARGO PERSONAL
+  setCursorCargoPerAdd() {
+    setTimeout(function () {
+      document.getElementById('descCargoPerAdd').focus();
+    }, 500)
+  }
+
+  setCursorCargoPerUp() {
+    setTimeout(function () {
+      document.getElementById('descCargoPerAdd').focus();
+    }, 500)
+  }
+
+  //INGRESO CARGO PERSONAL
+  onAddCargoPersonalSubmit() {
+    const cargoPersonal = {
+      descripcion_cargo_personal: this.descripcionCargoPersonal,
+      id_estado: this.selectEstado.id
+    }
+
+    //Required fields
+    if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Register Tipo producto
+    let a = this.cargoPersonalService.registerCargoPersonal(cargoPersonal).subscribe(data => {
+      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      this.ngOnInit();
+      this.showDialogCargoPerAdd = false;
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+  }
+  //MODIFICAR CARGO PERSONAL
+  onUpdateTPSubmit() {
+    if (this.estado === 'Activo')
+      this.estado = this.listaEstado[0].id;
+    else
+      this.estado = this.listaEstado[1].id;
+
+    const cargoPersonal = {
+      id: this.idCargoPersona,
+      descripcion_cargo_personal: this.descripcionCargoPersonal,
+      id_estado: this.selectEstado.id
+    }
+    //Required fields
+    if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Update Tipo producto
+    this.cargoPersonalService.updateCargoPersonal(cargoPersonal).subscribe(data => {
+      //this.flashMessagesService.show('Modificacion exitosa!', { cssClass: 'alert-success', timeout: 2000 });
+      this.ngOnInit();
+      this.showDialogCargoPerUp = false;
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+  }
+
+  //POSICION DEL CURSOR PERSONAL
+  setCursorPerAdd() {
+    setTimeout(function () {
+      document.getElementById('ci').focus();
+    }, 500)
+  }
+
+  onChangeCargPer() {
+
+    if (this.descripcionCargoPersonal.length == 1)
+      this.descripcionCargoPersonal = this.descripcionCargoPersonal.charAt(0).toUpperCase();
+
+    if (this.descripcionCargoPersonal.length < 2)
+      document.getElementById("descCargoPerAdd").style.borderColor = "#FE2E2E";
+
+    if (this.descripcionCargoPersonal.length > 1)
+      document.getElementById("descCargoPerAdd").style.borderColor = "#DADAD2";
+
+  }
+
+  onChange() {
+
+    if (this.nombres.length == 1)
+      this.nombres = this.nombres.charAt(0).toUpperCase();
+
+    if (this.nombres.length < 4)
+      document.getElementById("nombres").style.borderColor = "#FE2E2E";
+
+    if (this.nombres.length > 2)
+      document.getElementById("nombres").style.borderColor = "#DADAD2";
+
+    if (this.apellidos.length == 1)
+      this.apellidos = this.apellidos.charAt(0).toUpperCase();
+
+    if (this.apellidos.length < 4)
+      document.getElementById("apellidos").style.borderColor = "#FE2E2E";
+
+    if (this.apellidos.length > 2)
+      document.getElementById("apellidos").style.borderColor = "#DADAD2";
+
+    if (this.cedula.length != 10)
+      document.getElementById("ci").style.borderColor = "#FE2E2E";
+
+    if (this.cedula.length === 10) {
+      if (!this.validateService.validarRucCedula(this.cedula)) {
+        document.getElementById("ci").style.borderColor = "#FE2E2E";
+        this.flashMessagesService.show('Cédula Inválida', { cssClass: 'alert-danger', timeout: 2000 });
+      } else
+        document.getElementById("ci").style.borderColor = "#DADAD2";
+    }
+
+    if (this.telefono.length < 9)
+      document.getElementById("telefono").style.borderColor = "#FE2E2E";
+
+    if (this.telefono.length == 9 || this.telefono.length == 10)
+      document.getElementById("telefono").style.borderColor = "#DADAD2";
+
+    if (!this.validateService.validateEmail(this.email)) {
+      document.getElementById("email").style.borderColor = "#FE2E2E";
+      //this.flashMessagesService.show('Correo Inválido', { cssClass: 'alert-danger', timeout: 2000 });
+    } else
+      document.getElementById("email").style.borderColor = "#DADAD2";
+
+  }
+
+  // METODO PARA FECHAS
+  public getDate(): number {
+    this.fechaNacimientoString = this.dt.toLocaleDateString();
+    return this.dt && this.dt.getTime() || new Date().getTime();
+  }
+
+  // MOSTRAR Y CERRAR CALENDARIO
+  showCalendar() {
+    if (this.banCalendar == 1) {
+      this.open();
+      this.banCalendar = 2;
+    } else {
+      this.close();
+      this.banCalendar = 1;
+      this.descripcionCargoPersonal = this.dt.toLocaleDateString();
+    }
+  }
+
+  ///CERRAR CALENDARIO
+  hideCalendar() {
+    var fe = this.dt.toLocaleDateString();
+    if ((fe != this.banFechaNac)) {
+      //this.close();
+      this.banFechaNac = this.dt.toLocaleDateString();
+      this.descripcionCargoPersonal = this.dt.toLocaleDateString();
+    }
+  }
+
+  open() {
+    this.showDatepicker = true;
+  }
+
+  close() {
+    this.showDatepicker = false;
+  }
+  //
+
+  setCursorPerUp() {
+    setTimeout(function () {
+      document.getElementById('ci').focus();
+    }, 500)
+  }
+
+  //INGRESO PERSONAL
+  onAddPerSubmit() {
+    const personal = {
+      cedula: this.cedula,
+      nombres: this.nombres,
+      apellidos: this.apellidos,
+      fecha_nacimiento: this.dt.toLocaleDateString(),
+      telefono: this.telefono,
+      sexo: this.sexo,
+      email: this.email,
+      id_cargo: this.selectCargoPer._id
+    }
+
+    //Required fields
+    if (!this.validateService.validatePersonal(personal)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    // Validate Email
+    if (!this.validateService.validateEmail(personal.email)) {
+      this.flashMessagesService.show('Mail Inválido', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Register Personal
+    this.personalService.registerPersonal(personal).subscribe(data => {
+      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      this.ngOnInit();
+      this.showDialogPerAdd = false;
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+
+  }
+
+  //MODIFICAR PERSONAL
+  onUpdatePerSubmit() {
+    const personal = {
+      id: this.idPersona,
+      cedula: this.cedula,
+      nombres: this.nombres,
+      apellidos: this.apellidos,
+      fecha_nacimiento: this.descripcionCargoPersonal,
+      telefono: this.telefono,
+      sexo: this.sexo,
+      email: this.email,
+      id_cargo: this.selectCargoPer._id
+    }
+
+    //Required fields
+    if (!this.validateService.validatePersonal(personal)) {
+      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    // Validate Email
+    if (!this.validateService.validateEmail(personal.email)) {
+      this.flashMessagesService.show('Mail Inválido', { cssClass: 'alert-danger', timeout: 2000 });
+      return false;
+    }
+    //Register Personal
+    this.personalService.updatePersonal(personal).subscribe(data => {
+      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      this.ngOnInit();
+      this.showDialogPerUp = false;
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    });
+
   }
 
 }
+
+

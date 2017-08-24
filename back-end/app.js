@@ -44,11 +44,13 @@ app.get('/', (req, res) => {
     res.send('Invalid Endpoint');
 })
 
+app.use('/api', require('./routes/cargoPersonalApi'));
 app.use('/api', require('./routes/clienteApi'));
 app.use('/api', require('./routes/comprasApi'));
 app.use('/api', require('./routes/configuracionApi'));
 app.use('/api', require('./routes/detalleFacturaApi'));
 app.use('/api', require('./routes/facturaApi'));
+app.use('/api', require('./routes/personalApi'));
 app.use('/api', require('./routes/productoApi'));
 app.use('/api', require('./routes/promocionesApi'));
 app.use('/api', require('./routes/proveedorApi'));

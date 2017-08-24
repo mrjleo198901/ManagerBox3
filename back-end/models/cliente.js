@@ -11,8 +11,7 @@ var clienteSchema = new mongoose.Schema({
     correo: String,
     fecha_nacimiento: Date,
     sexo: String,
-
-    id_tipo_clienteV: Array
+    //id_tipo_clienteV: Array
 
 });
 

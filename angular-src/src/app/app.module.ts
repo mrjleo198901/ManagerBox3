@@ -25,6 +25,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { TipoProductoService } from './services/tipo-producto.service';
 import { ProductoService } from './services/producto.service';
 import { UploadService } from './services/upload.service';
+import { CargoPersonalService } from './services/cargo-personal.service';
+import { PersonalService } from './services/personal.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -84,7 +86,8 @@ const appRoutes: Routes = [
     Ng2CompleterModule,
     CurrencyMaskModule
   ],
-  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService],
+  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService,
+  CargoPersonalService, PersonalService],
   bootstrap: [AppComponent]
 })
 
