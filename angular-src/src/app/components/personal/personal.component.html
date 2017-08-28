@@ -1,21 +1,22 @@
+<h2 class="page-header">Gestion de Personal</h2>
 <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
         <tab heading="Personal">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <hr>
-                <h3>Personal</h3>
+                <h3 style="text-align:center">Personal</h3>
                 <hr>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = !showDialogPerAdd;onCreatePer($event);
-                setCursorPerAdd()" (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()">
+                setCursorPerAdd()" (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()" (userRowSelect)="showPersonal($event)">
                 </ng2-smart-table>
             </div>
         </tab>
-        <tab heading="Cargo Personal">
+        <tab heading="Cargo Personal" (select)="hideDetails()">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <hr>
-                <h3>Cargo Personal</h3>
+                <h3 style="text-align:center">Cargo Personal</h3>
                 <hr>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -24,8 +25,38 @@
                 </ng2-smart-table>
             </div>
         </tab>
-
     </tabset>
+</div>
+
+
+<!-- Mostrar cliente -->
+<div class="row" *ngIf="flagUserFound">
+    <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2">
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <label for="datosCliente">Datos del empleado</label>
+                <br>Nombre:&nbsp;{{showPersona.nombres}}&nbsp;{{showPersona.apellidos}}
+                <br>Cedula:&nbsp;{{showPersona.cedula}}
+                <br>Email:&nbsp;{{showPersona.email}}
+                <br>Telefono:&nbsp;{{showPersona.telefono}}
+                <br>Fecha de Nacimiento:&nbsp;{{showPersona.fecha_nacimiento}}
+                <br>Sexo:&nbsp;{{showPersona.sexo}}
+                <br>Cargo:&nbsp;{{showPersona.id_cargo}}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4">
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <label for="datosCliente">Modulos Disponibles</label><br>
+                <div class="form-check" *ngFor="let tag of tags; let i = index;">
+                    <md-checkbox [(ngModel)]="tag.checked" [color]="color">{{tag.name}}</md-checkbox>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ADD CARGO PERSONAL -->
@@ -57,7 +88,6 @@
         <button class="btn btn-default" (click)="showDialogCargoPerAdd = !showDialogCargoPerAdd" style="width: 25%">Cancelar</button>
     </div>
 </app-dialog>
-
 <!-- UPDATE CARGO PERSONAL CLIENT -->
 <app-dialog [(visible)]="showDialogCargoPerUp" (visibleChange)="changeCargoPerUp($event)" #dialog1="dialog">
     <h3 style="text-align: center">
@@ -94,7 +124,6 @@
     </div>
 
 </app-dialog>
-
 <!-- ADD PERSONAL -->
 <app-dialog [(visible)]="showDialogPerAdd" (visibleChange)="changePerAdd($event)" #dialog2="dialog">
     <h3 style="text-align: center">
@@ -181,7 +210,6 @@
         <button class="btn btn-default" (click)="showDialogPerAdd = !showDialogPerAdd" style="width: 25%">Cancelar</button>
     </div>
 </app-dialog>
-
 <!-- UPDATE PERSONAL -->
 <app-dialog [(visible)]="showDialogPerUp" (visibleChange)="changePerUp($event)" #dialog3="dialog">
     <h3 style="text-align: center">
@@ -241,8 +269,7 @@
         <!-- Fecha de nacimiento -->
         <label for="est" style="display: inline-block">Fecha de Nacimiento</label>
         <div class="input-group col-lg-12 col-md-12">
-            <input type="text" [(ngModel)]="fechaNacimientoString" id="fecha" name="fecha"
-                placeholder="DD/MM/YYYY" class="form-control  input-sm">
+            <input type="text" [(ngModel)]="fechaNacimientoString" id="fecha" name="fecha" placeholder="DD/MM/YYYY" class="form-control  input-sm">
             <span class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
         </div>
     </div>

@@ -10,7 +10,8 @@ var personalSchema = new mongoose.Schema({
     sexo: String,
     telefono: String,
     email: String,
-    id_cargo: String
+    id_cargo: String,
+    modulosV: Array
 
 });
 

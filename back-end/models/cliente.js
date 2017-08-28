@@ -6,12 +6,12 @@ var clienteSchema = new mongoose.Schema({
     cedula: String,
     nombre: String,
     apellido: String,
-    tarjeta: Number,
+    //tarjeta: Number,
     telefono: String,
     correo: String,
-    fecha_nacimiento: Date,
+    fecha_nacimiento: String,
     sexo: String,
-    //id_tipo_clienteV: Array
+    id_tipo_cliente: mongoose.Schema.Types.ObjectId
 
 });
 

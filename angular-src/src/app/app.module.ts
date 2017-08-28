@@ -25,20 +25,21 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
 import { TipoProductoService } from './services/tipo-producto.service';
 import { ProductoService } from './services/producto.service';
-import { UploadService } from './services/upload.service';
+import { ClienteService } from './services/cliente.service';
+import { TipoClienteService } from './services/tipo-cliente.service';
 import { CargoPersonalService } from './services/cargo-personal.service';
 import { PersonalService } from './services/personal.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
-import { TooltipModule} from './com/tooltip/tooltip.module'
+import { TooltipModule } from './com/tooltip/tooltip.module'
 /*Libraries*/
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { Ng2CompleterModule } from 'ng2-completer';
 import { Angular2FontawesomeModule } from 'angular2-fontawesome'
-import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
+//import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { MdTooltipModule,MdDialogModule } from '@angular/material';
+import { MdTooltipModule, MdDialogModule,MdCheckboxModule } from '@angular/material';
 import { hammerjs } from 'hammerjs';
 
 import { AppComponent } from './app.component';
@@ -72,8 +73,8 @@ const appRoutes: Routes = [
     ClientesComponent,
     PersonalComponent,
     AdministracionComponent,
-    FileSelectDirective,
-    FileDropDirective,
+    /*FileSelectDirective,
+    FileDropDirective,*/
     ImageRenderComponent
   ],
   entryComponents: [ImageRenderComponent],
@@ -92,10 +93,11 @@ const appRoutes: Routes = [
     Ng2CompleterModule,
     CurrencyMaskModule,
     MdTooltipModule,
-    MdDialogModule
+    MdDialogModule,
+    MdCheckboxModule
   ],
-  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, UploadService,
-  CargoPersonalService, PersonalService],
+  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService,
+    CargoPersonalService, PersonalService, ClienteService, TipoClienteService],
   bootstrap: [AppComponent]
 })
 

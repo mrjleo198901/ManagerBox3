@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
+import { PersonalService } from '../../services/personal.service'
 
 @Component({
   selector: 'app-facturacion',
@@ -19,6 +20,8 @@ export class FacturacionComponent implements OnInit {
   flagProdSeleccionados;
   position = 'below';
   listaSize = false;
+  validCard: String;
+  listMeseros: any;
 
   change($event) {
     //alert($event)
@@ -26,7 +29,8 @@ export class FacturacionComponent implements OnInit {
 
   constructor(
     private productoService: ProductoService,
-    private tipoProductoService: TipoProductoService) {
+    private tipoProductoService: TipoProductoService,
+    private personalService: PersonalService) {
 
     this.tipoProductoService.getAll().subscribe(tp => {
       let index = 0;
@@ -70,6 +74,15 @@ export class FacturacionComponent implements OnInit {
   ngOnInit() {
     this.selectedProductos = [];
     this.flagProdSeleccionados = false;
+    this.validCard = "ñ1006771_";
+    let idCargo = "59937c6337eac33cd4819873";
+    this.personalService.getByTipo(idCargo).subscribe(p => {
+      this.listMeseros=p;
+      //console.log(this.listMeseros)
+    }, err => {
+      console.log(err);
+    });
+
   }
 
   addProd(i) {
@@ -135,6 +148,22 @@ export class FacturacionComponent implements OnInit {
     }
     // console.log(this.pathsType)
   }
-  
+
+  onChange(event) {
+    let finalChar = this.cardNumber.slice(-1)
+    if (finalChar.localeCompare("_") == 0) {
+      let v = document.getElementById('cardNumber');
+      v.click();
+      if (this.cardNumber === this.validCard) {
+        document.getElementById('basic-addon1').style.backgroundColor = '#088A08';//dark green
+        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+      } else {
+        var x = document.getElementById('basic-addon2')
+        document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
+        document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+      }
+    }
+  }
+
 }
 

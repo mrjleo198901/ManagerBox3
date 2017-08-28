@@ -3,6 +3,8 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
 
+const url = 'http://localhost:3000/api/';
+
 @Injectable()
 export class ProductoService {
 
@@ -11,7 +13,7 @@ export class ProductoService {
   registerProducto(producto) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/producto', producto, { headers: headers })
+    return this.http.post(url + 'producto', producto, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
@@ -19,7 +21,7 @@ export class ProductoService {
   updateProducto(producto) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put('http://localhost:3000/api/producto/' + producto._id, producto, { headers: headers })
+    return this.http.put(url + 'producto/' + producto._id, producto, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
@@ -27,7 +29,7 @@ export class ProductoService {
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get('http://localhost:3000/api/producto', { headers: headers })
+    return this.http.get(url + 'producto', { headers: headers })
       .map(res => res.json());
   }
 
@@ -37,7 +39,7 @@ export class ProductoService {
     let headers = new Headers();
     headers.append('Accept', 'application/json');
     let options = new RequestOptions({ headers: headers });
-    return this.http.post('http://localhost:3000/api/imagen', formData, options)
+    return this.http.post(url + 'imagen', formData, options)
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }

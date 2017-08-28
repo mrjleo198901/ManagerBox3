@@ -1,4 +1,3 @@
-
 import { Component, NgModule, OnInit, OnChanges, ElementRef, Renderer } from '@angular/core';
 //import { Component, OnInit } from '@angular/core';
 import { ValidateService } from '../../services/validate.service';
@@ -30,6 +29,9 @@ export class PersonalComponent implements OnInit {
   showDatepicker: boolean;
   banCalendar: number;
 
+  showPersona: any;
+  flagUserFound;
+  modulosPersonal: { nombre: string, checked: boolean }[] = [];
 
   // Atributos del personal
   idPersona: string;
@@ -53,6 +55,10 @@ export class PersonalComponent implements OnInit {
 
   // varales como banderas
   banFechaNac: string;
+  checked;
+  align = 'start';
+  position = 'after';
+  color = 'primary';
 
   // Selecciones
   selectEstado;
@@ -62,6 +68,26 @@ export class PersonalComponent implements OnInit {
   listaEstado: any = [];
   listaCargoPersonal: any = [];
   listaPersonal: any = [];
+
+  tags = [{
+    name: 'Administrar',
+    checked: false
+  }, {
+    name: 'Personal',
+    checked: true
+  }, {
+    name: 'Atencion',
+    checked: false
+  }, {
+    name: 'Facturacion',
+    checked: true
+  }, {
+    name: 'Clientes',
+    checked: false
+  }, {
+    name: 'Reportes',
+    checked: false
+  }];
 
   constructor(
     private cargoPersonalService: CargoPersonalService,
@@ -102,6 +128,7 @@ export class PersonalComponent implements OnInit {
 
     // banderas
     this.banFechaNac = "";
+    this.flagUserFound = false;
 
     //Lista de estados
     this.listaEstado = [
@@ -163,6 +190,13 @@ export class PersonalComponent implements OnInit {
     //this.listaCargoPersonal = [];
     //this.listaPersonal = [];
 
+  }
+
+  getCheck() {
+    console.log(this.modulosPersonal)
+  }
+  hideDetails(){
+    this.flagUserFound= false;
   }
 
   //BUSCAR CARGO PERSONAL
@@ -285,9 +319,14 @@ export class PersonalComponent implements OnInit {
       this.selectEstado = this.listaEstado[1];
   }
 
+  showPersonal(event: any) {
+    this.flagUserFound = true;
+    if (event.data != undefined) {
+      this.showPersona = event.data;
+    }
+  }
   // CARGA DE DATOS EN EL FORMULARIO PARA MODIFICAR PERSONAL
   onPerUpdate(event: any) {
-
     this.flagUpdatePer = true;
     this.idPersona = event.data._id;
     this.cedula = event.data.cedula;
@@ -305,7 +344,6 @@ export class PersonalComponent implements OnInit {
     this.banFechaNac = this.dt.toLocaleDateString();
     this.close();
   }
-
   //POSICION DEL CURSOR CARGO PERSONAL
   setCursorCargoPerAdd() {
     setTimeout(function () {
@@ -325,7 +363,6 @@ export class PersonalComponent implements OnInit {
       descripcion_cargo_personal: this.descripcionCargoPersonal,
       id_estado: this.selectEstado.id
     }
-
     //Required fields
     if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
       this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
@@ -370,7 +407,6 @@ export class PersonalComponent implements OnInit {
       this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
   }
-
   //POSICION DEL CURSOR PERSONAL
   setCursorPerAdd() {
     setTimeout(function () {
@@ -379,7 +415,6 @@ export class PersonalComponent implements OnInit {
   }
 
   onChangeCargPer() {
-
     if (this.descripcionCargoPersonal.length == 1)
       this.descripcionCargoPersonal = this.descripcionCargoPersonal.charAt(0).toUpperCase();
 
@@ -388,7 +423,6 @@ export class PersonalComponent implements OnInit {
 
     if (this.descripcionCargoPersonal.length > 1)
       document.getElementById("descCargoPerAdd").style.borderColor = "#DADAD2";
-
   }
 
   onChange() {
@@ -438,7 +472,7 @@ export class PersonalComponent implements OnInit {
 
   // METODO PARA FECHAS
   public getDate(): number {
-    this.fechaNacimientoString = this.dt.toLocaleDateString();
+    //this.fechaNacimientoString = this.dt.toLocaleDateString();
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
 
@@ -505,6 +539,19 @@ export class PersonalComponent implements OnInit {
     //Register Personal
     this.personalService.registerPersonal(personal).subscribe(data => {
       //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      //add user
+      const newUser = {
+        username: this.cedula,
+        name: this.nombres + this.apellidos,
+        password: this.cedula,
+        email: this.email
+      }
+      this.authService.registerUser(newUser).subscribe(data => {
+      }, err => {
+        console.log(err);
+        this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      })
+
       this.ngOnInit();
       this.showDialogPerAdd = false;
     }, err => {
@@ -512,7 +559,6 @@ export class PersonalComponent implements OnInit {
       console.log(err);
       this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
-
   }
 
   //MODIFICAR PERSONAL

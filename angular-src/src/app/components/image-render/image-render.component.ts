@@ -8,7 +8,7 @@ import { MdDialog } from '@angular/material';
                   <img [src]="renderValue" style= "width:50%"/>
              </div>`,*/
   //template: `<i class="fa fa-picture-o fa-lg" aria-hidden="true" (click)="openDialog()"></i>`,
-  template: `<template #toolTipTemplate><img src={{renderValue}} width="100%"/></template>
+  template: `<ng-template #toolTipTemplate><img src={{renderValue}} width="100%"/></ng-template>
              <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
                 <i class="fa fa-picture-o fa-lg" aria-hidden="true" (click)="openDialog()"></i>
              </a>`

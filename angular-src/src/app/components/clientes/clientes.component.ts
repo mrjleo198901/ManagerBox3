@@ -3,6 +3,8 @@ import { ValidateService } from '../../services/validate.service';
 import { FlashMessagesService } from 'angular2-flash-messages';
 import * as moment from 'moment';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
+import { ClienteService } from '../../services/cliente.service';
+import { TipoClienteService } from '../../services/tipo-cliente.service'
 
 @Component({
   selector: 'app-clientes',
@@ -11,23 +13,25 @@ import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 })
 
 export class ClientesComponent implements OnInit {
-  source: LocalDataSource = new LocalDataSource();
+  sourceTC: LocalDataSource = new LocalDataSource();
+  sourceC: LocalDataSource = new LocalDataSource();
   showDialog = false;
   showDialog1 = false;
+  showDialog2 = false;
+  showDialog3 = false;
   cedula: string;
   nombre: string;
   apellido: string;
   telefono: string;
   email: string;
-  fechaNacimiento: Date;
   fechaNacimientoString: string;
   sexo: number;
-  sexoString: string;
+  selected_tipo_cliente;
   flagUpdate: boolean;
   flagCreate: boolean;
   oldUser;
   public dt: Date = new Date();
-  settings = {
+  settingsC = {
     mode: 'external',
     columns: {
       cedula: {
@@ -42,14 +46,17 @@ export class ClientesComponent implements OnInit {
       telefono: {
         title: 'Telefono'
       },
-      email: {
+      correo: {
         title: 'Email'
       },
-      fechaNacimientoString: {
+      fecha_nacimiento: {
         title: 'Fecha Nacimiento'
       },
       sexo: {
         title: 'Sexo'
+      },
+      id_tipo_cliente: {
+        title: 'Tipo Cliente'
       }
     },
     actions: {
@@ -62,47 +69,47 @@ export class ClientesComponent implements OnInit {
       //class: 'font-size: 200%;'
     }
   };
-  data = [
-    {
-      cedula: "0502926819",
-      nombre: "Jorge",
-      apellido: "Muñoz",
-      telefono: "0987327418",
-      email: "jmunoz@riobytes.com",
-      fechaNacimientoString: "1/8/1989",
-      sexo: "M"
+  settingsTC = {
+    mode: 'external',
+    noDataMessage: 'No existen registros',
+    columns: {
+      _id: {
+        title: 'ID',
+        width: '70px',
+        filter: false
+      },
+      desc_tipo_cliente: {
+        title: 'Nombre',
+        width: '450px'
+      }
     },
-    {
-      cedula: "0602926819",
-      nombre: "Jairo",
-      apellido: "Gonzalez",
-      telefono: "0987327418",
-      email: "jgonzalez@riobytes.com",
-      fechaNacimientoString: "3/8/1989",
-      sexo: "M"
+    actions: {
+      //columnTitle: '',
+      add: true,
+      edit: true,
+      delete: true
     },
-    {
-      cedula: "1206310052",
-      nombre: "Juan",
-      apellido: "Mishquero",
-      telefono: "0987327418",
-      email: "jmishquero@riobytes.com",
-      fechaNacimientoString: "10/2/1989",
-      sexo: "M"
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
     }
-  ];
-  
+  };
+  clientes: any = [];
+  tipo_clientes: any = [];
+  showDatepicker;
+
   constructor(
     private validateService: ValidateService,
+    private tipoClienteService: TipoClienteService,
+    private clienteService: ClienteService,
     private flashMessagesService: FlashMessagesService,
     public el: ElementRef, public renderer: Renderer) {
     renderer.listenGlobal('document', 'change', (event) => {
-      //Set time in datepicker
       this.dt = moment(this.fechaNacimientoString, 'MM/DD/YYYY').toDate();
     });
     this.sexo = 1;
     this.flagCreate = false;
     this.flagUpdate = false;
+    this.showDatepicker = false;
   }
 
   ngOnInit() {
@@ -114,11 +121,35 @@ export class ClientesComponent implements OnInit {
     this.apellido = "";
     this.telefono = "";
     this.email = "";
-    //Load data to localDataSource
-    this.source = new LocalDataSource();
-    this.source.load(this.data);
-    //this.validateService.getScreen();
+    this.selected_tipo_cliente = "";
 
+    /* Get Tipo Productos*/
+    this.tipoClienteService.getAll().subscribe(tc => {
+      this.tipo_clientes = tc;
+      this.sourceTC = new LocalDataSource();
+      this.sourceTC.load(this.tipo_clientes);
+      /* Get Productos*/
+      this.clienteService.getAll().subscribe(c => {
+        this.clientes = c;
+        let i = 0;
+        for (let x of c) {
+          let desc = this.search(x.id_tipo_cliente, this.tipo_clientes);
+          this.clientes[i].id_tipo_cliente = desc;
+          i++;
+        }
+        //Load data to localDataSource
+        this.sourceC = new LocalDataSource();
+        this.sourceC.load(this.clientes);
+      }, err => {
+        console.log(err);
+        return false;
+      });
+
+    },
+      err => {
+        console.log(err);
+        return false;
+      });
   }
 
   change($event) {
@@ -145,6 +176,7 @@ export class ClientesComponent implements OnInit {
     this.flagCreate = true;
     this.ngOnInit();
     this.dt = new Date();
+
     //this.fechaNacimientoString = this.dt.toLocaleDateString();
   }
 
@@ -156,15 +188,17 @@ export class ClientesComponent implements OnInit {
     this.nombre = event.data.nombre;
     this.apellido = event.data.apellido;
     this.telefono = event.data.telefono;
-    this.email = event.data.email;
-    this.fechaNacimientoString = event.data.fechaNacimientoString;
+    this.email = event.data.correo;
+    this.fechaNacimientoString = event.data.fecha_nacimiento
     if (event.data.sexo.localeCompare('M') === 0) {
       this.sexo = 1;
     } else {
       this.sexo = 2;
     }
+    this.selected_tipo_cliente = event.data.id_tipo_cliente
+    console.log(this.selected_tipo_cliente)
     //Set time in datepicker
-    this.dt = moment(event.data.fechaNacimientoString, 'MM/DD/YYYY').toDate();
+    //this.dt = moment(event.data.fechaNacimientoString, 'DD/MM/YYYY').toDate();
   }
 
   saveUser() {
@@ -176,22 +210,25 @@ export class ClientesComponent implements OnInit {
     }
     let fecha = new Date(this.getDate()).toLocaleDateString().split("/");
     let f1 = [fecha[1], fecha[0], fecha[2]].join('/');
+   
     const newClient = {
       cedula: this.cedula,
       nombre: this.nombre,
       apellido: this.apellido,
       telefono: this.telefono,
-      email: this.email,
-      fechaNacimientoString: f1,
-      sexo: nSexo
+      correo: this.email,
+      fecha_nacimiento: f1,
+      sexo: nSexo,
+      id_tipo_cliente: this.selected_tipo_cliente._id
     }
+    console.log(newClient)
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
       this.flashMessagesService.show('Campos vacios', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
     // Validate Email
-    if (!this.validateService.validateEmail(newClient.email)) {
+    if (!this.validateService.validateEmail(newClient.correo)) {
       this.flashMessagesService.show('Porfavor ingresa un mail valido', { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
@@ -203,11 +240,15 @@ export class ClientesComponent implements OnInit {
       this.flashMessagesService.show(valRes[0], { cssClass: 'alert-danger', timeout: 2000 });
       return false;
     }
-    //this.flashMessagesService.grayOut(true);
-    this.flashMessagesService.show('Ingreso Exitoso', { cssClass: 'alert-success', timeout: 2000 });
-    this.source.add(newClient);
-    this.source.refresh();
-    this.ngOnInit();
+    this.clienteService.registerCliente(newClient).subscribe(data => {
+      this.flashMessagesService.show('Ingreso Exitoso', { cssClass: 'alert-success', timeout: 2000 });
+      this.sourceC.add(newClient);
+      this.sourceC.refresh();
+      this.ngOnInit();
+    }, err => {
+      console.log(err);
+      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+    })
   }
 
   updateUser() {
@@ -248,8 +289,8 @@ export class ClientesComponent implements OnInit {
     }
     this.flashMessagesService.show('Ingreso Exitoso', { cssClass: 'alert-success', timeout: 2000 });
     //console.log(this.oldUser);
-    this.source.update(this.oldUser, newClient);
-    this.source.refresh();
+    this.sourceC.update(this.oldUser, newClient);
+    this.sourceC.refresh();
     this.ngOnInit();
     this.showDialog1 = false;
     //this.flagUpdate = false;
@@ -258,7 +299,19 @@ export class ClientesComponent implements OnInit {
   public getDate(): number {
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
+
+  public showCalendar() {
+    if (this.showDatepicker == false)
+      this.showDatepicker = true
+    else
+      this.showDatepicker = false
+  }
+
+  search(id, myArray) {
+    for (let entry of myArray) {
+      if (entry._id === id) {
+        return entry.desc_tipo_cliente;
+      }
+    }
+  }
 }
-
-
-

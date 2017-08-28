@@ -6,27 +6,27 @@ import { Observable } from 'rxjs/Rx';
 const url = 'http://localhost:3000/api/';
 
 @Injectable()
-export class TipoProductoService {
+export class TipoClienteService {
 
   constructor(private http: Http) { }
 
-  registerTipoProducto(tipoProducto) {
+  registerTipoCliente(tipoCliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'tipo_producto', tipoProducto, { headers: headers })
+    return this.http.post(url + 'tipo_cliente', tipoCliente, { headers: headers })
       .map(res => res.json())
     /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
   }
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'tipo_producto', { headers: headers })
+    return this.http.get(url + 'tipo_cliente', { headers: headers })
       .map(res => res.json());
   }
-  updateTipoProducto(tipoProducto) {
+  updateTipoCliente(tipoCliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'tipo_producto/' + tipoProducto.id, tipoProducto, { headers: headers })
+    return this.http.put(url + 'tipo_cliente/' + tipoCliente.id, tipoCliente, { headers: headers })
       .map(res => res.json())
     /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
   }

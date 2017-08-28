@@ -17,8 +17,6 @@ const app = express();
 //Connect to database
 mongoose.connect(config.database);
 
-const users = require('./routes/users');
-
 //Port number
 const port = 3000;
 
@@ -36,14 +34,11 @@ app.use(passport.session());
 
 require('./config/passport')(passport);
 
-
-app.use('/users', users);
-
 //index route
 app.get('/', (req, res) => {
     res.send('Invalid Endpoint');
 })
-
+app.use('/api', require('./routes/users'));
 app.use('/api', require('./routes/cargoPersonalApi'));
 app.use('/api', require('./routes/clienteApi'));
 app.use('/api', require('./routes/comprasApi'));

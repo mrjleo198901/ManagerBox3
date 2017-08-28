@@ -20,10 +20,8 @@ export class ValidateService {
   }
 
   validateClient(client) {
-    if (client.cedula == undefined || client.nombre == undefined || client.apellido == undefined ||
-      client.telefono == undefined || client.email == undefined || client.fechaNacimientoString == undefined ||
-      client.cedula == "" || client.nombre == "" || client.apellido == "" ||
-      client.telefono == "" || client.email == "" || client.fechaNacimientoString == "") {
+    if (client.id_tipo_cliente == "" || client.cedula == "" || client.nombre == "" || client.apellido == ""
+      || client.telefono == "" || client.correo == "" || client.fecha_nacimiento == "") {
       return false;
     } else {
       return true;

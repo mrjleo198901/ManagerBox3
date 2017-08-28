@@ -3,10 +3,13 @@ import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { tokenNotExpired } from 'angular2-jwt';
 
+const url = 'http://localhost:3000/api/';
+
 @Injectable()
 export class AuthService {
   authToken: any;
   user: any;
+ 
   //isDev: boolean;
 
   constructor(private http: Http) { }
@@ -14,7 +17,7 @@ export class AuthService {
   registerUser(user) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/users/register', user, { headers: headers })
+    return this.http.post(url + 'register', user, { headers: headers })
       .map(res => res.json());
 
   }
@@ -22,7 +25,7 @@ export class AuthService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     //let ep = this.prepEndpoint('users/authenticate');
-    return this.http.post('http://localhost:3000/users/authenticate', user, { headers: headers })
+    return this.http.post(url + 'authenticate', user, { headers: headers })
       .map(res => res.json());
   }
   getProfile() {
@@ -31,7 +34,7 @@ export class AuthService {
     headers.append('Authorization', this.authToken);
     headers.append('Content-Type', 'application/json');
     //let ep = this.prepEndpoint('users/profile');
-    return this.http.get('http://localhost:3000/users/profile', { headers: headers })
+    return this.http.get(url + 'profile', { headers: headers })
       .map(res => res.json());
   }
   storeUserData(token, user) {
@@ -58,16 +61,4 @@ export class AuthService {
     this.user = null;
     localStorage.clear();
   }
-
-  //prueba
-  getAll() {
-    let headers = new Headers();
-    this.loadToken();
-    headers.append('Authorization', this.authToken);
-    headers.append('Content-Type', 'application/json');
-    //let ep = this.prepEndpoint('users/profile');
-    return this.http.get('http://localhost:3000/api/tipo_producto', { headers: headers })
-      .map(res => res.json());
-  }
-
 }

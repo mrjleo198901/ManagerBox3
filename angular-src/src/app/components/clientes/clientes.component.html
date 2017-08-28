@@ -1,6 +1,31 @@
-<h2 class="page-header">Clientes</h2>
-<ng2-smart-table id="dtClientes" [settings]="settings" [source]="source" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
-    (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()"></ng2-smart-table>
+<h2 class="page-header">Gestion de Clientes</h2>
+<div (click)="$event.preventDefault()">
+    <tabset [justified]="true">
+        <tab heading="Tipo Clientes">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr>
+                <h3 style="text-align:center">Tipo de Clientes</h3>
+                <hr>
+            </div>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = !showDialog2;onCreateTC($event);setCursorAddTC()"
+                    (edit)="showDialog3 = !showDialog3;onUpdateTC($event);setCursorUpdateTC()"></ng2-smart-table>
+            </div>
+        </tab>
+        <tab heading="Clientes">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr>
+                <h3 style="text-align:center">Clientes</h3>
+                <hr>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
+                    (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()"></ng2-smart-table>
+            </div>
+        </tab>
+    </tabset>
+</div>
+
 <!-- ADD CLIENT -->
 <app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog">
     <h3 style="text-align: center">
@@ -50,28 +75,35 @@
         </div>
         <br>
     </div>
-    <div class="col-lg-12 col-md-12">
-        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
-    </div>
     <div class="col-lg-6 col-md-6">
+        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
         <!-- Fecha de nacimiento -->
         <div class="input-group col-lg-12 col-md-12">
             <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fechaNacimientoString" id="fecha" name="fecha"
                 placeholder="MM/DD/YYYY" class="form-control  input-sm">
-            <span class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+            <span (click)="showCalendar()" class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
         </div>
     </div>
     <div class="col-lg-6 col-md-6">
+        <label class="control-label" for="tipoC">Tipo Cliente</label>
+        <select [(ngModel)]="selected_tipo_cliente" id="tipoC" name="tipoC" class="form-control input-sm">
+            <option value="" disabled selected hidden>Selecciona...</option>
+            <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
+        </select>
+    </div>
+    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
         <!--calendar-->
         <div style="display:inline-block;text-align: center">
             <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
         </div>
     </div>
-    <br>
     <!-- Button -->
-    <div class="form-group" style="text-align: center">
-        <button class="btn btn-primary" (click)="saveUser()" style="width: 25%">Registrar</button>
-        <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
+    <div class="col-lg-12 col-md-12">
+        <br>
+        <div class="form-group" style="text-align: center">
+            <button class="btn btn-primary" (click)="saveUser()" style="width: 25%">Registrar</button>
+            <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
+        </div>
     </div>
 </app-dialog>
 
@@ -124,18 +156,23 @@
         </div>
         <br>
     </div>
-    <div class="col-lg-12 col-md-12">
-        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
-    </div>
     <div class="col-lg-6 col-md-6">
+        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
         <!-- Fecha de nacimiento -->
         <div class="input-group col-lg-12 col-md-12">
             <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fechaNacimientoString" id="fechaU" name="fechaU"
                 placeholder="MM/DD/YYYY" class="form-control  input-sm">
-            <span class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+            <span (click)="showCalendar()" class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
         </div>
     </div>
     <div class="col-lg-6 col-md-6">
+        <label class="control-label" for="tipoC">Tipo Cliente</label>
+        <select [(ngModel)]="selected_tipo_cliente" id="tipoC" name="tipoC" class="form-control input-sm">
+            <option value="" disabled selected hidden>Selecciona...</option>
+            <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
+        </select>
+    </div>
+    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
         <!--calendar-->
         <div style="display:inline-block;text-align: center">
             <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
@@ -143,6 +180,7 @@
     </div>
     <br>
     <div class="col-lg-12 col-md-12">
+        <br>
         <!-- Button -->
         <div class="form-group" style="text-align: center">
             <button class="btn btn-primary" (click)="updateUser()" style="width: 25%">Actualizar</button>

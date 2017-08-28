@@ -1,39 +1,40 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, URLSearchParams } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
 
 const url = 'http://localhost:3000/api/';
 
 @Injectable()
-export class PersonalService {
+export class ClienteService {
 
   constructor(private http: Http) { }
 
-  registerPersonal(personal) {
+  registerCliente(cliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'personal', personal, { headers: headers })
+    return this.http.post(url + 'cliente', cliente, { headers: headers })
       .map(res => res.json())
   }
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal', { headers: headers })
+    return this.http.get(url + 'cliente', { headers: headers })
       .map(res => res.json());
   }
-  updatePersonal(personal) {
+  updateCliente(cliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'personal/' + personal.id, personal, { headers: headers })
+    return this.http.put(url + 'cliente/' + cliente._id, cliente, { headers: headers })
       .map(res => res.json())
   }
   getByTipo(idCargo) {
     let params: URLSearchParams = new URLSearchParams();
     params.set('id_cargo', idCargo);
+    console.log(params)
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal/', { search: params })
+    return this.http.get(url + 'cliente/', { search: params })
       .map(res => res.json())
   }
 }

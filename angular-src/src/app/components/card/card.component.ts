@@ -224,6 +224,7 @@ export class CardComponent implements OnInit {
     }
     this.selectedTab = 1;
   };
+  
   public alertMe2(st) {
     console.log(st)
     if (!this.selectedTab != st && this.selectedTab > 0) {

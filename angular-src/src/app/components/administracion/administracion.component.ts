@@ -132,7 +132,6 @@ export class AdministracionComponent implements OnInit {
         }
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
-
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
