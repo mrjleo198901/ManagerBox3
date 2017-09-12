@@ -9,8 +9,7 @@ import { PersonalService } from '../../services/personal.service'
   styleUrls: ['./facturacion.component.css']
 })
 export class FacturacionComponent implements OnInit {
-
-  paths: { path: string, tipoProducto: string, nombre: string }[] = [];
+  paths: { path: string, tipoProducto: string, nombre: string, precio_unitario: number, cant_existente: number }[] = [];
   pathsType: { path: string, tipoProducto: string, nombre: string }[] = [];
   selectedProductos;
   showDialogConfirmar = false;
@@ -22,6 +21,9 @@ export class FacturacionComponent implements OnInit {
   listaSize = false;
   validCard: String;
   listMeseros: any;
+  selectedProd: any;
+  displayDialog: boolean;
+  checked: boolean = false;
 
   change($event) {
     //alert($event)
@@ -44,7 +46,7 @@ export class FacturacionComponent implements OnInit {
       this.productoService.getAll().subscribe(p => {
         let index = 0;
         for (let entry of p) {
-          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre };
+          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_unitario: entry.precio_unitario, cant_existente: entry.cant_existente };
           this.paths[index] = aux;
           index++;
         }
@@ -54,16 +56,14 @@ export class FacturacionComponent implements OnInit {
         let ind = 0;
         for (let entry of this.paths) {
           if (entry.tipoProducto === tipo) {
-            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre };
+            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_unitario: entry.precio_unitario, cant_existente: entry.cant_existente};
             this.pathsType[ind] = aux;
             ind++;
           }
         }
-
       }, err => {
         console.log(err);
       });
-
 
     }, err => {
       console.log(err);
@@ -77,7 +77,7 @@ export class FacturacionComponent implements OnInit {
     this.validCard = "ñ1006771_";
     let idCargo = "59937c6337eac33cd4819873";
     this.personalService.getByTipo(idCargo).subscribe(p => {
-      this.listMeseros=p;
+      this.listMeseros = p;
       //console.log(this.listMeseros)
     }, err => {
       console.log(err);
@@ -163,6 +163,14 @@ export class FacturacionComponent implements OnInit {
         document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
       }
     }
+  }
+
+  selectProduct(prod) {
+    this.selectedProd = prod;
+    this.displayDialog = true;
+  }
+  onDialogHide() {
+    this.selectedProd = null;
   }
 
 }

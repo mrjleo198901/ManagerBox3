@@ -17,7 +17,6 @@ export class PersonalComponent implements OnInit {
 
   sourcePer: LocalDataSource = new LocalDataSource();
   sourceCargoPer: LocalDataSource = new LocalDataSource();
-
   showDialogCargoPerAdd = false;
   showDialogCargoPerUp = false;
   showDialogPerAdd = false;
@@ -28,11 +27,9 @@ export class PersonalComponent implements OnInit {
   flagCreatePer: boolean;
   showDatepicker: boolean;
   banCalendar: number;
-
   showPersona: any;
   flagUserFound;
   modulosPersonal: { nombre: string, checked: boolean }[] = [];
-
   // Atributos del personal
   idPersona: string;
   cedula: string;
@@ -47,47 +44,25 @@ export class PersonalComponent implements OnInit {
   cargo: string;
   oldUser;
   public dt: Date = new Date();
-
   //Atributos del cargo personal
   idCargoPersona: string;
   descripcionCargoPersonal: string;
   estado: string;
-
   // varales como banderas
   banFechaNac: string;
   checked;
   align = 'start';
   position = 'after';
   color = 'primary';
-
   // Selecciones
   selectEstado;
   selectCargoPer;
-
   // listas
   listaEstado: any = [];
   listaCargoPersonal: any = [];
   listaPersonal: any = [];
 
-  tags = [{
-    name: 'Administrar',
-    checked: false
-  }, {
-    name: 'Personal',
-    checked: true
-  }, {
-    name: 'Atencion',
-    checked: false
-  }, {
-    name: 'Facturacion',
-    checked: true
-  }, {
-    name: 'Clientes',
-    checked: false
-  }, {
-    name: 'Reportes',
-    checked: false
-  }];
+  tags = [{ name: 'Administrar', checked: false }, { name: 'Personal', checked: true }, { name: 'Atencion', checked: false }, { name: 'Facturacion', checked: true }, { name: 'Clientes', checked: false }, { name: 'Reportes', checked: false }];
 
   constructor(
     private cargoPersonalService: CargoPersonalService,
@@ -195,8 +170,9 @@ export class PersonalComponent implements OnInit {
   getCheck() {
     console.log(this.modulosPersonal)
   }
-  hideDetails(){
-    this.flagUserFound= false;
+
+  hideDetails() {
+    this.flagUserFound = false;
   }
 
   //BUSCAR CARGO PERSONAL
@@ -356,7 +332,6 @@ export class PersonalComponent implements OnInit {
       document.getElementById('descCargoPerAdd').focus();
     }, 500)
   }
-
   //INGRESO CARGO PERSONAL
   onAddCargoPersonalSubmit() {
     const cargoPersonal = {
@@ -469,13 +444,11 @@ export class PersonalComponent implements OnInit {
       document.getElementById("email").style.borderColor = "#DADAD2";
 
   }
-
   // METODO PARA FECHAS
   public getDate(): number {
     //this.fechaNacimientoString = this.dt.toLocaleDateString();
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
-
   // MOSTRAR Y CERRAR CALENDARIO
   showCalendar() {
     if (this.banCalendar == 1) {
@@ -487,7 +460,6 @@ export class PersonalComponent implements OnInit {
       this.descripcionCargoPersonal = this.dt.toLocaleDateString();
     }
   }
-
   ///CERRAR CALENDARIO
   hideCalendar() {
     var fe = this.dt.toLocaleDateString();
@@ -505,14 +477,12 @@ export class PersonalComponent implements OnInit {
   close() {
     this.showDatepicker = false;
   }
-  //
 
   setCursorPerUp() {
     setTimeout(function () {
       document.getElementById('ci').focus();
     }, 500)
   }
-
   //INGRESO PERSONAL
   onAddPerSubmit() {
     const personal = {
@@ -560,7 +530,6 @@ export class PersonalComponent implements OnInit {
       this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
     });
   }
-
   //MODIFICAR PERSONAL
   onUpdatePerSubmit() {
     const personal = {

@@ -36,3 +36,11 @@
   top: 0;
   left: 4px;
 }
+
+:host /deep/ .ui-blockui{
+  z-index: 1;
+}
+:host /deep/ .ui-dialog-titlebar{
+  font-size: 18px;
+  text-align: center;
+}

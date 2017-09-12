@@ -1,0 +1,18 @@
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Message } from 'primeng/primeng';
+
+type Severities = 'success' | 'info' | 'warn' | 'error';
+
+@Injectable()
+export class MessageGrowlService {
+
+  constructor() { }
+
+  notificationChange: Subject<Object> = new Subject<Object>();
+
+  notify(severity: Severities, summary: string, detail: string) {
+    this.notificationChange.next({ severity, summary, detail });
+  }
+
+}

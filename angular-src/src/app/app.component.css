@@ -1,0 +1,5 @@
+:host /deep/ .ui-dialog-titlebar{
+    font-size: 18px;
+    text-align: center;
+    z-index: 1;
+  }

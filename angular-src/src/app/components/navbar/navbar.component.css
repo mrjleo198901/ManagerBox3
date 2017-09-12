@@ -1,0 +1,6 @@
+/*.modal-backdrop {
+    z-index: 1;
+}*/
+.navbar{
+    z-index: 2;
+}

@@ -37,4 +37,10 @@ export class ClienteService {
     return this.http.get(url + 'cliente/', { search: params })
       .map(res => res.json())
   }
+  deleteCliente(cliente) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(url + 'cliente/' + cliente, { headers: headers })
+      .map(res => res.json())
+  }
 }

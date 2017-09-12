@@ -30,4 +30,10 @@ export class TipoProductoService {
       .map(res => res.json())
     /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
   }
+  deleteTipoProducto(tipoProducto) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(url + 'tipo_producto/' + tipoProducto, { headers: headers })
+      .map(res => res.json())
+  }
 }

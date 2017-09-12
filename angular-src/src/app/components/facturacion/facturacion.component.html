@@ -1,4 +1,4 @@
-<h2 class="page-header">Facturacion</h2>
+<h2 class="page-header">Ventas</h2>
 <!--left DIV-->
 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
     <div (click)="$event.preventDefault()">
@@ -7,13 +7,24 @@
                 <hr>
                 <h3 style="text-align: center">{{tabz.title}}</h3>
                 <hr>
-                <div *ngFor="let path of pathsType; let i = index">
+                <!--<div *ngFor="let path of pathsType; let i = index">
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         <div class="example-tooltip-host" mdTooltip={{path.nombre}} [mdTooltipPosition]="position">
                             <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)"/>
                         </div>
                     </div>
-                </div>
+                </div>-->
+                <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16">
+                    <ng-template let-prod let-i="index" pTemplate="item">
+                        <div class="ui-g-12 ui-md-3">
+                            <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
+                                <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
+                                <hr class="ui-widget-content" style="border-top:0;">
+                                <i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer"></i>
+                            </p-panel>
+                        </div>
+                    </ng-template>
+                </p-dataGrid>
             </tab>
         </tabset>
     </div>
@@ -89,3 +100,29 @@
         <button class="btn btn-default" (click)="showDialogConfirmar = !showDialogConfirmar" style="width: 25%">Cancelar</button>
     </div>
 </app-dialog>
+
+<p-dialog header="Detalle Producto" [(visible)]="displayDialog" [responsive]="true" [modal]="true" width="300" (onAfterHide)="onDialogHide()">
+    <div class="ui-grid ui-grid-responsive ui-grid-pad" *ngIf="selectedProd" style="font-size:16px;text-align:center;padding:20px">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12" style="text-align:center"><img src="{{selectedProd.path}}" width="80"></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Nombre: </div>
+            <div class="ui-grid-col-8">{{selectedProd.nombre}}</div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Precio: </div>
+            <div class="ui-grid-col-8">${{selectedProd.precio_unitario}}</div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Cantidad Existente: </div>
+            <div class="ui-grid-col-8">{{selectedProd.cant_existente}}</div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Promocion Activa: </div>
+            <div class="ui-grid-col-8">
+                <p-toggleButton [(ngModel)]="checked" onLabel="Si" offLabel="No" onIcon="fa-check" offIcon="fa-times" disabled="true"></p-toggleButton>
+            </div>
+        </div>
+    </div>
+</p-dialog>

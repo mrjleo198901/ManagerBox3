@@ -30,4 +30,10 @@ export class TipoClienteService {
       .map(res => res.json())
     /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
   }
+  deleteTipoCliente(tipoCliente) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(url + 'tipo_cliente/' + tipoCliente, { headers: headers })
+      .map(res => res.json())
+  }
 }

@@ -8,7 +8,6 @@
     '@angular': 'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
     'rxjs': 'node_modules/rxjs',
-    '@ngui/ngui': 'https://npmcdn.com/ng2-ui/ngui/dist/ngui.umd.js',
     'angular2-fontawesome': 'node_modules/angular2-fontawesome'
   };
   // los packages le dicen a System cómo cargar un fichero cuando no tiene nombre/extensión

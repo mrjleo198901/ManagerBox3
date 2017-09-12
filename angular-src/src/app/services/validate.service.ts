@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { MessageGrowlService } from './message-growl.service';
 
 @Injectable()
 export class ValidateService {
 
-  constructor() { }
+  constructor(private messageGrowlService: MessageGrowlService) { }
 
   validateRegister(user) {
     if (user.name == undefined || user.email == undefined || user.username == undefined || user.password == undefined ||
@@ -52,7 +53,7 @@ export class ValidateService {
       document.getElementById("nombrePC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.precio_unitario == null) {
+    if (producto.precio_costo == null) {
       document.getElementById("puPC").style.borderColor = "#FE2E2E";
       res = false;
     }
@@ -68,10 +69,10 @@ export class ValidateService {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.path == undefined) {
+    /*if (producto.path == undefined) {
       document.getElementById("filesC").style.borderColor = "#FE2E2E";
       res = false;
-    }
+    }*/
     return res;
   }
 
@@ -81,8 +82,8 @@ export class ValidateService {
       document.getElementById("nombrePU").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.precio_unitario == null) {
-      document.getElementById("puPU").style.borderColor = "#FE2E2E";
+    if (producto.precio_costo== null) {
+      document.getElementById("pcPU").style.borderColor = "#FE2E2E";
       res = false;
     }
     if (producto.utilidad == null) {
@@ -97,10 +98,10 @@ export class ValidateService {
       document.getElementById("tipoPU").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.path == undefined) {
+    /*if (producto.path == undefined) {
       document.getElementById("filesU").style.borderColor = "#FE2E2E";
       res = false;
-    }
+    }*/
     return res;
   }
 
@@ -218,7 +219,8 @@ export class ValidateService {
     /* menor que 6 (0,1,2,3,4,5) para personas naturales */
 
     if (d3 == 7 || d3 == 8) {
-      alert('El tercer dígito ingresado es inválido');
+      //alert('El tercer dígito ingresado es inválido');
+      this.messageGrowlService.notify('error', 'Error', 'El tercer dígito ingresado es inválido!');
       return false;
     }
 
@@ -275,18 +277,21 @@ export class ValidateService {
     /* ahora comparamos el elemento de la posicion 10 con el dig. ver.*/
     if (pub == true) {
       if (digitoVerificador != d9) {
-        alert('El ruc de la empresa del sector público es incorrecto.');
+        //alert('El ruc de la empresa del sector público es incorrecto.');
+        this.messageGrowlService.notify('error', 'Error', 'El ruc de la empresa del sector público es incorrecto!');
         return false;
       }
       /* El ruc de las empresas del sector publico terminan con 0001*/
       if (numero.substring(9, 4) != '0001') {
-        alert('El ruc de la empresa del sector público debe terminar con 0001');
+        //alert('El ruc de la empresa del sector público debe terminar con 0001');
+        this.messageGrowlService.notify('error', 'Error', 'El ruc de la empresa del sector público debe terminar con 0001!');
         return false;
       }
     }
     else if (pri == true) {
       if (digitoVerificador != d10) {
-        alert('El ruc de la empresa del sector privado es incorrecto.');
+        //alert('El ruc de la empresa del sector privado es incorrecto.');
+        this.messageGrowlService.notify('error', 'Error', 'El ruc de la empresa del sector privado es incorrecto!');
         return false;
       }
       //verificar esta parte con los demas RUC
@@ -294,7 +299,8 @@ export class ValidateService {
         numero.substring(13, 10) != '003' && numero.substring(13, 10) != '004' && numero.substring(13, 10) != '005' &&
         numero.substring(13, 10) != '006' && numero.substring(13, 10) != '007' && numero.substring(13, 10) != '008' &&
         numero.substring(13, 10) != '009')) {
-        alert('El ruc de la empresa del sector privado debe terminar con 001');
+        //alert('El ruc de la empresa del sector privado debe terminar con 001');
+        this.messageGrowlService.notify('error', 'Error', 'El ruc de la empresa del sector privado debe terminar con 001!');
         return false;
       }
     }
@@ -302,6 +308,7 @@ export class ValidateService {
     else if (nat == true) {
       if (digitoVerificador != d10) {
         //alert('El número de cédula de la persona natural es incorrecto.');
+        this.messageGrowlService.notify('error', 'Error', 'El número de cédula de la persona natural es incorrecto!');
         return false;
       }
 
@@ -310,9 +317,11 @@ export class ValidateService {
         numero.substring(13, 10) != '006' && numero.substring(13, 10) != '007' && numero.substring(13, 10) != '008' &&
         numero.substring(13, 10) != '009')) {
         //alert('El ruc de la persona natural debe terminar con 00*');
+        this.messageGrowlService.notify('error', 'Error', 'El ruc de la persona natural debe terminar con 00*!');
         return false;
       }
     }
+    this.messageGrowlService.notify('success', 'Éxito', 'Cedula/Ruc Correcto!');
     return true;
   }
 

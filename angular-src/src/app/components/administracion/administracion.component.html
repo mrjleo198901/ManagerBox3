@@ -1,5 +1,4 @@
 <h2 class="page-header">Administracion</h2>
-
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <tab heading="Tipo Produtos">
@@ -10,7 +9,7 @@
       </div>
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
         <ng2-smart-table id="dtTP" [settings]="settingsTP" [source]="sourceTP" (create)="showDialogTPC = !showDialogTPC;onCreateTP($event);setCursorAddTP()"
-          (edit)="showDialogTPU = !showDialogTPU;onUpdateTP($event);setCursorUpdateTP()">
+          (edit)="showDialogTPU = !showDialogTPU;onUpdateTP($event);setCursorUpdateTP()" (delete)="onDeleteTP($event)">
         </ng2-smart-table>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -25,271 +24,293 @@
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <ng2-smart-table id="dtP" [settings]="settingsP" [source]="sourceP" (create)="showDialogPC = !showDialogPC;onCreateP($event);setCursorAddP()"
-          (edit)="showDialogPU = !showDialogPU;onUpdateP($event);setCursorUpdateP()">
+          (edit)="showDialogPU = !showDialogPU;onUpdateP($event);setCursorUpdateP()" (delete)="onDeleteP($event)">
         </ng2-smart-table>
         <hr>
       </div>
     </tab>
-    <tab heading="Promociones">
+    <tab heading="Kardex">
     </tab>
-    <tab heading="Tarjetas">
+    <tab heading="Promociones">
     </tab>
   </tabset>
 </div>
 
-<!-- DIALOGS -->
-<app-dialog [(visible)]="showDialogTPC" (visibleChange)="changeTPC($event)" #dialog="dialog">
-  <h3 style="text-align: center">
+<!-- Add TP -->
+<p-dialog [(visible)]="showDialogTPC" modal="modal" width="500" [responsive]="true">
+  <p-header>
     Registrar Tipo Producto
-  </h3>
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="descTPC" style="display: inline-block">Nombre*:</label>
+      <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPC" name="descTPC"
+        placeholder="Descripcion de tipo producto" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="filesC">Logotipo*:</label>
+      <input #myInput type="file" placeholder="File Name" (change)="onChangeFileTP($event)" id="filesTP" name="filesTP" class="form-control inputfile"
+        accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS." tooltipPlacement="bottom" title=" ">
+    </div>
+  </div>
   <hr>
-  <flash-messages *ngIf="flagCreateTP"></flash-messages>
-  <!-- Nombre -->
-  <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-    <label for="descTPC" style="display: inline-block">Nombre</label>
-    <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChange($event)" id="descTPC" name="descTPC" placeholder="Descripcion de tipo producto"
-      class="form-control">
-    <br>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onAddTPSubmit()">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogTPC = false">Cancelar</button>
   </div>
-  <!-- Buttons -->
-  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onAddTPSubmit()" style="width: 25%">Registrar</button>
-    <button class="btn btn-default" (click)="showDialogTPC = !showDialogTPC" style="width: 25%">Cancelar</button>
-  </div>
-</app-dialog>
 
-<app-dialog [(visible)]="showDialogTPU" (visibleChange)="changeTPU($event)" #dialog1="dialog">
-  <h3 style="text-align: center">
+</p-dialog>
+
+<!-- Update TP -->
+<p-dialog [(visible)]="showDialogTPU" modal="modal" width="500" [responsive]="true">
+  <p-header>
     Actualizar Tipo Producto
-  </h3>
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="idTPC" style="display: inline-block">ID*:</label>
+      <input type="text" [(ngModel)]="id_mostar" id="idTPU" name="idTPU" class="form-control" title=" " readonly>
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="descTPC" style="display: inline-block">Nombre*:</label>
+      <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPU" name="descTPU"
+        placeholder="Descripcion de tipo producto" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="filesU">Logotipo*:</label>
+      <ng-template #toolTipTemplate>
+        <img src={pathLogo}} width="50%" />
+        <p>Esta imagen se mostrará por defecto, en el módulo de VENTAS"</p>
+      </ng-template>
+      <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="bottom" tooltipAnimation=false>
+          <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileTPU($event)" id="filesTPU" name="filesTPU" 
+          class="form-control inputfile" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" " >
+      </a>
+    </div>
+  </div>
   <hr>
-  <flash-messages *ngIf="flagUpdateTP"></flash-messages>
-  <!-- ID -->
-  <div class="col-lg-6 col-lg-offset-1 col-md-6 col-md-offset-1">
-    <label for="idTPC" style="display: inline-block">ID</label>
-    <input type="text" [(ngModel)]="id_mostar" id="idTPU" name="idTPU" class="form-control" readonly>
-    <br>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdateTPSubmit()">Actualizar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogTPU = false">Cancelar</button>
   </div>
-  <!-- Nombre -->
-  <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-    <label for="descTPC" style="display: inline-block">Nombre</label>
-    <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChange($event)" id="descTPU" name="descTPU" placeholder="Descripcion de tipo producto"
-      class="form-control">
-    <br>
-  </div>
-  <!-- Buttons -->
-  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onUpdateTPSubmit()" style="width: 25%">Actualizar</button>
-    <button class="btn btn-default" (click)="showDialogTPU = !showDialogTPU" style="width: 25%">Cancelar</button>
-  </div>
-</app-dialog>
+</p-dialog>
 
-<app-dialog [(visible)]="showDialogPC" (visibleChange)="changePC($event)" #dialog2="dialog">
-  <h3 style="text-align: center">
+<!-- Add Producto -->
+<p-dialog [(visible)]="showDialogPC" modal="modal" width="700" [responsive]="true" positionTop="45">
+  <p-header>
     Registrar Producto
-  </h3>
-  <hr>
-  <flash-messages *ngIf="flagCreateP"></flash-messages>
-  <!-- Nombre -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="nombrePC">Nombre</label>
-    <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChange($event)" id="nombrePC" name="nombrePC" placeholder="nombre único del producto"
-      class="form-control" required>
-  </div>
-  <!-- Logotipo -->
-  <div class="form-group col-lg-7 col-md-7 col-sm-7 col-xs-12">
-    <label for="filesC">Logotipo</label>
-    <input #myInput type="file" placeholder="File Name" (change)="onChangeFileC($event)" id="filesC" name="filesC" class="form-control inputfile"
-      accept="image/*">
-  </div>
-  <!-- Tipo producto -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="tipoPC" style="display: inline-block">Tipo Producto</label>
-    <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input">
-      <option value="" disabled selected hidden>Selecciona...</option>
-      <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
-    </select>
-  </div>
-  <!-- Precio Unitario -->
-  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
-    <label for="numero" style="display: inline-block">Precio Unitario</label>
-    <input currencyMask type="text" [(ngModel)]="precio_unitario" id="puPC" name="puPC" class="form-control" placeholder="0.00">
-  </div>
-  <!-- Utilidad -->
-  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <label for="utilidadPC">Utilidad</label>
-    <div class="input-group">
-      <span (click)="fuPorcentaje()" class="input-group-addon input-sm" id="iconPercent"><i class="fa fa-percent" aria-hidden="true"></i></span>
-      <span (click)="fuMoneda()" class="input-group-addon input-sm" id="iconUsd"><i class="fa fa-usd" aria-hidden="true"></i></span>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC" placeholder="0.00"
-        class="form-control">
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
+      <label for="nombrePC">Nombre*:</label>
+      <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="nombre único del producto"
+        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
     </div>
-  </div>
-  <!-- Cant. Existente -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="cantPC" style="display: inline-block">Cantidad Existente</label>
-    <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
-      class="form-control">
-  </div>
-  <!-- Subproducto -->
-  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-3">
-    <label for="cantPC" style="display: inline-block">Subproductos</label>
-    <div class="row" style="padding-top: 6px">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <label class="switch">
-      <input type="checkbox" [(ngModel)]="flagSubProd">
-      <span class="slider round"></span>
-      </label>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
+      <label for="filesC">Logotipo:</label>
+      <input #myInput type="file" placeholder="File Name" (change)="onChangeFileC($event)" id="filesC" name="filesC" class="form-control inputfile input-sm"
+        accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS" tooltipPlacement="bottom" title=" ">
     </div>
-  </div>
-  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <label for="tipoP" style="display: inline-block">Productos Existentes</label>
-    <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProd">
-      <option value="" disabled selected hidden>Selecciona...</option>
-      <option *ngFor="let c of productos" [ngValue]="c" >{{c.nombre}}</option>
-    </select>
-  </div>
-  <!--Ingreso a lista subproductos-->
-  <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12" *ngIf="flagSubProd">
-    <label for="subPC" style="display: inline-block">Subproductos</label>
-    <form class="form-inline">
-      &nbsp;&nbsp;(&nbsp;unidades&nbsp;
-      <input type="radio" name="radio1" [value]="1" [(ngModel)]="unidadMedidaSuproducto"> &nbsp;&nbsp;&nbsp;mililitros&nbsp;
-      <input type="radio" name="radio2" [value]="2" [(ngModel)]="unidadMedidaSuproducto">&nbsp;)&nbsp;&nbsp;
-      <div class="input-group spinner">
-        <input [(ngModel)]="cantSubprod" type="text" class="form-control input-sm" name="cantSubprod" id="cantSubprod" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-          maxlength="6">
-        <div class="input-group-btn-vertical">
-          <button id="addCant" (click)="addCant()" class="btn btn-default" type="button">
-            <i class="fa fa-caret-up"></i></button>
-          <button id="lessCant" (click)="lessCant()" class="btn btn-default" type="button">
-            <i class="fa fa-caret-down"></i></button>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="tipoPC">Tipo Producto*:</label>
+      <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input-sm">
+        <option value="" disabled selected hidden>Selecciona...</option>
+        <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
+      </select>
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="pcPC">Precio Costo*:</label>
+      <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" class="form-control input-sm" placeholder="0.00"
+        (ngModelChange)="valueChangePrecioCompra($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="utilidadPC">Ganancia*:</label>
+      <input currencyMask type="text" [options]="{ suffix :'%',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
+        placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="pvPC" style="display: inline-block">Precio Venta*:</label>
+      <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
+        (ngModelChange)="valueChangePrecioVenta($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="cantPC">Cantidad Existente*:</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
+        class="form-control input-sm">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <div style="text-align: center">
+        <label>Receta (Subproductos):</label><br>
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px">
+        </md-slide-toggle>
+      </div>
+    </div>
+    <div class="panel panel-default" style="width: 100%" *ngIf="flagSubProd">
+      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="text-align: center">
+        <label>Productos Existentes:</label>
+        <p-listbox [options]="productos" [(ngModel)]="selected_producto" filter="filter" [style]="{'text-align':'left','max-height':'180px'}"
+          id="prodExistente" name="prodExistente">
+          <ng-template let-car pTemplate="item">
+            {{car.nombre}}
+            <span class="badge">{{car.cant_existente}}</span>
+          </ng-template>
+        </p-listbox>
+      </div>
+      <div class="ui-g-3 ui-xl-2 ui-lg-3 ui-md-3 ui-sm-3" style="text-align: center">
+        <br>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+          <label>Unidad Medida:</label>
+        </div>
+        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
+          <select [(ngModel)]="unidadMedidaSuproducto" id="um" name="um" class="form-control input-sm" style="width: 100%">
+            <option value="" disabled selected hidden>Selecciona...</option>
+            <option *ngFor="let c of lstUnidades" [ngValue]="c">{{c.label}}</option>
+          </select>
+        </div>
+        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
+          <i id="addIcon" class="fa fa-plus-square fa-2x" aria-hidden="true"></i>
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+          <label>Cantidad:</label>
+        </div>
+        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
+          <p-spinner size="3" [(ngModel)]="cantSubprod" [min]="0" [max]="1000" name="cantSubprod" id="cantSubprod"></p-spinner>
+        </div>
+        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
+          <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
         </div>
       </div>
-      &nbsp;&nbsp;<i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
-    </form>
-    <br>
-    <!--<p>(Productos usados en la preparación del producto preparado)</p>-->
-    <nav *ngIf="flagListaSubProd">
-      <ul class="list-group" id="ulShow">
-        <li class="list-group-item" *ngFor="let item of subproductoV; let i = index" [attr.data-index]="i">
-          {{item.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem()" aria-hidden="true"></i>
-          <span class="badge">{{item.cantidad}}</span>
-        </li>
-      </ul>
-    </nav>
+      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
+        <label style="display: inline-block">Productos Seleccionados:</label>
+        <p-listbox [options]="subproductoV" filter="filter" [style]="{'text-align':'left','max-height':'180px'}" id="prodSeleccionado"
+          name="prodSeleccionado">
+          <ng-template let-car let-i="index" pTemplate="item">
+            {{car.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem(i)" aria-hidden="true"></i>
+            <span class="badge">{{car.cantidad}}</span> <span class="badge">$2.72</span>
+          </ng-template>
+        </p-listbox>
+      </div>
+    </div>
   </div>
-  <!-- Buttons -->
-  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onAddPSubmit()" style="width: 25%">Registrar</button>
-    <button class="btn btn-default" (click)="showDialogPC = !showDialogPC" style="width: 25%">Cancelar</button>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onAddPSubmit()">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPC = false">Cancelar</button>
   </div>
-</app-dialog>
+</p-dialog>
 
-<app-dialog [(visible)]="showDialogPU" (visibleChange)="changePU($event)" #dialog3="dialog">
-  <h3 style="text-align: center">
+<!-- Update P -->
+<p-dialog [(visible)]="showDialogPU" modal="modal" width="700" [responsive]="true" positionTop="45">
+  <p-header>
     Actualizar Producto
-  </h3>
-  <hr>
-  <flash-messages *ngIf="flagUpdateP"></flash-messages>
-  <!-- Nombre -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="nombrePU" style="display: inline-block">Nombre</label>
-    <input type="text" [(ngModel)]="productoUpdate.nombre" (ngModelChange)="onChange($event)" id="nombrePU" name="nombrePU" placeholder="nombre único del producto"
-      class="form-control">
-  </div>
-  <!-- Logotipo -->
-  <div class="form-group col-lg-7 col-md-7 col-sm-7 col-xs-12">
-    <label for="filesU" style="display: inline-block">Logotipo</label>
-    <ng-template #toolTipTemplate>
-      <img src={{productoUpdate.path}} width="100%" />
-    </ng-template>
-    <a href="#" [tooltipHtml]="toolTipTemplate">
-        <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileU($event)" id="filesU" name="filesU" 
-        class="form-control inputfile" accept="image/*"  [ngStyle]="{'color': colorUpdate}" >
-    </a>
-  </div>
-  <!-- Tipo producto -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="tipoPU" style="display: inline-block">Tipo Producto</label>
-    <select [(ngModel)]="productoUpdate.id_tipo_producto" (change)="onChangeUpdtProd($event)" id="tipoPU" name="tipoPU" class="form-control input">
-      <option value="" disabled selected hidden>Selecciona...</option>
-      <option *ngFor="let c of tipo_productos">{{c.desc_tipo_producto}}</option>
-    </select>
-  </div>
-  <!-- Precio Unitario -->
-  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-12">
-    <label for="puPU" style="display: inline-block">Precio Unitario</label>
-    <input type="text" currencyMask type="text" [(ngModel)]="productoUpdate.precio_unitario" id="puPU" name="puPU" class="form-control"
-      placeholder="0.00">
-  </div>
-  <!-- Utilidad -->
-  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <label for="utilidadPU">Utilidad</label>
-    <div class="input-group">
-      <span (click)="fuPorcentaje()" class="input-group-addon input-sm" id="iconPercent"><i class="fa fa-percent" aria-hidden="true"></i></span>
-      <span (click)="fuMoneda()" class="input-group-addon input-sm" id="iconUsd"><i class="fa fa-usd" aria-hidden="true"></i></span>
-      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.utilidad" id="utilidadPU"
-        name="utilidadPU" placeholder="0.00" class="form-control">
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
+      <label for="nombrePU">Nombre*:</label>
+      <input type="text" [(ngModel)]="productoUpdate.nombre" (ngModelChange)="onChangeNombrePU($event)" id="nombrePU" name="nombrePU"
+        placeholder="nombre único del producto" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom">
     </div>
-  </div>
-  <!-- Cant. Existente -->
-  <div class="form-group col-lg-5 col-md-5 col-sm-5 col-xs-12">
-    <label for="cantPU" style="display: inline-block">Cantidad Existente</label>
-    <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.cant_existente" id="cantPU"
-      name="cantPU" placeholder="0.00" class="form-control">
-  </div>
-  <!-- Subproducto -->
-  <div class="form-group col-lg-3 col-md-3 col-sm-3 col-xs-3">
-    <label style="display: inline-block">Subproductos</label>
-    <div class="row" style="padding-top: 6px">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <label class="switch">
-      <input type="checkbox" [(ngModel)]="flagSubProdUpdate">
-      <span class="slider round"></span>
-      </label>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
+      <label for="filesU">Logotipo</label>
+      <ng-template #toolTipTemplate>
+        <img src={{productoUpdate.path}} width="50%" />
+        <p>Esta imagen se mostrará por defecto, en el módulo de VENTAS"</p>
+      </ng-template>
+      <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="bottom" tooltipAnimation=false>
+          <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileU($event)" id="filesU" name="filesU" 
+          class="form-control inputfile input-sm" accept="image/*" [ngStyle]="{'color': colorUpdate}" >
+      </a>
     </div>
-  </div>
-  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <label for="tipoP" style="display: inline-block">Productos Existentes</label>
-    <select [(ngModel)]="selected_producto" id="tipoP" name="tipoP" class="form-control input" [disabled]="!flagSubProdUpdate">
-      <option value="" disabled selected hidden>Selecciona...</option>
-      <option *ngFor="let c of productos" [ngValue]="c" >{{c.nombre}}</option>
-    </select>
-  </div>
-  <!--Ingreso a lista subproductos-->
-  <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12" *ngIf="flagSubProdUpdate">
-    <label for="subPC" style="display: inline-block">Subproductos</label>
-    <form class="form-inline">
-      &nbsp;&nbsp;(&nbsp;unidades&nbsp;
-      <input type="radio" name="radio1" [value]="1" [(ngModel)]="unidadMedidaSuproducto"> &nbsp;&nbsp;&nbsp;mililitros&nbsp;
-      <input type="radio" name="radio2" [value]="2" [(ngModel)]="unidadMedidaSuproducto">&nbsp;)&nbsp;&nbsp;
-      <div class="input-group spinner">
-        <input [(ngModel)]="cantSubprod" type="text" class="form-control input-sm" name="cantSubprod" id="cantSubprod" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-          maxlength="6">
-        <div class="input-group-btn-vertical">
-          <button id="addCant" (click)="addCant()" class="btn btn-default" type="button">
-            <i class="fa fa-caret-up"></i></button>
-          <button id="lessCant" (click)="lessCant()" class="btn btn-default" type="button">
-            <i class="fa fa-caret-down"></i></button>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="tipoPU">Tipo Producto*:</label>
+      <select [(ngModel)]="productoUpdate.id_tipo_producto" (change)="onChangeUpdtProd($event)" id="tipoPU" name="tipoPU" class="form-control  input-sm">
+        <option value="" disabled selected hidden>Selecciona...</option>
+        <option *ngFor="let c of tipo_productos">{{c.desc_tipo_producto}}</option>
+      </select>
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="pcPU">Precio Costo*:</label>
+      <input type="text" currencyMask type="text" [(ngModel)]="productoUpdate.precio_costo" id="pcPU" name="pcPU" class="form-control input-sm"
+        placeholder="0.00" (ngModelChange)="valueChangePrecioCompraU($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="utilidadPU">Ganancia*:</label>
+      <input currencyMask type="text" type="text" [options]="{ suffix :'%',prefix: ''}" [(ngModel)]="productoUpdate.utilidad" id="utilidadPU"
+        name="utilidadPU" placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGananciaU($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="pvPU" style="display: inline-block">Precio Venta*:</label>
+      <input type="text" currencyMask type="text" [(ngModel)]="productoUpdate.precio_venta" id="pvPU" name="pvPU" placeholder="0.00"
+        class="form-control input-sm" (ngModelChange)="valueChangePrecioVentau($event)">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label for="cantPU">Cantidad Existente*:</label>
+      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.cant_existente" id="cantPU"
+        name="cantPU" placeholder="0.00" class="form-control input-sm">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <div style="text-align: center">
+        <label>Receta (Subproductos):</label><br>
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProdUpdate" style="padding-top: 7px">
+        </md-slide-toggle>
+      </div>
+    </div>
+    <div class="panel panel-default" style="width: 100%" *ngIf="flagSubProdUpdate">
+      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="text-align: center">
+        <label>Productos Existentes:</label>
+        <p-listbox [options]="productos" [(ngModel)]="selected_productoU" filter="filter" [style]="{'text-align':'left','max-height':'180px'}"
+          id="prodExistenteU" name="prodExistenteU">
+          <ng-template let-car pTemplate="item">
+            {{car.nombre}}
+            <span class="badge">{{car.cant_existente}}</span>
+          </ng-template>
+        </p-listbox>
+      </div>
+      <div class="ui-g-3 ui-xl-2 ui-lg-3 ui-md-3 ui-sm-3" style="text-align: center">
+        <br>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+          <label>Unidad Medida:</label>
+        </div>
+        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
+          <select [(ngModel)]="unidadMedidaSuproducto" id="umU" name="umU" class="form-control input-sm" style="width: 100%">
+            <option *ngFor="let c of lstUnidades" [ngValue]="c">{{c.label}}</option>
+          </select>
+        </div>
+        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
+          <i id="addIcon" class="fa fa-plus-square fa-2x" aria-hidden="true"></i>
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+          <label>Cantidad:</label>
+        </div>
+        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
+          <p-spinner size="3" [(ngModel)]="cantSubProdU" [min]="0" [max]="1000" name="cantSubProdU" id="cantSubProdU"></p-spinner>
+        </div>
+        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
+          <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemU()" aria-hidden="true" style="vertical-align: middle"></i>
         </div>
       </div>
-      &nbsp;&nbsp;<i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemUpdate()" aria-hidden="true" style="vertical-align: middle"></i>
-    </form>
-    <br>
-    <!--<p>(Productos usados en la preparación del producto preparado)</p>-->
-    <nav *ngIf="flagListaSubProd">
-      <ul class="list-group">
-        <li class="list-group-item" *ngFor="let item of productoUpdate.subproductoV; let i = index">
-          {{item.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem(i)" aria-hidden="true"></i>
-          <span class="badge">{{item.cantidad}}</span>
-        </li>
-      </ul>
-    </nav>
+      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
+        <label style="display: inline-block">Productos Seleccionados:</label>
+        <p-listbox [options]="productoUpdate.subproductoV" filter="filter" [style]="{'text-align':'left','max-height':'180px','border-color':setColorError()}">
+          <ng-template let-car let-i="index" pTemplate="item">
+            {{car.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItemU(i)" aria-hidden="true"></i>
+            <span class="badge">{{car.cantidad}}</span> <span class="badge">$2.72</span>
+          </ng-template>
+        </p-listbox>
+      </div>
+    </div>
   </div>
-  <!-- Buttons -->
-  <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-    <button class="btn btn-primary" (click)="onUpdatePSubmit()" style="width: 25%">Actualizar</button>
-    <button class="btn btn-default" (click)="showDialogPU = !showDialogPU" style="width: 25%">Cancelar</button>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePSubmit()">Actualizar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPU = false">Cancelar</button>
   </div>
-</app-dialog>
+</p-dialog>
