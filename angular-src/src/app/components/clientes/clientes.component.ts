@@ -6,8 +6,8 @@ import { ClienteService } from '../../services/cliente.service';
 import { TipoClienteService } from '../../services/tipo-cliente.service'
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
-import { NotificationsService } from 'angular2-notifications';
 import { MessageGrowlService } from '../../services/message-growl.service';
+import { FormatterService } from '../../services/formatter.service';
 
 @Component({
   selector: 'app-clientes',
@@ -121,16 +121,12 @@ export class ClientesComponent implements OnInit {
   citiesDD: any[];
 
   constructor(
-    private notificationsService: NotificationsService,
     private validateService: ValidateService,
     private tipoClienteService: TipoClienteService,
     private clienteService: ClienteService,
     public el: ElementRef, public renderer: Renderer, public dialog: MdDialog,
-    private messageGrowlService: MessageGrowlService) {
-    renderer.listenGlobal('document', 'change', (event) => {
-      //this.dt = moment(this.fecha_nacimiento, 'DD/MM/YYYY').toDate();
-    });
-
+    private messageGrowlService: MessageGrowlService,
+    private formatterService: FormatterService) {
     this.flagCreate = false;
     this.flagUpdate = false;
     this.showDatepicker = false;
@@ -148,6 +144,7 @@ export class ClientesComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("insideeee")
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
     this.sexo = "M";
@@ -156,7 +153,7 @@ export class ClientesComponent implements OnInit {
     this.apellido = "";
     this.telefono = "";
     this.correo = "";
-    /* Get Tipo Productos*/
+    /* Get Tipo Clientes*/
     this.tipoClienteService.getAll().subscribe(tc => {
       this.tipo_clientes = tc;
       this.sourceTC = new LocalDataSource();
@@ -201,13 +198,13 @@ export class ClientesComponent implements OnInit {
   setCursorAdd() {
     setTimeout(function () {
       document.getElementById('ci').focus();
-    }, 500)
+    }, 0)
   }
 
   setCursorUpdate() {
     setTimeout(function () {
       document.getElementById('ciU').focus();
-    }, 500)
+    }, 0)
   }
 
   onCreate(event: any) {
@@ -244,22 +241,6 @@ export class ClientesComponent implements OnInit {
 
   onDeleteTC(event): void {
     this.openDialog(event.data);
-  }
-
-  viewMessages() {
-    this.notificationsService.success(
-      'Some Title',
-      'Some Content',
-      {
-        position: ["left"],
-        animate: "fromRight",
-        timeOut: 5000,
-        showProgressBar: true,
-        pauseOnHover: true,
-        clickToClose: false,
-        maxLength: 10
-      }
-    )
   }
 
   openDialog(data) {
@@ -310,8 +291,10 @@ export class ClientesComponent implements OnInit {
       correo: this.correo,
       fecha_nacimiento: this.fecha_nacimiento,
       sexo: this.sexo,
-      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes)
+      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes),
+      tarjeta: ""
     }
+    console.log(newClient);
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
@@ -334,7 +317,7 @@ export class ClientesComponent implements OnInit {
       this.sourceC.add(newClient);
       this.sourceC.refresh();
       this.ngOnInit();
-      this.showDialog=false
+      this.showDialog = false
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
     }, err => {
       console.log(err);
@@ -425,6 +408,48 @@ export class ClientesComponent implements OnInit {
       } else
         //document.getElementById("ci").style.borderColor = "#DADAD2";
         document.getElementById("ci").style.borderColor = "#5ff442";//green
+    }
+  }
+
+  onChangeU() {
+    if (this.cedula.length != 10)
+      document.getElementById("ciU").style.borderColor = "#FE2E2E";
+    if (this.cedula.length != 13)
+      document.getElementById("ciU").style.borderColor = "#FE2E2E";
+    if (this.cedula.length == 10 || this.cedula.length == 13) {
+      if (!this.validateService.validarRucCedula(this.cedula)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+        document.getElementById("ciU").style.borderColor = "#FE2E2E";
+      } else
+        document.getElementById("ciU").style.borderColor = "#5ff442";//green
+    }
+  }
+
+  onChangeNombre($event) {
+    this.nombre = this.formatterService.toTitleCase(this.nombre);
+  }
+
+  onChangeApellido($event) {
+    this.apellido = this.formatterService.toTitleCase(this.apellido);
+  }
+
+  onChangeEmail($event) {
+    this.correo = this.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.correo)) {
+      document.getElementById("correo").style.borderColor = "#5ff442";
+    }
+    else {
+      document.getElementById("correo").style.borderColor = "#FE2E2E";
+    }
+  }
+
+  onChangeEmailU($event) {
+    this.correo = this.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.correo)) {
+      document.getElementById("correoU").style.borderColor = "#5ff442";
+    }
+    else {
+      document.getElementById("correoU").style.borderColor = "#FE2E2E";
     }
   }
 }

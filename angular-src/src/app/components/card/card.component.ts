@@ -5,7 +5,12 @@ import { ValidateService } from '../../services/validate.service';
 import { TabMenuModule, MenuItem } from 'primeng/primeng';
 import { ProductoService } from '../../services/producto.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
+import { ClienteService } from '../../services/cliente.service';
+import { TipoClienteService } from '../../services/tipo-cliente.service';
 import { MessageGrowlService } from '../../services/message-growl.service';
+import { ClientesComponent } from '../../components/clientes/clientes.component';
+import { FormatterService } from '../../services/formatter.service';
+import { MdDialog, MdDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-card',
@@ -17,13 +22,16 @@ export class CardComponent implements OnInit {
   validCard: String;
   baseColor: String;
   validCedula: String;
-  cedula: String;
-  nombre: String;
-  apellido: String;
-  telefono: String;
-  email: String;
-  fechaNacimiento: Date;
-  fechaShow: String;
+  // Atributos cliente
+  cedula: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  correo: string;
+  fecha_nacimiento: string;
+  sexo: string;
+  selected_tipo_cliente: string;
+
   cantHombres: number;
   cantMujeres: number;
   cantSalenM: number;
@@ -31,10 +39,9 @@ export class CardComponent implements OnInit {
   showDialog = false;
   showDialogPrint = false;
   flagUserFound = false;
+  flagCardFound = false;
   nfLael = "";
   selectedTab: number;
-  fechaNacimientoString: Date;
-  sexo: string;
   public dt: Date = new Date();
   tabs: any[];
   mapTP: any[];
@@ -55,6 +62,11 @@ export class CardComponent implements OnInit {
     { "name": 'Masculino', "pseudo": "M" },
     { "name": 'Femenino', "pseudo": "F" },
   ];
+  tipo_clientes: any = [];
+  clientes: any = [];
+  citiesDD: any[];
+  private foo: ClientesComponent;
+  searchUser: any;
 
   change($event) {
     $event = false;
@@ -66,18 +78,18 @@ export class CardComponent implements OnInit {
     public el: ElementRef, public renderer: Renderer,
     private productoService: ProductoService,
     private tipoProductoService: TipoProductoService,
-    private messageGrowlService: MessageGrowlService) {
-    renderer.listenGlobal('document', 'change', (event) => {
-      //Set time in datepicker
-      this.dt = moment(this.fechaNacimientoString, 'MM/DD/YYYY').toDate();
-    });
+    private clienteService: ClienteService,
+    private tipoClienteService: TipoClienteService,
+    private messageGrowlService: MessageGrowlService,
+    private formatterService: FormatterService,
+    public dialog: MdDialog) {
+
+    this.foo = new ClientesComponent(validateService, tipoClienteService, clienteService, el, renderer, dialog, messageGrowlService, formatterService);
+
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
 
     this.baseColor = "#f8f5f0";
-    this.validCedula = "0502926819";
-    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
-    //this.fechaNacimientoString = [initial[1], initial[0], initial[2]].join('/');
     this.es = {
       firstDayOfWeek: 1,
       dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
@@ -88,13 +100,15 @@ export class CardComponent implements OnInit {
       today: 'Hoy',
       clear: 'Borrar'
     }
+    // Atributos cliente
     this.cedula = "";
     this.nombre = "";
     this.apellido = "";
     this.telefono = "";
-    this.email = "";
+    this.correo = "";
+    //this.fecha_nacimiento = "";
     this.sexo = "M";
-
+    this.selected_tipo_cliente = "";
 
     this.tipoProductoService.getAll().subscribe(tp => {
       this.mapTP = tp;
@@ -117,7 +131,7 @@ export class CardComponent implements OnInit {
             this.mapProdShow.push(aux);
           }
         }
-        console.log(this.mapP);
+        //console.log(this.mapP);
         this.FillHeaders(this.mapP);
       }, err => {
         console.log(err);
@@ -126,14 +140,22 @@ export class CardComponent implements OnInit {
       console.log(err);
       return false;
     })
+    this.es = {
+      firstDayOfWeek: 1,
+      dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+      dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+      dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+      monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+      monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+      today: 'Hoy',
+      clear: 'Borrar'
+    }
   }
 
   ngOnInit() {
     setTimeout(function () {
       document.getElementById('cedula').focus();
     }, 50)
-    //document.getElementById('cedula').focus();
-    console.log(document.getElementById('cedula'))
     document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
     this.cantHombres = 0;
     this.cantMujeres = 0;
@@ -154,8 +176,25 @@ export class CardComponent implements OnInit {
     this.types = [];
     this.types.push({ label: 'Entran', value: 'Ingreso' });
     this.types.push({ label: 'Salen', value: 'Egreso' });
-  }
 
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
+    this.tipoClienteService.getAll().subscribe(tc => {
+      this.tipo_clientes = tc;
+      this.citiesDD = [];
+      for (let x of tc) {
+        this.citiesDD.push({ label: x.desc_tipo_cliente, value: x.desc_tipo_cliente });
+      }
+      this.selected_tipo_cliente = this.citiesDD[0].label;
+      this.clienteService.getAll().subscribe(c => {
+        this.clientes = c;
+      })
+    },
+      err => {
+        console.log(err);
+        return false;
+      });
+  }
 
   FillHeaders(mapP) {
     for (let property in mapP[0]) {
@@ -172,55 +211,51 @@ export class CardComponent implements OnInit {
   setCursorAdd() {
     setTimeout(function () {
       document.getElementById('ciA').focus();
-    }, 50)
+    }, 0)
   }
-  onCreate(event: any) {
-    //this.ngOnInit();
-  }
-  saveUser() {
-    let fecha = new Date(this.getDate()).toLocaleDateString().split("/");
-    let f1 = [fecha[1], fecha[0], fecha[2]].join('/');
+
+  saveClient() {
     const newClient = {
       cedula: this.cedula,
       nombre: this.nombre,
       apellido: this.apellido,
       telefono: this.telefono,
-      email: this.email,
-      fechaNacimientoString: f1,
-      sexo: this.sexo
+      correo: this.correo,
+      fecha_nacimiento: this.fecha_nacimiento,
+      sexo: this.sexo,
+      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes),
+      tarjeta: ""
     }
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
-      this.flashMessagesService.show('Campos vacios', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
-    // Validate Email
-    if (!this.validateService.validateEmail(newClient.email)) {
-      this.flashMessagesService.show('Porfavor ingresa un mail valido', { cssClass: 'alert-danger', timeout: 2000 });
-      return false;
-    }
-    //Validate cedula
-    let valRes = this.validateService.validadorCedula(newClient.cedula).split('/');
-    if (valRes[1].localeCompare('success') === 0) {
-      this.flashMessagesService.show(valRes[0], { cssClass: 'alert-success', timeout: 2000 });
-    } else {
-      this.flashMessagesService.show(valRes[0], { cssClass: 'alert-danger', timeout: 2000 });
-      return false;
-    }
-    this.flashMessagesService.show('Ingreso Exitoso', { cssClass: 'alert-success', timeout: 2000 });
-    this.ngOnInit();
-    this.showDialog = false;
+    this.clienteService.registerCliente(newClient).subscribe(data => {
+      /*this.foo.sourceC.add(newClient);
+      this.foo.sourceC.refresh();
+      this.foo.ngOnInit();*/
+      this.clientes.push(newClient);
+      this.showDialog = false;
+      this.checkClient();
+      this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
   }
+
   public getDate(): number {
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
+
   enterKey() {
     let o = "ñ";
     let f = "_";
     let aux = o.concat(this.cardNumber.concat(f));
     //console.log(aux)
     if (aux === this.validCard) {
-      document.getElementById('basic-addon1').style.backgroundColor = '#088A08';//dark green
+      document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
       document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
     } else {
       var x = document.getElementById('basic-addon2')
@@ -229,66 +264,81 @@ export class CardComponent implements OnInit {
 
     }
   }
+
   onChange(event) {
     let finalChar = this.cardNumber.slice(-1)
     if (finalChar.localeCompare("_") == 0) {
       let v = document.getElementById('numero');
       v.click();
       if (this.cardNumber === this.validCard) {
-        document.getElementById('basic-addon1').style.backgroundColor = '#088A08';//dark green
+        document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
         document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+        this.flagCardFound = true;
       } else {
         var x = document.getElementById('basic-addon2')
         document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
         document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+        this.flagCardFound = false;
 
       }
     }
   }
 
   checkClient() {
-    //this.showCliente = true;
-    if (this.cedula === this.validCedula) {
-      document.getElementById('basic-addon3').style.borderColor = '#6ce600';
-      this.flagUserFound = true;
-
-    } else {
+    this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
+    if (this.searchUser !== undefined) {
+      if (this.cedula === this.searchUser.cedula) {
+        this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+        document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
+        this.flagUserFound = true;
+      }
+    }
+    else {
       this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.borderColor = "#FE2E2E";
+      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
     }
   }
+
   enterKey1() {
     this.checkClient();
   }
+
   lessWoman() {
     if (this.cantMujeres > 0)
       this.cantMujeres--;
   }
+
   plusWoman1() {
     if (this.cantMujeres < 100)
       this.cantMujeres++;
   }
+
   lessMan() {
     if (this.cantHombres > 0)
       this.cantHombres--;
   }
+
   plusMan() {
     if (this.cantHombres < 100)
       this.cantHombres++;
   }
+
   lessTotalM() {
     if (this.cantSalenM > 0)
       this.cantSalenM--;
   }
+
   plusTotalM() {
     if (this.cantSalenM < this.cantMujeres)
       this.cantSalenM++;
   }
+
   lessTotalH() {
     if (this.cantSalenH > 0)
       this.cantSalenH--;
   }
+
   plusTotalH() {
     if (this.cantSalenH < this.cantHombres)
       this.cantSalenH++;
@@ -328,6 +378,7 @@ export class CardComponent implements OnInit {
   onRowUnselect(event) {
     this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!')
   }
+
   onRowSelect(event) {
     this.messageGrowlService.notify('warn', 'Promocion Activada', event.data);
   }
@@ -342,6 +393,21 @@ export class CardComponent implements OnInit {
     }
   }
 
+  searchById(id, myArray) {
+    for (let entry of myArray) {
+      if (entry._id === id) {
+        return entry.desc_tipo_cliente;
+      }
+    }
+  }
+
+  searchByName(name, myArray) {
+    for (let entry of myArray) {
+      if (entry.desc_tipo_cliente === name) {
+        return entry._id;
+      }
+    }
+  }
 
   display: boolean = false;
 
@@ -349,18 +415,64 @@ export class CardComponent implements OnInit {
     this.display = true;
   }
 
-}
+  onChangeCI() {
+    if (this.cedula.length != 10)
+      document.getElementById("ciA").style.borderColor = "#FE2E2E";
+    if (this.cedula.length != 13)
+      document.getElementById("ciA").style.borderColor = "#FE2E2E";
+    if (this.cedula.length == 10 || this.cedula.length == 13) {
+      if (!this.validateService.validarRucCedula(this.cedula)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+        document.getElementById("ciA").style.borderColor = "#FE2E2E";
+      } else
+        document.getElementById("ciA").style.borderColor = "#5ff442";
+    }
+  }
 
-function formatDate(date) {
-  var monthNames = [
-    "Enero", "Febrero", "Marzo",
-    "Abril", "Mayo", "Junio", "Julio",
-    "Agosto", "Septiembre", "Octubre",
-    "Noviembre", "Diciembre"
-  ];
-  var day = date.getDate();
-  var monthIndex = date.getMonth();
-  var year = date.getFullYear();
-  //console.log(day + ' ' + monthNames[monthIndex] + ' ' + year);
-  return day + ' ' + monthNames[monthIndex] + ' ' + year;
+  onChangeNombre($event) {
+    this.nombre = this.formatterService.toTitleCase(this.nombre);
+  }
+
+  onChangeApellido($event) {
+    this.apellido = this.formatterService.toTitleCase(this.apellido);
+  }
+
+  onChangeEmail($event) {
+    this.correo = this.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.correo)) {
+      document.getElementById("correo").style.borderColor = "#5ff442";
+    }
+    else {
+      document.getElementById("correo").style.borderColor = "#FE2E2E";
+    }
+  }
+
+  insertClientCard() {
+    this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+    let newClient = {
+      "apellido": this.searchUser.apellido,
+      "cedula": this.searchUser.cedula,
+      "correo": this.searchUser.correo,
+      "fecha_nacimiento": this.searchUser.fecha_nacimiento,
+      "id_tipo_cliente": this.searchUser.id_tipo_cliente,
+      "nombre": this.searchUser.nombre,
+      "sexo": this.searchUser.sexo,
+      "telefono": this.searchUser.telefono,
+      "_id": this.searchUser._id,
+      "tarjeta": this.cardNumber
+    }
+
+    console.log(newClient);
+    this.clienteService.updateCliente(newClient).subscribe(data => {
+      this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
+      this.flagUserFound = false;
+      this.flagCardFound = false;
+      this.nfLael = "";
+      this.cardNumber = "";
+      this.cedula = ";"
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
+  }
 }

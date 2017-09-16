@@ -3,7 +3,8 @@ var mongoose = restful.mongoose;
 
 var tipoProductoSchema = new mongoose.Schema({
 
-    desc_tipo_producto: String
+    desc_tipo_producto: String,
+    path: String
 
 });
 

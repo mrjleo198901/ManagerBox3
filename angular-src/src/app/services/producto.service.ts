@@ -11,7 +11,7 @@ export class ProductoService {
   constructor(private http: Http) { }
 
   registerProducto(producto) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.post(url + 'producto', producto, { headers: headers })
       .map(res => res.json())
@@ -19,7 +19,7 @@ export class ProductoService {
   }
 
   updateProducto(producto) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(url + 'producto/' + producto._id, producto, { headers: headers })
       .map(res => res.json())
@@ -27,19 +27,27 @@ export class ProductoService {
   }
 
   getAll() {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get(url + 'producto', { headers: headers })
       .map(res => res.json());
   }
 
   uploadImage(files) {
-    let formData: FormData = new FormData();
+    const formData: FormData = new FormData();
     formData.append('uploadFile', files, files.name);
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Accept', 'application/json');
-    let options = new RequestOptions({ headers: headers });
+    const options = new RequestOptions({ headers: headers });
     return this.http.post(url + 'imagen', formData, options)
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  deleteProducto(producto) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(url + 'producto/' + producto, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }

@@ -100,7 +100,7 @@
 </p-dialog>
 
 <!-- Add Producto -->
-<p-dialog [(visible)]="showDialogPC" modal="modal" width="700" [responsive]="true" positionTop="45">
+<p-dialog [(visible)]="showDialogPC" modal="modal" width="800" [responsive]="true" positionTop="45">
   <p-header>
     Registrar Producto
   </p-header>
@@ -127,7 +127,7 @@
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="pcPC">Precio Costo*:</label>
       <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" class="form-control input-sm" placeholder="0.00"
-        (ngModelChange)="valueChangePrecioCompra($event)">
+        (ngModelChange)="valueChangePrecioCompra($event)" [disabled]="flagSubProd">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="utilidadPC">Ganancia*:</label>
@@ -139,6 +139,20 @@
       <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
         (ngModelChange)="valueChangePrecioVenta($event)">
     </div>
+
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding: 0">
+        <label for="utilidadPC">Contenido*:</label>
+      </div>
+      <div class="ui-g-8 ui-xl-8 ui-lg-8 ui-md-8 ui-sm-8" style="padding: 2px">
+        <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido"></p-selectButton>
+      </div>
+      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="padding: 0; padding-left: 11px">
+        <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
+          class="form-control input-sm">
+      </div>
+    </div>
+    
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="cantPC">Cantidad Existente*:</label>
       <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
@@ -147,14 +161,14 @@
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <div style="text-align: center">
         <label>Receta (Subproductos):</label><br>
-        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px">
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px" (ngModelChange)="controlarPrecioCosto($event)">
         </md-slide-toggle>
       </div>
     </div>
     <div class="panel panel-default" style="width: 100%" *ngIf="flagSubProd">
-      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="text-align: center">
+      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-8" style="text-align: center">
         <label>Productos Existentes:</label>
-        <p-listbox [options]="productos" [(ngModel)]="selected_producto" filter="filter" [style]="{'text-align':'left','max-height':'180px'}"
+        <p-listbox [options]="productos" [(ngModel)]="selected_producto" filter="filter" [style]="{'text-align':'left','max-height':'180px','height':'180px'}"
           id="prodExistente" name="prodExistente">
           <ng-template let-car pTemplate="item">
             {{car.nombre}}
@@ -162,7 +176,7 @@
           </ng-template>
         </p-listbox>
       </div>
-      <div class="ui-g-3 ui-xl-2 ui-lg-3 ui-md-3 ui-sm-3" style="text-align: center">
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3" style="text-align: center">
         <br>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
           <label>Unidad Medida:</label>
@@ -180,16 +194,16 @@
           <label>Cantidad:</label>
         </div>
         <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
-          <p-spinner size="3" [(ngModel)]="cantSubprod" [min]="0" [max]="1000" name="cantSubprod" id="cantSubprod"></p-spinner>
+          <p-spinner [(ngModel)]="cantSubprod" [min]="0" [max]="1000" name="cantSubprod" id="cantSubprod"></p-spinner>
         </div>
         <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
           <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
         </div>
       </div>
-      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
-        <label style="display: inline-block">Productos Seleccionados:</label>
-        <p-listbox [options]="subproductoV" filter="filter" [style]="{'text-align':'left','max-height':'180px'}" id="prodSeleccionado"
-          name="prodSeleccionado">
+      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-12" style="text-align: center">
+        <label>Productos Seleccionados:</label>
+        <p-listbox [options]="subproductoV" filter="filter" [style]="{'text-align':'left','max-height':'180px','height':'180px'}"
+          id="prodSeleccionado" name="prodSeleccionado">
           <ng-template let-car let-i="index" pTemplate="item">
             {{car.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItem(i)" aria-hidden="true"></i>
             <span class="badge">{{car.cantidad}}</span> <span class="badge">$2.72</span>
@@ -206,7 +220,7 @@
 </p-dialog>
 
 <!-- Update P -->
-<p-dialog [(visible)]="showDialogPU" modal="modal" width="700" [responsive]="true" positionTop="45">
+<p-dialog [(visible)]="showDialogPU" modal="modal" width="800" [responsive]="true" positionTop="45">
   <p-header>
     Actualizar Producto
   </p-header>

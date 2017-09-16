@@ -11,29 +11,28 @@ export class TipoProductoService {
   constructor(private http: Http) { }
 
   registerTipoProducto(tipoProducto) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.post(url + 'tipo_producto', tipoProducto, { headers: headers })
-      .map(res => res.json())
-    /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
+      .map(res => res.json());
   }
   getAll() {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get(url + 'tipo_producto', { headers: headers })
       .map(res => res.json());
   }
   updateTipoProducto(tipoProducto) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(url + 'tipo_producto/' + tipoProducto.id, tipoProducto, { headers: headers })
       .map(res => res.json())
-    /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
   deleteTipoProducto(tipoProducto) {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.delete(url + 'tipo_producto/' + tipoProducto, { headers: headers })
-      .map(res => res.json())
+      .map(res => res.json());
   }
 }

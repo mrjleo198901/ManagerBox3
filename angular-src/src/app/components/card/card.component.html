@@ -21,10 +21,10 @@
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                <p-inputMask [(ngModel)]="cedula" (click)="$event.target.select()" inputId="cedula" name="cedula" inputId="cedula" placeholder="0999999999"
-                  mask="0999999999" (keyup.enter)="enterKey1()" [style]="{'font-size':'19.5px'}"></p-inputMask>
+                <p-inputMask [(ngModel)]="cedula" (click)="$event.target.select()" inputId="cedula" name="cedula" inputId="cedula" placeholder="9999999999"
+                  mask="9999999999" (keyup.enter)="enterKey1()" [style]="{'font-size':'19.5px'}"></p-inputMask>
                 <span (click)="checkClient()" class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
-                <span (click)="showDialog = !showDialog" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                <span (click)="showDialog = true; setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
               </div>
             </div>
           </div>
@@ -39,8 +39,9 @@
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <div class="panel panel-default">
                   <div class="panel-body">
-                    Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}<br>Email:&nbsp;{{email}}
-                    <br>Telefono:&nbsp;{{telefono}}<br>Fecha de Nacimiento:&nbsp;{{fechaShow}}<br>Sexo:&nbsp;{{sexo}}
+                    Nombre:&nbsp;{{searchUser.nombre}}&nbsp;{{searchUser.apellido}}<br>Cedula:&nbsp;{{searchUser.cedula}}<br>Email:&nbsp;{{searchUser.correo}}
+                    <br>Telefono:&nbsp;{{searchUser.telefono}}<br>Fecha de Nacimiento:&nbsp;{{searchUser.fecha_nacimiento}}<br>Sexo:&nbsp;{{searchUser.sexo}}
+                    <br>Tipo Cliente:&nbsp;{{searchUser.id_tipo_cliente}}
                   </div>
                 </div>
               </div>
@@ -88,7 +89,7 @@
             <div class="input-group col-lg-8 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
               <form class="form-inline">
                 <div class="ui-g-3">
-                  <p style="font-size: 12px">Nro. Mujeres</p>
+                  <p style="font-size: 12px">Nro.<br>Mujeres</p>
                 </div>
                 <div class="input-group spinner ui-g-3">
                   <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
@@ -99,7 +100,7 @@
                   </div>
                 </div>
                 <div class="ui-g-3">
-                  <p style="font-size: 12px">Nro. Hombres</p>
+                  <p style="font-size: 12px">Nro.<br>Hombres</p>
                 </div>
                 <div class="input-group spinner ui-g-3">
                   <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
@@ -157,7 +158,7 @@
         <hr>
       </div>
       <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary btn-block">Ingresar</button>
+        <button class="btn btn-primary btn-block" (click)="insertClientCard()" [disabled]="!flagUserFound || !flagCardFound">Ingresar</button>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -387,117 +388,59 @@
   </tabset>
 </div>
 <!-- ADD CLIENT -->
-<!--<p-dialog [(visible)]="showDialog" modal="modal" width="630" [responsive]="true">
-  <p-header>
-    Registrar Cliente
-  </p-header>
-  <div class="col-lg-6 col-md-6">
-    <label for="ci" style="display: inline-block">Cedula</label>
-    <input type="text" [(ngModel)]="cedula" id="ci" name="ci" (ngModelChange)="onChange()" placeholder="Cedula del cliente" class="form-control input-sm"
-      maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label for="telefono">Telefono</label>
-    <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-    <br>
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="cols-sm-2 control-label" for="username">Nombre</label>
-    <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="cols-sm-2 control-label" for="apellido">Apellido</label>
-    <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-    <br>
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="control-label" for="correo">E-mail</label>
-    <input type="text" [(ngModel)]="correo" id="correo" name="correo" placeholder="Correo del cliente" class="form-control  input-sm">
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="control-label">Sexo</label><br>
-    <div class="radio">
-      <md-radio-group [(ngModel)]="sexo">
-        <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-        </md-radio-button>
-      </md-radio-group>
-    </div>
-    <br>
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="control-label" for="fecha">Fecha de nacimiento (DD/MM/AAAA)</label>
-    <div class="ui-g ui-fluid">
-      <div class="ui-g-12 ui-md-12">
-        <p-calendar width="50" [(ngModel)]="fechaNacimientoString" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true">
-        </p-calendar>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-6 col-md-6">
-    <label class="control-label" for="tipoC">Tipo Cliente</label>
-    <select [(ngModel)]="selected_tipo_cliente" id="tipoC" name="tipoC" class="form-control input-sm">
-            <option value="" disabled selected hidden>Selecciona...</option>
-            <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
-        </select>
-  </div>
-  <div class="col-lg-12 col-md-12">
-    <br>
-    <div class="form-group" style="text-align: center">
-      <button class="btn btn-primary" (click)="saveClient()" style="width: 25%">Registrar</button>
-      <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
-    </div>
-  </div>
-</p-dialog>-->
 <p-dialog [(visible)]="showDialog" modal="modal" width="550" [responsive]="true">
   <p-header>
     Registrar Cliente
   </p-header>
+  <br>
   <div class="ui-g ui-fluid">
     <div class="ui-g-6">
-      <label for="ciA">Cedula</label>
-      <input type="text" [(ngModel)]="cedula" id="ciA" name="ciA" (ngModelChange)="onChange()" placeholder="Cedula del cliente"
-        class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+      <label for="ciA">Cedula*:</label>
+      <input type="text" [(ngModel)]="cedula" id="ciA" name="ciA" (ngModelChange)="onChangeCI()" placeholder="Cedula del cliente"
+        class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+        tooltipPlacement="bottom">
     </div>
     <div class="ui-g-6">
-      <label>Telefono</label>
-      <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-      <br>
+      <label>Telefono:</label>
+      <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control input-sm"
+        maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+        tooltipPlacement="bottom">
     </div>
     <div class="ui-g-6">
-      <label>Nombre</label>
-      <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
+      <label>Nombre*:</label>
+      <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control input-sm"
+        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+      event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
     </div>
     <div class="ui-g-6">
-      <label>Apellido</label>
-      <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-      <br>
+      <label>Apellido*:</label>
+      <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control input-sm"
+        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+      event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
     </div>
     <div class="ui-g-6">
-      <label>E-mail</label>
-      <input type="text" [(ngModel)]="correo" id="correo" name="correo" placeholder="Correo del cliente" class="form-control  input-sm">
+      <label>E-mail:</label>
+      <input type="text" [(ngModel)]="correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo del cliente"
+        class="form-control input-sm">
     </div>
     <div class="ui-g-6">
-      <label>Sexo</label><br>
-      <div class="radio">
-        <md-radio-group [(ngModel)]="sexo">
-          <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-          </md-radio-button>
-        </md-radio-group>
-      </div>
-      <br>
+      <label>Sexo*:</label><br>
+      <md-radio-group [(ngModel)]="sexo">
+        <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+        </md-radio-button>
+      </md-radio-group>
     </div>
     <div class="ui-g-6">
-      <label>Fecha de nacimiento (DD/MM/AAAA)</label>
+      <label>Fecha de nacimiento*:</label>
       <p-calendar [(ngModel)]="fecha_nacimiento" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
-        [yearNavigator]="true" yearRange="1950:2030">
+        [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true">
       </p-calendar>
     </div>
     <div class="ui-g-6">
-      <label>Tipo Cliente</label>
-      <select [(ngModel)]="selected_tipo_cliente" id="tipoC" name="tipoC" class="form-control input-sm">
-            <option value="" disabled selected hidden>Selecciona...</option>
-            <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
-        </select>
+      <label>Tipo Cliente*:</label>
+      <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
     </div>
   </div>
   <hr>

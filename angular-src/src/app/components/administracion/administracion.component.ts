@@ -25,7 +25,7 @@ const URL = 'http://localhost:3000/api/imagen';
 
 export class AdministracionComponent implements OnInit {
 
-  colorUpdate = "";
+  colorUpdate = '';
   auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
   sourceP: LocalDataSource = new LocalDataSource();
@@ -37,12 +37,12 @@ export class AdministracionComponent implements OnInit {
   flagCreateTP: boolean;
   flagUpdateP: boolean;
   flagCreateP: boolean;
-  //Atributos Tipo Producto
+  // Atributos Tipo Producto
   desc_tipo_producto;
   id_mostar;
   pathLogoTP;
   pathLogoTPU;
-  //Atributos Producto
+  // Atributos Producto
   productoUpdate;
   nombre;
   precio_costo;
@@ -52,7 +52,8 @@ export class AdministracionComponent implements OnInit {
   subproductoV;
   selected_tipo_producto;
   pathLogo;
-  //Add product dialog
+  contenido;
+  // Add product dialog
   selected_producto;
   selected_productoU;
   lista_subProductos: any = [];
@@ -61,7 +62,7 @@ export class AdministracionComponent implements OnInit {
   cantSubprod: number;
   cantSubProdU: number;
   productos: any = [];
-  //Otras
+  // Otras
   tipo_productos: any = [];
   lstShow: any = [];
   flagSubProd;
@@ -89,7 +90,7 @@ export class AdministracionComponent implements OnInit {
       }
     },
     actions: {
-      //columnTitle: '',
+      // columnTitle: '',
       add: true,
       edit: true,
       delete: true
@@ -98,13 +99,19 @@ export class AdministracionComponent implements OnInit {
       class: 'table-bordered table-hover table-responsive'
     }
   };
-  settingsP = {}
+  settingsP = {};
   position = 'below';
   color = 'primary';
   checked = false;
   lstUnidades: SelectItem[];
   unidadMedidaSuproducto: any;
   userform: FormGroup;
+  lstContenido: SelectItem[];
+  selectedLstContenido: String[] = ['Litros'];
+  @ViewChild('myInput')
+  myInputVariable: any;
+  @ViewChild('myInput1')
+  myInputVariable1: any;
 
   constructor(
     private validateService: ValidateService,
@@ -126,22 +133,28 @@ export class AdministracionComponent implements OnInit {
     this.lstUnidades.push({ label: 'Mililitros', value: { id: 2, name: 'Mililitros', code: 'ml' } });
     this.lstUnidades.push({ label: 'Onzas', value: { id: 3, name: 'Onzas', code: 'oz' } });
     this.unidadMedidaSuproducto = this.lstUnidades[0];
+    this.lstContenido = [];
+    this.lstContenido.push({ label: 'Litros', value: 'Litros' });
+    this.lstContenido.push({ label: 'Mililitros', value: 'Mililitros' });
+    this.lstContenido.push({ label: 'Onzas', value: 'Onzas' });
+
   }
 
   ngOnInit() {
 
     this.productos = {
-      "label": "",
-      "value": "",
-      "cant_existente": 0,
-      "id_tipo_producto": "",
-      "nombre": "",
-      "path": "",
-      "precio_unitario": 0,
-      "subproductoV": [],
-      "utilidad": 0,
-      "_id": "5993c0a775758c27cccd88ee"
-    }
+      'label': '',
+      'value': '',
+      'cant_existente': 0,
+      'id_tipo_producto': '',
+      'nombre': '',
+      'path': '',
+      'precio_unitario': 0,
+      'subproductoV': [],
+      'utilidad': 0,
+      'contenido': 0,
+      '_id': '5993c0a775758c27cccd88ee'
+    };
     /* Get Tipo Productos*/
     this.tipoProductoService.getAll().subscribe(tp => {
       this.tipo_productos = tp;
@@ -149,8 +162,8 @@ export class AdministracionComponent implements OnInit {
       this.sourceTP.load(this.tipo_productos);
       const selectShow: { value: string, title: string }[] = [];
       let ind = 0;
-      for (let entry of tp) {
-        let aux = { value: entry.desc_tipo_producto, title: entry.desc_tipo_producto };
+      for (const entry of tp) {
+        const aux = { value: entry.desc_tipo_producto, title: entry.desc_tipo_producto };
         selectShow[ind] = aux;
         ind++;
       }
@@ -158,18 +171,18 @@ export class AdministracionComponent implements OnInit {
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
         let i = 0;
-        for (let x of p) {
-          let desc = this.search(x.id_tipo_producto, this.tipo_productos);
+        for (const x of p) {
+          const desc = this.search(x.id_tipo_producto, this.tipo_productos);
           this.productos[i].id_tipo_producto = desc;
           this.productos[i].label = x.nombre;
           this.productos[i].value = x.nombre;
           this.productos[i].precio_costo = this.productos[i].precio_costo.toFixed(2);
           this.productos[i].precio_venta = this.productos[i].precio_venta.toFixed(2);
           this.productos[i].utilidad = this.productos[i].utilidad.toFixed(2);
-          if (x.subproductoV != "") {
-            let fila = "";
-            for (let entry of x.subproductoV) {
-              fila += "-" + entry.nombre + " " + entry.cantidad + " ";
+          if (x.subproductoV !== '') {
+            let fila = '';
+            for (const entry of x.subproductoV) {
+              fila += '-' + entry.nombre + ' ' + entry.cantidad + ' ';
               this.productos[i].subproductoV = fila;
             }
           }
@@ -183,7 +196,7 @@ export class AdministracionComponent implements OnInit {
           columns: {
             nombre: {
               title: 'Nombre',
-              width: '25%',
+              width: '21%',
               filter: {
                 type: 'completer',
                 config: {
@@ -207,13 +220,17 @@ export class AdministracionComponent implements OnInit {
               title: 'Precio Venta',
               width: '7%'
             },
+            contenido: {
+              title: 'Contenido',
+              width: '7%'
+            },
             cant_existente: {
               title: 'Cant. Exis.',
               width: '7%'
             },
             subproductoV: {
               title: 'Subproducto',
-              width: '30%'
+              width: '27%'
             },
             id_tipo_producto: {
               title: 'Tipo Producto',
@@ -253,30 +270,33 @@ export class AdministracionComponent implements OnInit {
         console.log(err);
         return false;
       });
-    this.desc_tipo_producto = "";
-    this.id_mostar = "";
-    //Atributos Producto
+    this.desc_tipo_producto = '';
+    this.pathLogoTP = '';
+    this.id_mostar = '';
+    // Atributos Producto
     this.productoUpdate = {
-      "_id": "",
-      "nombre": "",
-      "precio_costo": 0,
-      "precio_venta": 0,
-      "utilidad": 0,
-      "cant_existente": 0,
-      "subproductoV": [],
-      "id_tipo_producto": "",
-      "path": ""
+      '_id': '',
+      'nombre': '',
+      'precio_costo': 0,
+      'precio_venta': 0,
+      'utilidad': 0,
+      'cant_existente': 0,
+      'subproductoV': [],
+      'id_tipo_producto': '',
+      'path': '',
+      'contenido': 0
     };
 
-    this.nombre = "";
+    this.nombre = '';
     this.precio_costo = null;
     this.precio_venta = null;
-    this.utilidad = "30";
+    this.utilidad = '30';
+
     this.cant_existente = null;
     this.subproductoV = [];
-    this.selected_tipo_producto = "";
-    this.selected_producto = "";
-    this.selected_productoU = "";
+    this.selected_tipo_producto = '';
+    this.selected_producto = '';
+    this.selected_productoU = '';
     this.flagSubProd = false;
     this.flagSubProdUpdate = false;
 
@@ -306,123 +326,123 @@ export class AdministracionComponent implements OnInit {
   setCursorAddTP() {
     setTimeout(function () {
       document.getElementById('descTPC').focus();
-      document.getElementById('filesTP').style.backgroundColor = "lightsalmon";
-    }, 50)
+      document.getElementById('filesTP').style.backgroundColor = 'lightsalmon';
+    }, 50);
   }
 
   setCursorUpdateTP() {
     setTimeout(function () {
       document.getElementById('descTPU').focus();
-    }, 500)
+    }, 500);
   }
 
   setCursorAddP() {
     setTimeout(function () {
       document.getElementById('nombrePC').focus();
-      //document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
-      document.getElementById('filesC').style.backgroundColor = "lightsalmon";
-      //setOriginalColorsPC();
-    }, 50)
+      // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+      document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
+      // setOriginalColorsPC();
+    }, 50);
   }
 
   setCursorUpdateP() {
     setTimeout(function () {
       document.getElementById('nombrePU').focus();
-      //document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
-      //setOriginalColorsPU();
-    }, 50)
+      // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+      // setOriginalColorsPU();
+    }, 50);
   }
 
   onCreateTP(event: any) {
-    this.myInputVariable.nativeElement.value = "";
+    this.myInputVariable.nativeElement.value = '';
     this.flagCreateTP = true;
-    this.desc_tipo_producto = "";
+    this.desc_tipo_producto = '';
+    this.pathLogoTP = '';
+    setOriginalColorsTPC();
   }
 
-  @ViewChild('myInput')
-  myInputVariable: any;
-
   onCreateP(event: any) {
-    //console.log("before: "+this.myInputVariable.nativeElement.value)
-    this.myInputVariable.nativeElement.value = "";
+    // console.log("before: "+this.myInputVariable.nativeElement.value)
+    this.myInputVariable.nativeElement.value = '';
     this.flagCreateP = true;
-    this.nombre = "";
+    this.nombre = '';
   }
 
   onUpdateTP(event: any) {
     this.flagUpdateTP = true;
     this.id_mostar = event.data._id;
     this.desc_tipo_producto = event.data.desc_tipo_producto;
-    if (this.pathLogoTPU == undefined) {
-      this.colorUpdate = "black";
+    console.log(event.data);
+    setOriginalColorsTPU();
+    if (this.pathLogoTPU === undefined) {
+      this.colorUpdate = 'black';
       setTimeout(function () {
-        document.getElementById('filesTPU').style.backgroundColor = "lightsalmon";
-      }, 50)
+        document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
+      }, 50);
     } else {
-      this.colorUpdate = "lightgreen";
+      this.colorUpdate = 'lightgreen';
       setTimeout(function () {
-        document.getElementById('filesTPU').style.backgroundColor = "lightgreen";
-      }, 50)
+        document.getElementById('filesTPU').style.backgroundColor = 'lightgreen';
+      }, 50);
     }
   }
 
-  @ViewChild('myInput1')
-  myInputVariable1: any;
+
 
   onUpdateP(event: any) {
-    this.myInputVariable1.nativeElement.value = "";
+    this.myInputVariable1.nativeElement.value = '';
     this.flagUpdateP = true;
     this.productoUpdate = event.data;
-    if (this.productoUpdate.path == undefined) {
-      this.colorUpdate = "black";
+    if (this.productoUpdate.path === undefined) {
+      this.colorUpdate = 'black';
       setTimeout(function () {
-        document.getElementById('filesU').style.backgroundColor = "lightsalmon";
-      }, 50)
+        document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
+      }, 50);
     } else {
-      this.colorUpdate = "lightgreen";
+      this.colorUpdate = 'lightgreen';
       setTimeout(function () {
-        document.getElementById('filesU').style.backgroundColor = "lightgreen";
-      }, 50)
+        document.getElementById('filesU').style.backgroundColor = 'lightgreen';
+      }, 50);
     }
-    //bug 2 click edit
+    // bug 2 click edit
     if (typeof (event.data.subproductoV) === 'object') {
-      let fila = "";
-      for (let entry of event.data.subproductoV) {
-        fila += "-" + entry.nombre + " " + entry.cantidad + " ";
+      let fila = '';
+      for (const entry of event.data.subproductoV) {
+        fila += '-' + entry.nombre + ' ' + entry.cantidad + ' ';
       }
       event.data.subproductoV = fila;
     }
-    if (this.productoUpdate.subproductoV.length == 0) {
+    if (this.productoUpdate.subproductoV.length === 0) {
       this.flagSubProdUpdate = false;
     } else {
       this.flagSubProdUpdate = true;
       this.flagListaSubProd = true;
       if (this.productoUpdate.subproductoV.length > 0) {
 
-        let a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
+        const a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
         this.productoUpdate.subproductoV = [];
         this.productoUpdate.subproductoV.push(a);
-        //console.log(this.productoUpdate.subproductoV);
-        if (this.auxSubprod == undefined) {
-          this.auxSubprod == this.productoUpdate.subproductoV;
+        // console.log(this.productoUpdate.subproductoV);
+        if (this.auxSubprod === undefined) {
+          this.auxSubprod = this.productoUpdate.subproductoV;
         }
 
-        let array = this.productoUpdate.subproductoV.toString().split("-");
+        const array = this.productoUpdate.subproductoV.toString().split('-');
         this.productoUpdate.subproductoV = [];
         let index = 0;
-        for (let entry of array) {
+        for (const entry of array) {
           if (entry.length > 0) {
-            let vec = entry.split(" ");
-            let n = vec.length;
+            const vec = entry.split(' ');
+            const n = vec.length;
             let nombre = vec[0];
-            let cant = vec[n - 2];
+            const cant = vec[n - 2];
             for (let i = 1; i < n; i++) {
-              if (vec[i + 1] != "") {
-                nombre += " " + vec[i];
+              if (vec[i + 1] !== '') {
+                nombre += ' ' + vec[i];
               }
             }
-            //set subproducto to ul format
-            let aux = { nombre: nombre, cantidad: cant };
+            // set subproducto to ul format
+            const aux = { nombre: nombre, cantidad: cant };
             this.productoUpdate.subproductoV.push(aux);
             index++;
           }
@@ -434,23 +454,27 @@ export class AdministracionComponent implements OnInit {
   onAddTPSubmit() {
     const tipoProducto = {
       desc_tipo_producto: this.desc_tipo_producto,
-      path: this.pathLogo
-    }
-    //Required fields
+      path: this.pathLogoTP
+    };
     if (!this.validateService.validateTipoProducto(tipoProducto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
-    //Register Tipo producto
-    let a = this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
-      this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+    this.productoService.uploadImage(this.pathLogoTP).subscribe(tp => {
+      tipoProducto.path = tp;
+      this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
+        this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+
+      });
+      this.ngOnInit();
+      this.myInputVariable.nativeElement.value = '';
     }, err => {
-      // Log errors if any
       console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
-    this.ngOnInit();
-    this.showDialogTPC = false;
+
   }
 
   onAddPSubmit() {
@@ -462,16 +486,15 @@ export class AdministracionComponent implements OnInit {
       cant_existente: this.cant_existente,
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
-      path: this.pathLogo
-    }
-    console.log(producto)
-    //Required fields
+      path: this.pathLogo,
+      contenido: this.contenido+ this.selectedLstContenido
+    };
+    console.log(producto);
     if (!this.validateService.customValidateProducto(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
-      //Register producto
       producto.path = tp;
       this.productoService.registerProducto(producto).subscribe(data => {
       }, err => {
@@ -480,26 +503,23 @@ export class AdministracionComponent implements OnInit {
 
       });
       this.ngOnInit();
-      this.myInputVariable.nativeElement.value = "";
-      //this.showDialogPC = false;
+      this.myInputVariable.nativeElement.value = '';
     }, err => {
       console.log(err);
     });
-
   }
 
   onUpdateTPSubmit() {
     const tipoProducto = {
       id: this.id_mostar,
       desc_tipo_producto: this.desc_tipo_producto
-    }
-    //Required fields
+    };
     if (!this.validateService.validateTipoProducto(tipoProducto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
-    //Update Tipo producto
     this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
+      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
     }, err => {
       // Log errors if any
       console.log(err);
@@ -511,7 +531,7 @@ export class AdministracionComponent implements OnInit {
   }
 
   onUpdatePSubmit() {
-    let idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos)
+    const idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos);
     const producto = {
       _id: this.productoUpdate._id,
       nombre: this.productoUpdate.nombre,
@@ -520,14 +540,12 @@ export class AdministracionComponent implements OnInit {
       cant_existente: this.productoUpdate.cant_existente,
       subproductoV: this.productoUpdate.subproductoV,
       id_tipo_producto: idTpBus
-    }
-    console.log(producto);
-    //Required fields
+    };
     if (!this.validateService.customValidateProductoU(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
       return false;
     }
-    //Update producto
+    // Update producto
     this.productoService.updateProducto(producto).subscribe(data => {
       this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
     }, err => {
@@ -536,17 +554,17 @@ export class AdministracionComponent implements OnInit {
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
     this.ngOnInit();
-    //console.log(this.productoUpdate.id_tipo_producto);
+    // console.log(this.productoUpdate.id_tipo_producto);
     this.showDialogPU = false;
     this.productoUpdate = {
-      "_id": "",
-      "nombre": "",
-      "precio_unitario": 0,
-      "utilidad": 0,
-      "cant_existente": 0,
-      "subproductoV": [],
-      "id_tipo_producto": "",
-      "path": ""
+      '_id': '',
+      'nombre': '',
+      'precio_unitario': 0,
+      'utilidad': 0,
+      'cant_existente': 0,
+      'subproductoV': [],
+      'id_tipo_producto': '',
+      'path': ''
     };
   }
 
@@ -555,20 +573,21 @@ export class AdministracionComponent implements OnInit {
   }
 
   openDialog(data) {
-    let dialogRef = this.dialog.open(ConfirmDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined)
-        if (result.localeCompare("Aceptar") == 0) {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
           this.sourceTP.remove(data);
-          //remove from database
+          // remove from database
           this.tipoProductoService.deleteTipoProducto(data._id).subscribe(data => {
             this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
 
-          })
+          });
         }
+      }
     });
   }
 
@@ -577,33 +596,34 @@ export class AdministracionComponent implements OnInit {
   }
 
   openDialog1(data) {
-    let dialogRef = this.dialog.open(ConfirmDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined)
-        if (result.localeCompare("Aceptar") == 0) {
-          this.sourceTP.remove(data);
-          //remove from database
-          this.tipoProductoService.deleteTipoProducto(data._id).subscribe(data => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          this.sourceP.remove(data);
+          // remove from database
+          this.productoService.deleteProducto(data._id).subscribe(data => {
             this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
 
-          })
+          });
         }
+      }
     });
   }
 
   fuPorcentaje() {
-    //document.getElementById("iconUsd").style.backgroundColor = "#ffffff";
-    //document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
-    this.medidaUtilidad = "%";
+    // document.getElementById("iconUsd").style.backgroundColor = "#ffffff";
+    // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
+    this.medidaUtilidad = '%';
   }
 
   fuMoneda() {
-    document.getElementById("iconPercent").style.backgroundColor = "#ffffff";
-    //document.getElementById("iconUsd").style.backgroundColor = "#2196F3";
-    this.medidaUtilidad = "$";
+    // document.getElementById('iconPercent').style.backgroundColor = "#ffffff";
+    // document.getElementById("iconUsd").style.backgroundColor = "#2196F3";
+    this.medidaUtilidad = '$';
   }
 
   deleteItem(index) {
@@ -619,114 +639,134 @@ export class AdministracionComponent implements OnInit {
   }
 
   addItem() {
-    if (this.selected_producto != "") {
-      let index = this.productos.findIndex(x => x.nombre == this.selected_producto);
+    if (this.selected_producto !== '') {
+      const index = this.productos.findIndex(x => x.nombre === this.selected_producto);
       this.selected_producto = this.productos[index];
       this.flagListaSubProd = true;
-      let aux = { nombre: this.selected_producto.nombre, cantidad: this.cantSubprod + this.unidadMedidaSuproducto.value.code, label: this.selected_producto.nombre, value: this.selected_producto };
-      //search wheter subProd already exists
-      let index1 = this.subproductoV.findIndex(x => x.nombre == aux.nombre);
-      if (index1 == -1) {
+      const precio_costo = 0;
+      const aux = {
+        nombre: this.selected_producto.nombre,
+        antidad: this.cantSubprod + this.unidadMedidaSuproducto.value.code,
+        label: this.selected_producto.nombre,
+        value: this.selected_producto, precio_costo: ''
+      };
+      // search wheter subProd already exists
+      const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
+      if (index1 === -1) {
         this.subproductoV.push(aux);
       } else {
-        var str = this.subproductoV[index1].cantidad;
-        str = str.replace(/[^0-9]+/ig, "");
-        let aux = { nombre: this.selected_producto.nombre, cantidad: (parseInt(str) + this.cantSubprod) + this.unidadMedidaSuproducto.value.code, label: this.selected_producto.nombre, value: this.selected_producto };
+        let str = this.subproductoV[index1].cantidad;
+        str = str.replace(/[^0-9]+/ig, '');
+        const aux = {
+          nombre: this.selected_producto.nombre,
+          cantidad: (parseInt(str) + this.cantSubprod) + this.unidadMedidaSuproducto.value.code,
+          label: this.selected_producto.nombre,
+          value: this.selected_producto
+        };
         this.subproductoV[index1] = aux;
       }
 
-      this.selected_producto = "";
+      this.selected_producto = '';
     } else {
-      this.messageGrowlService.notify("error", "Error", "Selecciona un producto existente!")
-      document.getElementById("prodExistente").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+      document.getElementById('prodExistente').style.borderColor = '#FE2E2E';
     }
   }
 
   addItemU() {
-    if (this.selected_productoU != "") {
+    if (this.selected_productoU !== '') {
 
-      let index = this.productos.findIndex(x => x.nombre == this.selected_productoU);
+      const index = this.productos.findIndex(x => x.nombre === this.selected_productoU);
       this.selected_productoU = this.productos[index];
       this.flagListaSubProdUpdate = true;
-      let aux = { nombre: this.selected_productoU.nombre, cantidad: this.cantSubProdU + this.unidadMedidaSuproducto.value.code, label: this.selected_productoU.nombre, value: this.selected_productoU };
+      let aux = {
+        nombre: this.selected_productoU.nombre,
+        cantidad: this.cantSubProdU + this.unidadMedidaSuproducto.value.code,
+        label: this.selected_productoU.nombre, value: this.selected_productoU
+      };
       if (this.productoUpdate.subproductoV.length === 0) {
         this.productoUpdate.subproductoV = [];
       }
-      //search wheter subProd already exists
-      //search wheter subProd already exists
-      let index1 = this.productoUpdate.subproductoV.findIndex(x => x.nombre == aux.nombre);
-      if (index1 == -1) {
+      // search wheter subProd already exists
+      const index1 = this.productoUpdate.subproductoV.findIndex(x => x.nombre === aux.nombre);
+      if (index1 === -1) {
         this.productoUpdate.subproductoV.push(aux);
       } else {
-        var str = this.productoUpdate.subproductoV[index1].cantidad;
-        str = str.replace(/[^0-9]+/ig, "");
-        let aux = { nombre: this.selected_producto.nombre, cantidad: (parseInt(str) + this.cantSubprod) + this.unidadMedidaSuproducto.value.code, label: this.selected_producto.nombre, value: this.selected_producto };
+        let str = this.productoUpdate.subproductoV[index1].cantidad;
+        str = str.replace(/[^0-9]+/ig, '');
+        const aux = {
+          nombre: this.selected_producto.nombre,
+          cantidad: (parseInt(str) + this.cantSubprod) + this.unidadMedidaSuproducto.value.code,
+          label: this.selected_producto.nombre,
+          value: this.selected_producto
+        };
         this.productoUpdate.subproductoV[index1] = aux;
       }
 
 
       this.productoUpdate.subproductoV.push(aux);
-      this.selected_producto = "";
+      this.selected_producto = '';
     } else {
-      this.messageGrowlService.notify("error", "Error", "Selecciona un producto existente!")
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!')
 
       setTimeout(function () {
-        document.getElementById("prodExistenteU").style.color = "#FE2E2E";
-      }, 50)
-      //this.setColorError();
+        document.getElementById('prodExistenteU').style.color = '#FE2E2E';
+      }, 50);
+      // this.setColorError();
     }
   }
 
   onChangeFileC(event) {
-    var files = event.srcElement.files[0];
-    let color = "";
-    if (files == undefined) {
-      color = "lightsalmon";
+    const files = event.srcElement.files[0];
+    let color = '';
+    if (files === undefined) {
+      color = 'lightsalmon';
     } else {
-      color = "lightgreen";
+      color = 'lightgreen';
     }
     this.pathLogo = files;
+    console.log(this.pathLogo);
     document.getElementById('filesC').style.backgroundColor = color;
   }
 
   onChangeFileU(event) {
-    this.colorUpdate = "black";
-    var files = event.srcElement.files[0];
-    let color = "";
-    if (files == undefined) {
-      color = "lightsalmon"
+    this.colorUpdate = 'black';
+    const files = event.srcElement.files[0];
+    let color = '';
+    if (files === undefined) {
+      color = 'lightsalmon';
     } else {
-      color = "lightgreen";
+      color = 'lightgreen';
     }
     this.pathLogo = files;
     document.getElementById('filesU').style.backgroundColor = color;
   }
 
   onChangeFileTP(event) {
-    var files = event.srcElement.files[0];
-    let color = "";
-    if (files == undefined) {
-      color = "lightsalmon";
+    const files = event.srcElement.files[0];
+    let color = '';
+    if (files === undefined) {
+      color = 'lightsalmon';
     } else {
-      color = "lightgreen";
+      color = 'lightgreen';
     }
     this.pathLogoTP = files;
+    console.log(this.pathLogoTP);
     document.getElementById('filesTP').style.backgroundColor = color;
   }
 
   onChangeFileTPU(event) {
-    this.colorUpdate = "black";
-    var files = event.srcElement.files[0];
-    let color = "";
-    if (files == undefined) {
-      color = "lightsalmon";
+    this.colorUpdate = 'black';
+    const files = event.srcElement.files[0];
+    let color = '';
+    if (files === undefined) {
+      color = 'lightsalmon';
     } else {
-      color = "lightgreen";
+      color = 'lightgreen';
     }
-    this.pathLogoTP = files;
+    this.pathLogoTPU = files;
     document.getElementById('filesTPU').style.backgroundColor = color;
   }
-
 
   addCant() {
     this.cantSubprod++;
@@ -739,7 +779,7 @@ export class AdministracionComponent implements OnInit {
   }
 
   search(id, myArray) {
-    for (let entry of myArray) {
+    for (const entry of myArray) {
       if (entry._id === id) {
         return entry.desc_tipo_producto;
       }
@@ -747,7 +787,7 @@ export class AdministracionComponent implements OnInit {
   }
 
   searchByName(nombre, myArray) {
-    for (let entry of myArray) {
+    for (const entry of myArray) {
       if (entry.desc_tipo_producto.localeCompare(nombre) === 0) {
         return entry._id;
       }
@@ -755,8 +795,8 @@ export class AdministracionComponent implements OnInit {
   }
 
   onChangeUpdtProd($event) {
-    //console.log(this.productoUpdate.id_tipo_producto);
-    //this.productoUpdate.id_tipo_producto = "Wiskey";
+    // console.log(this.productoUpdate.id_tipo_producto);
+    // this.productoUpdate.id_tipo_producto = "Wiskey";
   }
 
   onChangeDescTPC($event) {
@@ -772,19 +812,25 @@ export class AdministracionComponent implements OnInit {
   }
 
   valueChangeGanancia($event) {
-    let gain = (this.utilidad / 100) + 1;
+    const gain = (this.utilidad / 100) + 1;
     this.precio_venta = (this.precio_costo * gain).toFixed(2);
   }
 
   valueChangePrecioCompra($event) {
     this.precio_costo = ((this.precio_costo * 100) / 100).toFixed(2);
-    let gain = (this.utilidad / 100) + 1;
+    const gain = (this.utilidad / 100) + 1;
     this.precio_venta = (this.precio_costo * gain).toFixed(2);
   }
 
   valueChangePrecioVenta($event) {
-    let gain = 1 - (this.utilidad / 100);
+    const gain = 1 - (this.utilidad / 100);
     this.precio_costo = (this.precio_venta * gain).toFixed(2);
+  }
+
+  controlarPrecioCosto($event) {
+    if (this.flagSubProd) {
+      this.precio_costo = '';
+    }
   }
 
   setColorError() {
@@ -797,7 +843,23 @@ export class AdministracionComponent implements OnInit {
   }
 
   onSubmit(value: string) {
-    console.log(value)
+    console.log(value);
+  }
+
+  calculatePortion(cantidad, precio, unidad) {
+    const onzaEnMl = 29.5735;
+    if (unidad.localeCompare('u')) {
+
+    }
+    if (unidad.localeCompare('ml')) {
+
+    }
+    if (unidad.localeCompare('oz')) {
+
+    }
+    const aux = '';
+    const costoProporcional = '';
+
   }
 
   /* GESTION DE PROMOCIONES */
@@ -805,24 +867,34 @@ export class AdministracionComponent implements OnInit {
 }
 
 function setOriginalColorsPC() {
-  //border Color #dadad2
-  //readonly Color #f8f5f0
-  //error Color FE2E2E
-  document.getElementById("nombrePC").style.borderColor = "#DADAD2";
-  //document.getElementById("puPC").style.borderColor = "#DADAD2";
-  //document.getElementById("utilidadPC").style.borderColor = "#DADAD2";
-  document.getElementById("cantPC").style.borderColor = "#DADAD2";
-  document.getElementById("tipoPC").style.borderColor = "#DADAD2";
-  document.getElementById("tipoP").style.borderColor = "#DADAD2";
-  document.getElementById("filesC").style.borderColor = "#DADAD2";
+  // border Color #dadad2
+  // readonly Color #f8f5f0
+  // error Color FE2E2E
+  document.getElementById('nombrePC').style.borderColor = '#DADAD2';
+  // document.getElementById("puPC").style.borderColor = "#DADAD2";
+  // document.getElementById("utilidadPC").style.borderColor = "#DADAD2";
+  document.getElementById('cantPC').style.borderColor = '#DADAD2';
+  document.getElementById('tipoPC').style.borderColor = '#DADAD2';
+  document.getElementById('tipoP').style.borderColor = '#DADAD2';
+  document.getElementById('filesC').style.borderColor = '#DADAD2';
 }
 
 function setOriginalColorsPU() {
-  document.getElementById("nombrePU").style.borderColor = "#DADAD2";
-  //document.getElementById("puPU").style.borderColor = "#DADAD2";
-  //document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
-  document.getElementById("cantPU").style.borderColor = "#DADAD2";
-  document.getElementById("tipoPU").style.borderColor = "#DADAD2";
-  document.getElementById("tipoP").style.borderColor = "#DADAD2";
-  document.getElementById("filesU").style.borderColor = "#DADAD2";
+  document.getElementById('nombrePU').style.borderColor = '#DADAD2';
+  // document.getElementById("puPU").style.borderColor = "#DADAD2";
+  // document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
+  document.getElementById('cantPU').style.borderColor = '#DADAD2';
+  document.getElementById('tipoPU').style.borderColor = '#DADAD2';
+  document.getElementById('tipoP').style.borderColor = '#DADAD2';
+  document.getElementById('filesU').style.borderColor = '#DADAD2';
+}
+
+function setOriginalColorsTPC() {
+  document.getElementById('descTPC').style.borderColor = '#DADAD2';
+  document.getElementById('filesTP').style.borderColor = '#DADAD2';
+}
+
+function setOriginalColorsTPU() {
+  document.getElementById('descTPU').style.borderColor = '#DADAD2';
+  document.getElementById('filesTPU').style.borderColor = '#DADAD2';
 }

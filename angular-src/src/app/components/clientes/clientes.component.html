@@ -24,6 +24,13 @@
                     (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)"></ng2-smart-table>
             </div>
         </tab>
+        <tab heading="Estado de Cuentas">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr>
+                <h3 style="text-align:center">Estado de Cuentas</h3>
+                <hr>
+            </div>
+        </tab>
     </tabset>
 </div>
 
@@ -99,48 +106,54 @@
     <p-header>
         Registrar Cliente
     </p-header>
+    <br>
     <div class="ui-g ui-fluid">
         <div class="ui-g-6">
-            <label for="ci">Cedula</label>
+            <label for="ci">Cedula*:</label>
             <input type="text" [(ngModel)]="cedula" id="ci" name="ci" (ngModelChange)="onChange()" placeholder="Cedula del cliente" class="form-control input-sm"
-                maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+                maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+                tooltipPlacement="bottom">
         </div>
         <div class="ui-g-6">
-            <label>Telefono</label>
-            <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-            <br>
+            <label>Telefono:</label>
+            <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm"
+                maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+                tooltipPlacement="bottom">
         </div>
         <div class="ui-g-6">
-            <label>Nombre</label>
-            <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
+            <label>Nombre*:</label>
+            <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm"
+                onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
         </div>
         <div class="ui-g-6">
-            <label>Apellido</label>
-            <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-            <br>
+            <label>Apellido*:</label>
+            <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm"
+                onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
         </div>
         <div class="ui-g-6">
-            <label>E-mail</label>
-            <input type="text" [(ngModel)]="correo" id="correo" name="correo" placeholder="Correo del cliente" class="form-control  input-sm">
+            <label>E-mail:</label>
+            <input type="text" [(ngModel)]="correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo del cliente"
+                class="form-control  input-sm">
         </div>
         <div class="ui-g-6">
-            <label>Sexo</label><br>
-            <div class="radio">
-                <md-radio-group [(ngModel)]="sexo">
-                    <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-                    </md-radio-button>
-                </md-radio-group>
-            </div>
-            <br>
+            <label>Sexo*:</label><br>
+            <md-radio-group [(ngModel)]="sexo">
+                <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+                </md-radio-button>
+            </md-radio-group>
         </div>
         <div class="ui-g-6">
-            <label>Fecha de nacimiento (DD/MM/AAAA)</label>
+            <label>Fecha de nacimiento*:</label>
             <p-calendar [(ngModel)]="fecha_nacimiento" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
-                [yearNavigator]="true" yearRange="1950:2030" dataType="string">
+                [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true">
             </p-calendar>
         </div>
         <div class="ui-g-6">
-            <label>Tipo Cliente</label>
+            <label>Tipo Cliente*:</label>
             <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
         </div>
     </div>
@@ -222,54 +235,60 @@
     <p-header>
         Actualizar Cliente
     </p-header>
+    <br>
     <div class="ui-g ui-fluid">
         <div class="ui-g-6">
-            <label for="ciU">Cedula</label>
-            <input type="text" [(ngModel)]="cedula" id="ciU" name="ciU" (ngModelChange)="onChange()" placeholder="Cedula del cliente"
-                class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+            <label for="ciU">Cedula/RUC*:</label>
+            <input type="text" [(ngModel)]="cedula" id="ciU" name="ciU" (ngModelChange)="onChangeU()" placeholder="Cedula del cliente"
+                class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom">
         </div>
         <div class="ui-g-6">
-            <label>Telefono</label>
-            <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-            <br>
+            <label>Telefono:</label>
+            <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control input-sm"
+                maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+                tooltipPlacement="bottom">
         </div>
         <div class="ui-g-6">
-            <label>Nombre</label>
-            <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
+            <label>Nombre*:</label>
+            <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control input-sm"
+                onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
         </div>
         <div class="ui-g-6">
-            <label>Apellido</label>
-            <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-            <br>
+            <label>Apellido*:</label>
+            <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control input-sm"
+                onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
         </div>
         <div class="ui-g-6">
-            <label>E-mail</label>
-            <input type="text" [(ngModel)]="correo" id="correo" name="correo" placeholder="Correo del cliente" class="form-control  input-sm">
+            <label>E-mail:</label>
+            <input type="text" [(ngModel)]="correo" (ngModelChange)="onChangeEmailU($event)" id="correoU" name="correoU" placeholder="Correo del cliente"
+                class="form-control input-sm">
         </div>
         <div class="ui-g-6">
-            <label>Sexo</label><br>
-            <div class="radio">
-                <md-radio-group [(ngModel)]="sexo">
-                    <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-                    </md-radio-button>
-                </md-radio-group>
-            </div>
-            <br>
+            <label>Sexo*:</label><br>
+            <md-radio-group [(ngModel)]="sexo">
+                <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+                </md-radio-button>
+            </md-radio-group>
         </div>
         <div class="ui-g-6">
-            <label>Fecha de nacimiento (DD/MM/AAAA)</label>
+            <label>Fecha de nacimiento*:</label>
             <p-calendar [(ngModel)]="fecha_nacimiento" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
-                [yearNavigator]="true" yearRange="1950:2030" dataType="string">
+                [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true">
             </p-calendar>
         </div>
         <div class="ui-g-6">
-            <label>Tipo Cliente</label>
+            <label>Tipo Cliente*:</label>
             <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
         </div>
     </div>
     <hr>
     <div class="ui-g-12" style="text-align: center">
-        <button class="btn btn-primary" style="font-size: 11px" (click)="updateClient()" style="width: 25%">Actualizar</button>
-        <button class="btn btn-default" style="font-size: 11px" (click)="showDialog1 = !showDialog1" style="width: 25%">Cancelar</button>
+        <button class="btn btn-primary" style="font-size: 11px" (click)="updateClient()">Actualizar</button>
+        <button class="btn btn-default" style="font-size: 11px" (click)="showDialog1 = false">Cancelar</button>
     </div>
 </p-dialog>

@@ -22,7 +22,7 @@ export class ValidateService {
 
   validateClient(client) {
     if (client.id_tipo_cliente == "" || client.cedula == "" || client.nombre == "" || client.apellido == ""
-      || client.telefono == "" || client.correo == "" || client.fecha_nacimiento == "") {
+      || client.fecha_nacimiento == "") {
       return false;
     } else {
       return true;
@@ -30,12 +30,24 @@ export class ValidateService {
   }
 
   validateTipoProducto(tipoProducto) {
-    if (tipoProducto.desc_tipo_producto == undefined ||
-      tipoProducto.desc_tipo_producto == "") {
-      return false;
-    } else {
-      return true;
+    let res = true;
+    if (tipoProducto.desc_tipo_producto == "") {
+      document.getElementById("descTPC").style.borderColor = "#FE2E2E";
+      res = false;
     }
+    if (tipoProducto.path == "") {
+      document.getElementById("filesTP").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (tipoProducto.desc_tipo_producto == "") {
+      document.getElementById("descTPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (tipoProducto.path == "") {
+      document.getElementById("filesTPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
   }
 
   validateProducto(producto) {
@@ -82,7 +94,7 @@ export class ValidateService {
       document.getElementById("nombrePU").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.precio_costo== null) {
+    if (producto.precio_costo == null) {
       document.getElementById("pcPU").style.borderColor = "#FE2E2E";
       res = false;
     }
