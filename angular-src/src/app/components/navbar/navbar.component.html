@@ -1,38 +1,83 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1" aria-expanded="false"
-        aria-controls="navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1" aria-expanded="false"
+                aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">ManagerBox</a>
-      <!--<a class="navbar-left" href="#" style="font-size: 8px; color: #3E3F3A">ManagerBox</a>
-      <a href="#"><img class="center-block" src="assets/img/ManagerBox1.svg" style="max-width: 25%; max-height: 25%;"></a>-->
-    </div>
-    <div id="navbar1" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav navbar-left">
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/administracion']">Administrar</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/personal']">Personal</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/card']">Atencion</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/facturacion']">Ventas</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/clientes']">Clientes</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a [routerLink]="['/inventario']">Reportes</a></li>
-      </ul>
+            <a class="navbar-brand" href="#">ManagerBox</a>
+        </div>
+        <div id="navbar1" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/administracion']">Administrar</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/personal']">Personal</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/card']">Atencion</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/facturacion']">Ventas</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/clientes']">Clientes</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/inventario']">Reportes</a></li>
+            </ul>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li *ngIf="authService.loggedIn()"><a (click)="onLogOutClick()" href="#">Logout</a></li>
-      </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li *ngIf="authService.loggedIn()"><a (click)="onLogOutClick()" href="#">Logout</a></li>
+            </ul>
 
+        </div>
     </div>
-    <!--/.nav-collapse -->
-  </div>
 </nav>
+
+<!--<nav class="navbar navbar-inverse navbar-static-top " role="navigation">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-md-12 col-lg-12 col-xl-12">
+              <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" style="color: white" href="#">TSH</a>
+              </div>
+              <div class="collapse navbar-collapse" id="myNavbar">
+                  <ul class="nav navbar-nav">
+                      <li class="active" style="background-color: #006294; color: white"><a href="#">Inicio</a></li>
+
+
+                      <li class="dropdown">
+                          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Orden Servicio<span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                              <li><a href="#">Ingreso Orden Servicio</a></li>
+                              <li><a href="#">Modificar Orden Servicio</a></li>
+                          </ul>
+                      </li>
+                      <li class="dropdown">
+                          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Pedido<span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                              <li><a href="#">Ingreso Pedido</a></li>
+                              <li><a href="#">Modificar Pedido</a></li>
+                          </ul>
+                      </li>
+                  </ul>
+
+                  <ul class="nav navbar-nav navbar-right">
+                      <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out" style="color: white"></span> LogOut</a></li>
+                  </ul>
+                  <ul class="nav navbar-nav navbar-right">
+                      <li><a href="#"><span class="glyphicon glyphicon-info-sign" style="color: white"></span></a></li>
+                  </ul>
+                  <ul class="nav navbar-nav navbar-right">
+                      <li><a href="#"><span class="glyphicon glyphicon-user" style="color: white"></span></a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
+</nav>-->

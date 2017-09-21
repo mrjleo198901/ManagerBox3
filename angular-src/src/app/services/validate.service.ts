@@ -402,6 +402,24 @@ export class ValidateService {
     }
   }
 
+  validateTarjeta(tarjeta) {
+    let res = true;
+    if (tarjeta.numero == undefined || tarjeta.numero == '') {
+      document.getElementById("numeroGT").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (tarjeta.tipo == undefined || tarjeta.tipo == '') {
+      document.getElementById("tipoTarjetas").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (tarjeta.limite == undefined || tarjeta.limite == '') {
+      document.getElementById("limite").style.borderColor = "#FE2E2E";
+      console.log
+      res = false;
+    }
+    return res;
+  }
+
   //SOLO LETRAS MAYUSCULAS O MINUSCULAS Y ESPACIOS 
   soloLetras(evt) {
     var key = evt.keyCode || evt.which;

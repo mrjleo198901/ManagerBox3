@@ -23,7 +23,6 @@ import { InventarioComponent } from './components/inventario/inventario.componen
 /*Services*/
 import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
-import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthGuard } from './guards/auth.guard';
 import { TipoProductoService } from './services/tipo-producto.service';
 import { ProductoService } from './services/producto.service';
@@ -32,7 +31,8 @@ import { TipoClienteService } from './services/tipo-cliente.service';
 import { CargoPersonalService } from './services/cargo-personal.service';
 import { PersonalService } from './services/personal.service';
 import { MessageGrowlService } from './services/message-growl.service';
-import { FormatterService } from './services/formatter.service'
+import { FormatterService } from './services/formatter.service';
+import { TarjetaService } from './services/tarjeta.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -96,7 +96,6 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-    FlashMessagesModule,
     TabsModule,
     DatepickerModule,
     TooltipModule,
@@ -111,7 +110,7 @@ const appRoutes: Routes = [
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
-    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService],
+    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService],
   bootstrap: [AppComponent]
 })
 

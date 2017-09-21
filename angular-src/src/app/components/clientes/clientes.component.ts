@@ -8,6 +8,10 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { FormatterService } from '../../services/formatter.service';
+import { AuthService } from '../../services/auth.service';
+import { CardComponent } from '../../components/card/card.component';
+import { ProductoService } from '../../services/producto.service';
+import { TipoProductoService } from '../../services/tipo-producto.service';
 
 @Component({
   selector: 'app-clientes',
@@ -119,6 +123,7 @@ export class ClientesComponent implements OnInit {
     lastOnBottom: true
   }
   citiesDD: any[];
+  private foo: CardComponent;
 
   constructor(
     private validateService: ValidateService,
@@ -126,7 +131,9 @@ export class ClientesComponent implements OnInit {
     private clienteService: ClienteService,
     public el: ElementRef, public renderer: Renderer, public dialog: MdDialog,
     private messageGrowlService: MessageGrowlService,
-    private formatterService: FormatterService) {
+    private productoService: ProductoService,
+    private formatterService: FormatterService,
+    private tipoProductoService: TipoProductoService) {
     this.flagCreate = false;
     this.flagUpdate = false;
     this.showDatepicker = false;
@@ -141,10 +148,22 @@ export class ClientesComponent implements OnInit {
       today: 'Hoy',
       clear: 'Borrar'
     }
+
+    /*this.foo = new CardComponent(
+      validateService,
+      el, renderer,
+      productoService,
+      tipoProductoService,
+      clienteService,
+      tipoClienteService,
+      messageGrowlService,
+      formatterService,
+      dialog
+    );*/
+
   }
 
   ngOnInit() {
-    console.log("insideeee")
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
     this.sexo = "M";
@@ -294,30 +313,25 @@ export class ClientesComponent implements OnInit {
       id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes),
       tarjeta: ""
     }
-    console.log(newClient);
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     // Validate Email
-    if (!this.validateService.validateEmail(newClient.correo)) {
-      this.messageGrowlService.notify('error', 'Error', 'Ingresa un mail válido!');
-      return false;
-    }
-    //Validate cedula
-    let valRes = this.validateService.validadorCedula(newClient.cedula).split('/');
-    if (valRes[1].localeCompare('success') === 0) {
-      this.messageGrowlService.notify('success', 'Exito', valRes[0]);
-    } else {
-      this.messageGrowlService.notify('error', 'Error', valRes[0]);
-      return false;
+    if (newClient.correo !== "") {
+      if (!this.validateService.validateEmail(newClient.correo)) {
+        this.messageGrowlService.notify('error', 'Error', 'Ingresa un mail válido!');
+        return false;
+      }
     }
     this.clienteService.registerCliente(newClient).subscribe(data => {
       this.sourceC.add(newClient);
       this.sourceC.refresh();
       this.ngOnInit();
-      this.showDialog = false
+      this.showDialog = false;
+      //this.foo.clientes.push(newClient);
+      //this.foo.ngOnInit();
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
     }, err => {
       console.log(err);
@@ -335,7 +349,8 @@ export class ClientesComponent implements OnInit {
       correo: this.correo,
       fecha_nacimiento: this.fecha_nacimiento,
       sexo: this.sexo,
-      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes)
+      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes),
+      tarjeta: ""
     }
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
@@ -347,15 +362,12 @@ export class ClientesComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Ingresa un mail válido!');
       return false;
     }
-    //Validate cedula
-    let valRes = this.validateService.validadorCedula(newClient.cedula).split('/');
-    if (valRes[1].localeCompare('success') === 0) {
-      this.messageGrowlService.notify('success', 'Exito', valRes[0]);
-    } else {
-      this.messageGrowlService.notify('error', 'Error', valRes[0]);
-      return false;
+    if (newClient.correo !== "") {
+      if (!this.validateService.validateEmail(newClient.correo)) {
+        this.messageGrowlService.notify('error', 'Error', 'Ingresa un mail válido!');
+        return false;
+      }
     }
-    console.log(newClient)
     this.clienteService.updateCliente(newClient).subscribe(data => {
       this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
       this.sourceC.update(this.oldUser, newClient);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ValidateService } from '../../services/validate.service';
 import { AuthService } from '../../services/auth.service';
-import { FlashMessagesService } from 'angular2-flash-messages';
+import { MessageGrowlService } from '../../services/message-growl.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private validateService: ValidateService,
-    private flashMessagesService: FlashMessagesService,
+    private messageGrowlService: MessageGrowlService,
     private authService: AuthService,
     private router: Router) { }
 
@@ -33,22 +33,20 @@ export class RegisterComponent implements OnInit {
     }
     //Required fields
     if (!this.validateService.validateRegister(user)) {
-
-      this.flashMessagesService.show('Please fill in all fields', { cssClass: 'alert-danger', timeout: 3000 });
+      this.messageGrowlService.notify('error', 'Error', 'Por favor llena todos los campos!');
       return false;
     }
     // Validate Email
     if (!this.validateService.validateEmail(user.email)) {
-      this.flashMessagesService.show('Please use a valid email', { cssClass: 'alert-danger', timeout: 3000 });
       return false;
     }
     // Register user
     this.authService.registerUser(user).subscribe(data => {
       if (data.success) {
-        this.flashMessagesService.show('You are now registered and can log in', { cssClass: 'alert-success', timeout: 3000 });
+        this.messageGrowlService.notify('success', 'Exito', 'Ahora estas registrado y puedes entrar!')
         this.router.navigate(['/login']);
       } else {
-        this.flashMessagesService.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
         this.router.navigate(['/register']);
       }
     });

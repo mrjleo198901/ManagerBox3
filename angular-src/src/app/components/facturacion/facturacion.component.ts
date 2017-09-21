@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
-import { PersonalService } from '../../services/personal.service'
+import { PersonalService } from '../../services/personal.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-facturacion',
@@ -24,7 +25,8 @@ export class FacturacionComponent implements OnInit {
   selectedProd: any;
   displayDialog: boolean;
   checked: boolean = false;
-
+  password;
+  
   change($event) {
     //alert($event)
   }

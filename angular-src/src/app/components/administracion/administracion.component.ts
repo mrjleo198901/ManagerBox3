@@ -487,7 +487,7 @@ export class AdministracionComponent implements OnInit {
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo,
-      contenido: this.contenido+ this.selectedLstContenido
+      contenido: this.contenido + this.selectedLstContenido
     };
     console.log(producto);
     if (!this.validateService.customValidateProducto(producto)) {
@@ -823,6 +823,22 @@ export class AdministracionComponent implements OnInit {
   }
 
   valueChangePrecioVenta($event) {
+    const gain = 1 - (this.utilidad / 100);
+    this.precio_costo = (this.precio_venta * gain).toFixed(2);
+  }
+
+  valueChangeGananciaU($event) {
+    const gain = (this.utilidad / 100) + 1;
+    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+  }
+
+  valueChangePrecioCompraU($event) {
+    this.precio_costo = ((this.precio_costo * 100) / 100).toFixed(2);
+    const gain = (this.utilidad / 100) + 1;
+    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+  }
+
+  valueChangePrecioVentaU($event) {
     const gain = 1 - (this.utilidad / 100);
     this.precio_costo = (this.precio_venta * gain).toFixed(2);
   }

@@ -3,6 +3,7 @@ import { MessageGrowlService } from '../../services/message-growl.service';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { ValidateService } from '../../services/validate.service';
 import { Message, SelectItem } from 'primeng/primeng';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-inventario',

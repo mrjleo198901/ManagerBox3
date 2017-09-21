@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
-import { MdDialog } from '@angular/material';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-image-render',
@@ -10,7 +10,7 @@ import { MdDialog } from '@angular/material';
   //template: `<i class="fa fa-picture-o fa-lg" aria-hidden="true" (click)="openDialog()"></i>`,
   template: `<ng-template #toolTipTemplate><img src={{renderValue}} width="100%"/></ng-template>
              <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
-                <i class="fa fa-picture-o fa-lg" aria-hidden="true" (click)="openDialog()"></i>
+                <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
              </a>`
 })
 export class ImageRenderComponent implements OnInit {
@@ -19,7 +19,7 @@ export class ImageRenderComponent implements OnInit {
   position = 'below';
   @Input() value;
 
-  constructor(public dialog: MdDialog) { }
+  constructor() { }
 
   ngOnInit() {
     this.renderValue = this.value;

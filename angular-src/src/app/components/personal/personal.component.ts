@@ -3,10 +3,10 @@ import { Component, NgModule, OnInit, OnChanges, ElementRef, Renderer } from '@a
 import { ValidateService } from '../../services/validate.service';
 import { CargoPersonalService } from '../../services/cargo-personal.service';
 import { AuthService } from '../../services/auth.service';
-import { FlashMessagesService } from 'angular2-flash-messages';
 import * as moment from 'moment';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { PersonalService } from '../../services/personal.service';
+import { MessageGrowlService } from '../../services/message-growl.service';
 
 @Component({
   selector: 'app-personal',
@@ -69,7 +69,7 @@ export class PersonalComponent implements OnInit {
     private personalService: PersonalService,
     private authService: AuthService,
     private validateService: ValidateService,
-    private flashMessagesService: FlashMessagesService,
+    private messageGrowlService: MessageGrowlService,
     public el: ElementRef, public renderer: Renderer) {
     renderer.listenGlobal('document', 'change', (event) => {
       //Set time in datepicker
@@ -340,18 +340,17 @@ export class PersonalComponent implements OnInit {
     }
     //Required fields
     if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
-      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     //Register Tipo producto
     let a = this.cargoPersonalService.registerCargoPersonal(cargoPersonal).subscribe(data => {
-      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
       this.ngOnInit();
       this.showDialogCargoPerAdd = false;
     }, err => {
       // Log errors if any
       console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
   }
   //MODIFICAR CARGO PERSONAL
@@ -368,18 +367,17 @@ export class PersonalComponent implements OnInit {
     }
     //Required fields
     if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
-      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     //Update Tipo producto
     this.cargoPersonalService.updateCargoPersonal(cargoPersonal).subscribe(data => {
-      //this.flashMessagesService.show('Modificacion exitosa!', { cssClass: 'alert-success', timeout: 2000 });
       this.ngOnInit();
       this.showDialogCargoPerUp = false;
     }, err => {
       // Log errors if any
       console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
   }
   //POSICION DEL CURSOR PERSONAL
@@ -426,7 +424,7 @@ export class PersonalComponent implements OnInit {
     if (this.cedula.length === 10) {
       if (!this.validateService.validarRucCedula(this.cedula)) {
         document.getElementById("ci").style.borderColor = "#FE2E2E";
-        this.flashMessagesService.show('Cédula Inválida', { cssClass: 'alert-danger', timeout: 2000 });
+        this.messageGrowlService.notify('error', 'Error', 'Cédula Inválida!');
       } else
         document.getElementById("ci").style.borderColor = "#DADAD2";
     }
@@ -439,7 +437,6 @@ export class PersonalComponent implements OnInit {
 
     if (!this.validateService.validateEmail(this.email)) {
       document.getElementById("email").style.borderColor = "#FE2E2E";
-      //this.flashMessagesService.show('Correo Inválido', { cssClass: 'alert-danger', timeout: 2000 });
     } else
       document.getElementById("email").style.borderColor = "#DADAD2";
 
@@ -498,17 +495,16 @@ export class PersonalComponent implements OnInit {
 
     //Required fields
     if (!this.validateService.validatePersonal(personal)) {
-      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     // Validate Email
     if (!this.validateService.validateEmail(personal.email)) {
-      this.flashMessagesService.show('Mail Inválido', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     //Register Personal
     this.personalService.registerPersonal(personal).subscribe(data => {
-      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
       //add user
       const newUser = {
         username: this.cedula,
@@ -519,7 +515,7 @@ export class PersonalComponent implements OnInit {
       this.authService.registerUser(newUser).subscribe(data => {
       }, err => {
         console.log(err);
-        this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
       })
 
       this.ngOnInit();
@@ -527,7 +523,7 @@ export class PersonalComponent implements OnInit {
     }, err => {
       // Log errors if any
       console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
   }
   //MODIFICAR PERSONAL
@@ -546,25 +542,24 @@ export class PersonalComponent implements OnInit {
 
     //Required fields
     if (!this.validateService.validatePersonal(personal)) {
-      this.flashMessagesService.show('Campos vacios!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacíos!');
       return false;
     }
     // Validate Email
     if (!this.validateService.validateEmail(personal.email)) {
-      this.flashMessagesService.show('Mail Inválido', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacíos!');
       return false;
     }
     //Register Personal
     this.personalService.updatePersonal(personal).subscribe(data => {
-      //this.flashMessagesService.show('Ingreso Existoso!', { cssClass: 'alert-success', timeout: 2000 });
+      this.messageGrowlService.notify('success', 'Exito', 'Ingreso exitoso!');
       this.ngOnInit();
       this.showDialogPerUp = false;
     }, err => {
       // Log errors if any
       console.log(err);
-      this.flashMessagesService.show('Algo salio mal!', { cssClass: 'alert-danger', timeout: 2000 });
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
-
   }
 
 }

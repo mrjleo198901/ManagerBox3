@@ -23,7 +23,7 @@ const port = 3000;
 //cors middleware
 app.use(cors());
 //set static folder
-//app.use(express.static(path.join(__dirname, 'public')));
+/*app.use(express.static(path.join(__dirname, 'public')));*/
 
 //body-parser middleware
 app.use(bodyParser.json());
@@ -52,7 +52,7 @@ app.use('/api', require('./routes/proveedorApi'));
 app.use('/api', require('./routes/tipoClienteApi'));
 app.use('/api', require('./routes/tipoProductoApi'));
 app.use('/api', require('./routes/tipoPromocionApi'));
-
+app.use('/api', require('./routes/tarjetaApi'));
 
 var profileController = require('./routes/uploadFiles');
 

@@ -9,7 +9,7 @@
                 <hr>
             </div>
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = !showDialog2;onCreateTC($event);setCursorAddTC()"
+                <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = !showDialog2;"
                     (edit)="showDialog3 = !showDialog3;onUpdateTC($event);setCursorUpdateTC()" (delete)="onDeleteTC($event)"></ng2-smart-table>
             </div>
         </tab>
@@ -35,73 +35,6 @@
 </div>
 
 <!-- ADD CLIENT -->
-<!--<app-dialog [(visible)]="showDialog" (visibleChange)="change($event)" #dialog="dialog">
-    <h3 style="text-align: center">
-        Registrar Cliente
-    </h3>
-    <hr>
-    <flash-messages *ngIf="flagCreate"></flash-messages>
-    <div class="col-lg-6 col-md-6">
-        <label for="ci" style="display: inline-block">Cedula</label>
-        <input type="text" [(ngModel)]="cedula" id="ci" name="ci" (ngModelChange)="onChange()" placeholder="Cedula del cliente" class="form-control input-sm"
-            maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label for="telefono">Telefono</label>
-        <input type="text" [(ngModel)]="telefono" id="telefono" name="telefono" placeholder="Telefono del cliente" class="form-control  input-sm">
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="cols-sm-2 control-label" for="username">Nombre</label>
-        <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control  input-sm">
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="cols-sm-2 control-label" for="apellido">Apellido</label>
-        <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control  input-sm">
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="correo">E-mail</label>
-        <input type="text" [(ngModel)]="correo" id="correo" name="correo" placeholder="Correo del cliente" class="form-control  input-sm">
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label">Sexo</label><br>
-        <div class="radio">
-            <md-radio-group [(ngModel)]="sexo">
-                <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-                </md-radio-button>
-            </md-radio-group>
-        </div>
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
-        <div class="input-group col-lg-12 col-md-12">
-            <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fecha_nacimiento" id="fecha" name="fecha" placeholder="MM/DD/YYYY"
-                class="form-control  input-sm">
-            <span (click)="showCalendar()" class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-        </div>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="tipoC">Tipo Cliente</label>
-        <select [(ngModel)]="selected_tipo_cliente" id="tipoC" name="tipoC" class="form-control input-sm">
-            <option value="" disabled selected hidden>Selecciona...</option>
-            <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
-        </select>
-    </div>
-    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
-        <div style="display:inline-block;text-align: center">
-            <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
-        </div>
-    </div>
-    <div class="col-lg-12 col-md-12">
-        <br>
-        <div class="form-group" style="text-align: center">
-            <button class="btn btn-primary" (click)="saveClient()" style="width: 25%">Registrar</button>
-            <button class="btn btn-default" (click)="showDialog = !showDialog" style="width: 25%">Cancelar</button>
-        </div>
-    </div>
-</app-dialog>-->
 <p-dialog [(visible)]="showDialog" modal="modal" width="550" [responsive]="true">
     <p-header>
         Registrar Cliente
@@ -165,72 +98,6 @@
 </p-dialog>
 
 <!-- UPDATE CLIENT -->
-<!--<app-dialog [(visible)]="showDialog1" (visibleChange)="changeU($event)" #dialog1="dialog">
-    <h3 style="text-align: center">
-        Actualizar Cliente
-    </h3>
-    <hr>
-    <flash-messages *ngIf="flagUpdate"></flash-messages>
-    <div class="col-lg-6 col-md-6">
-        <label for="ciU" style="display: inline-block">Cedula</label>
-        <input type="text" [(ngModel)]="cedula" id="ciU" name="ciU" placeholder="Cedula del cliente" class="form-control input-sm">
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label for="telefonoU">Telefono</label>
-        <input type="text" [(ngModel)]="telefono" id="telefonoU" name="telefonoU" placeholder="Telefono del cliente" class="form-control  input-sm">
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="cols-sm-2 control-label" for="usernameU">Nombre</label>
-        <input type="text" [(ngModel)]="nombre" id="nombreU" name="nombreU" placeholder="Nombre del cliente" class="form-control  input-sm">
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="cols-sm-2 control-label" for="apellidoU">Apellido</label>
-        <input type="text" [(ngModel)]="apellido" id="apellidoU" name="apellidoU" placeholder="Apellido del cliente" class="form-control  input-sm">
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="emailU">E-mail</label>
-        <input type="text" [(ngModel)]="correo" id="emailU" name="emailU" placeholder="Correo del cliente" class="form-control  input-sm">
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="fechaU">Sexo</label><br>
-        <div class="radio">
-            <md-radio-group [(ngModel)]="sexo">
-                <md-radio-button *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-                </md-radio-button>
-            </md-radio-group>
-        </div>
-        <br>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="fecha">Fecha de nacimiento (MM/DD/AAAA)</label>
-        <div class="input-group col-lg-12 col-md-12">
-            <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fecha_nacimiento" id="fechaU" name="fechaU" placeholder="MM/DD/YYYY"
-                class="form-control  input-sm">
-            <span (click)="showCalendar()" class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-        </div>
-    </div>
-    <div class="col-lg-6 col-md-6">
-        <label class="control-label" for="tipoCU">Tipo Cliente</label>
-        <select [(ngModel)]="selected_tipo_cliente" id="tipoCU" name="tipoCU" class="form-control input-sm">
-            <option *ngFor="let c of tipo_clientes">{{c.desc_tipo_cliente}}</option>
-        </select>
-    </div>
-    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
-        <div style="display:inline-block;text-align: center">
-            <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
-        </div>
-    </div>
-    <br>
-    <div class="col-lg-12 col-md-12">
-        <br>
-        <div class="form-group" style="text-align: center">
-            <button class="btn btn-primary" (click)="updateClient()" style="width: 25%">Actualizar</button>
-            <button class="btn btn-default" (click)="showDialog1 = !showDialog1" style="width: 25%">Cancelar</button>
-        </div>
-    </div>
-</app-dialog>-->
 <p-dialog [(visible)]="showDialog1" modal="modal" width="550" [responsive]="true">
     <p-header>
         Actualizar Cliente
