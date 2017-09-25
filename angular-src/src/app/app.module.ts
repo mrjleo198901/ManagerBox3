@@ -52,6 +52,7 @@ import {
 
 import { AppComponent } from './app.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { AppLoaderComponent } from './components/app-loader/app-loader.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -86,7 +87,8 @@ const appRoutes: Routes = [
     ImageRenderComponent,
     ConfirmDialogComponent,
     InventarioComponent,
-    NotificationComponent
+    NotificationComponent,
+    AppLoaderComponent
   ],
   entryComponents: [ImageRenderComponent, ConfirmDialogComponent],
   imports: [

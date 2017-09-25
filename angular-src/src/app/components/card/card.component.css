@@ -1,12 +1,11 @@
 .spinner {
-  width: 60px;
-
+  width: 80px;
+  padding-left: -20px;
 }
 .spinner input {
   text-align: right;
   font-size: 14px;
 }
-
 .input-group-btn-vertical {
   position: relative;
   white-space: nowrap;

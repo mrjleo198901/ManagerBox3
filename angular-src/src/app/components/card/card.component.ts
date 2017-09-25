@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { TarjetaService } from '../../services/tarjeta.service';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
+import * as myGlobals from '../../components/globals';
 
 @Component({
   selector: 'app-card',
@@ -132,6 +133,9 @@ export class CardComponent implements OnInit {
   updateTarjeta: any;
   oldCard;
   ind = 0;
+  lstCards: any = [];
+  flagActivateInsertCard = true;
+
   change($event) {
     $event = false;
   }
@@ -157,20 +161,12 @@ export class CardComponent implements OnInit {
       formatterService,
       tipoProductoService);*/
 
+    console.log(this.flagCardFound + " " + this.flagUserFound)
+
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
 
     this.baseColor = "#f8f5f0";
-    this.es = {
-      firstDayOfWeek: 1,
-      dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
-      dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
-      dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
-      monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
-      monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
-      today: 'Hoy',
-      clear: 'Borrar'
-    }
     // Atributos cliente
     this.cedula = "";
     this.nombre = "";
@@ -309,10 +305,7 @@ export class CardComponent implements OnInit {
       return false;
     }
     this.clienteService.registerCliente(newClient).subscribe(data => {
-      /*this.foo.sourceC.add(newClient);
-      this.foo.sourceC.refresh();
-      this.foo.ngOnInit();*/
-      this.clientes.push(newClient);
+      console.log(myGlobals.globalClients)
       this.showDialog = false;
       this.ngOnInit();
       this.checkClient();
@@ -338,10 +331,12 @@ export class CardComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacíos!');
       return false;
     }
-    let row = this.lstAddCardCI.find(x => x.value.cedula === newCard.cedula);
-    this.lstAddCardCI = this.lstAddCardCI.filter(function (obj) {
-      return obj.value.cedula !== row.value.cedula;
-    });
+    if (this.selectedClientGP.value.cedula.localeCompare("") !== 0) {
+      let row = this.lstAddCardCI.find(x => x.value.cedula === newCard.cedula);
+      this.lstAddCardCI = this.lstAddCardCI.filter(function (obj) {
+        return obj.value.cedula !== row.value.cedula;
+      });
+    }
     this.tarjetaService.register(newCard).subscribe(data => {
       this.sourceT.add(newCard);
       this.sourceT.refresh();
@@ -353,6 +348,7 @@ export class CardComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     })
+
   }
 
   onDeleteT(event): void {
@@ -415,79 +411,6 @@ export class CardComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     })
-  }
-
-  enterKey() {
-    let o = "ñ";
-    let f = "_";
-    let aux = o.concat(this.cardNumber.concat(f));
-    //console.log(aux)
-    if (aux === this.validCard) {
-      document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
-    } else {
-      var x = document.getElementById('basic-addon2')
-      document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
-
-    }
-  }
-
-  onChange(event) {
-    let finalChar = this.cardNumber.slice(-1)
-    if (this.cardNumber.length == 9) {
-      if (finalChar.localeCompare("_") == 0) {
-        let v = document.getElementById('numero');
-        v.click();
-        document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
-        document.getElementById('cantMujeres').focus();
-        this.flagCardFound = true;
-      }
-    } else {
-      this.flagCardFound = false;
-      document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
-    }
-  }
-
-  onChangeCILength($event) {
-    if (this.cedula.length != 10) {
-      this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
-      this.flagUserFound = false;
-    }
-    if (this.cedula.length != 13) {
-      this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
-      this.flagUserFound = false;
-    }
-    if (this.cedula.length == 10 || this.cedula.length == 13) {
-      this.checkClient();
-    }
-  }
-
-  checkClient() {
-    this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
-    if (this.searchUser !== undefined) {
-      if (this.cedula === this.searchUser.cedula) {
-        this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
-        document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
-        this.flagUserFound = true;
-        setTimeout(function () {
-          document.getElementById('numero').focus();
-        }, 0)
-      }
-    }
-    else {
-      this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
-      this.flagUserFound = false;
-    }
-  }
-
-  enterKey1() {
-    this.checkClient();
   }
 
   lessWoman() {
@@ -599,6 +522,86 @@ export class CardComponent implements OnInit {
 
   display: boolean = false;
 
+  onChange(event) {
+    let finalChar = this.cardNumber.slice(-1)
+    if (this.cardNumber.length == 9) {
+      if (finalChar.localeCompare("_") == 0) {
+        document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
+        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+        document.getElementById('cantMujeres').focus();
+        this.checkCard();
+      }
+    } else {
+      this.flagCardFound = false;
+      document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
+      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+    }
+  }
+
+  checkCard() {
+    let searchCard = this.lstCards.find(x => x.cedula === this.cedula);
+    if (searchCard !== undefined) {
+      this.flagCardFound = true;
+      this.cardNumber = searchCard.numero;
+      this.flagActivateInsertCard = false;
+      setTimeout(function () {
+        document.getElementById('cantMujeres').focus();
+      }, 0)
+    } else {
+      if (this.cardNumber.length == 9) {
+        this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
+          if (data.length > 0) {
+            this.flagCardFound = true;
+          } else {
+            this.flagCardFound = false;
+          }
+        }, err => {
+          console.log(err);
+        })
+      }
+    }
+  }
+
+  onChangeCILength($event) {
+    if (this.cedula.length != 10) {
+      this.nfLael = "Usuario no encontrado.";
+      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+      this.flagUserFound = false;
+      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+      this.cardNumber = "";
+    }
+    if (this.cedula.length != 13) {
+      this.nfLael = "Usuario no encontrado.";
+      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+      this.flagUserFound = false;
+      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+      this.cardNumber = "";
+    }
+    if (this.cedula.length == 10 || this.cedula.length == 13) {
+      this.checkClient();
+    }
+  }
+
+  checkClient() {
+    this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
+    if (this.searchUser !== undefined) {
+      this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+      document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
+      this.flagUserFound = true;
+      this.checkCard();
+      setTimeout(function () {
+        document.getElementById('numero').focus();
+      }, 0)
+    } else {
+      this.nfLael = "Usuario no encontrado.";
+      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+      this.flagUserFound = false;
+      this.cardNumber = "";
+    }
+  }
+
   onChangeCI() {
     if (this.cedula.length != 10)
       document.getElementById("ciA").style.borderColor = "#FE2E2E";
@@ -640,7 +643,8 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
-    this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+    console.log(this.flagUserFound + " " + this.flagCardFound)
+    /*this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
       "cedula": this.searchUser.cedula,
@@ -653,8 +657,6 @@ export class CardComponent implements OnInit {
       "_id": this.searchUser._id,
       "tarjeta": this.cardNumber
     }
-
-    console.log(newClient);
     this.clienteService.updateCliente(newClient).subscribe(data => {
       this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
       this.flagUserFound = false;
@@ -665,7 +667,7 @@ export class CardComponent implements OnInit {
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-    })
+    })*/
   }
 
   onChangeClose($event) {
@@ -810,10 +812,10 @@ export class CardComponent implements OnInit {
           i++;
         }
         this.tarjetaService.getAll().subscribe(t => {
-          let lstCards = t;
-          this.sourceT.load(lstCards);
-          console.log(lstCards)
-          this.lstAddCardCI = this.filterCardCI(this.clientesC, lstCards);
+          this.lstCards = t;
+          this.sourceT.load(this.lstCards);
+          //console.log(this.lstCards)
+          this.lstAddCardCI = this.filterCardCI(this.clientesC, this.lstCards);
         }), err => {
           console.log(err);
           return false;

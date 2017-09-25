@@ -3,15 +3,16 @@ import { ValidateService } from '../../services/validate.service';
 import * as moment from 'moment';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ClienteService } from '../../services/cliente.service';
-import { TipoClienteService } from '../../services/tipo-cliente.service'
+import { TipoClienteService } from '../../services/tipo-cliente.service';
 import { MdDialog, MdDialogRef } from '@angular/material';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { FormatterService } from '../../services/formatter.service';
 import { AuthService } from '../../services/auth.service';
 import { CardComponent } from '../../components/card/card.component';
 import { ProductoService } from '../../services/producto.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
+import * as myGlobals from '../../components/globals';
 
 @Component({
   selector: 'app-clientes',
@@ -182,8 +183,9 @@ export class ClientesComponent implements OnInit {
         this.citiesDD.push({ label: x.desc_tipo_cliente, value: x.desc_tipo_cliente });
       }
       this.selected_tipo_cliente = this.citiesDD[0].label;
-      /* Get Productos*/
+      /* Get Clientes*/
       this.clienteService.getAll().subscribe(c => {
+        myGlobals.setValue(c);
         this.clientes = c;
         let i = 0;
         for (let x of c) {
@@ -198,7 +200,6 @@ export class ClientesComponent implements OnInit {
         console.log(err);
         return false;
       });
-
     },
       err => {
         console.log(err);
@@ -326,12 +327,10 @@ export class ClientesComponent implements OnInit {
       }
     }
     this.clienteService.registerCliente(newClient).subscribe(data => {
-      this.sourceC.add(newClient);
+      data.id_tipo_cliente = this.searchById(data.id_tipo_cliente, this.tipo_clientes);
+      this.clientes.push(data);
       this.sourceC.refresh();
-      this.ngOnInit();
       this.showDialog = false;
-      //this.foo.clientes.push(newClient);
-      //this.foo.ngOnInit();
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
     }, err => {
       console.log(err);
@@ -340,6 +339,7 @@ export class ClientesComponent implements OnInit {
   }
 
   updateClient() {
+    console.log(this.oldUser)
     const newClient = {
       _id: this.oldUser._id,
       cedula: this.cedula,
