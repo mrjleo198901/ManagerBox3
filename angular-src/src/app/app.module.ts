@@ -33,6 +33,9 @@ import { PersonalService } from './services/personal.service';
 import { MessageGrowlService } from './services/message-growl.service';
 import { FormatterService } from './services/formatter.service';
 import { TarjetaService } from './services/tarjeta.service';
+import { FacturaService } from './services/factura.service';
+import { DetalleFacturaService } from './services/detalle-factura.service';
+import { PromocionService } from './services/promocion.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -112,7 +115,8 @@ const appRoutes: Routes = [
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
-    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService],
+    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService,
+    FacturaService, DetalleFacturaService, PromocionService],
   bootstrap: [AppComponent]
 })
 

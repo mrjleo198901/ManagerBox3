@@ -4,7 +4,7 @@
     <tab heading="Tipo Produtos">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
-        <h3 style="text-align: center">Tipos de Productos</h3>
+        <h3 style="text-align: center">Tipos Producto</h3>
         <hr>
       </div>
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
@@ -30,8 +30,30 @@
       </div>
     </tab>
     <tab heading="Kardex">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Kardex</h3>
+        <hr>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <!--<ng2-smart-table id="dtK" [settings]="settingsK" [source]="sourceK" (create)="showDialogK = !showDialogK;setCursorAddK()"
+          (edit)="showDialogKU = !showDialogKU;onUpdateK($event);setCursorUpdateK()" (delete)="onDeleteK($event)">
+        </ng2-smart-table>-->
+        <hr>
+      </div>
     </tab>
     <tab heading="Promociones">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Promociones</h3>
+        <hr>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ng2-smart-table id="dtPro" [settings]="settingsPro" [source]="sourcePro" (create)="showDialogPro = true;setCursorAddPro()"
+          (edit)="showDialogProU = true;onUpdatePro($event);setCursorUpdatePro()" (delete)="onDeletePro($event)">
+        </ng2-smart-table>
+        <hr>
+      </div>
     </tab>
   </tabset>
 </div>
@@ -326,5 +348,67 @@
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePSubmit()">Actualizar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPU = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Add Promo -->
+<p-dialog [(visible)]="showDialogPro" modal="modal" width="400" [responsive]="true">
+  <p-header>
+    Registrar Promoción
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label>Nombre*:</label>
+      <input type="text" [(ngModel)]="objPromo.nombre" (ngModelChange)="onChangeNombrePromo($event)" id="nombrePromo" name="nombrePromo"
+        placeholder="Nombre único de la promoción" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Desde*:</label>
+      <input currencyMask type="text" [(ngModel)]="objPromo.desde" class="form-control input-sm" placeholder="0.00" tooltip="Cuando la cantidad vaya desde"
+        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="2" id="desdePromo" name="desdePromo">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Hasta*:</label>
+      <input currencyMask type="text" [(ngModel)]="objPromo.hasta" class="form-control input-sm" placeholder="0.00" tooltip="Hasta esta cantidad de producto"
+        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="3" id="hastaPromo" name="hastaPromo">
+    </div>
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onAddPromoSubmit()" tabindex="4">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPro = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Update Promo -->
+<p-dialog [(visible)]="showDialogProU" modal="modal" width="400" [responsive]="true">
+  <p-header>
+    Actualizar Promoción
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label>Nombre*:</label>
+      <input type="text" [(ngModel)]="objPromoUpdate.nombre" (ngModelChange)="onChangeNombrePromo($event)" id="nombrePromoU" name="nombrePromoU"
+        placeholder="Nombre único de la promoción" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Desde*:</label>
+      <input currencyMask type="text" [(ngModel)]="objPromoUpdate.desde" class="form-control input-sm" placeholder="0.00" tooltip="Cuando la cantidad vaya desde"
+        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="2" id="desdePromoU" name="desdePromoU">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Hasta*:</label>
+      <input currencyMask type="text" [(ngModel)]="objPromoUpdate.hasta" class="form-control input-sm" placeholder="0.00" tooltip="Hasta esta cantidad de producto"
+        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="3" id="hastaPromoU" name="hastaPromoU">
+    </div>
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePromoSubmit()" tabindex="4">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
   </div>
 </p-dialog>

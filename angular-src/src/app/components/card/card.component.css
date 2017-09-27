@@ -50,3 +50,12 @@
   margin-top : 5px;
   margin-left : 18px;
 }
+select {
+  text-align: center;
+  text-align-last: center;
+  /* webkit*/
+}
+option {
+  text-align: center;
+  text-align-last: center;
+}

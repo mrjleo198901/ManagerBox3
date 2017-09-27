@@ -8,6 +8,16 @@
 
 <p-growl [value]="msgs" sticky="sticky"></p-growl>
 
+<p-panel header="Validate">
+    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+        <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
+            name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagActivateInsertCard" style="z-index: 1;">
+        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+        <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+    </div>
+</p-panel>
+
 <form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
     <p-panel header="Validate">
         <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">

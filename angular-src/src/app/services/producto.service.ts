@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
 
@@ -19,11 +19,23 @@ export class ProductoService {
   }
 
   updateProducto(producto) {
+    console.log(producto)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(url + 'producto/' + producto._id, producto, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  getByNombre(nombre) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('nombre', nombre);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'producto/', options)
+      .map(res => res.json())
   }
 
   getAll() {

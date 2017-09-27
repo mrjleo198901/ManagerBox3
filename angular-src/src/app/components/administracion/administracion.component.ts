@@ -15,6 +15,7 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { FormatterService } from '../../services/formatter.service';
 import { SelectItem } from 'primeng/primeng';
+import { PromocionService } from '../../services/promocion.service';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -52,6 +53,7 @@ export class AdministracionComponent implements OnInit {
   subproductoV;
   selected_tipo_producto;
   pathLogo;
+  pathLogoU;
   contenido;
   // Add product dialog
   selected_producto;
@@ -112,6 +114,52 @@ export class AdministracionComponent implements OnInit {
   myInputVariable: any;
   @ViewChild('myInput1')
   myInputVariable1: any;
+  settingsPro = {
+    mode: 'external',
+    noDataMessage: 'No existen registros',
+    columns: {
+      _id: {
+        title: 'ID',
+        width: '15%',
+        filter: false
+      },
+      nombre: {
+        title: 'Nombre Promocion',
+        width: '27.5%'
+      },
+      producto: {
+        title: 'Producto asociado',
+        width: '27.5%'
+      },
+      desde: {
+        title: 'Desde',
+        width: '10%'
+      },
+      hasta: {
+        title: 'Hasta',
+        width: '10%'
+      },
+      precio_promo: {
+        title: 'Precio Promo',
+        width: '10%'
+      }
+    },
+    actions: {
+      // columnTitle: '',
+      add: true,
+      edit: true,
+      delete: true
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+    }
+  }
+  showDialogPro = false;
+  sourcePro: LocalDataSource = new LocalDataSource();
+  objPromo: any;
+  objPromoUpdate: any;
+  promociones: any = [];
+  showDialogProU = false;
 
   constructor(
     private validateService: ValidateService,
@@ -121,7 +169,8 @@ export class AdministracionComponent implements OnInit {
     private http: Http, public dialog: MdDialog,
     private messageGrowlService: MessageGrowlService,
     private formatterService: FormatterService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private promocionService: PromocionService) {
     this.flagCreateTP = false;
     this.flagUpdateTP = false;
     this.flagCreateP = false;
@@ -137,7 +186,20 @@ export class AdministracionComponent implements OnInit {
     this.lstContenido.push({ label: 'Litros', value: 'Litros' });
     this.lstContenido.push({ label: 'Mililitros', value: 'Mililitros' });
     this.lstContenido.push({ label: 'Onzas', value: 'Onzas' });
-
+    this.objPromo = {
+      nombre: '',
+      producto: [],
+      desde: 0,
+      hasta: 0,
+      precio_promo: 0
+    }
+    this.objPromoUpdate = {
+      nombre: '',
+      producto: [],
+      desde: 0,
+      hasta: 0,
+      precio_promo: 0
+    }
   }
 
   ngOnInit() {
@@ -288,11 +350,11 @@ export class AdministracionComponent implements OnInit {
     };
 
     this.nombre = '';
-    this.precio_costo = null;
-    this.precio_venta = null;
-    this.utilidad = '30';
+    this.precio_costo = 0;
+    this.precio_venta = 0;
+    this.utilidad = 30;
 
-    this.cant_existente = null;
+    this.cant_existente = 0;
     this.subproductoV = [];
     this.selected_tipo_producto = '';
     this.selected_producto = '';
@@ -304,25 +366,16 @@ export class AdministracionComponent implements OnInit {
     this.cantSubProdU = 1;
     this.flagListaSubProd = false;
     this.flagListaSubProdUpdate = false;
+
+    this.promocionService.getAll().subscribe(data => {
+      this.sourcePro.load(data);
+    }, err => {
+      console.log(err);
+    })
+
   }
 
   /* GESTION DE PRODUCTO */
-  changeTPC($event) {
-    this.flagCreateTP = false;
-  }
-
-  changeTPU($event) {
-    this.flagUpdateTP = false;
-  }
-
-  changePC($event) {
-    this.flagCreateP = false;
-  }
-
-  changePU($event) {
-    this.flagUpdateP = false;
-  }
-
   setCursorAddTP() {
     setTimeout(function () {
       document.getElementById('descTPC').focus();
@@ -342,7 +395,7 @@ export class AdministracionComponent implements OnInit {
       // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
       // setOriginalColorsPC();
-    }, 50);
+    }, 0);
   }
 
   setCursorUpdateP() {
@@ -350,7 +403,19 @@ export class AdministracionComponent implements OnInit {
       document.getElementById('nombrePU').focus();
       // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       // setOriginalColorsPU();
-    }, 50);
+    }, 0);
+  }
+
+  setCursorAddPro() {
+    setTimeout(function () {
+      document.getElementById('nombrePromo').focus();
+    }, 0);
+  }
+
+  setCursorUpdatePro() {
+    setTimeout(function () {
+      document.getElementById('nombrePromoU').focus();
+    }, 0);
   }
 
   onCreateTP(event: any) {
@@ -386,8 +451,6 @@ export class AdministracionComponent implements OnInit {
       }, 50);
     }
   }
-
-
 
   onUpdateP(event: any) {
     this.myInputVariable1.nativeElement.value = '';
@@ -451,6 +514,11 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
+  onUpdatePro(event: any) {
+    setOriginalColorsPromoU()
+    this.objPromoUpdate = event.data;
+  }
+
   onAddTPSubmit() {
     const tipoProducto = {
       desc_tipo_producto: this.desc_tipo_producto,
@@ -487,16 +555,19 @@ export class AdministracionComponent implements OnInit {
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo,
-      contenido: this.contenido + this.selectedLstContenido
+      //contenido: this.contenido + this.selectedLstContenido,
+      contenido: this.contenido,
+      promocion: []
     };
     console.log(producto);
-    if (!this.validateService.customValidateProducto(producto)) {
+    /*if (!this.validateService.customValidateProducto(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
       producto.path = tp;
       this.productoService.registerProducto(producto).subscribe(data => {
+        this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -506,7 +577,22 @@ export class AdministracionComponent implements OnInit {
       this.myInputVariable.nativeElement.value = '';
     }, err => {
       console.log(err);
-    });
+    });*/
+  }
+
+  onAddPromoSubmit() {
+    if (!this.validateService.validatePromocion(this.objPromo)) {
+      return false;
+    }
+    this.promocionService.register(this.objPromo).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Exito', 'Ingreso Exitoso!');
+      this.sourcePro.add(data)
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    })
+    this.showDialogPro = false;
+    setOriginalColorsPromo();
   }
 
   onUpdateTPSubmit() {
@@ -532,29 +618,34 @@ export class AdministracionComponent implements OnInit {
 
   onUpdatePSubmit() {
     const idTpBus = this.searchByName(this.productoUpdate.id_tipo_producto, this.tipo_productos);
+    let nSp = this.productoUpdate.subproductoV;
+    if (this.productoUpdate.subproductoV === "") {
+      nSp = [];
+    }
     const producto = {
       _id: this.productoUpdate._id,
       nombre: this.productoUpdate.nombre,
       precio_costo: this.productoUpdate.precio_costo,
+      precio_venta: this.productoUpdate.precio_venta,
       utilidad: this.productoUpdate.utilidad,
       cant_existente: this.productoUpdate.cant_existente,
-      subproductoV: this.productoUpdate.subproductoV,
-      id_tipo_producto: idTpBus
+      path: "",
+      subproductoV: nSp,
+      id_tipo_producto: idTpBus,
+      promocion: []
     };
     if (!this.validateService.customValidateProductoU(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
       return false;
     }
-    // Update producto
-    this.productoService.updateProducto(producto).subscribe(data => {
+    console.log(producto)
+    /*this.productoService.updateProducto(producto).subscribe(data => {
       this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
     }, err => {
-      // Log errors if any
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
     this.ngOnInit();
-    // console.log(this.productoUpdate.id_tipo_producto);
     this.showDialogPU = false;
     this.productoUpdate = {
       '_id': '',
@@ -565,14 +656,44 @@ export class AdministracionComponent implements OnInit {
       'subproductoV': [],
       'id_tipo_producto': '',
       'path': ''
-    };
+    };*/
+
+    /*this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
+      producto.path = tp;
+      this.productoService.registerProducto(producto).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+
+      });
+      this.ngOnInit();
+      this.myInputVariable.nativeElement.value = '';
+    }, err => {
+      console.log(err);
+    });*/
+  }
+
+  onUpdatePromoSubmit() {
+    if (!this.validateService.validatePromocionU(this.objPromoUpdate)) {
+      return false;
+    }
+    this.promocionService.update(this.objPromoUpdate).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Exito', 'Modificación Exitosa!');
+      this.sourcePro.update(this.objPromoUpdate, this.objPromoUpdate);
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    })
+    this.showDialogProU = false;
+    setOriginalColorsPromoU();
   }
 
   onDeleteTP(event): void {
-    this.openDialog(event.data);
+    this.openDialogTP(event.data);
   }
 
-  openDialog(data) {
+  openDialogTP(data) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
@@ -592,10 +713,10 @@ export class AdministracionComponent implements OnInit {
   }
 
   onDeleteP(event): void {
-    this.openDialog1(event.data);
+    this.openDialogP(event.data);
   }
 
-  openDialog1(data) {
+  openDialogP(data) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
@@ -603,6 +724,29 @@ export class AdministracionComponent implements OnInit {
           this.sourceP.remove(data);
           // remove from database
           this.productoService.deleteProducto(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+
+          });
+        }
+      }
+    });
+  }
+
+  onDeletePro(event): void {
+    this.openDialogPromo(event.data);
+  }
+
+  openDialogPromo(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          this.sourceP.remove(data);
+          // remove from database
+          this.promocionService.delete(data._id).subscribe(data => {
             this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
           }, err => {
             console.log(err);
@@ -738,7 +882,7 @@ export class AdministracionComponent implements OnInit {
     } else {
       color = 'lightgreen';
     }
-    this.pathLogo = files;
+    this.pathLogoU = files;
     document.getElementById('filesU').style.backgroundColor = color;
   }
 
@@ -811,41 +955,45 @@ export class AdministracionComponent implements OnInit {
     this.productoUpdate.nombre = this.formatterService.toTitleCase(this.productoUpdate.nombre);
   }
 
+  onChangeNombrePromo($event) {
+    this.objPromo.nombre = this.formatterService.toTitleCase(this.objPromo.nombre);
+  }
+
   valueChangeGanancia($event) {
     const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioCompra($event) {
-    this.precio_costo = ((this.precio_costo * 100) / 100).toFixed(2);
+    this.precio_costo = parseFloat(((this.precio_costo * 100) / 100).toFixed(2));
     const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioVenta($event) {
     const gain = 1 - (this.utilidad / 100);
-    this.precio_costo = (this.precio_venta * gain).toFixed(2);
+    this.precio_costo = parseFloat((this.precio_venta * gain).toFixed(2));
   }
 
   valueChangeGananciaU($event) {
     const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioCompraU($event) {
     this.precio_costo = ((this.precio_costo * 100) / 100).toFixed(2);
     const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = (this.precio_costo * gain).toFixed(2);
+    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioVentaU($event) {
     const gain = 1 - (this.utilidad / 100);
-    this.precio_costo = (this.precio_venta * gain).toFixed(2);
+    this.precio_costo = parseFloat((this.precio_venta * gain).toFixed(2));
   }
 
   controlarPrecioCosto($event) {
     if (this.flagSubProd) {
-      this.precio_costo = '';
+      this.precio_costo = 0;
     }
   }
 
@@ -913,4 +1061,16 @@ function setOriginalColorsTPC() {
 function setOriginalColorsTPU() {
   document.getElementById('descTPU').style.borderColor = '#DADAD2';
   document.getElementById('filesTPU').style.borderColor = '#DADAD2';
+}
+
+function setOriginalColorsPromo() {
+  document.getElementById("nombrePromo").style.borderColor = "#DADAD2";
+  document.getElementById("desdePromo").style.borderColor = "#DADAD2";
+  document.getElementById("hastaPromo").style.borderColor = "#DADAD2";
+}
+
+function setOriginalColorsPromoU() {
+  document.getElementById("nombrePromoU").style.borderColor = "#DADAD2";
+  document.getElementById("desdePromoU").style.borderColor = "#DADAD2";
+  document.getElementById("hastaPromoU").style.borderColor = "#DADAD2";
 }

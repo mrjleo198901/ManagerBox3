@@ -339,7 +339,6 @@ export class ClientesComponent implements OnInit {
   }
 
   updateClient() {
-    console.log(this.oldUser)
     const newClient = {
       _id: this.oldUser._id,
       cedula: this.cedula,
@@ -372,7 +371,7 @@ export class ClientesComponent implements OnInit {
       this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
       this.sourceC.update(this.oldUser, newClient);
       this.sourceC.refresh();
-      this.ngOnInit();
+      //this.ngOnInit();
       this.showDialog1 = false;
       this.flagUpdate = false;
     }, err => {

@@ -50,6 +50,45 @@ export class ValidateService {
     return res;
   }
 
+  validatePromocion(promo) {
+    let res = true;
+    if (promo.nombre == "") {
+      document.getElementById("nombrePromo").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacíos!');
+      res = false;
+    }
+    if (promo.desde <= 0) {
+      document.getElementById("desdePromo").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campo desde no puede ser 0!');
+      res = false;
+    }
+    if (promo.hasta <= 0) {
+      document.getElementById("hastaPromo").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campo hasta no puede ser 0!');
+      res = false;
+    }
+    return res;
+  }
+  validatePromocionU(promo) {
+    let res = true;
+    if (promo.nombre == "") {
+      document.getElementById("nombrePromoU").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacíos!');
+      res = false;
+    }
+    if (promo.desde <= 0) {
+      document.getElementById("desdePromoU").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campo desde no puede ser 0!');
+      res = false;
+    }
+    if (promo.hasta <= 0) {
+      document.getElementById("hastaPromoU").style.borderColor = "#FE2E2E";
+      this.messageGrowlService.notify('error', 'Error', 'Campo hasta no puede ser 0!');
+      res = false;
+    }
+    return res;
+  }
+
   validateProducto(producto) {
     if (producto.nombre == "" || producto.precio_unitario == null || producto.utilidad == null
       || producto.cant_existente == null || producto.selected_tipo_producto == "") {

@@ -73,7 +73,7 @@
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagActivateInsertCard" style="z-index: 1">
+                  name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagActivateInsertCard" style="z-index: 1;">
                 <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
               </div>
@@ -120,33 +120,39 @@
         <p-panel #pnlPromos header="Seleccionar promociones">
           <p-tabView (onChange)="handleChange($event)">
             <p-tabPanel *ngFor="let tabz of tabs; let i = index;let first = first;" [selected]="first" [header]="tabz.label" lazy="true">
-              <!-- Tabla de Promociones -->
-              <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedCars3" [paginator]="true" [rows]="5">
-                <p-column [style]="{'width':'33px'}" selectionMode="multiple">
+
+              <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)">
+                <p-column [style]="{'width':'29px'}" selectionMode="multiple">
                 </p-column>
-                <!--<p-column header="Promocion">
-                  <ng-template let-row="rowData" pTemplate>
-                    <p-dropdown [options]="promos" [(ngModel)]="row.selectedPromo"></p-dropdown>
-                  </ng-template>
-                </p-column>-->
-                <p-column field="selectedPromo" header="Promocion" [editable]="false" [style]="{'width':'130px'}">
+
+                <p-column field="selectedPromo" header="Promoción" [editable]="false" [style]="{'width':'130px'}">
                   <ng-template let-car="rowData" pTemplate type="body">
                     <select [(ngModel)]="car.selectedPromo" [ngStyle]='{"width": "100%", "background": "rgba(255,255,255,0)"}'>
-                      <option *ngFor="let row of promos" [value]="row.value" [ngStyle]='{"text-align-last":"center"}'>{{row.label}}</option>
+                      <option *ngFor="let row of lstPromociones">{{row.nombre}}</option>
                     </select>
                   </ng-template>
                 </p-column>
+
                 <p-column *ngFor="let header of headers" [field]="header.field" [header]="header.header" [sortable]="true" [filter]="true"
-                  filterMatchMode="contains"></p-column>
+                  filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
+
+                <p-column header="Precio Promo" [style]="{'width':'13%'}">
+                  <ng-template let-car="rowData" pTemplate>
+                    <input type="text" currencyMask [(ngModel)]="car.precio_promo" [options]="{ align : 'center' }" style="max-width: 100%; color: black;">
+                  </ng-template>
+                </p-column>
+
                 <p-footer>
                   <ul>
-                    <div *ngIf="selectedCars3.length !== 0" style="text-align: center">
+                    <div *ngIf="selectedPromos.length !== 0" style="text-align: center">
                       <h3>Promociones Activas</h3>
                     </div>
-                    <li *ngFor="let car of selectedCars3" style="text-align: left">{{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_unitario}}</li>
+                    <li *ngFor="let car of selectedPromos" style="text-align: left">
+                      {{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_promo}}</li>
                   </ul>
                 </p-footer>
               </p-dataTable>
+
             </p-tabPanel>
           </p-tabView>
         </p-panel>
@@ -229,7 +235,7 @@
           <!-- Tabla de Resumen consumo -->
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <p-dataTable [value]="lstPromos" [responsive]="true" [(selection)]="selectedCars3" [paginator]="true" [rows]="5">
+              <p-dataTable [value]="lstPromos" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5">
                 <p-column field="cantidad" header="Cantidad" [style]="{'width':'15%'}"></p-column>
                 <p-column field="descripcion" header="Descripción" [style]="{'width':'52.5%'}"></p-column>
                 <p-column field="pu" header="Precio Unitario" [style]="{'width':'16.25%'}"></p-column>
@@ -579,7 +585,7 @@
   </div>
 </p-dialog>
 
-<p-blockUI [target]="pnlTarjeta" [blocked]="!flagUserFound">
+<!--<p-blockUI [target]="pnlTarjeta" [blocked]="!flagUserFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%;z-index: 1"></i>
 </p-blockUI>
 
@@ -589,7 +595,7 @@
 
 <p-blockUI [target]="pnlTablaConsumo" [blocked]="!flagUserFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
-</p-blockUI>
+</p-blockUI>-->
 
 <!--<p-blockUI [target]="pnlCantPersonas" [blocked]="!flagUserFound">
     <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>

@@ -11,7 +11,8 @@ var productoSchema = new mongoose.Schema({
     subproductoV: Array,
     id_tipo_producto: mongoose.Schema.Types.ObjectId,
     path: String,
-    contenido: Number
+    contenido: Number,
+    promocion: Array
 
 });
 

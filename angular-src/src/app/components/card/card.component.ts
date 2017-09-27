@@ -15,6 +15,9 @@ import { TarjetaService } from '../../services/tarjeta.service';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
 import * as myGlobals from '../../components/globals';
+import { FacturaService } from '../../services/factura.service';
+import { DetalleFacturaService } from '../../services/detalle-factura.service';
+import { PromocionService } from '../../services/promocion.service';
 
 @Component({
   selector: 'app-card',
@@ -53,7 +56,7 @@ export class CardComponent implements OnInit {
   public headers = [];
   mapProdShow: any[];
   color = 'primary';
-  selectedCars3: any[];
+  selectedPromos: any[];
   promos: any[];
   selectedPromo: string;
   blockedPanel: boolean = true;
@@ -135,6 +138,7 @@ export class CardComponent implements OnInit {
   ind = 0;
   lstCards: any = [];
   flagActivateInsertCard = true;
+  lstPromociones: any = [];
 
   change($event) {
     $event = false;
@@ -150,18 +154,10 @@ export class CardComponent implements OnInit {
     private messageGrowlService: MessageGrowlService,
     private formatterService: FormatterService,
     public dialog: MdDialog,
-    private tarjetaService: TarjetaService) {
-
-    /*this.foo = new ClientesComponent(validateService,
-      tipoClienteService,
-      clienteService,
-      el, renderer, dialog,
-      messageGrowlService,
-      productoService,
-      formatterService,
-      tipoProductoService);*/
-
-    console.log(this.flagCardFound + " " + this.flagUserFound)
+    private tarjetaService: TarjetaService,
+    private facturaService: FacturaService,
+    private detalleFacturaService: DetalleFacturaService,
+    private promocionService: PromocionService) {
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
@@ -215,7 +211,7 @@ export class CardComponent implements OnInit {
     this.cantSalenH = 0;
     this.selectedTab = 0;
     //alert(document.getElementById('cedula').style.backgroundColor);
-    this.selectedCars3 = [];
+    this.selectedPromos = [];
     this.lstPromos = [
       { descripcion: 'Cerveza budweiser 350ml', pu: '3.25', total: '25', cantidad: '5' },
       { descripcion: 'Cerveza pilsener 350ml', pu: '2.80', total: '25', cantidad: '4' },
@@ -240,20 +236,34 @@ export class CardComponent implements OnInit {
       }
       this.productoService.getAll().subscribe(p => {
         this.mapP = p;
-        this.promos = [
-          { value: "2 x 1", label: "2 x 1" },
-          { value: "1/2 Precio", label: "1/2 Precio" },
-        ];
-        this.mapProdShow = [];
-        let firstElement = this.mapTP[0]._id;
-        for (let entry of p) {
-          if (entry.id_tipo_producto.localeCompare(firstElement) === 0) {
-            let aux = { nombre: entry.nombre, precio_unitario: entry.precio_unitario, selectedPromo: this.promos[0].value };
-            this.mapProdShow.push(aux);
+        this.promocionService.getAll().subscribe(data => {
+          this.lstPromociones = data;
+          /*console.log(this.lstPromociones)
+          this.promos = [];
+          for (let entry of this.lstPromociones) {
+            let aux = { value: entry, label: entry.nombre }
+            this.promos.push(aux);
+          }*/
+          this.mapProdShow = [];
+          let firstElement = this.mapTP[0]._id;
+          for (let entry of p) {
+            if (entry.id_tipo_producto.localeCompare(firstElement) === 0) {
+              let aux = {
+                nombre: entry.nombre,
+                cant_existente: entry.cant_existente,
+                precio_costo: entry.precio_costo,
+                precio_venta: entry.precio_venta,
+                selectedPromo: this.lstPromociones[0].nombre,
+                precio_promo: entry.precio_venta
+              };
+              this.mapProdShow.push(aux);
+            }
           }
-        }
-        //console.log(this.mapP);
-        this.FillHeaders(this.mapP);
+          this.FillHeaders(this.mapP);
+        }, err => {
+          console.log(err);
+        })
+
       }, err => {
         console.log(err);
       });
@@ -262,13 +272,12 @@ export class CardComponent implements OnInit {
       return false;
     })
     this.ngOnInitCards();
-
   }
 
   FillHeaders(mapP) {
     for (let property in mapP[0]) {
       if (mapP[0].hasOwnProperty(property)) {
-        if (property.localeCompare("nombre") === 0 || property.localeCompare("precio_unitario") === 0)
+        if (property.localeCompare("nombre") === 0 || property.localeCompare("cant_existente") === 0 || property.localeCompare("precio_venta") === 0 || property.localeCompare("precio_costo") === 0)
           this.headers.push({
             field: property,
             header: (property.charAt(0).toUpperCase() + property.substr(1).toLowerCase()).replace("_", " ")
@@ -491,14 +500,42 @@ export class CardComponent implements OnInit {
   }
 
   onRowSelect(event) {
-    this.messageGrowlService.notify('warn', 'Promocion Activada', event.data);
+    //Update productos
+    this.productoService.getByNombre(event.data.nombre).subscribe(producto => {
+      let aux = {
+        cant_existente: event.data.cant_existente,
+        nombre: event.data.nombre,
+        precio_costo: event.data.precio_costo,
+        precio_promo: event.data.precio_promo,
+        precio_venta: event.data.precio_venta,
+        selectedPromo: event.data.selectedPromo
+      }
+      producto[0].promocion = aux;
+      console.log(producto);
+      this.productoService.updateProducto(producto).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+    })
   }
 
   handleChange(e) {
     this.mapProdShow = []
     for (let entry of this.mapP) {
       if (entry.id_tipo_producto.localeCompare(this.mapTP[e.index]._id) === 0) {
-        let aux = { nombre: entry.nombre, precio_unitario: entry.precio_unitario, selectedPromo: this.promos[0].value };
+        let aux = {
+          nombre: entry.nombre,
+          cant_existente: entry.cant_existente,
+          precio_costo: entry.precio_costo,
+          precio_venta: entry.precio_venta,
+          selectedPromo: this.lstPromociones[0].nombre,
+          precio_promo: entry.precio_venta
+        };
         this.mapProdShow.push(aux);
       }
     }
@@ -526,9 +563,8 @@ export class CardComponent implements OnInit {
     let finalChar = this.cardNumber.slice(-1)
     if (this.cardNumber.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
-        document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
-        document.getElementById('cantMujeres').focus();
+
+        //document.getElementById('cantMujeres').focus();
         this.checkCard();
       }
     } else {
@@ -550,10 +586,15 @@ export class CardComponent implements OnInit {
     } else {
       if (this.cardNumber.length == 9) {
         this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
+          console.log(data)
           if (data.length > 0) {
             this.flagCardFound = true;
+            document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
+            document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
           } else {
             this.flagCardFound = false;
+            document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
+            document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
           }
         }, err => {
           console.log(err);
@@ -643,7 +684,8 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
-    console.log(this.flagUserFound + " " + this.flagCardFound)
+    //console.log(this.flagUserFound + " " + this.flagCardFound)
+    console.log(this.selectedPromos)
     /*this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
@@ -657,17 +699,38 @@ export class CardComponent implements OnInit {
       "_id": this.searchUser._id,
       "tarjeta": this.cardNumber
     }
-    this.clienteService.updateCliente(newClient).subscribe(data => {
-      this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
-      this.flagUserFound = false;
-      this.flagCardFound = false;
-      this.nfLael = "";
-      this.cardNumber = "";
-      this.cedula = ";"
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-    })*/
+    let total = this.cantMujeres + this.cantHombres
+    if (total > 0) {
+      this.clienteService.updateCliente(newClient).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
+        this.flagUserFound = false;
+        this.flagCardFound = false;
+        this.nfLael = '';
+        this.cardNumber = '';
+        this.cedula = '';
+        //set factura & detalle factura
+        let newFactura = {
+          cedula: this.searchUser.cedula,
+          num_factura: '',
+          num_autorizacion: '',
+          ruc: '',
+          nombre: this.searchUser.nombre + this.searchUser.apellido,
+          telefono: this.searchUser.telefono,
+          direccion: 'Riobamba',
+          detalleFacturaV: []
+        }
+        this.facturaService.register(newFactura).subscribe(data => {
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+        })
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
+    }*/
   }
 
   onChangeClose($event) {
