@@ -104,20 +104,28 @@ export class ValidateService {
       document.getElementById("nombrePC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.precio_costo == null) {
-      document.getElementById("puPC").style.borderColor = "#FE2E2E";
+    if (producto.precio_costo == 0) {
+      document.getElementById("pcPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.utilidad == null) {
+    if (producto.precio_venta == 0) {
+      document.getElementById("pvPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.utilidad == 0) {
       document.getElementById("utilidadPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.cant_existente == null) {
+    if (producto.cant_existente == 0) {
       document.getElementById("cantPC").style.borderColor = "#FE2E2E";
       res = false;
     }
     if (producto.id_tipo_producto == undefined) {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.contenido == 0) {
+      document.getElementById("contPC").style.borderColor = "#FE2E2E";
       res = false;
     }
     /*if (producto.path == undefined) {

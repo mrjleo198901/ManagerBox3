@@ -39,6 +39,7 @@ export class InventarioComponent implements OnInit {
     this.genders.push({ label: 'Female', value: 'Female' });
 
   }
+
   onSubmit(value: string) {
     console.log(value)
     this.submitted = true;

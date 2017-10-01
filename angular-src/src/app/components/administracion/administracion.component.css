@@ -71,8 +71,9 @@ nav ul{overflow:hidden; overflow-y:scroll;}
 
 #timesIcon {
   color: #ff3333;
-  text-shadow: 1px 1px 1px #ccc;
+  /*text-shadow: 1px 1px 1px #ccc;
   font-size: 1.5em;
+  cursor: pointer;*/
   cursor: pointer;
 }
 

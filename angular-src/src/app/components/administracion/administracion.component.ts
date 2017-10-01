@@ -26,6 +26,9 @@ const URL = 'http://localhost:3000/api/imagen';
 
 export class AdministracionComponent implements OnInit {
 
+  tmpProd;
+  borderStyleProdExistente = '#DADAD2';
+  borderStyleProdSelec = '#DADAD2'
   colorUpdate = '';
   auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
@@ -34,10 +37,6 @@ export class AdministracionComponent implements OnInit {
   showDialogTPU = false;
   showDialogPC = false;
   showDialogPU = false;
-  flagUpdateTP: boolean;
-  flagCreateTP: boolean;
-  flagUpdateP: boolean;
-  flagCreateP: boolean;
   // Atributos Tipo Producto
   desc_tipo_producto;
   id_mostar;
@@ -55,6 +54,8 @@ export class AdministracionComponent implements OnInit {
   pathLogo;
   pathLogoU;
   contenido;
+  contenidoMili;
+  contenidoMiliU;
   // Add product dialog
   selected_producto;
   selected_productoU;
@@ -109,11 +110,12 @@ export class AdministracionComponent implements OnInit {
   unidadMedidaSuproducto: any;
   userform: FormGroup;
   lstContenido: SelectItem[];
-  selectedLstContenido: String[] = ['Litros'];
+  selectedLstContenido: String = 'Mililitros';
   @ViewChild('myInput')
   myInputVariable: any;
   @ViewChild('myInput1')
   myInputVariable1: any;
+  //@ViewChild('tmpProd')
   settingsPro = {
     mode: 'external',
     noDataMessage: 'No existen registros',
@@ -160,6 +162,9 @@ export class AdministracionComponent implements OnInit {
   objPromoUpdate: any;
   promociones: any = [];
   showDialogProU = false;
+  costoCantSubProd;
+  precio_costoSubProd;
+  selected_prodSelec;
 
   constructor(
     private validateService: ValidateService,
@@ -171,16 +176,13 @@ export class AdministracionComponent implements OnInit {
     private formatterService: FormatterService,
     private formBuilder: FormBuilder,
     private promocionService: PromocionService) {
-    this.flagCreateTP = false;
-    this.flagUpdateTP = false;
-    this.flagCreateP = false;
-    this.flagUpdateP = false;
     this.id_mostar = 0;
     this.pathLogo = undefined;
     this.lstUnidades = [];
-    this.lstUnidades.push({ label: 'Unidades', value: { id: 1, name: 'Unidades', code: 'u' } });
+    this.lstUnidades.push({ label: 'Litros', value: { id: 1, name: 'Litros', code: 'Lts' } });
     this.lstUnidades.push({ label: 'Mililitros', value: { id: 2, name: 'Mililitros', code: 'ml' } });
     this.lstUnidades.push({ label: 'Onzas', value: { id: 3, name: 'Onzas', code: 'oz' } });
+    this.lstUnidades.push({ label: 'Unidades', value: { id: 4, name: 'Onzas', code: 'u' } });
     this.unidadMedidaSuproducto = this.lstUnidades[0];
     this.lstContenido = [];
     this.lstContenido.push({ label: 'Litros', value: 'Litros' });
@@ -200,6 +202,7 @@ export class AdministracionComponent implements OnInit {
       hasta: 0,
       precio_promo: 0
     }
+    //console.log((0.3 - 0.1).toFixed(2));
   }
 
   ngOnInit() {
@@ -238,9 +241,12 @@ export class AdministracionComponent implements OnInit {
           this.productos[i].id_tipo_producto = desc;
           this.productos[i].label = x.nombre;
           this.productos[i].value = x.nombre;
-          this.productos[i].precio_costo = this.productos[i].precio_costo.toFixed(2);
-          this.productos[i].precio_venta = this.productos[i].precio_venta.toFixed(2);
-          this.productos[i].utilidad = this.productos[i].utilidad.toFixed(2);
+          this.productos[i].cant_existente = parseFloat(x.cant_existente);
+          this.productos[i].contenido = parseFloat(x.contenido);
+          this.productos[i].precio_costo = parseFloat(x.precio_costo);
+          this.productos[i].precio_venta = parseFloat(x.precio_venta);
+          this.productos[i].utilidad = parseFloat(x.utilidad);
+
           if (x.subproductoV !== '') {
             let fila = '';
             for (const entry of x.subproductoV) {
@@ -283,7 +289,7 @@ export class AdministracionComponent implements OnInit {
               width: '7%'
             },
             contenido: {
-              title: 'Contenido',
+              title: 'Contenido (ml)',
               width: '7%'
             },
             cant_existente: {
@@ -332,47 +338,13 @@ export class AdministracionComponent implements OnInit {
         console.log(err);
         return false;
       });
-    this.desc_tipo_producto = '';
-    this.pathLogoTP = '';
-    this.id_mostar = '';
-    // Atributos Producto
-    this.productoUpdate = {
-      '_id': '',
-      'nombre': '',
-      'precio_costo': 0,
-      'precio_venta': 0,
-      'utilidad': 0,
-      'cant_existente': 0,
-      'subproductoV': [],
-      'id_tipo_producto': '',
-      'path': '',
-      'contenido': 0
-    };
-
-    this.nombre = '';
-    this.precio_costo = 0;
-    this.precio_venta = 0;
-    this.utilidad = 30;
-
-    this.cant_existente = 0;
-    this.subproductoV = [];
-    this.selected_tipo_producto = '';
-    this.selected_producto = '';
-    this.selected_productoU = '';
-    this.flagSubProd = false;
-    this.flagSubProdUpdate = false;
-
-    this.cantSubprod = 1;
-    this.cantSubProdU = 1;
-    this.flagListaSubProd = false;
-    this.flagListaSubProdUpdate = false;
-
     this.promocionService.getAll().subscribe(data => {
       this.sourcePro.load(data);
     }, err => {
       console.log(err);
     })
-
+    this.ngOnInitProducto();
+    this.ngOnInitTipoProducto();
   }
 
   /* GESTION DE PRODUCTO */
@@ -395,6 +367,8 @@ export class AdministracionComponent implements OnInit {
       // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
       // setOriginalColorsPC();
+      setOriginalColorsPC();
+
     }, 0);
   }
 
@@ -420,24 +394,21 @@ export class AdministracionComponent implements OnInit {
 
   onCreateTP(event: any) {
     this.myInputVariable.nativeElement.value = '';
-    this.flagCreateTP = true;
     this.desc_tipo_producto = '';
     this.pathLogoTP = '';
     setOriginalColorsTPC();
+    this.ngOnInitTipoProducto();
   }
 
   onCreateP(event: any) {
-    // console.log("before: "+this.myInputVariable.nativeElement.value)
     this.myInputVariable.nativeElement.value = '';
-    this.flagCreateP = true;
     this.nombre = '';
+    this.ngOnInitProducto();
   }
 
   onUpdateTP(event: any) {
-    this.flagUpdateTP = true;
     this.id_mostar = event.data._id;
     this.desc_tipo_producto = event.data.desc_tipo_producto;
-    console.log(event.data);
     setOriginalColorsTPU();
     if (this.pathLogoTPU === undefined) {
       this.colorUpdate = 'black';
@@ -454,8 +425,8 @@ export class AdministracionComponent implements OnInit {
 
   onUpdateP(event: any) {
     this.myInputVariable1.nativeElement.value = '';
-    this.flagUpdateP = true;
     this.productoUpdate = event.data;
+    console.log(this.productoUpdate)
     if (this.productoUpdate.path === undefined) {
       this.colorUpdate = 'black';
       setTimeout(function () {
@@ -481,15 +452,12 @@ export class AdministracionComponent implements OnInit {
       this.flagSubProdUpdate = true;
       this.flagListaSubProd = true;
       if (this.productoUpdate.subproductoV.length > 0) {
-
         const a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
         this.productoUpdate.subproductoV = [];
         this.productoUpdate.subproductoV.push(a);
-        // console.log(this.productoUpdate.subproductoV);
         if (this.auxSubprod === undefined) {
           this.auxSubprod = this.productoUpdate.subproductoV;
         }
-
         const array = this.productoUpdate.subproductoV.toString().split('-');
         this.productoUpdate.subproductoV = [];
         let index = 0;
@@ -532,17 +500,20 @@ export class AdministracionComponent implements OnInit {
       tipoProducto.path = tp;
       this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
         this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+        //this.sourceTP.add(data);
+        //this.sourceTP.refresh();
+        this.showDialogTPC = false;
+        this.ngOnInit();
+        this.ngOnInitTipoProducto();
+        this.myInputVariable.nativeElement.value = '';
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
 
       });
-      this.ngOnInit();
-      this.myInputVariable.nativeElement.value = '';
     }, err => {
       console.log(err);
     });
-
   }
 
   onAddPSubmit() {
@@ -556,28 +527,31 @@ export class AdministracionComponent implements OnInit {
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo,
       //contenido: this.contenido + this.selectedLstContenido,
-      contenido: this.contenido,
+      contenido: this.contenidoMili,
       promocion: []
     };
     console.log(producto);
-    /*if (!this.validateService.customValidateProducto(producto)) {
+    if (!this.validateService.customValidateProducto(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
     this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
       producto.path = tp;
       this.productoService.registerProducto(producto).subscribe(data => {
+        data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
+        this.sourceP.add(data);
+        this.sourceP.refresh();
+        this.ngOnInitProducto();
+        this.myInputVariable.nativeElement.value = '';
+        this.showDialogPC = false;
         this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-
       });
-      this.ngOnInit();
-      this.myInputVariable.nativeElement.value = '';
     }, err => {
       console.log(err);
-    });*/
+    });
   }
 
   onAddPromoSubmit() {
@@ -586,13 +560,14 @@ export class AdministracionComponent implements OnInit {
     }
     this.promocionService.register(this.objPromo).subscribe(data => {
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Exitoso!');
-      this.sourcePro.add(data)
+      this.sourcePro.add(data);
+      this.sourcePro.refresh();
+      this.showDialogPro = false;
+      setOriginalColorsPromo();
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     })
-    this.showDialogPro = false;
-    setOriginalColorsPromo();
   }
 
   onUpdateTPSubmit() {
@@ -625,53 +600,58 @@ export class AdministracionComponent implements OnInit {
     const producto = {
       _id: this.productoUpdate._id,
       nombre: this.productoUpdate.nombre,
-      precio_costo: this.productoUpdate.precio_costo,
-      precio_venta: this.productoUpdate.precio_venta,
-      utilidad: this.productoUpdate.utilidad,
-      cant_existente: this.productoUpdate.cant_existente,
-      path: "",
+      precio_costo: parseFloat(this.productoUpdate.precio_costo),
+      precio_venta: parseFloat(this.productoUpdate.precio_venta),
+      utilidad: parseFloat(this.productoUpdate.utilidad),
+      cant_existente: parseFloat(this.productoUpdate.cant_existente),
+      contenido: parseFloat(this.productoUpdate.contenido),
+      path: this.productoUpdate.path,
       subproductoV: nSp,
       id_tipo_producto: idTpBus,
       promocion: []
     };
+    console.log(producto);
     if (!this.validateService.customValidateProductoU(producto)) {
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
       return false;
     }
-    console.log(producto)
-    /*this.productoService.updateProducto(producto).subscribe(data => {
-      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    });
-    this.ngOnInit();
-    this.showDialogPU = false;
-    this.productoUpdate = {
-      '_id': '',
-      'nombre': '',
-      'precio_unitario': 0,
-      'utilidad': 0,
-      'cant_existente': 0,
-      'subproductoV': [],
-      'id_tipo_producto': '',
-      'path': ''
-    };*/
-
-    /*this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
-      producto.path = tp;
-      this.productoService.registerProducto(producto).subscribe(data => {
+    if (this.pathLogoU === undefined) {
+      this.productoService.updateProducto(producto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-
       });
       this.ngOnInit();
       this.myInputVariable.nativeElement.value = '';
-    }, err => {
-      console.log(err);
-    });*/
+      this.showDialogPU = false;
+      this.productoUpdate = {
+        '_id': '',
+        'nombre': '',
+        'precio_unitario': 0,
+        'utilidad': 0,
+        'cant_existente': 0,
+        'subproductoV': [],
+        'id_tipo_producto': '',
+        'path': ''
+      };
+    } else {
+      this.productoService.uploadImage(this.pathLogoU).subscribe(tp => {
+        producto.path = tp;
+        this.productoService.updateProducto(producto).subscribe(data => {
+          this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+
+        });
+        this.ngOnInit();
+        this.myInputVariable.nativeElement.value = '';
+        this.showDialogPU = false;
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
   onUpdatePromoSubmit() {
@@ -758,62 +738,90 @@ export class AdministracionComponent implements OnInit {
     });
   }
 
-  fuPorcentaje() {
-    // document.getElementById("iconUsd").style.backgroundColor = "#ffffff";
-    // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
-    this.medidaUtilidad = '%';
-  }
-
-  fuMoneda() {
-    // document.getElementById('iconPercent').style.backgroundColor = "#ffffff";
-    // document.getElementById("iconUsd").style.backgroundColor = "#2196F3";
-    this.medidaUtilidad = '$';
-  }
-
-  deleteItem(index) {
-    if (index > -1) {
-      this.subproductoV.splice(index, 1);
+  deleteItem() {
+    if (this.selected_prodSelec !== undefined) {
+      let nombre = this.selected_prodSelec.nombre;
+      //search and minus precio_compra
+      let row = this.subproductoV.find(x => x.nombre === nombre);
+      this.precio_costo -= parseFloat(row.precio_costo);
+      let str = (row.cantidad).match(/[a-z]+|\d+/ig);
+      this.reCalcContenidoDelete(str[0], str[1], row.value.contenido)
+      this.reCalcPrevioVenta();
+      this.subproductoV = this.subproductoV.filter(function (obj) {
+        return obj.nombre.localeCompare(nombre);
+      });
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto de la lista de productos seleccionados!');
+      this.borderStyleProdSelec = '#FE2E2E';
     }
+    this.selected_prodSelec = undefined;
   }
 
   deleteItemU(index) {
-    if (index > -1) {
-      this.productoUpdate.subproductoV.splice(index, 1);
+    if (this.selected_prodSelec !== undefined) {
+      let nombre = this.selected_prodSelec.nombre;
+      this.productoUpdate.subproductoV = this.productoUpdate.subproductoV.filter(function (obj) {
+        return obj.nombre.localeCompare(nombre);
+      });
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto de la lista de productos seleccionados!');
     }
   }
 
   addItem() {
-    if (this.selected_producto !== '') {
-      const index = this.productos.findIndex(x => x.nombre === this.selected_producto);
-      this.selected_producto = this.productos[index];
-      this.flagListaSubProd = true;
-      const precio_costo = 0;
-      const aux = {
-        nombre: this.selected_producto.nombre,
-        antidad: this.cantSubprod + this.unidadMedidaSuproducto.value.code,
-        label: this.selected_producto.nombre,
-        value: this.selected_producto, precio_costo: ''
-      };
-      // search wheter subProd already exists
-      const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
-      if (index1 === -1) {
-        this.subproductoV.push(aux);
-      } else {
-        let str = this.subproductoV[index1].cantidad;
-        str = str.replace(/[^0-9]+/ig, '');
+    if (this.cantSubprod !== 0) {
+      if (this.selected_producto !== '') {
+        const index = this.productos.findIndex(x => x.nombre === this.selected_producto);
+        this.selected_producto = this.productos[index];
+        this.flagListaSubProd = true;
+        //const precio_costo = 0;
         const aux = {
           nombre: this.selected_producto.nombre,
-          cantidad: (parseInt(str) + this.cantSubprod) + this.unidadMedidaSuproducto.value.code,
+          cantidad: this.cantSubprod + ' ' + this.unidadMedidaSuproducto.value.code,
           label: this.selected_producto.nombre,
-          value: this.selected_producto
+          value: this.selected_producto,
+          precio_costo: this.costoCantSubProd
         };
-        this.subproductoV[index1] = aux;
+        // search wheter subProd already exists
+        const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
+        if (index1 === -1) {
+          this.cantSubprod = 0;
+          this.subproductoV.push(aux);
+        } else {
+          let str = (this.subproductoV[index1].cantidad).match(/[a-z]+|\d+/ig);
+          if (str[1].localeCompare(this.unidadMedidaSuproducto.value.code) === 0) {
+            let pc = this.subproductoV[index1].precio_costo;
+            const npc = this.reCalcCosto(parseInt(str[0]) + this.cantSubprod);
+            const aux = {
+              nombre: this.selected_producto.nombre,
+              cantidad: (parseInt(str[0]) + this.cantSubprod) + ' ' + this.unidadMedidaSuproducto.value.code,
+              label: this.selected_producto.nombre,
+              value: this.selected_producto,
+              precio_costo: npc
+            };
+            this.cantSubprod = 0;
+            this.subproductoV[index1] = aux;
+          } else {
+            this.messageGrowlService.notify('error', 'Error', 'Las unidades no coinciden, elimina el producto: ' + aux.nombre);
+          }
+        }
+        this.precio_costo = 0;
+        this.contenido = 0;
+        for (let entry of this.subproductoV) {
+          this.precio_costo += entry.precio_costo;
+          let str = (entry.cantidad).match(/[a-z]+|\d+/ig);
+          //this.contenido += parseFloat(str[0]);
+          this.reCalcContenido(str[0], str[1], entry.value.contenido);
+        }
+        this.reCalcPrevioVenta();
+        this.selected_producto = '';
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+        this.borderStyleProdExistente = '#FE2E2E';
       }
-
-      this.selected_producto = '';
     } else {
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
-      document.getElementById('prodExistente').style.borderColor = '#FE2E2E';
+      this.messageGrowlService.notify('error', 'Error', 'La cantidad no puede ser 0!');
+      document.getElementById('cantSubprod').style.borderColor = '#FE2E2E';
     }
   }
 
@@ -869,7 +877,7 @@ export class AdministracionComponent implements OnInit {
       color = 'lightgreen';
     }
     this.pathLogo = files;
-    console.log(this.pathLogo);
+    //console.log(this.pathLogo);
     document.getElementById('filesC').style.backgroundColor = color;
   }
 
@@ -910,16 +918,6 @@ export class AdministracionComponent implements OnInit {
     }
     this.pathLogoTPU = files;
     document.getElementById('filesTPU').style.backgroundColor = color;
-  }
-
-  addCant() {
-    this.cantSubprod++;
-  }
-
-  lessCant() {
-    if (this.cantSubprod > 1) {
-      this.cantSubprod--;
-    }
   }
 
   search(id, myArray) {
@@ -970,25 +968,56 @@ export class AdministracionComponent implements OnInit {
     this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
   }
 
+  reCalcPrevioVenta() {
+    const gain = (this.utilidad / 100) + 1;
+    this.precio_venta = this.precio_costo * gain;
+  }
+
   valueChangePrecioVenta($event) {
     const gain = 1 - (this.utilidad / 100);
     this.precio_costo = parseFloat((this.precio_venta * gain).toFixed(2));
   }
 
+  valueChangeContenido($event) {
+    const onzaEnMl = 29.5735;
+    if (this.selectedLstContenido.localeCompare('Litros') == 0) {
+      this.contenidoMili = parseFloat((this.contenido * 1000).toFixed(2));
+    }
+    if (this.selectedLstContenido.localeCompare('Onzas') == 0) {
+      this.contenidoMili = parseFloat((this.contenido * 29.5735).toFixed(2));
+    }
+    if (this.selectedLstContenido.localeCompare('Mililitros') == 0) {
+      this.contenidoMili = parseFloat((this.contenido).toFixed(2));
+    }
+  }
+
   valueChangeGananciaU($event) {
-    const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
+    const gain = (this.productoUpdate.utilidad / 100) + 1;
+    this.productoUpdate.precio_venta = parseFloat((this.productoUpdate.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioCompraU($event) {
-    this.precio_costo = ((this.precio_costo * 100) / 100).toFixed(2);
+    this.productoUpdate.precio_costo = parseFloat(((this.productoUpdate.precio_costo * 100) / 100).toFixed(2));
     const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = parseFloat((this.precio_costo * gain).toFixed(2));
+    this.productoUpdate.precio_venta = parseFloat((this.productoUpdate.precio_costo * gain).toFixed(2));
   }
 
   valueChangePrecioVentaU($event) {
-    const gain = 1 - (this.utilidad / 100);
-    this.precio_costo = parseFloat((this.precio_venta * gain).toFixed(2));
+    const gain = 1 - (this.productoUpdate.utilidad / 100);
+    this.productoUpdate.precio_costo = parseFloat((this.productoUpdate.precio_venta * gain).toFixed(2));
+  }
+
+  valueChangeContenidoU($event) {
+    const onzaEnMl = 29.5735;
+    if (this.selectedLstContenido.localeCompare('Litros') == 0) {
+      this.contenidoMiliU = parseFloat((this.productoUpdate.contenidoU * 1000).toFixed(2));
+    }
+    if (this.selectedLstContenido.localeCompare('Onzas') == 0) {
+      this.contenidoMiliU = parseFloat((this.productoUpdate.contenidoU * 29.5735).toFixed(2));
+    }
+    if (this.selectedLstContenido.localeCompare('Mililitros') == 0) {
+      this.contenidoMiliU = parseFloat((this.productoUpdate.contenido).toFixed(2));
+    }
   }
 
   controlarPrecioCosto($event) {
@@ -997,33 +1026,146 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
-  setColorError() {
-    /*console.log("in")
-    if (this.selected_productoU != "") {
-      return "#FE2E2E";
-    } else {
-      return "#DADAD2";
-    }*/
-  }
-
   onSubmit(value: string) {
     console.log(value);
   }
 
-  calculatePortion(cantidad, precio, unidad) {
+  valueChangeCantSubprod($event) {
+    document.getElementById('cantSubprod').style.borderColor = '#DADAD2';
     const onzaEnMl = 29.5735;
-    if (unidad.localeCompare('u')) {
-
+    let prod = this.productos.find(x => x.nombre === this.selected_producto);
+    if (prod !== undefined) {
+      //litros
+      if (this.unidadMedidaSuproducto.value.id == 1) {
+        this.costoCantSubProd = ((this.cantSubprod * 1000) * prod.precio_costo) / prod.contenido;
+      }
+      //mililitros
+      if (this.unidadMedidaSuproducto.value.id == 2) {
+        this.costoCantSubProd = ((this.cantSubprod * prod.precio_costo) / prod.contenido);
+        //console.log(this.costoCantSubProd)
+        //this.costoCantSubProd = parseFloat(((this.cantSubprod * prod.precio_costo) / prod.contenido).toFixed(2));
+      }
+      //onzas
+      if (this.unidadMedidaSuproducto.value.id == 3) {
+        this.costoCantSubProd = ((this.cantSubprod * onzaEnMl) * prod.precio_costo) / prod.contenido;
+      }
+      //unidades
+      if (this.unidadMedidaSuproducto.value.id == 4) {
+        this.costoCantSubProd = parseFloat(prod.precio_costo);
+      }
     }
-    if (unidad.localeCompare('ml')) {
+  }
 
+  reCalcContenido(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    if (um.localeCompare('Lts') === 0) {
+      this.contenido += (cantSubprod * 1000);
     }
-    if (unidad.localeCompare('oz')) {
-
+    if (um.localeCompare('ml') === 0) {
+      this.contenido += cantSubprod;
     }
-    const aux = '';
-    const costoProporcional = '';
+    if (um.localeCompare('oz') === 0) {
+      this.contenido += (cantSubprod * 29.5735);
+    }
+    if (um.localeCompare('u') === 0) {
+      this.contenido += contenido;
+    }
+  }
 
+  reCalcContenidoDelete(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    if (um.localeCompare('Lts') === 0) {
+      this.contenido -= (cantSubprod * 1000);
+    }
+    if (um.localeCompare('ml') === 0) {
+      this.contenido -= cantSubprod;
+    }
+    if (um.localeCompare('oz') === 0) {
+      this.contenido -= (cantSubprod * 29.5735);
+    }
+    if (um.localeCompare('u') === 0) {
+      this.contenido -= contenido;
+    }
+  }
+
+  reCalcCosto(cantSubprod) {
+    const onzaEnMl = 29.5735;
+    let prod = this.productos.find(x => x.nombre === this.selected_producto.nombre);
+    let costoCantSubProd = 0;
+    if (prod !== undefined) {
+      //litros
+      if (this.unidadMedidaSuproducto.value.id == 1) {
+        costoCantSubProd = ((cantSubprod * 1000) * prod.precio_costo) / prod.contenido;
+      }
+      //mililitros
+      if (this.unidadMedidaSuproducto.value.id == 2) {
+        costoCantSubProd = ((cantSubprod * prod.precio_costo) / prod.contenido);
+      }
+      //onzas
+      if (this.unidadMedidaSuproducto.value.id == 3) {
+        costoCantSubProd = ((cantSubprod * onzaEnMl) * prod.precio_costo) / prod.contenido;
+      }
+      //unidades
+      if (this.unidadMedidaSuproducto.value.id == 4) {
+        costoCantSubProd = parseFloat(prod.precio_costo);
+      }
+    }
+    return costoCantSubProd;
+  }
+
+  onChangeProdExistentes($event) {
+    //this.valueChangeCantSubprod($event);
+    this.borderStyleProdExistente = '#DADAD2';
+  }
+
+  onChangeProdSelec($event) {
+    this.borderStyleProdSelec = '#DADAD2';
+  }
+
+  ngOnInitTipoProducto() {
+    // Atributos SubProducto
+    this.desc_tipo_producto = '';
+    this.pathLogoTP = undefined;
+    this.id_mostar = '';
+    this.pathLogoTP = undefined;
+  }
+
+  ngOnInitProducto() {
+    // Atributos Producto
+    this.productoUpdate = {
+      '_id': '',
+      'nombre': '',
+      'precio_costo': 0,
+      'precio_venta': 0,
+      'utilidad': 0,
+      'cant_existente': 0,
+      'subproductoV': [],
+      'id_tipo_producto': '',
+      'path': '',
+      'contenido': 0
+    };
+    this.nombre = '';
+    this.precio_costo = 0;
+    this.precio_venta = 0;
+    this.utilidad = 30;
+    this.cant_existente = 0;
+    this.contenido = 0;
+    this.contenidoMili = 0;
+    this.contenidoMiliU = 0;
+    this.costoCantSubProd = 0;
+    this.subproductoV = [];
+    this.selected_tipo_producto = '';
+    this.selected_producto = '';
+    this.selected_productoU = '';
+    this.flagSubProd = false;
+    this.flagSubProdUpdate = false;
+    this.cantSubprod = 0;
+    this.cantSubProdU = 0;
+    this.flagListaSubProd = false;
+    this.flagListaSubProdUpdate = false;
+    this.pathLogo = undefined;
+    this.pathLogoU = undefined;
+    this.precio_costoSubProd = 0;
   }
 
   /* GESTION DE PROMOCIONES */
@@ -1034,13 +1176,14 @@ function setOriginalColorsPC() {
   // border Color #dadad2
   // readonly Color #f8f5f0
   // error Color FE2E2E
-  document.getElementById('nombrePC').style.borderColor = '#DADAD2';
-  // document.getElementById("puPC").style.borderColor = "#DADAD2";
-  // document.getElementById("utilidadPC").style.borderColor = "#DADAD2";
-  document.getElementById('cantPC').style.borderColor = '#DADAD2';
-  document.getElementById('tipoPC').style.borderColor = '#DADAD2';
-  document.getElementById('tipoP').style.borderColor = '#DADAD2';
-  document.getElementById('filesC').style.borderColor = '#DADAD2';
+  document.getElementById("nombrePC").style.borderColor = "#DADAD2";
+  document.getElementById("pcPC").style.borderColor = "#DADAD2";
+  document.getElementById("pvPC").style.borderColor = "#DADAD2";
+  document.getElementById("utilidadPC").style.borderColor = "#DADAD2";
+  document.getElementById("cantPC").style.borderColor = "#DADAD2";
+  document.getElementById("tipoPC").style.borderColor = "#DADAD2";
+  document.getElementById("contPC").style.borderColor = "#DADAD2";
+  //this.borderStyle = '#DADAD2';
 }
 
 function setOriginalColorsPU() {

@@ -4,14 +4,14 @@ var mongoose = restful.mongoose;
 var productoSchema = new mongoose.Schema({
 
     nombre: String,
-    precio_costo: Number,
-    precio_venta: Number,
-    utilidad: Number,
-    cant_existente: Number,
+    precio_costo: String,
+    precio_venta: String,
+    utilidad: String,
+    cant_existente: String,
     subproductoV: Array,
     id_tipo_producto: mongoose.Schema.Types.ObjectId,
     path: String,
-    contenido: Number,
+    contenido: String,
     promocion: Array
 
 });

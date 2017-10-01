@@ -501,7 +501,7 @@ export class CardComponent implements OnInit {
 
   onRowSelect(event) {
     //Update productos
-    this.productoService.getByNombre(event.data.nombre).subscribe(producto => {
+    this.productoService.getByNombre(event.data.nombre).subscribe(data => {
       let aux = {
         cant_existente: event.data.cant_existente,
         nombre: event.data.nombre,
@@ -510,8 +510,21 @@ export class CardComponent implements OnInit {
         precio_venta: event.data.precio_venta,
         selectedPromo: event.data.selectedPromo
       }
-      producto[0].promocion = aux;
-      console.log(producto);
+      data[0].promocion = aux;
+      const producto = {
+        _id: data[0]._id,
+        nombre: data[0].nombre,
+        precio_costo: parseFloat(data[0].precio_costo),
+        precio_venta: parseFloat(data[0].precio_venta),
+        utilidad: parseFloat(data[0].utilidad),
+        cant_existente: data[0].cant_existente,
+        contenido: parseFloat(data[0].contenido),
+        path: data[0].path,
+        subproductoV: data[0].subproductoV,
+        id_tipo_producto: data[0].id_tipo_producto,
+        promocion: data[0].promocion
+      };
+      console.log(producto)
       this.productoService.updateProducto(producto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
       }, err => {

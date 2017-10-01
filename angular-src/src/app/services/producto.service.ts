@@ -11,6 +11,7 @@ export class ProductoService {
   constructor(private http: Http) { }
 
   registerProducto(producto) {
+    //console.log(producto)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.post(url + 'producto', producto, { headers: headers })
@@ -19,7 +20,7 @@ export class ProductoService {
   }
 
   updateProducto(producto) {
-    console.log(producto)
+    //console.log(producto)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(url + 'producto/' + producto._id, producto, { headers: headers })

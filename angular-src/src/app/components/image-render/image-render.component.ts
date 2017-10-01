@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-image-render',
   /*template: `<div class="example-tooltip-host" mdTooltip={{renderValue}} [mdTooltipPosition]="position">
                   <img [src]="renderValue" style= "width:50%"/>
-             </div>`,*/
+             </div>`*/
   //template: `<i class="fa fa-picture-o fa-lg" aria-hidden="true" (click)="openDialog()"></i>`,
   template: `<ng-template #toolTipTemplate><img src={{renderValue}} width="100%"/></ng-template>
              <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
