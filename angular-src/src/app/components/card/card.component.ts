@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { ValidateService } from '../../services/validate.service';
 import { TabMenuModule, MenuItem } from 'primeng/primeng';
@@ -18,6 +18,10 @@ import * as myGlobals from '../../components/globals';
 import { FacturaService } from '../../services/factura.service';
 import { DetalleFacturaService } from '../../services/detalle-factura.service';
 import { PromocionService } from '../../services/promocion.service';
+import { DecimalPipe } from '@angular/common';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { FacturacionComponent } from '../../components/facturacion/facturacion.component';
+import { PersonalService } from '../../services/personal.service'
 
 @Component({
   selector: 'app-card',
@@ -25,6 +29,7 @@ import { PromocionService } from '../../services/promocion.service';
   styleUrls: ['./card.component.css']
 })
 export class CardComponent implements OnInit {
+
   cardNumber: string;
   validCard: String;
   baseColor: String;
@@ -47,6 +52,7 @@ export class CardComponent implements OnInit {
   showDialogPrint = false;
   flagUserFound = false;
   flagCardFound = false;
+  flagCaUsFound = false;
   nfLael = "";
   selectedTab: number;
   public dt: Date = new Date();
@@ -123,7 +129,7 @@ export class CardComponent implements OnInit {
   showDialogT = false;
   selectedClientGP: any;
   tipoTarjetas: any = [];
-  limiteConsumo;
+  limiteConsumo = 100;
   descTarjeta;
   cardNumberGT;
   selectedTipoTarjeta: any;
@@ -139,10 +145,26 @@ export class CardComponent implements OnInit {
   lstCards: any = [];
   flagActivateInsertCard = true;
   lstPromociones: any = [];
-
-  change($event) {
-    $event = false;
-  }
+  showDialogPB = false;
+  value: number = 0;
+  @ViewChild('cedulaNew')
+  myInputVariable1: any;
+  cc;
+  @Input()
+  com1ref: FacturacionComponent;
+  flagTC = false;
+  flagTCU = false;
+  coverMujeres = 3;
+  coverHombres = 3;
+  showDialogFP = false;
+  rucFactura;
+  flagFP = false;
+  lstFP: any = [];
+  selectedFP;
+  flagInsertRuc = true;
+  selectedRucFactura;
+  totalConsumo = 10;
+  flagCheckVenta = false;
 
   constructor(
     private validateService: ValidateService,
@@ -157,11 +179,13 @@ export class CardComponent implements OnInit {
     private tarjetaService: TarjetaService,
     private facturaService: FacturaService,
     private detalleFacturaService: DetalleFacturaService,
-    private promocionService: PromocionService) {
+    private promocionService: PromocionService,
+    private decimalPipe: DecimalPipe,
+    private localStorageService: LocalStorageService,
+    private personalService: PersonalService) {
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
-
     this.baseColor = "#f8f5f0";
     // Atributos cliente
     this.cedula = "";
@@ -184,7 +208,7 @@ export class CardComponent implements OnInit {
     setTimeout(function () {
       if (document.getElementById('cedulaNew') !== null)
         document.getElementById('cedulaNew').focus();
-    }, 500);
+    }, 50);
 
     this.tipoTarjetas = [];
     this.tipoTarjetas.push({ label: 'Normal', value: 'Normal' });
@@ -198,9 +222,16 @@ export class CardComponent implements OnInit {
       'limite': '',
       'descripcion': ''
     };
+
+    this.lstFP = [];
+    this.lstFP.push({ label: 'Efectivo', value: 'Efectivo' });
+    this.lstFP.push({ label: 'Credito', value: 'Credito' });
   }
 
   ngOnInit() {
+    //this.com1ref = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
+    //this.com1ref.setTab();
+
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 500)
@@ -210,7 +241,6 @@ export class CardComponent implements OnInit {
     this.cantSalenM = 0;
     this.cantSalenH = 0;
     this.selectedTab = 0;
-    //alert(document.getElementById('cedula').style.backgroundColor);
     this.selectedPromos = [];
     this.lstPromos = [
       { descripcion: 'Cerveza budweiser 350ml', pu: '3.25', total: '25', cantidad: '5' },
@@ -238,23 +268,34 @@ export class CardComponent implements OnInit {
         this.mapP = p;
         this.promocionService.getAll().subscribe(data => {
           this.lstPromociones = data;
-          /*console.log(this.lstPromociones)
-          this.promos = [];
-          for (let entry of this.lstPromociones) {
-            let aux = { value: entry, label: entry.nombre }
-            this.promos.push(aux);
-          }*/
           this.mapProdShow = [];
           let firstElement = this.mapTP[0]._id;
+          //localStorage.removeItem("promosActivas");
+          this.localStorageService.removeItem();
           for (let entry of p) {
+            if (entry.promocion.length > 0) {
+
+              let aux = {
+                nombre: entry.nombre,
+                cant_existente: this.decimalPipe.transform(entry.cant_existente, '1.2-2'),
+                precio_costo: this.decimalPipe.transform(entry.precio_costo, '1.2-2'),
+                precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
+                selectedPromo: this.lstPromociones[0].nombre,
+                precio_promo: this.decimalPipe.transform(entry.precio_venta, '1.2-2')
+              };
+              this.selectedPromos.push(aux);
+              myGlobals.addElementPromo(entry);
+              this.localStorageService.setItem(myGlobals.globalPromos)
+
+            }
             if (entry.id_tipo_producto.localeCompare(firstElement) === 0) {
               let aux = {
                 nombre: entry.nombre,
-                cant_existente: entry.cant_existente,
-                precio_costo: entry.precio_costo,
-                precio_venta: entry.precio_venta,
+                cant_existente: this.decimalPipe.transform(entry.cant_existente, '1.2-2'),
+                precio_costo: this.decimalPipe.transform(entry.precio_costo, '1.2-2'),
+                precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
                 selectedPromo: this.lstPromociones[0].nombre,
-                precio_promo: entry.precio_venta
+                precio_promo: this.decimalPipe.transform(entry.precio_venta, '1.2-2')
               };
               this.mapProdShow.push(aux);
             }
@@ -272,6 +313,7 @@ export class CardComponent implements OnInit {
       return false;
     })
     this.ngOnInitCards();
+    this.rucFactura = '';
   }
 
   FillHeaders(mapP) {
@@ -328,9 +370,9 @@ export class CardComponent implements OnInit {
   onAddTSubmit() {
     const newCard = {
       numero: this.cardNumberGT,
-      nombre: this.selectedClientGP.nombre,
-      apellido: this.selectedClientGP.apellido,
-      cedula: this.selectedClientGP.cedula,
+      nombre: '',
+      apellido: '',
+      cedula: '',
       limite: this.limiteConsumo,
       descripcion: this.descTarjeta,
       tipo: this.selectedTipoTarjeta
@@ -340,7 +382,10 @@ export class CardComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacíos!');
       return false;
     }
-    if (this.selectedClientGP.value.cedula.localeCompare("") !== 0) {
+    if (this.flagTC == false) {
+      newCard.nombre = this.selectedClientGP.nombre;
+      newCard.apellido = this.selectedClientGP.apellido;
+      newCard.cedula = this.selectedClientGP.cedula;
       let row = this.lstAddCardCI.find(x => x.value.cedula === newCard.cedula);
       this.lstAddCardCI = this.lstAddCardCI.filter(function (obj) {
         return obj.value.cedula !== row.value.cedula;
@@ -350,6 +395,8 @@ export class CardComponent implements OnInit {
       this.sourceT.add(newCard);
       this.sourceT.refresh();
       let row = this.lstAddCardCI.find(x => x.value.cedula === newCard.cedula);
+      //this.lstAddCardCI.push(asdsad)
+
       this.ngOnInitCards();
       this.showDialogT = false;
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
@@ -400,15 +447,50 @@ export class CardComponent implements OnInit {
     });
   }
 
+  deletePromos() {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined)
+        if (result.localeCompare("Aceptar") == 0) {
+          this.showDialogPB = true;
+          let n = this.mapP.length;
+          let exp = 100 / n;
+          this.value = 0;
+          for (let entry of this.mapP) {
+            entry.promocion = [];
+            this.productoService.updateProducto(entry).subscribe(data => {
+              this.value += exp;
+              if (this.value >= 100) {
+                this.value = 100;
+                this.showDialogPB = false;
+              }
+            }, err => {
+              console.log(err)
+            })
+            this.messageGrowlService.notify('success', 'Éxito', 'Promociones Activas Eliminadas!');
+          }
+        }
+    });
+  }
+
   onUpdateTSubmit() {
-    console.log(this.updateTarjeta)
-    this.updateTarjeta.cedula = this.selectedClientGP.cedula;
-    this.updateTarjeta.nombre = this.selectedClientGP.nombre;
-    this.updateTarjeta.apellido = this.selectedClientGP.apellido;
+
+    this.updateTarjeta.cedula = '';
+    this.updateTarjeta.nombre = '';
+    this.updateTarjeta.apellido = '';
     //Required fields
     if (!this.validateService.validateTarjeta(this.updateTarjeta)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
+    }
+    if (this.flagTCU == false) {
+      this.updateTarjeta.cedula = this.selectedClientGP.cedula;
+      this.updateTarjeta.nombre = this.selectedClientGP.nombre;
+      this.updateTarjeta.apellido = this.selectedClientGP.apellido;
+      let row = this.lstAddCardCI.find(x => x.value.cedula === this.updateTarjeta.cedula);
+      this.lstAddCardCI = this.lstAddCardCI.filter(function (obj) {
+        return obj.value.cedula !== row.value.cedula;
+      });
     }
     this.tarjetaService.update(this.updateTarjeta).subscribe(data => {
       this.sourceT.update(this.oldCard, this.updateTarjeta);
@@ -496,7 +578,38 @@ export class CardComponent implements OnInit {
   };
 
   onRowUnselect(event) {
-    this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!')
+    this.productoService.getByNombre(event.data.nombre).subscribe(data => {
+      data[0].promocion = [];
+      const producto = {
+        _id: data[0]._id,
+        nombre: data[0].nombre,
+        precio_costo: parseFloat(data[0].precio_costo),
+        precio_venta: parseFloat(data[0].precio_venta),
+        utilidad: parseFloat(data[0].utilidad),
+        cant_existente: data[0].cant_existente,
+        contenido: parseFloat(data[0].contenido),
+        path: data[0].path,
+        subproductoV: data[0].subproductoV,
+        id_tipo_producto: data[0].id_tipo_producto,
+        //promocion: data[0].promocion
+        promocion: data[0].promocion
+      };
+      myGlobals.sliceElement(producto);
+      /*localStorage.removeItem("promosActivas");
+      localStorage.setItem("promosActivas", JSON.stringify(myGlobals.globalPromos));*/
+      this.localStorageService.removeItem();
+      this.localStorageService.setItem(myGlobals.globalPromos);
+      this.cc = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
+      this.productoService.updateProducto(producto).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', "Se ha deshabilitado la promoción!");
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+    })
   }
 
   onRowSelect(event) {
@@ -522,9 +635,15 @@ export class CardComponent implements OnInit {
         path: data[0].path,
         subproductoV: data[0].subproductoV,
         id_tipo_producto: data[0].id_tipo_producto,
-        promocion: data[0].promocion
+        promocion: [data[0].promocion]
       };
-      console.log(producto)
+      myGlobals.addElementPromo(producto);
+      /*localStorage.removeItem("promosActivas");
+      localStorage.setItem("promosActivas", JSON.stringify(myGlobals.globalPromos));*/
+      this.localStorageService.removeItem();
+      this.localStorageService.setItem(myGlobals.globalPromos);
+      this.cc = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
+      this.cc.prueba();
       this.productoService.updateProducto(producto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
       }, err => {
@@ -543,11 +662,11 @@ export class CardComponent implements OnInit {
       if (entry.id_tipo_producto.localeCompare(this.mapTP[e.index]._id) === 0) {
         let aux = {
           nombre: entry.nombre,
-          cant_existente: entry.cant_existente,
-          precio_costo: entry.precio_costo,
-          precio_venta: entry.precio_venta,
+          cant_existente: this.decimalPipe.transform(entry.cant_existente, '1.2-2'),
+          precio_costo: this.decimalPipe.transform(entry.precio_costo, '1.2-2'),
+          precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
           selectedPromo: this.lstPromociones[0].nombre,
-          precio_promo: entry.precio_venta
+          precio_promo: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
         };
         this.mapProdShow.push(aux);
       }
@@ -570,17 +689,14 @@ export class CardComponent implements OnInit {
     }
   }
 
-  display: boolean = false;
-
   onChange(event) {
     let finalChar = this.cardNumber.slice(-1)
     if (this.cardNumber.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
-
-        //document.getElementById('cantMujeres').focus();
         this.checkCard();
       }
     } else {
+      this.flagCaUsFound = false;
       this.flagCardFound = false;
       document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
       document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
@@ -593,6 +709,7 @@ export class CardComponent implements OnInit {
       this.flagCardFound = true;
       this.cardNumber = searchCard.numero;
       this.flagActivateInsertCard = false;
+      this.flagCaUsFound = true;
       setTimeout(function () {
         document.getElementById('cantMujeres').focus();
       }, 0)
@@ -604,7 +721,13 @@ export class CardComponent implements OnInit {
             this.flagCardFound = true;
             document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
             document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+            if (this.flagCardFound && this.flagUserFound) {
+              this.flagCaUsFound = true;
+            } else {
+              this.flagCaUsFound = false;
+            }
           } else {
+            this.flagCaUsFound = false;
             this.flagCardFound = false;
             document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
             document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
@@ -624,6 +747,7 @@ export class CardComponent implements OnInit {
       document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
       document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
       this.cardNumber = "";
+      this.flagCaUsFound = false;
     }
     if (this.cedula.length != 13) {
       this.nfLael = "Usuario no encontrado.";
@@ -632,6 +756,7 @@ export class CardComponent implements OnInit {
       document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
       document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
       this.cardNumber = "";
+      this.flagCaUsFound = false;
     }
     if (this.cedula.length == 10 || this.cedula.length == 13) {
       this.checkClient();
@@ -648,7 +773,13 @@ export class CardComponent implements OnInit {
       setTimeout(function () {
         document.getElementById('numero').focus();
       }, 0)
+      if (this.flagCardFound && this.flagUserFound) {
+        this.flagCaUsFound = true;
+      } else {
+        this.flagCaUsFound = false;
+      }
     } else {
+      this.flagCaUsFound = false;
       this.nfLael = "Usuario no encontrado.";
       document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
@@ -697,9 +828,7 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
-    //console.log(this.flagUserFound + " " + this.flagCardFound)
-    console.log(this.selectedPromos)
-    /*this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+    this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
       "cedula": this.searchUser.cedula,
@@ -722,15 +851,31 @@ export class CardComponent implements OnInit {
         this.cardNumber = '';
         this.cedula = '';
         //set factura & detalle factura
+        this.validateService.getDateTime();
+        let auxM = {
+          fecha: this.validateService.getDateTime(),
+          cantidad: this.cantMujeres,
+          descripcion: 'cover mujer',
+          total: (this.cantMujeres * this.coverMujeres)
+        }
+        let auxH = {
+          fecha: this.validateService.getDateTime(),
+          cantidad: this.cantHombres,
+          descripcion: 'cover hombre',
+          total: (this.cantHombres * this.coverHombres)
+        }
+        let detalle: any = [];
+        detalle.push(auxM);
+        detalle.push(auxH);
         let newFactura = {
           cedula: this.searchUser.cedula,
           num_factura: '',
           num_autorizacion: '',
           ruc: '',
-          nombre: this.searchUser.nombre + this.searchUser.apellido,
+          nombre: this.searchUser.nombre + ' ' + this.searchUser.apellido,
           telefono: this.searchUser.telefono,
           direccion: 'Riobamba',
-          detalleFacturaV: []
+          detalleFacturaV: detalle
         }
         this.facturaService.register(newFactura).subscribe(data => {
         }, err => {
@@ -743,7 +888,7 @@ export class CardComponent implements OnInit {
       })
     } else {
       this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
-    }*/
+    }
   }
 
   onChangeClose($event) {
@@ -753,9 +898,14 @@ export class CardComponent implements OnInit {
     this.cardNumberGT = this.cardNumberGT.toLowerCase();
     if (this.cardNumberGT.length === 9) {
       if (this.cardNumberGT.charAt(0).localeCompare('ñ') == 0 && this.cardNumberGT.charAt(8).localeCompare('_') == 0) {
-        this.flagCN = true;
-        document.getElementById('basic-addon7').style.backgroundColor = '#6ce600';
-        document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
+        let existingCard = this.lstCards.find(x => x.numero === this.cardNumberGT);
+        if (existingCard === undefined) {
+          this.flagCN = true;
+          document.getElementById('basic-addon7').style.backgroundColor = '#6ce600';
+          document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
+        } else {
+          this.messageGrowlService.notify('warn', 'Advertencia', 'La tarjeta ya fue ingresada!');
+        }
       } else {
         this.flagCN = false;
         document.getElementById("basic-addon8").style.backgroundColor = "#FE2E2E";
@@ -786,12 +936,29 @@ export class CardComponent implements OnInit {
     }
   }
 
+  changeTC() {
+    if (this.selectedTipoTarjeta.localeCompare('VIP')) {
+      this.flagTC = true;
+    } else {
+      this.flagTC = false;
+    }
+  }
+
+  changeTCU() {
+    if (this.updateTarjeta.tipo.localeCompare('VIP')) {
+      this.flagTCU = true;
+    } else {
+      this.flagTCU = false;
+    }
+  }
+
   setCursorAddT() {
     document.getElementById('basic-addon7').style.backgroundColor = '#f8f5f0';
     document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
     this.cardNumberGT = "";
     this.descTarjeta = "";
-    this.limiteConsumo = "";
+    this.limiteConsumo = 100;
+    this.flagTC = true;
     setTimeout(function () {
       document.getElementById('numeroGT').focus();
     }, 0)
@@ -816,6 +983,11 @@ export class CardComponent implements OnInit {
   }
 
   onUpdateT(event: any) {
+    if (event.data.tipo.localeCompare('VIP')) {
+      this.flagTCU = true;
+    } else {
+      this.flagTCU = false;
+    }
     this.updateTarjeta = event.data;
     this.oldCard = event.data;
     this.lstAddCardCI1 = [];
@@ -841,7 +1013,7 @@ export class CardComponent implements OnInit {
     this.selectedClientGP = aux.value;
   }
 
-  ngOnInitCards() {
+  public ngOnInitCards() {
     this.tipoClienteService.getAll().subscribe(tc => {
       this.tipo_clientes = tc;
       this.citiesDD = [];
@@ -851,8 +1023,8 @@ export class CardComponent implements OnInit {
       this.selected_tipo_cliente = this.citiesDD[0].label;
       this.clienteService.getAll().subscribe(c => {
         this.clientes = c;
-        let i = 1;
-        let aux = {
+        let i = 0;
+        /*let aux = {
           'value': {
             'apellido': '',
             'cedula': '',
@@ -864,11 +1036,11 @@ export class CardComponent implements OnInit {
             'telefono': '',
             '_id': ''
           },
-          'label': '--------------------N/A--------------------'
-        }
+          'label': 'Selecciona..'
+        }*/
         this.clientesC = [];
-        this.clientesC[0] = aux;
-        this.selectedClientGP = aux;
+        //this.clientesC[0] = aux;
+        //this.selectedClientGP = aux;
         for (let entry of c) {
           let aux = {
             'value': {
@@ -902,5 +1074,108 @@ export class CardComponent implements OnInit {
         console.log(err);
         return false;
       });
+
+  }
+
+  print(): void {
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tabs</title>
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                <th style="text-align: center">Tipo de Promocion</th>
+                <th style="text-align: center">Descripcion</th>
+              </tr>
+              </thead>
+              <tbody style="text-align: center">
+                <tr>
+                <td>1</td>
+                  <td>Tipo 1</td>
+                </tr>
+                <tr>
+                <td>2</td>
+                  <td>Tipo 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </head>
+          <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
+  }
+
+  print1(): void {
+    this.showDialogFP = true;
+  }
+
+  printConf($event) {
+    //this.flagFP = true
+  }
+
+  changeFP($event) {
+    if (this.selectedFP.localeCompare('Credito') == 0) {
+      this.flagFP = true;
+    } else {
+      this.flagFP = false;
+    }
+  }
+
+  insertRuc($event) {
+    this.flagInsertRuc = !this.flagInsertRuc;
+    if (!this.selectedRucFactura) {
+      this.rucFactura = '';
+      this.flagCheckVenta = true;
+    } else {
+      this.checkCiRuc();
+      setTimeout(function () {
+        document.getElementById('inputCiRuc').focus();
+      }, 0)
+    }
+  }
+
+  setDefaultValues() {
+    this.selectedFP = 'Efectivo';
+    this.flagFP = false;
+  }
+
+  checkCiRuc() {
+    if (this.rucFactura.length != 10) {
+      document.getElementById("addonRUC2").style.color = '#FE2E2E';
+      document.getElementById("addonRUC1").style.color = '';
+      this.flagCheckVenta = false;
+    }
+    if (this.rucFactura.length != 13) {
+      document.getElementById("addonRUC2").style.color = "#FE2E2E";
+      document.getElementById("addonRUC1").style.color = '';
+      this.flagCheckVenta = false;
+    }
+    if (this.rucFactura.length == 10 || this.rucFactura.length == 13) {
+      if (!this.validateService.validarRucCedula(this.rucFactura)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+        document.getElementById("addonRUC2").style.color = "#FE2E2E";
+        document.getElementById("addonRUC1").style.color = '';
+        this.flagCheckVenta = false;
+      } else {
+        document.getElementById("addonRUC1").style.color = "#5ff442";
+        document.getElementById("addonRUC2").style.color = '';
+        this.flagCheckVenta = true;
+      }
+    }
+  }
+
+  setClient() {
+    if (this.selectedRucFactura) {
+      this.rucFactura = '0502926819';
+      this.checkCiRuc();
+    } else {
+      this.rucFactura = '';
+    }
   }
 }

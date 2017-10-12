@@ -3,37 +3,35 @@
 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
     <div (click)="$event.preventDefault()">
         <tabset [justified]="true">
-            <tab heading="Promociones">
-
+            <tab heading="Promociones" (select)="loadLogos(100)">
                 <hr>
                 <h3 style="text-align: center">Promociones Disponibles</h3>
                 <hr>
-
-                <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16">
+                <p-dataGrid [value]="pathsTypePromos" [paginator]="true" [rows]="16">
                     <ng-template let-prod let-i="index" pTemplate="item">
                         <div class="ui-g-12 ui-md-3">
                             <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
-                                <h4 (dblclick)="eventEmitDoubleClick($event,i)" width="80"> {{prod.nombre}} </h4>
+                                <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
                                 <hr class="ui-widget-content" style="border-top:0;">
                                 <i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer"></i>
                             </p-panel>
                         </div>
                     </ng-template>
                 </p-dataGrid>
-
+                <!--<div *ngFor="let path of pathsTypePromos; let i = index">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <div class="example-tooltip-host" mdTooltip={{path.nombre}} [mdTooltipPosition]="position">
+                            <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)" />
+                        </div>
+                    </div>
+                </div>-->
             </tab>
+            <!--<tab heading="es una prueba" [active]="tabindex"></tab>-->
             <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                 <hr>
                 <h3 style="text-align: center">{{tabz.title}}</h3>
                 <hr>
-                <!--<div *ngFor="let path of pathsType; let i = index">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                        <div class="example-tooltip-host" mdTooltip={{path.nombre}} [mdTooltipPosition]="position">
-                            <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)"/>
-                        </div>
-                    </div>
-                </div>-->
-                <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16">
+                <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false">
                     <ng-template let-prod let-i="index" pTemplate="item">
                         <div class="ui-g-12 ui-md-3">
                             <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
@@ -45,7 +43,6 @@
                     </ng-template>
                 </p-dataGrid>
             </tab>
-
         </tabset>
     </div>
 </div>
@@ -129,19 +126,17 @@
             <div class="ui-grid-col-4">Nombre: </div>
             <div class="ui-grid-col-8">{{selectedProd.nombre}}</div>
         </div>
-        <div class="ui-grid-row">
+        <div class="ui-grid-row" *ngIf="!flagPrecioPromo">
             <div class="ui-grid-col-4">Precio: </div>
-            <div class="ui-grid-col-8">${{selectedProd.precio_unitario}}</div>
+            <div class="ui-grid-col-8">${{selectedProd.precio_venta | number : '1.2-2'}}</div>
+        </div>
+        <div class="ui-grid-row" *ngIf="flagPrecioPromo">
+            <div class="ui-grid-col-4">Precio Promo: </div>
+            <div class="ui-grid-col-8">${{selectedProd.promocion[0].precio_promo | number : '1.2-2'}}</div>
         </div>
         <div class="ui-grid-row">
             <div class="ui-grid-col-4">Cantidad Existente: </div>
-            <div class="ui-grid-col-8">{{selectedProd.cant_existente}}</div>
-        </div>
-        <div class="ui-grid-row">
-            <div class="ui-grid-col-4">Promocion Activa: </div>
-            <div class="ui-grid-col-8">
-                <p-toggleButton [(ngModel)]="checked" onLabel="Si" offLabel="No" onIcon="fa-check" offIcon="fa-times" disabled="true"></p-toggleButton>
-            </div>
+            <div class="ui-grid-col-8">{{selectedProd.cant_existente | number : '1.2-2'}}</div>
         </div>
     </div>
 </p-dialog>

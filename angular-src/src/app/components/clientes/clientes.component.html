@@ -128,7 +128,7 @@
             <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control input-sm"
                 onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
             event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
+                tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
         </div>
         <div class="ui-g-6">
             <label>E-mail:</label>

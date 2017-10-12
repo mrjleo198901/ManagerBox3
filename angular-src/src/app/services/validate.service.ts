@@ -69,6 +69,7 @@ export class ValidateService {
     }
     return res;
   }
+
   validatePromocionU(promo) {
     let res = true;
     if (promo.nombre == "") {
@@ -114,10 +115,6 @@ export class ValidateService {
     }
     if (producto.utilidad == 0) {
       document.getElementById("utilidadPC").style.borderColor = "#FE2E2E";
-      res = false;
-    }
-    if (producto.cant_existente == 0) {
-      document.getElementById("cantPC").style.borderColor = "#FE2E2E";
       res = false;
     }
     if (producto.id_tipo_producto == undefined) {
@@ -485,5 +482,11 @@ export class ValidateService {
       return false;
     } else
       return true;
+  }
+
+  getDateTime() {
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    return localISOTime
   }
 }

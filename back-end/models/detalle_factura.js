@@ -6,7 +6,8 @@ var detalleFacturaSchema = new mongoose.Schema({
     fecha: Date,
     cantidad: Number,
     desc_producto: String,
-    total: Number
+    total: Number,
+    id_producto: mongoose.Schema.Types.ObjectId
 
 });
 

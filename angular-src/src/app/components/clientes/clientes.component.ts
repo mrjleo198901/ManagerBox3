@@ -368,12 +368,13 @@ export class ClientesComponent implements OnInit {
       }
     }
     this.clienteService.updateCliente(newClient).subscribe(data => {
-      this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
-      this.sourceC.update(this.oldUser, newClient);
+      data.id_tipo_cliente = this.searchById(data.id_tipo_cliente, this.tipo_clientes);
+      this.sourceC.update(this.oldUser, data);
       this.sourceC.refresh();
       //this.ngOnInit();
       this.showDialog1 = false;
       this.flagUpdate = false;
+      this.messageGrowlService.notify('info', 'Información', 'Modificación exitosa!');
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');

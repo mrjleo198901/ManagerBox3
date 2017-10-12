@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { DecimalPipe } from '@angular/common';
 /*My Components*/
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
@@ -36,6 +37,7 @@ import { TarjetaService } from './services/tarjeta.service';
 import { FacturaService } from './services/factura.service';
 import { DetalleFacturaService } from './services/detalle-factura.service';
 import { PromocionService } from './services/promocion.service';
+import { LocalStorageService } from './services/local-storage.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -48,14 +50,16 @@ import { CurrencyMaskModule } from "ng2-currency-mask";
 import { MdTooltipModule, MdDialogModule, MdCheckboxModule, MdRadioModule, MdSlideToggleModule } from '@angular/material';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import {
-  GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule,
+  GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, InputSwitchModule,
   ToggleButtonModule, SpinnerModule, SharedModule, CheckboxModule, TabViewModule, ListboxModule,
-  CalendarModule, DataGridModule, DialogModule, BlockUIModule, SelectButtonModule, InputMaskModule
+  CalendarModule, DataGridModule, DialogModule, BlockUIModule, SelectButtonModule, InputMaskModule, ProgressBarModule
 } from 'primeng/primeng';
 
 import { AppComponent } from './app.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { AppLoaderComponent } from './components/app-loader/app-loader.component';
+import { PipeRenderComponent } from './components/pipe-render/pipe-render.component';
+import { SubprodRenderComponent } from './components/subprod-render/subprod-render.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -91,9 +95,11 @@ const appRoutes: Routes = [
     ConfirmDialogComponent,
     InventarioComponent,
     NotificationComponent,
-    AppLoaderComponent
+    AppLoaderComponent,
+    PipeRenderComponent,
+    SubprodRenderComponent
   ],
-  entryComponents: [ImageRenderComponent, ConfirmDialogComponent],
+  entryComponents: [ImageRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -112,11 +118,11 @@ const appRoutes: Routes = [
     SimpleNotificationsModule.forRoot(),
     GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, SharedModule, CheckboxModule,
     TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule,
-    SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule
+    SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
     CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService,
-    FacturaService, DetalleFacturaService, PromocionService],
+    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, LocalStorageService],
   bootstrap: [AppComponent]
 })
 

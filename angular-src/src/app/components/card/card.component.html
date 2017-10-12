@@ -23,7 +23,7 @@
                 <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
                   name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cedula del cliente" style="z-index: 1" maxlength="13"
-                  onkeypress='return event.charCode >= 48 && event.charCode <= 57' />
+                  onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
                 <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <span (click)="showDialog = true; setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
               </div>
@@ -73,7 +73,8 @@
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagActivateInsertCard" style="z-index: 1;">
+                  name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagUserFound" style="z-index: 1;"
+                  tabindex="2" maxlength="9">
                 <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
               </div>
@@ -92,7 +93,7 @@
               </div>
               <div class="input-group spinner ui-g-3">
                 <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                  maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="1">
+                  maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="3" (click)="$event.target.select()">
                 <div class="input-group-btn-vertical">
                   <button id="addW" (click)="plusWoman1()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
                   <button id="lessW" (click)="lessWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
@@ -103,13 +104,40 @@
               </div>
               <div class="input-group spinner ui-g-3">
                 <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                  maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="2">
+                  maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="4" (click)="$event.target.select()">
                 <div class="input-group-btn-vertical">
                   <button id="addM" (click)="plusMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
                   <button id="lessM" (click)="lessMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
                 </div>
               </div>
             </div>
+          </div>
+          <!-- Cover -->
+          <div class="form-group">
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                <label>Cover</label>
+              </div>
+            </div>
+            <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+              <div class="ui-g-3">
+                <p style="font-size: 12px">Precio Mujeres</p>
+              </div>
+              <div class="input-group spinner ui-g-3">
+                <input type="text" currencyMask type="text" [(ngModel)]="coverMujeres" id="coM" name="coM" class="form-control input-sm"
+                  placeholder="0.00" (click)="$event.target.select()" tabindex="5" [disabled]="!flagUserFound">
+              </div>
+              <div class="ui-g-3">
+                <p style="font-size: 12px">Precio Hombres</p>
+              </div>
+              <div class="input-group spinner ui-g-3">
+                <input type="text" currencyMask type="text" [(ngModel)]="coverHombres" id="coH" name="coH" class="form-control input-sm"
+                  placeholder="0.00" (click)="$event.target.select()" tabindex="6" [disabled]="!flagUserFound">
+              </div>
+            </div>
+          </div>
+
+          <div id="print-section">
           </div>
           <br><br>
         </p-panel>
@@ -118,10 +146,14 @@
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <br>
         <p-panel #pnlPromos header="Seleccionar promociones">
+          <div style="text-align: right">
+            <label>Desactivar todas las promociones:</label>
+            <button type="button" pButton (click)="deletePromos()" label="Desactivar" class="ui-button-warning"></button></div>
           <p-tabView (onChange)="handleChange($event)">
             <p-tabPanel *ngFor="let tabz of tabs; let i = index;let first = first;" [selected]="first" [header]="tabz.label" lazy="true">
 
-              <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)">
+              <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)"
+                (onRowUnselect)="onRowUnselect($event)">
                 <p-column [style]="{'width':'29px'}" selectionMode="multiple">
                 </p-column>
 
@@ -133,7 +165,7 @@
                   </ng-template>
                 </p-column>
 
-                <p-column *ngFor="let header of headers" [field]="header.field" [header]="header.header" [sortable]="true" [filter]="true"
+                <p-column *ngFor="let header of headers" [field]="header.field " [header]="header.header" [sortable]="true" [filter]="true"
                   filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
 
                 <p-column header="Precio Promo" [style]="{'width':'13%'}">
@@ -162,7 +194,7 @@
         <hr>
       </div>
       <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary btn-block" (click)="insertClientCard()" [disabled]="!flagCardFound">Ingresar</button>
+        <button class="btn btn-primary btn-block" (click)="insertClientCard()" [disabled]="!flagCaUsFound">Ingresar</button>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -220,6 +252,7 @@
                 </div>
               </div>
             </div>
+            <button (click)="print1();setDefaultValues()">prueba</button>
           </div>
         </p-panel>
       </div>
@@ -261,8 +294,8 @@
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
       </div>
-      <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <button (click)="showDialogPrint = !showDialogPrint" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
+      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+        <button (click)="print()" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -389,7 +422,7 @@
         <hr>
       </div>
     </tab>
-    <!-- TAB tarjetas -->
+    <!-- TAB TARJETAS -->
     <tab heading="Tarjetas">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -500,7 +533,7 @@
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Cliente:</label>
       <p-dropdown [options]="lstAddCardCI" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-        filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes">
+        filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC">
         <ng-template let-car pTemplate="item">
           <p>{{car.label}}--{{car.value.cedula}}</p>
         </ng-template>
@@ -509,7 +542,7 @@
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Tipo*:</label>
       <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%'}" name="tipoTarjetas" id="tipoTarjetas"
-        [inputId]="tipoTarjetas">
+        [inputId]="tipoTarjetas" (onChange)="changeTC()">
         <ng-template let-car pTemplate="item">
           <p>{{car.label}}</p>
         </ng-template>
@@ -551,7 +584,7 @@
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Cliente:</label>
       <p-dropdown [options]="lstAddCardCI1" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-        filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [inputId]="lstClientes">
+        filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [inputId]="lstClientes" [disabled]="flagTCU">
         <ng-template let-car pTemplate="item">
           <p>{{car.label}}--{{car.value.cedula}}</p>
         </ng-template>
@@ -560,7 +593,7 @@
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Tipo*:</label>
       <p-dropdown [options]="tipoTarjetas" [(ngModel)]="updateTarjeta.tipo" [style]="{'width':'100%'}" name="tipoTarjetasU" id="tipoTarjetasU"
-        [inputId]="tipoTarjetas">
+        [inputId]="tipoTarjetas" (onChange)="changeTCU()">
         <ng-template let-car pTemplate="item">
           <p>{{car.label}}</p>
         </ng-template>
@@ -585,7 +618,81 @@
   </div>
 </p-dialog>
 
-<!--<p-blockUI [target]="pnlTarjeta" [blocked]="!flagUserFound">
+<!--Progress Bar-->
+<p-dialog [(visible)]="showDialogPB" modal="modal" width="400" [responsive]="true">
+  <p-header>
+    Eliminado Registros...
+  </p-header>
+  <p-progressBar [value]="value"></p-progressBar>
+</p-dialog>
+
+<!--Forma de Pago-->
+<p-dialog [(visible)]="showDialogFP" modal="modal" width="400" [responsive]="true">
+  <p-header>
+    Confirmación Datos Venta
+  </p-header>
+  <div class="ui-g ui-fluid">
+
+    <div class="ui-g-12">
+      <label>Ruc*:</label>
+    </div>
+    <div class="ui-g-3">
+      <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="Si" offLabel="No" [style]="{'margin-top':'3px'}"></p-inputSwitch>
+    </div>
+    <div class="ui-g-9">
+      <div class="ui-inputgroup">
+        <span class="ui-inputgroup-addon" (click)="setClient()"><i class="fa fa-credit-card-alt "></i></span>
+        <input [(ngModel)]="rucFactura" style="font-size: 16px;vertical-align: middle" type="text" pInputText placeholder="Consumidor Final"
+          [disabled]="flagInsertRuc" (ngModelChange)="checkCiRuc()" (click)="$event.target.select()" id="inputCiRuc">
+        <span class="ui-inputgroup-addon" id="addonRUC1"><i class="fa fa-check" aria-hidden="true"></i></span>
+        <span class="ui-inputgroup-addon" id="addonRUC2"><i class="fa fa-times" aria-hidden="true"></i></span>
+      </div>
+    </div>
+    <div class="ui-g-3">
+      <label>Imprimir*:</label>
+    </div>
+    <div class="ui-g-9">
+      <label>Forma de Pago*:</label>
+    </div>
+    <div class="ui-g-3">
+      <p-inputSwitch onLabel="Si" offLabel="No" (onChange)="printConf($event)" [style]="{'margin-top':'3px'}"></p-inputSwitch>
+    </div>
+    <div class="ui-g-9">
+      <p-dropdown [options]="lstFP" [(ngModel)]="selectedFP" [style]="{'width':'100%'}" (onChange)="changeFP($event)">
+      </p-dropdown>
+    </div>
+    <div class="ui-g-3">
+    </div>
+    <div class="ui-g-9" *ngIf="flagFP">
+      <div class="panel panel-default" style="width: 100%">
+        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="ui-g-6">
+            <label>Monto*:</label>
+          </div>
+          <div class="ui-g-6">
+            <label>Abono*:</label>
+          </div>
+          <div class="ui-g-6">
+            <input [(ngModel)]="totalConsumo" currencyMask type="text" class="form-control input-sm" style="z-index: 1" (click)="$event.target.select()"
+              readonly>
+          </div>
+          <div class="ui-g-6">
+            <input [(ngModel)]="cantHombres" currencyMask type="text" class="form-control input-sm" style="z-index: 1" (click)="$event.target.select()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <hr>
+    <button class="btn btn-primary" style="font-size: 11px" (click)="confirm()" [disabled]="!flagCheckVenta">Confirmar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogFP = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+
+<p-blockUI [target]="pnlTarjeta" [blocked]="!flagUserFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%;z-index: 1"></i>
 </p-blockUI>
 
@@ -593,7 +700,7 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:48%"></i>
 </p-blockUI>
 
-<p-blockUI [target]="pnlTablaConsumo" [blocked]="!flagUserFound">
+<!--<p-blockUI [target]="pnlTablaConsumo" [blocked]="!flagUserFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>-->
 

@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
 import { PersonalService } from '../../services/personal.service';
 import { AuthService } from '../../services/auth.service';
+import * as myGlobals from '../../components/globals';
+
 
 @Component({
   selector: 'app-facturacion',
   templateUrl: './facturacion.component.html',
   styleUrls: ['./facturacion.component.css']
 })
+
 export class FacturacionComponent implements OnInit {
-  paths: { path: string, tipoProducto: string, nombre: string, precio_unitario: number, cant_existente: number }[] = [];
-  pathsType: { path: string, tipoProducto: string, nombre: string }[] = [];
+  paths: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
+  pathsType: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
+  pathsTypePromos: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
   selectedProductos;
   showDialogConfirmar = false;
   cardNumber: String;
@@ -26,16 +30,21 @@ export class FacturacionComponent implements OnInit {
   displayDialog: boolean;
   checked: boolean = false;
   password;
-  
+  public tabindex = false;
+  flagPrecioPromo = true;
+
   change($event) {
     //alert($event)
   }
+  /*public setTab() {
+    this.tabindex=true;
+  }*/
 
   constructor(
     private productoService: ProductoService,
     private tipoProductoService: TipoProductoService,
     private personalService: PersonalService) {
-
+    //this.setTab();
     this.tipoProductoService.getAll().subscribe(tp => {
       let index = 0;
       for (let entry of tp) {
@@ -48,7 +57,7 @@ export class FacturacionComponent implements OnInit {
       this.productoService.getAll().subscribe(p => {
         let index = 0;
         for (let entry of p) {
-          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_unitario: entry.precio_unitario, cant_existente: entry.cant_existente };
+          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
           this.paths[index] = aux;
           index++;
         }
@@ -58,11 +67,12 @@ export class FacturacionComponent implements OnInit {
         let ind = 0;
         for (let entry of this.paths) {
           if (entry.tipoProducto === tipo) {
-            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_unitario: entry.precio_unitario, cant_existente: entry.cant_existente};
+            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
             this.pathsType[ind] = aux;
             ind++;
           }
         }
+
       }, err => {
         console.log(err);
       });
@@ -74,6 +84,8 @@ export class FacturacionComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.ngOnInitPromos();
     this.selectedProductos = [];
     this.flagProdSeleccionados = false;
     this.validCard = "ñ1006771_";
@@ -85,6 +97,28 @@ export class FacturacionComponent implements OnInit {
       console.log(err);
     });
 
+  }
+
+  public ngOnInitPromos() {
+
+    this.pathsTypePromos = [];
+    let ind1 = 0;
+    let promos = JSON.parse(localStorage.getItem("promosActivas"));
+    //console.log(promos)
+    if (promos !== null) {
+      for (let entry of promos) {
+        let aux = {
+          path: entry.path,
+          tipoProducto: entry.tipoProducto,
+          nombre: entry.nombre,
+          precio_venta: entry.precio_venta,
+          cant_existente: entry.cant_existente,
+          promocion: entry.promocion
+        }
+        this.pathsTypePromos[ind1] = aux;
+        ind1++;
+      }
+    }
   }
 
   addProd(i) {
@@ -106,9 +140,6 @@ export class FacturacionComponent implements OnInit {
 
   setPadding(index) {
     let pad = "65px";
-    /*if (index == 0) {
-      pad = "0px";
-    }*/
     return pad;
   }
 
@@ -126,29 +157,58 @@ export class FacturacionComponent implements OnInit {
     } else {
       this.addProd(indexOfInserted);
     }
-    /*let a = this.selectedProductos[i];
-    if (n > 1) {
-      var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === a.nombre);
-      console.log(indexOfInserted)
-    }*/
   }
 
   passIndex(i) {
     //console.log(i)
   }
 
-  loadLogos(i) {
+  public loadLogos(i) {
+
+    if (i == 100) {
+      this.flagPrecioPromo = true;
+    } else {
+      this.flagPrecioPromo = false;
+    }
     this.pathsType = [];
     let tipo = this.mapTP.get(i);
     let index = 0;
     for (let entry of this.paths) {
       if (entry.tipoProducto === tipo) {
-        let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre };
+        let aux = {
+          path: entry.path,
+          tipoProducto: entry.tipoProducto,
+          nombre: entry.nombre,
+          precio_venta: entry.precio_venta,
+          cant_existente: entry.cant_existente,
+          promocion: entry.promocion
+        }
         this.pathsType[index] = aux;
         index++;
       }
     }
-    // console.log(this.pathsType)
+
+    this.pathsTypePromos = [];
+    let ind1 = 0;
+    let promos = JSON.parse(localStorage.getItem("promosActivas"))
+    if (promos !== null) {
+      for (let entry of promos) {
+        let aux = {
+          path: entry.path,
+          tipoProducto: entry.tipoProducto,
+          nombre: entry.nombre,
+          precio_venta: entry.precio_venta,
+          cant_existente: entry.cant_existente,
+          promocion: entry.promocion
+        }
+        this.pathsTypePromos[ind1] = aux;
+        ind1++;
+      }
+    }
+  }
+
+  public prueba() {
+
   }
 
   onChange(event) {
@@ -171,9 +231,11 @@ export class FacturacionComponent implements OnInit {
     this.selectedProd = prod;
     this.displayDialog = true;
   }
+
   onDialogHide() {
     this.selectedProd = null;
   }
-
 }
+
+
 

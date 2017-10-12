@@ -82,7 +82,6 @@
     <button class="btn btn-primary" style="font-size: 11px" (click)="onAddTPSubmit()">Registrar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogTPC = false">Cancelar</button>
   </div>
-
 </p-dialog>
 
 <!-- Update TP -->
@@ -105,12 +104,12 @@
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label for="filesU">Logotipo*:</label>
       <ng-template #toolTipTemplate>
-        <img src={pathLogo}} width="50%" />
+        <img src={pathLogoTPU}} width="50%" />
         <p>Esta imagen se mostrará por defecto, en el módulo de VENTAS"</p>
       </ng-template>
       <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="bottom" tooltipAnimation=false>
           <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileTPU($event)" id="filesTPU" name="filesTPU" 
-          class="form-control inputfile" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" " >
+          class="form-control inputfile" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" ">
       </a>
     </div>
   </div>
@@ -161,7 +160,6 @@
       <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
         (ngModelChange)="valueChangePrecioVenta($event)">
     </div>
-
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding: 0">
         <label>Contenido*:</label>
@@ -171,11 +169,10 @@
       </div>
       <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="padding: 0; padding-left: 11px">
         <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
-          class="form-control input-sm" (ngModelChange)="valueChangeContenido($event)" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml."
-          tooltipPlacement="bottom" [disabled]="flagSubProd">
+          class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml." tooltipPlacement="bottom"
+          [disabled]="flagSubProd">
       </div>
     </div>
-
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="cantPC">Cantidad Existente*:</label>
       <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
@@ -195,7 +192,7 @@
           id="prodExistente" name="prodExistente" (onChange)="onChangeProdExistentes($event)">
           <ng-template let-car pTemplate="item">
             {{car.nombre}}
-            <span class="badge">$ {{car.precio_costo}}</span>
+            <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
             <span class="badge">{{car.contenido}} ml</span>
           </ng-template>
         </p-listbox>
@@ -269,8 +266,7 @@
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="tipoPU">Tipo Producto*:</label>
-      <select [(ngModel)]="productoUpdate.id_tipo_producto" (change)="onChangeUpdtProd($event)" id="tipoPU" name="tipoPU" class="form-control  input-sm">
-        <option value="" disabled selected hidden>Selecciona...</option>
+      <select [(ngModel)]="productoUpdate.id_tipo_producto" id="tipoPU" name="tipoPU" class="form-control input-sm">
         <option *ngFor="let c of tipo_productos">{{c.desc_tipo_producto}}</option>
       </select>
     </div>
@@ -285,7 +281,7 @@
         name="utilidadPU" placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGananciaU($event)">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="pvPU" style="display: inline-block">Precio Venta*:</label>
+      <label for="pvPU">Precio Venta*:</label>
       <input type="text" currencyMask type="text" [(ngModel)]="productoUpdate.precio_venta" id="pvPU" name="pvPU" placeholder="0.00"
         class="form-control input-sm" (ngModelChange)="valueChangePrecioVentaU($event)">
     </div>
@@ -298,61 +294,65 @@
       </div>
       <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="padding: 0; padding-left: 11px">
         <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="productoUpdate.contenido" id="contPC"
-          name="contPC" placeholder="0.00" class="form-control input-sm">
+          name="contPC" placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeContenidoU($event)" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml."
+          tooltipPlacement="bottom" [disabled]="flagSubProdUpdate">
       </div>
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="cantPU">Cantidad Existente*:</label>
-      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.cant_existente" id="cantPU"
-        name="cantPU" placeholder="0.00" class="form-control input-sm">
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="productoUpdate.cant_existente" id="cantPU" name="cantPU"
+        placeholder="0.00" class="form-control input-sm">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <div style="text-align: center">
         <label>Receta (Subproductos):</label><br>
-        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProdUpdate" style="padding-top: 7px">
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProdUpdate" style="padding-top: 7px" (ngModelChange)="controlarPrecioCostoU($event)">
         </md-slide-toggle>
       </div>
     </div>
     <div class="panel panel-default" style="width: 100%" *ngIf="flagSubProdUpdate">
-      <div class="ui-g-4 ui-xl-4 ui-lg-4 ui-md-4 ui-sm-4" style="text-align: center">
+      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-4" style="text-align: center">
         <label>Productos Existentes:</label>
-        <p-listbox [options]="productos" [(ngModel)]="selected_productoU" filter="filter" [style]="{'text-align':'left','max-height':'180px'}"
-          id="prodExistenteU" name="prodExistenteU">
+        <p-listbox [options]="productos" [(ngModel)]="selected_productoU" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','border-color':borderStyleProdExistente}"
+          id="prodExistenteU" name="prodExistenteU" (onChange)="onChangeProdExistentesU($event)">
           <ng-template let-car pTemplate="item">
             {{car.nombre}}
-            <span class="badge">{{car.cant_existente}}</span>
+            <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
+            <span class="badge">{{car.contenido}} ml</span>
           </ng-template>
         </p-listbox>
       </div>
-      <div class="ui-g-3 ui-xl-2 ui-lg-3 ui-md-3 ui-sm-3" style="text-align: center">
+      <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2" style="text-align: center">
         <br>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
           <label>Unidad Medida:</label>
         </div>
-        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
           <select [(ngModel)]="unidadMedidaSuproducto" id="umU" name="umU" class="form-control input-sm" style="width: 100%">
             <option *ngFor="let c of lstUnidades" [ngValue]="c">{{c.label}}</option>
           </select>
         </div>
-        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
-          <i id="addIcon" class="fa fa-plus-square fa-2x" aria-hidden="true"></i>
-        </div>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
           <label>Cantidad:</label>
         </div>
-        <div class="ui-g-10 ui-xl-10 ui-lg-10 ui-md-10 ui-sm-10">
-          <p-spinner size="3" [(ngModel)]="cantSubProdU" [min]="0" [max]="1000" name="cantSubProdU" id="cantSubProdU"></p-spinner>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+          <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubProdU" id="cantSubprod" name="cantSubprod"
+            #cantSubprodU1 placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeCantSubprodU($event)"
+            (click)="$event.target.select()">
         </div>
-        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2">
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
           <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemU()" aria-hidden="true" style="vertical-align: middle"></i>
+          <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItemU()" aria-hidden="true" style="vertical-align: middle"></i>
         </div>
       </div>
       <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
-        <label style="display: inline-block">Productos Seleccionados:</label>
-        <p-listbox [options]="productoUpdate.subproductoV" filter="filter" [style]="{'text-align':'left','max-height':'180px','border-color':asd}">
-          <ng-template let-car let-i="index" pTemplate="item">
-            {{car.nombre}} <i class="fa fa-times" id="timesIcon" (click)="deleteItemU(i)" aria-hidden="true"></i>
-            <span class="badge">{{car.cantidad}}</span> <span class="badge">$2.72</span>
+        <label>Productos Seleccionados:</label>
+        <p-listbox [options]="productoUpdate.subproductoV" [(ngModel)]="selected_prodSelecU" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','border-color':borderStyleProdSelec}"
+          id="prodSeleccionadoU" name="prodSeleccionadoU" (onChange)="onChangeProdSelecU($event)">
+          <ng-template let-car let-i="index" pTemplate="item" id="tmpProd" name="tmpProd" #tmpProd>
+            &nbsp;{{car.nombre}}
+            <span class="badge">{{car.cantidad}}</span>
+            <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
           </ng-template>
         </p-listbox>
       </div>
