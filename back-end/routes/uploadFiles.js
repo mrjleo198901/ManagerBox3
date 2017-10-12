@@ -5,7 +5,10 @@ var path = require('path');
 module.exports.updatePhoto = function (req, res) {
 
     var file = req.files.uploadFile;
-    var uploadDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').replace(":", "_").replace(":", "_")
+
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    var uploadDate = (new Date(Date.now() - tzoffset)).toISOString().replace(/T/, 'H').replace(/\..+/, '').replace(":", "_").replace(":", "_")
+    //var uploadDate = new Date().toISOString().replace(/T/, 'H').replace(/\..+/, '').replace(":", "_").replace(":", "_")
     var tempPath = file.path;
     //var targetPath = path.join(__dirname, "../uploads/" + uploadDate + "-" + file.originalFilename);
     var targetPath = path.join(__dirname, "../../angular-src/src/assets/img/marcas/" + uploadDate + "-" + file.originalFilename);

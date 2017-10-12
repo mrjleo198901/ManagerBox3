@@ -15,9 +15,9 @@ router.post('/register', (req, res, next) => {
     });
     User.addUser(newUser, (err, user) => {
         if (err) {
-            res.json({ success: false, msg: 'Failed to register user' });
+            res.json({ success: false, msg: 'No se pudo registrar este usuario' });
         } else {
-            res.json({ success: true, msg: 'User registered' });
+            res.json({ success: true, msg: 'Usuario Registrado' });
         }
     });
 });
@@ -30,7 +30,7 @@ router.post('/authenticate', (req, res, next) => {
     User.getUserByUsername(username, (err, user) => {
         if (err) throw err;
         if (!user) {
-            return res.json({ success: false, msg: 'User not found' });
+            return res.json({ success: false, msg: 'Usuario no encontrado' });
         }
 
         User.comparePass(password, user.password, (err, isMatch) => {
@@ -52,7 +52,7 @@ router.post('/authenticate', (req, res, next) => {
                     }
                 });
             } else {
-                return res.json({ success: false, msg: 'Wrong Password!' });
+                return res.json({ success: false, msg: 'Contraseña incorrecta!' });
             }
         })
     })
