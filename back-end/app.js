@@ -54,6 +54,7 @@ app.use('/api', require('./routes/tipoClienteApi'));
 app.use('/api', require('./routes/tipoProductoApi'));
 app.use('/api', require('./routes/tipoPromocionApi'));
 app.use('/api', require('./routes/tarjetaApi'));
+app.use('/api', require('./routes/activeCardsApi'));
 
 var profileController = require('./routes/uploadFiles');
 

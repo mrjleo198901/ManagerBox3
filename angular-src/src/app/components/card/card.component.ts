@@ -21,7 +21,8 @@ import { PromocionService } from '../../services/promocion.service';
 import { DecimalPipe } from '@angular/common';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { FacturacionComponent } from '../../components/facturacion/facturacion.component';
-import { PersonalService } from '../../services/personal.service'
+import { PersonalService } from '../../services/personal.service';
+import { ActiveCardsService } from '../../services/active-cards.service';
 
 @Component({
   selector: 'app-card',
@@ -165,6 +166,9 @@ export class CardComponent implements OnInit {
   selectedRucFactura;
   totalConsumo = 10;
   flagCheckVenta = false;
+  telefonoS;
+  direccionS;
+  flagFP1 = false;
 
   constructor(
     private validateService: ValidateService,
@@ -182,7 +186,8 @@ export class CardComponent implements OnInit {
     private promocionService: PromocionService,
     private decimalPipe: DecimalPipe,
     private localStorageService: LocalStorageService,
-    private personalService: PersonalService) {
+    private personalService: PersonalService,
+    private activeCardsService: ActiveCardsService) {
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
@@ -223,9 +228,18 @@ export class CardComponent implements OnInit {
       'descripcion': ''
     };
 
-    this.lstFP = [];
-    this.lstFP.push({ label: 'Efectivo', value: 'Efectivo' });
-    this.lstFP.push({ label: 'Credito', value: 'Credito' });
+    this.lstFP = [
+      {
+        id: 1,
+        label: "Efectivo",
+        value: 1
+      }, {
+        id: 2,
+        label: "Credito",
+        value: 2
+      }
+    ];
+
   }
 
   ngOnInit() {
@@ -828,6 +842,7 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
+    const activeCard = { idFactura: '', ci: '', cardNumber: '' }
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
@@ -841,6 +856,8 @@ export class CardComponent implements OnInit {
       "_id": this.searchUser._id,
       "tarjeta": this.cardNumber
     }
+    activeCard.ci = newClient.cedula;
+    activeCard.cardNumber = newClient.tarjeta;
     let total = this.cantMujeres + this.cantHombres
     if (total > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
@@ -850,6 +867,8 @@ export class CardComponent implements OnInit {
         this.nfLael = '';
         this.cardNumber = '';
         this.cedula = '';
+        this.cantMujeres = 0;
+        this.cantHombres = 0;
         //set factura & detalle factura
         this.validateService.getDateTime();
         let auxM = {
@@ -878,6 +897,8 @@ export class CardComponent implements OnInit {
           detalleFacturaV: detalle
         }
         this.facturaService.register(newFactura).subscribe(data => {
+          activeCard.idFactura = data._id;
+          this.insertIdFactCiCarNumber(activeCard);
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
@@ -891,7 +912,13 @@ export class CardComponent implements OnInit {
     }
   }
 
-  onChangeClose($event) {
+  insertIdFactCiCarNumber(activeCard) {
+    this.activeCardsService.register(activeCard).subscribe(data => {
+      console.log(data)
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
   }
 
   onChangeAddT($event) {
@@ -1077,6 +1104,7 @@ export class CardComponent implements OnInit {
 
   }
 
+  /*TAB CLOSE*/
   print(): void {
     let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
@@ -1132,8 +1160,10 @@ export class CardComponent implements OnInit {
     if (!this.selectedRucFactura) {
       this.rucFactura = '';
       this.flagCheckVenta = true;
+      this.flagFP1 = false;
     } else {
       this.checkCiRuc();
+      this.flagFP1 = true;
       setTimeout(function () {
         document.getElementById('inputCiRuc').focus();
       }, 0)
@@ -1143,6 +1173,10 @@ export class CardComponent implements OnInit {
   setDefaultValues() {
     this.selectedFP = 'Efectivo';
     this.flagFP = false;
+    this.telefonoS = '';
+    this.direccionS = '';
+    this.flagFP1 = false;
+    this.rucFactura = '';
   }
 
   checkCiRuc() {
@@ -1174,8 +1208,55 @@ export class CardComponent implements OnInit {
     if (this.selectedRucFactura) {
       this.rucFactura = '0502926819';
       this.checkCiRuc();
+      setTimeout(function () {
+        document.getElementById('inputCiRuc').focus();
+      }, 0)
     } else {
       this.rucFactura = '';
     }
   }
+
+  onChangeClose($event) {
+    let finalChar = this.cardNumberS.slice(-1)
+    if (this.cardNumberS.length == 9) {
+      if (finalChar.localeCompare("_") == 0) {
+        this.checkActiveCard(this.cardNumberS);
+      }
+    } else {
+      document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';
+      document.getElementById('addonCnS1').style.backgroundColor = '';
+    }
+  }
+
+  checkActiveCard(card) {
+    this.activeCardsService.searchByCard(card).subscribe(data => {
+      if (data.length > 0) {
+        this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
+        document.getElementById('addonCnS2').style.backgroundColor = '';
+        document.getElementById('addonCnS1').style.backgroundColor = '#6ce600';//green
+      } else {
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
+        document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';//soft red
+        document.getElementById('addonCnS1').style.backgroundColor = '';//default color
+      }
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
+    })
+  }
+
+  confirmFP() {
+    //Delete active card
+    this.activeCardsService.searchByCard('ñ1234567_').subscribe(data => {
+      this.activeCardsService.delete(data[0]._id).subscribe(data => {
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
+  }
+
 }

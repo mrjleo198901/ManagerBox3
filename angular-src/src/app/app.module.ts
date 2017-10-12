@@ -38,6 +38,7 @@ import { FacturaService } from './services/factura.service';
 import { DetalleFacturaService } from './services/detalle-factura.service';
 import { PromocionService } from './services/promocion.service';
 import { LocalStorageService } from './services/local-storage.service';
+import { ActiveCardsService } from './services/active-cards.service'
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -122,7 +123,7 @@ const appRoutes: Routes = [
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
     CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService,
-    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, LocalStorageService],
+    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, LocalStorageService, ActiveCardsService],
   bootstrap: [AppComponent]
 })
 

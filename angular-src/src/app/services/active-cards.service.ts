@@ -6,34 +6,33 @@ import { Observable } from 'rxjs/Rx';
 const url = 'http://localhost:3000/api/';
 
 @Injectable()
-export class PersonalService {
+export class ActiveCardsService {
 
   constructor(private http: Http) { }
 
-  registerPersonal(personal) {
+  register(active_cards) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'personal', personal, { headers: headers })
+    return this.http.post(url + 'active_cards', active_cards, { headers: headers })
       .map(res => res.json())
   }
-  getAll() {
+
+  searchByCard(cardNumber) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal', { headers: headers })
-      .map(res => res.json());
-  }
-  updatePersonal(personal) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'personal/' + personal.id, personal, { headers: headers })
-      .map(res => res.json())
-  }
-  getByTipo(idCargo) {
+    headers.set('Accept', 'text/plain');
     let params: URLSearchParams = new URLSearchParams();
-    params.set('id_cargo', idCargo);
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal/', { search: params })
+    params.set('cardNumber', cardNumber);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'active_cards/', options)
       .map(res => res.json())
   }
+
+  delete(active_cards) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(url + 'active_cards/' + active_cards, { headers: headers })
+      .map(res => res.json())
+  }
+
 }
