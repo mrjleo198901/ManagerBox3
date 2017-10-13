@@ -67,7 +67,7 @@ export class CardComponent implements OnInit {
   promos: any[];
   selectedPromo: string;
   blockedPanel: boolean = true;
-  lstPromos: any[];
+  lstConsumo: any[];
   types: any[];
   selectedIeMujeres: string[] = ['Egreso'];
   selectedIeHombres: string[] = ['Egreso'];
@@ -165,10 +165,15 @@ export class CardComponent implements OnInit {
   flagInsertRuc = true;
   selectedRucFactura;
   totalConsumo = 10;
-  flagCheckVenta = false;
+  flagCheckVenta = true;
   telefonoS;
   direccionS;
   flagFP1 = false;
+  flagConfirmFP = true;
+  flagCardSFound = false;
+  nfLaelS;
+  searchUserS: any;
+  totalPagar;
 
   constructor(
     private validateService: ValidateService,
@@ -239,7 +244,6 @@ export class CardComponent implements OnInit {
         value: 2
       }
     ];
-
   }
 
   ngOnInit() {
@@ -248,7 +252,7 @@ export class CardComponent implements OnInit {
 
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
-    }, 500)
+    }, 50)
     document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
     this.cantHombres = 0;
     this.cantMujeres = 0;
@@ -256,7 +260,7 @@ export class CardComponent implements OnInit {
     this.cantSalenH = 0;
     this.selectedTab = 0;
     this.selectedPromos = [];
-    this.lstPromos = [
+    /*this.lstConsumo = [
       { descripcion: 'Cerveza budweiser 350ml', pu: '3.25', total: '25', cantidad: '5' },
       { descripcion: 'Cerveza pilsener 350ml', pu: '2.80', total: '25', cantidad: '4' },
       { descripcion: 'Wiskey grants 1LT', pu: '4.25', total: '25', cantidad: '2' },
@@ -264,7 +268,7 @@ export class CardComponent implements OnInit {
       { descripcion: 'Pecera jaggerboom', pu: '4.25', total: '25', cantidad: '2' },
       { descripcion: 'Pecera jaggerboom', pu: '4.25', total: '25', cantidad: '2' },
       { descripcion: 'Cerveza corona pequeña', pu: '4.30', total: '25', cantidad: '7' }
-    ];
+    ];*/
     this.types = [];
     this.types.push({ label: 'Entran', value: 'Ingreso' });
     this.types.push({ label: 'Salen', value: 'Egreso' });
@@ -842,7 +846,16 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
-    const activeCard = { idFactura: '', ci: '', cardNumber: '' }
+    let activeCard = {
+      idFactura: '',
+      ci: '',
+      cardNumber: '',
+      nombre: '',
+      cantMujeres: 0,
+      cantHombres: 0,
+      egresoMujeres: 0,
+      egresoHombres: 0
+    }
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
@@ -858,30 +871,27 @@ export class CardComponent implements OnInit {
     }
     activeCard.ci = newClient.cedula;
     activeCard.cardNumber = newClient.tarjeta;
+    activeCard.cantMujeres = this.cantMujeres;
+    activeCard.cantHombres = this.cantHombres;
     let total = this.cantMujeres + this.cantHombres
     if (total > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
-        this.flagUserFound = false;
-        this.flagCardFound = false;
-        this.nfLael = '';
-        this.cardNumber = '';
-        this.cedula = '';
-        this.cantMujeres = 0;
-        this.cantHombres = 0;
         //set factura & detalle factura
         this.validateService.getDateTime();
         let auxM = {
           fecha: this.validateService.getDateTime(),
           cantidad: this.cantMujeres,
           descripcion: 'cover mujer',
-          total: (this.cantMujeres * this.coverMujeres)
+          total: (this.cantMujeres * this.coverMujeres),
+          precio_venta: this.coverMujeres
         }
         let auxH = {
           fecha: this.validateService.getDateTime(),
           cantidad: this.cantHombres,
           descripcion: 'cover hombre',
-          total: (this.cantHombres * this.coverHombres)
+          total: (this.cantHombres * this.coverHombres),
+          precio_venta: this.coverHombres
         }
         let detalle: any = [];
         detalle.push(auxM);
@@ -896,6 +906,8 @@ export class CardComponent implements OnInit {
           direccion: 'Riobamba',
           detalleFacturaV: detalle
         }
+        activeCard.nombre = newFactura.nombre;
+        this.setDvInsertCard();
         this.facturaService.register(newFactura).subscribe(data => {
           activeCard.idFactura = data._id;
           this.insertIdFactCiCarNumber(activeCard);
@@ -910,6 +922,20 @@ export class CardComponent implements OnInit {
     } else {
       this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
     }
+  }
+
+  setDvInsertCard() {
+    this.flagUserFound = false;
+    this.flagCardFound = false;
+    this.nfLael = '';
+    this.cardNumber = '';
+    this.cedula = '';
+    this.cantMujeres = 0;
+    this.cantHombres = 0;
+    document.getElementById("basic-addon3").style.backgroundColor = '';
+    document.getElementById("basic-addon1").style.backgroundColor = '';
+    document.getElementById("basic-addon2").style.backgroundColor = '';
+    document.getElementById("basic-addon4").style.backgroundColor = '';
   }
 
   insertIdFactCiCarNumber(activeCard) {
@@ -1106,37 +1132,7 @@ export class CardComponent implements OnInit {
 
   /*TAB CLOSE*/
   print(): void {
-    let printContents, popupWin;
-    printContents = document.getElementById('print-section').innerHTML;
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
-    popupWin.document.write(`
-      <html>
-        <head>
-          <title>Print tabs</title>
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th style="text-align: center">Tipo de Promocion</th>
-                <th style="text-align: center">Descripcion</th>
-              </tr>
-              </thead>
-              <tbody style="text-align: center">
-                <tr>
-                <td>1</td>
-                  <td>Tipo 1</td>
-                </tr>
-                <tr>
-                <td>2</td>
-                  <td>Tipo 2</td>
-                </tr>
-              </tbody>
-            </table>
-          </head>
-          <body onload="window.print();window.close()">${printContents}</body>
-      </html>`
-    );
-    popupWin.document.close();
+    this.showDialogFP = true;
   }
 
   print1(): void {
@@ -1225,16 +1221,38 @@ export class CardComponent implements OnInit {
     } else {
       document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';
       document.getElementById('addonCnS1').style.backgroundColor = '';
+      this.flagConfirmFP = true;
+      this.flagCardSFound = false;
+      this.nfLaelS = '';
+      this.lstConsumo = [];
+      this.totalPagar = 0;
     }
   }
 
   checkActiveCard(card) {
     this.activeCardsService.searchByCard(card).subscribe(data => {
+      this.searchUserS = {
+        ci: data[0].ci,
+        nombre: data[0].nombre,
+        cantMujeres: data[0].cantMujeres,
+        cantHombres: data[0].cantHombres,
+        egresoMujeres: data[0].egresoMujeres,
+        egresoHombres: data[0].egresoHombres,
+        idFactura: data[0].idFactura
+      }
       if (data.length > 0) {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
+        this.flagConfirmFP = false;
+        this.flagCardSFound = true;
         document.getElementById('addonCnS2').style.backgroundColor = '';
         document.getElementById('addonCnS1').style.backgroundColor = '#6ce600';//green
+        this.searchConsumo(this.searchUserS.idFactura);
       } else {
+        this.flagConfirmFP = true;
+        this.flagCardSFound = false;
+        this.nfLaelS = 'Tarjeta no ingresada.';
+        this.lstConsumo = [];
+        this.totalPagar = 0;
         this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
         document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';//soft red
         document.getElementById('addonCnS1').style.backgroundColor = '';//default color
@@ -1245,9 +1263,62 @@ export class CardComponent implements OnInit {
     })
   }
 
+  searchConsumo(idFactura) {
+    this.facturaService.getById(idFactura).subscribe(data => {
+      this.lstConsumo = [];
+      this.totalPagar = 0;
+      for (let entry of data[0].detalleFacturaV) {
+        let aux = {
+          descripcion: entry.descripcion,
+          precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
+          total: this.decimalPipe.transform(entry.total, '1.2-2'),
+          cantidad: this.decimalPipe.transform(entry.cantidad, '1.2-2'),
+          fecha: entry.fecha
+        }
+        this.totalPagar += parseFloat(aux.total);
+        this.lstConsumo.push(aux);
+      }
+      this.totalPagar = this.decimalPipe.transform(this.totalPagar, '1.2-2')
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
+  }
+
   confirmFP() {
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tabs</title>
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                <th style="text-align: center">Tipo de Promocion</th>
+                <th style="text-align: center">Descripcion</th>
+              </tr>
+              </thead>
+              <tbody style="text-align: center">
+                <tr>
+                <td>1</td>
+                  <td>Tipo 1</td>
+                </tr>
+                <tr>
+                <td>2</td>
+                  <td>Tipo 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </head>
+          <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
     //Delete active card
-    this.activeCardsService.searchByCard('ñ1234567_').subscribe(data => {
+    /*this.activeCardsService.searchByCard('ñ1234567_').subscribe(data => {
       this.activeCardsService.delete(data[0]._id).subscribe(data => {
       }, err => {
         console.log(err);
@@ -1256,7 +1327,8 @@ export class CardComponent implements OnInit {
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-    })
+    })*/
+    this.showDialogFP = true;
   }
 
 }

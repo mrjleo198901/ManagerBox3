@@ -59,3 +59,13 @@ option {
   text-align: center;
   text-align-last: center;
 }
+
+.list-group-item {
+  -webkit-column-count: 2;
+     -moz-column-count: 2;
+          column-count: 2;
+          padding: 3px 0px 0px 10px;
+}
+.list-group {
+  margin-bottom: 0px;
+}

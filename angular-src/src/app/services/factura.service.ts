@@ -45,4 +45,15 @@ export class FacturaService {
     return this.http.get(url + 'factura/', options)
       .map(res => res.json())
   }
+  getById(idFactura) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('_id', idFactura);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'factura/', options)
+      .map(res => res.json())
+  }
+
 }

@@ -5,7 +5,12 @@ var activeCardsSchema = new mongoose.Schema({
 
     idFactura: mongoose.Schema.Types.ObjectId,
     ci: String,
-    cardNumber: String
+    nombre: String,
+    cardNumber: String,
+    cantMujeres: Number,
+    cantHombres: Number,
+    egresoMujeres: Number,
+    egresoHombres: Number
 
 });
 
