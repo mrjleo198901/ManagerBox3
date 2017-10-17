@@ -35,4 +35,13 @@ export class ActiveCardsService {
       .map(res => res.json())
   }
 
+  update(active_cards) {
+    console.log(active_cards)
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.put(url + 'active_cards/' + active_cards._id, active_cards, { headers: headers })
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
 }

@@ -53,7 +53,7 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
 import {
   GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, InputSwitchModule,
   ToggleButtonModule, SpinnerModule, SharedModule, CheckboxModule, TabViewModule, ListboxModule,
-  CalendarModule, DataGridModule, DialogModule, BlockUIModule, SelectButtonModule, InputMaskModule, ProgressBarModule
+  CalendarModule, DataGridModule, DialogModule, BlockUIModule, SelectButtonModule, InputMaskModule, ProgressBarModule,
 } from 'primeng/primeng';
 
 import { AppComponent } from './app.component';

@@ -23,6 +23,7 @@ export class FacturaService {
       .map(res => res.json());
   }
   update(factura) {
+    console.log(factura)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(url + 'factura/' + factura._id, factura, { headers: headers })

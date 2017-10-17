@@ -10,7 +10,7 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos del Cliente" [style]="{'height':'352px'}">
+        <p-panel header="Datos del Cliente" [style]="{'height':'435px'}">
           <!-- Control Cliente-->
           <div class="form-group">
             <div class="row">
@@ -79,7 +79,7 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'352px'}">
+        <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'435px'}">
           <!-- Validacion Tarjeta -->
           <div class="form-group">
             <div class="row">
@@ -90,9 +90,9 @@
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
+                <input [(ngModel)]="cardNumber" (ngModelChange)="onChangeOpen($event)" (click)="$event.target.select()" type="text" class="form-control"
                   name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagUserFound" style="z-index: 1;font-size: 18px"
-                  tabindex="2" maxlength="9">
+                  tabindex="2" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
                 <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
               </div>
@@ -219,7 +219,7 @@
       </div>
     </tab>
     <!--TAB CLOSE-->
-    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
+    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -227,7 +227,7 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'min-height':'365px'}">
+        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'min-height':'435px'}">
           <!-- Verificacion de consumo -->
           <div class="form-group">
             <div class="row">
@@ -239,7 +239,8 @@
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="numeroS" id="numeroS" placeholder="Codigo unico de tarjeta" style="z-index: 1;font-size: 18px" maxlength="9">
+                  name="numeroS" id="numeroS" placeholder="Codigo unico de tarjeta" style="z-index: 1;font-size: 18px" maxlength="9"
+                  onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
                 <span class="input-group-addon" id="addonCnS1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="addonCnS2"><i class="fa fa-times" aria-hidden="true"></i></span>
               </div>
@@ -263,11 +264,15 @@
                       </li>
                       <li class="list-group-item">
                         <p>Cant. Mujeres:</p>
-                        {{searchUserS.cantMujeres}}
+                        <p>
+                          <span class="badge">{{searchUserS.cantMujeres}}</span>
+                        </p>
                       </li>
                       <li class="list-group-item">
                         <p>Cant. Hombres:</p>
-                        {{searchUserS.cantHombres}}
+                        <p>
+                          <span class="badge">{{searchUserS.cantHombres}}</span>
+                        </p>
                       </li>
                       <li class="list-group-item">
                         <p>Eg. Mujeres:</p>
@@ -277,6 +282,16 @@
                         <p>Eg. Hombres:</p>
                         {{searchUserS.egresoHombres}}
                       </li>
+
+                      <li class="list-group-item">
+                        <p>Ing. Mujeres:</p>
+                        {{searchUserS.egresoHombres}}
+                      </li>
+                      <li class="list-group-item">
+                        <p>Ing. Hombres:</p>
+                        {{searchUserS.egresoHombres}}
+                      </li>
+
                     </ul>
                   </div>
                 </div>
@@ -297,7 +312,7 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'min-height':'365px'}">
+        <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'min-height':'435px'}">
           <!-- Resumen consumo -->
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -307,12 +322,42 @@
           <!-- Tabla de Resumen consumo -->
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <p-dataTable [value]="lstConsumo" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5">
-                <p-column field="cantidad" header="Cantidad" [style]="{'width':'15%'}"></p-column>
-                <p-column field="descripcion" header="Descripción" [style]="{'width':'52.5%'}"></p-column>
-                <p-column field="precio_venta" header="Precio Unitario" [style]="{'width':'16.25%'}"></p-column>
-                <p-column field="total" header="Total" [style]="{'width':'16.25%'}"></p-column>
-                <p-column field="fecha" header="Fecha" [hidden]="true"></p-column>
+              <p-dataTable [value]="lstConsumo" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowClick)="onRowSelectTC($event)">
+                <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'15%'}">
+                  <ng-template pTemplate="body" let-col let-row="rowData">
+                    <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                      {{row[col.field]}}
+                    </span>
+                  </ng-template>
+                </p-column>
+                <p-column field="descripcion" header="Descripción" [style]="{'overflow':'visible','width':'52.5%'}">
+                  <ng-template pTemplate="body" let-col let-row="rowData">
+                    <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                      {{row[col.field]}}
+                    </span>
+                  </ng-template>
+                </p-column>
+                <p-column field="precio_venta" header="Precio Unitario" header="Descripción" [style]="{'overflow':'visible','width':'16.25%'}">
+                  <ng-template pTemplate="body" let-col let-row="rowData">
+                    <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                      {{row[col.field]}}
+                    </span>
+                  </ng-template>
+                </p-column>
+                <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'16.25%'}">
+                  <ng-template pTemplate="body" let-col let-row="rowData">
+                    <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                      {{row[col.field]}}
+                    </span>
+                  </ng-template>
+                </p-column>
+                <p-column field="fecha" header="Fecha" [hidden]="true">
+                  <ng-template pTemplate="body" let-col let-row="rowData">
+                    <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                      {{row[col.field]}}
+                    </span>
+                  </ng-template>
+                </p-column>
               </p-dataTable>
             </div>
           </div>
@@ -342,7 +387,7 @@
       </div>
     </tab>
     <!-- TAB EGRESOS -->
-    <tab heading="Ingreso/Egreso de personas" (select)="alertMe3(3)">
+    <tab heading="Ingreso/Egreso de personas" (select)="alertMe3(3)" [active]="true">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Ingreso/Egreso de personas</h3>
@@ -350,21 +395,21 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'352px'}">
+        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'435px'}">
           <!-- Verificacion de consumo -->
           <div class="form-group">
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                <label class="cols-sm-2 control-label">Numero de tarjeta</label>
+                <label class="cols-sm-2 control-label">Número de tarjeta</label>
               </div>
             </div>
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="numeroT" id="numeroT" placeholder="Codigo unico de tarjeta" />
-                <span class="input-group-addon" id="basic-addon5"><i class="fa fa-check" aria-hidden="true"></i></span>
-                <span class="input-group-addon" id="basic-addon6"><i class="fa fa-times" aria-hidden="true"></i></span>
+                <input [(ngModel)]="cardNumberE" (ngModelChange)="onChangeEgreso($event)" (click)="$event.target.select()" type="text" class="form-control"
+                  name="numeroT" id="numeroT" placeholder="Codigo unico de tarjeta" style="z-index: 1; font-size: 18px" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                <span class="input-group-addon" id="addonCnE1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                <span class="input-group-addon" id="addonCnE2"><i class="fa fa-times" aria-hidden="true"></i></span>
               </div>
             </div>
           </div>
@@ -375,20 +420,53 @@
                 <label for="datosCliente">Datos del cliente</label>
               </div>
             </div>
-            <div class="row" *ngIf="flagUserFound">
+            <div class="row" *ngIf="flagCardEFound">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <div class="panel panel-default">
                   <div class="panel-body">
-                    Nombre:&nbsp;{{nombre}}&nbsp;{{apellido}}<br>Cedula:&nbsp;{{cedula}}
+                    <ul class="list-group" id="limheight">
+                      <li class="list-group-item">
+                        <p>Nombre:</p>
+                        {{searchUserE.nombre}}
+                      </li>
+                      <li class="list-group-item">
+                        <p>Cédula:</p>
+                        {{searchUserE.ci}}
+                      </li>
+                      <li class="list-group-item">
+                        <p>Consumo Actual:</p>
+                        <p>
+                          <span class="badge">{{totalPagar}}</span>
+                        </p>
+                      </li>
+                      <li class="list-group-item">
+                        <p>Eg. Mujeres:</p>
+                        {{searchUserE.egresoMujeres}}
+                      </li>
+                      <li class="list-group-item">
+                        <p>Eg. Hombres:</p>
+                        {{searchUserE.egresoHombres}}
+                      </li>
+
+                      <li class="list-group-item">
+                        <p>Ing. Mujeres:</p>
+                        {{searchUserE.egresoHombres}}
+                      </li>
+                      <li class="list-group-item">
+                        <p>Ing. Hombres:</p>
+                        {{searchUserE.egresoHombres}}
+                      </li>
+
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="row" *ngIf="!flagUserFound">
+            <div class="row" *ngIf="!flagCardEFound">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <div class="panel panel-default">
                   <div class="panel-body">
-                    <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
+                    <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLaelE}}</label>
                   </div>
                 </div>
               </div>
@@ -398,51 +476,55 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'352px'}">
+        <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'435px'}">
           <!-- Cantidad de personas -->
           <div class="form-group">
             <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <label class="cols-sm-2 control-label">Cantidad de personas</label>
               </div>
             </div>
             <div class="row">
-              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                 <ul class="list-group">
                   <li class="list-group-item">
                     <div class="row" style="text-align: center">
-                      <div class="ui-g-6" style="padding-top: 4%">
+                      <div class="ui-g-12" style="padding-top: 4%">
                         <p>Total Mujeres</p>
                       </div>
-                      <div class="ui-g-6" style="padding-top: 3%">
-                        <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres"></p-selectButton>
+                      <div class="ui-g-12">
+                        <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres" [style]="{'margin-top':'11px'}"></p-selectButton>
                       </div>
                     </div>
                     <div class="row" style="text-align: center">
-                      <div class="ui-g-6">
-                        <span class="badge" style="font-size: 25px">{{cantMujeres}}</span>
+                      <div class="ui-g-12">
+                        <span class="badge" style="font-size: 16px">{{searchUserE.cantMujeres}}</span>
                       </div>
-                      <div class="ui-g-6" style="padding-top: 2.5%">
+                      <div class="ui-g-12">
+                        <br>
                         <p-spinner size="5" [(ngModel)]="cantSalenM" [min]="0" [max]="100"></p-spinner>
                       </div>
+                      <br>
                     </div>
                   </li>
                   <li class="list-group-item">
                     <div class="row" style="text-align: center">
-                      <div class="ui-g-6" style="padding-top: 4%">
+                      <div class="ui-g-12" style="padding-top: 4%">
                         <p>Total Hombres</p>
                       </div>
-                      <div class="ui-g-6" style="padding-top: 3%">
-                        <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres"></p-selectButton>
+                      <div class="ui-g-12" style="padding-top: 3%">
+                        <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres" [style]="{'margin-top':'11px'}"></p-selectButton>
                       </div>
                     </div>
                     <div class="row" style="text-align: center">
-                      <div class="ui-g-6">
-                        <span class="badge" style="font-size: 25px">{{cantHombres}}</span>
+                      <div class="ui-g-12">
+                        <span class="badge" style="font-size: 16px">{{searchUserE.cantHombres}}</span>
                       </div>
-                      <div class="ui-g-6" style="padding-top: 2.5%">
+                      <div class="ui-g-12" style="padding-top: 2.5%">
+                        <br>
                         <p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>
                       </div>
+                      <br>
                     </div>
                   </li>
                 </ul>
@@ -455,8 +537,8 @@
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
       </div>
-      <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <button (click)="showDialogPrint = !showDialogPrint" class="btn btn-primary btn-block" id="basic-addonPrint">Confirmar</button>
+      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+        <button (click)="ConfEgreso()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="!flagCardEFound">Confirmar</button>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -758,10 +840,10 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:48%"></i>
 </p-blockUI>
 
-<p-blockUI [target]="pnlTablaConsumo" [blocked]="flagConfirmFP">
+<p-blockUI [target]="pnlTablaConsumo" [blocked]="!flagCardSFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
-<!--<p-blockUI [target]="pnlCantPersonas" [blocked]="!flagUserFound">
-    <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
-  </p-blockUI>-->
+<p-blockUI [target]="pnlCantPersonas" [blocked]="!flagCardEFound">
+  <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
+</p-blockUI>

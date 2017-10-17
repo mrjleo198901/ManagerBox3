@@ -69,8 +69,8 @@ export class CardComponent implements OnInit {
   blockedPanel: boolean = true;
   lstConsumo: any[];
   types: any[];
-  selectedIeMujeres: string[] = ['Egreso'];
-  selectedIeHombres: string[] = ['Egreso'];
+  selectedIeMujeres = 'Egreso';
+  selectedIeHombres = 'Egreso';
   es: any;
   sexs = [
     { "name": 'Masculino', "pseudo": "M" },
@@ -174,6 +174,23 @@ export class CardComponent implements OnInit {
   nfLaelS;
   searchUserS: any;
   totalPagar;
+  showDateHour;
+  cardNumberE;
+  flagCardEFound = false;
+  nfLaelE;
+  searchUserE = {
+    ci: '',
+    nombre: '',
+    cantMujeres: 0,
+    cantHombres: 0,
+    egresoMujeres: 0,
+    egresoHombres: 0,
+    idFactura: '',
+    cardNumber: '',
+    ingresoMujeres: 0,
+    ingresoHombres: 0,
+    _id: ''
+  }
 
   constructor(
     private validateService: ValidateService,
@@ -707,7 +724,8 @@ export class CardComponent implements OnInit {
     }
   }
 
-  onChange(event) {
+  onChangeOpen(event) {
+    this.cardNumber = this.cardNumber.toLowerCase();
     let finalChar = this.cardNumber.slice(-1)
     if (this.cardNumber.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
@@ -854,7 +872,9 @@ export class CardComponent implements OnInit {
       cantMujeres: 0,
       cantHombres: 0,
       egresoMujeres: 0,
-      egresoHombres: 0
+      egresoHombres: 0,
+      ingresoMujeres: 0,
+      ingresoHombres: 0
     }
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
@@ -878,7 +898,6 @@ export class CardComponent implements OnInit {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
         //set factura & detalle factura
-        this.validateService.getDateTime();
         let auxM = {
           fecha: this.validateService.getDateTime(),
           cantidad: this.cantMujeres,
@@ -1213,6 +1232,7 @@ export class CardComponent implements OnInit {
   }
 
   onChangeClose($event) {
+    this.cardNumberS = this.cardNumberS.toLowerCase();
     let finalChar = this.cardNumberS.slice(-1)
     if (this.cardNumberS.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
@@ -1231,16 +1251,16 @@ export class CardComponent implements OnInit {
 
   checkActiveCard(card) {
     this.activeCardsService.searchByCard(card).subscribe(data => {
-      this.searchUserS = {
-        ci: data[0].ci,
-        nombre: data[0].nombre,
-        cantMujeres: data[0].cantMujeres,
-        cantHombres: data[0].cantHombres,
-        egresoMujeres: data[0].egresoMujeres,
-        egresoHombres: data[0].egresoHombres,
-        idFactura: data[0].idFactura
-      }
       if (data.length > 0) {
+        this.searchUserS = {
+          ci: data[0].ci,
+          nombre: data[0].nombre,
+          cantMujeres: data[0].cantMujeres,
+          cantHombres: data[0].cantHombres,
+          egresoMujeres: data[0].egresoMujeres,
+          egresoHombres: data[0].egresoHombres,
+          idFactura: data[0].idFactura
+        }
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
         this.flagConfirmFP = false;
         this.flagCardSFound = true;
@@ -1329,6 +1349,157 @@ export class CardComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     })*/
     this.showDialogFP = true;
+  }
+
+  onRowSelectTC(event) {
+    console.log(event.data)
+    this.showDateHour = event.data.fecha;
+  }
+
+  onChangeEgreso($event) {
+    this.cardNumberE = this.cardNumberE.toLowerCase();
+    let finalChar = this.cardNumberE.slice(-1)
+    if (this.cardNumberE.length == 9) {
+      if (finalChar.localeCompare("_") == 0) {
+        this.checkActiveCardE(this.cardNumberE);
+      }
+    } else {
+      document.getElementById('addonCnE2').style.backgroundColor = '#FE2E2E';
+      document.getElementById('addonCnE1').style.backgroundColor = '';
+      this.flagCardEFound = false;
+      this.nfLaelE = '';
+    }
+  }
+
+  checkActiveCardE(card) {
+    this.activeCardsService.searchByCard(card).subscribe(data => {
+      if (data.length > 0) {
+        this.searchUserE = {
+          ci: data[0].ci,
+          nombre: data[0].nombre,
+          cantMujeres: data[0].cantMujeres,
+          cantHombres: data[0].cantHombres,
+          egresoMujeres: data[0].egresoMujeres,
+          egresoHombres: data[0].egresoHombres,
+          idFactura: data[0].idFactura,
+          cardNumber: data[0].cardNumber,
+          ingresoMujeres: data[0].ingresoMujeres,
+          ingresoHombres: data[0].ingresoHombres,
+          _id: data[0]._id
+        }
+        this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
+        this.flagCardEFound = true;
+        document.getElementById('addonCnE2').style.backgroundColor = '';
+        document.getElementById('addonCnE1').style.backgroundColor = '#6ce600';//green
+        this.searchConsumo(this.searchUserE.idFactura);
+      } else {
+        this.flagCardEFound = false;
+        this.nfLaelE = 'Tarjeta no ingresada.';
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
+        document.getElementById('addonCnE2').style.backgroundColor = '#FE2E2E';//soft red
+        document.getElementById('addonCnE1').style.backgroundColor = '';//default color
+      }
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
+    })
+  }
+
+  ConfEgreso() {
+    if ((this.cantSalenH + this.cantSalenM) > 0) {
+      let detalle: any = [];
+      let flagIngresoM = false;
+      let flagIngresoH = false;
+      if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
+        if (this.cantSalenM > 0) {
+          let aux = {
+            fecha: this.validateService.getDateTime(),
+            cantidad: this.cantSalenM,
+            descripcion: 'cover mujer',
+            total: (this.cantSalenM * this.coverMujeres),
+            precio_venta: this.coverMujeres
+          }
+          detalle.push(aux);
+          flagIngresoM = true;
+        }
+      } else { }
+      if (this.selectedIeHombres.localeCompare('Ingreso') == 0) {
+        if (this.cantSalenH > 0) {
+          let aux = {
+            fecha: this.validateService.getDateTime(),
+            cantidad: this.cantSalenH,
+            descripcion: 'cover hombre',
+            total: (this.cantSalenH * this.coverHombres),
+            precio_venta: this.coverHombres
+          }
+          detalle.push(aux);
+          flagIngresoH = true;
+        }
+      } else { }
+
+      //Update activeCards
+      if (flagIngresoM) {
+        this.searchUserE.ingresoMujeres = this.cantSalenM;
+      } else {
+        this.searchUserE.egresoMujeres = this.cantSalenM;
+      }
+      if (flagIngresoH) {
+        this.searchUserE.ingresoHombres = this.cantSalenH;
+      } else {
+        this.searchUserE.egresoHombres = this.cantSalenH
+      }
+
+      this.activeCardsService.update(this.searchUserE).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+      if (detalle.length > 0) {
+        this.updateConsumo(this.searchUserE.idFactura, detalle);
+      }
+
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');
+    }
+
+  }
+
+  updateConsumo(idFactura, newFila) {
+    this.facturaService.getById(idFactura).subscribe(data => {
+      let updatedFact = data;
+      let vecDF: any = [];
+      for (let entry of data[0].detalleFacturaV) {
+        let aux = {
+          descripcion: entry.descripcion,
+          precio_venta: entry.precio_venta,
+          total: entry.total,
+          cantidad: entry.cantidad,
+          fecha: entry.fecha
+        }
+        vecDF.push(aux)
+      }
+      for (let entry of newFila) {
+        let aux = {
+          descripcion: entry.descripcion,
+          precio_venta: entry.precio_venta,
+          total: entry.total,
+          cantidad: entry.cantidad,
+          fecha: entry.fecha
+        }
+        vecDF.push(aux)
+      }
+      updatedFact[0].detalleFacturaV = vecDF;
+      this.facturaService.update(updatedFact[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
   }
 
 }
