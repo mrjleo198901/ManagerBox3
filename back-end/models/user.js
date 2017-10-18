@@ -8,14 +8,17 @@ const UserSchema = mongoose.Schema({
         type: String
     },
     email: {
-        type: String,
-        required: true
+        type: String
     },
     username: {
         type: String,
         required: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    rol: {
         type: String,
         required: true
     }
@@ -25,6 +28,10 @@ const User = module.exports = mongoose.model('User', UserSchema);
 
 module.exports.getUserById = function (id, callback) {
     User.findById(id, callback);
+}
+
+module.exports.updateUserById = function (user, callback) {
+    User.findByIdAndUpdate(user._id, user, callback)
 }
 
 module.exports.getUserByUsername = function (username, callback) {

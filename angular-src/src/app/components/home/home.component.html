@@ -4,19 +4,20 @@
   <h1>ManagerBox App</h1>
   <p class="lead">Bienvenido al sistema de administracion integral de tu negocio</p>
   <div>
-    <a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/register']">Registro</a>
-    <a *ngIf="!authService.loggedIn()" class="btn btn-default" [routerLink]="['/login']">Ingresar</a>
+    <!--<a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/register']">Registro</a>
+    <a *ngIf="!authService.loggedIn()" class="btn btn-default" [routerLink]="['/login']">Ingresar</a>-->
+    <a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/login']">Ingresar</a>
   </div>
 </div>
 
 <div class="row">
   <div class="col-md-4">
     <h3>Flexible</h3>
-    <p>Accede a traves de tu navegador, no necesitas instalar la aplicacion</p>
+    <p>Accede a traves de tu navegador, no necesitas instalar la aplicación</p>
   </div>
   <div class="col-md-4">
     <h3>Rapido</h3>
-    <p>El uso de tecnologias nuevas asegura tiempos de respuesta minimos</p>
+    <p>Con el uso de tecnologías nuevas asegura tiempos de respuesta mínimos</p>
   </div>
   <div class="col-md-4">
     <h3>Seguro</h3>

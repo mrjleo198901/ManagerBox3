@@ -13,6 +13,7 @@
     "connect-multiparty": "*",
     "cors": "^2.8.4",
     "del": "^3.0.0",
+    "emailjs": "^1.0.12",
     "express": "^4.15.4",
     "fs-extra": "^4.0.1",
     "jsonwebtoken": "*",

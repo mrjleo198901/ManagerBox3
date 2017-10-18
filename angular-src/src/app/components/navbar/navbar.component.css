@@ -4,3 +4,11 @@
 .navbar{
     z-index: 2;
 }
+
+#userIcon {
+    color : white;
+}
+
+.dropdown{
+    cursor: pointer;
+}

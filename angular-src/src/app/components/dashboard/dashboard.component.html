@@ -1,2 +1,42 @@
-<h2 class="page-header">Dashboard</h2>
-<p>Welcome to your dashboard</p>
+<h2 class="page-header">Mi Cuenta</h2>
+<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+    <div class="panel panel-default">
+      <!--<div class="panel-heading">
+        <label>Credenciales de Usuario</label>
+      </div>-->
+      <div class="panel-body">
+        <form (submit)="onLoginSubmit()">
+  
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i></span>
+              <input type="text" class="form-control" [(ngModel)]="username" id="username" name="username" aria-describedby="basic-addon1"
+                placeholder="Nombre de usuario">
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon2"><i class="fa fa-lock" aria-hidden="true"></i></span>
+              <input type="password" class="form-control" [(ngModel)]="password" name="password" id="password" aria-describedby="basic-addon2"
+                placeholder="Clave de usuario">
+            </div>
+          </div>
+  
+          <fieldset data-role="controlgroup">
+            <input type="checkbox" name="chck-rememberme" id="chck-rememberme" [(ngModel)]="chckRememberme" checked="" style="font-size: 18px">
+            <label for="chck-rememberme">Recuerdame</label>
+          </fieldset>
+  
+          <p class="mc-top-margin-1-5"><a (click)="showDialog()">¿No puedes acceder a tu cuenta?</a></p>
+  
+          <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+            <input type="submit" class="btn btn-primary btn-block" value="Login" [disabled]="false">
+          </div>
+  
+        </form>
+      </div>
+    </div>
+  </div>

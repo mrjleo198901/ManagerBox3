@@ -60,6 +60,24 @@ export class AuthService {
   public logout() {
     this.authToken = null;
     this.user = null;
-    localStorage.clear();
+    //localStorage.clear();
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('user');
   }
+
+  public sendEmail(user) {
+    console.log(user)
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(url + 'sendmail', user, { headers: headers })
+      .map(res => res.json());
+  }
+
+  public updateUser(user) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(url + 'updateUser', user, { headers: headers })
+      .map(res => res.json());
+  }
+
 }
