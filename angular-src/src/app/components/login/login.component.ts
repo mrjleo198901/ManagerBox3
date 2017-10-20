@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
 
   username: String;
   password: String;
-  chckRememberme;
+  chckRememberme = true;
   display = false;
   correoRecuperacion;
   flagCorreo = false;
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  sendEmail(){
+  sendEmail() {
     const user = {
       username: this.username,
       password: this.password,

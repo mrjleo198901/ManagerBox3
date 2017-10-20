@@ -25,12 +25,20 @@ export class PersonalService {
   updatePersonal(personal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'personal/' + personal.id, personal, { headers: headers })
+    return this.http.put(url + 'personal/' + personal._id, personal, { headers: headers })
       .map(res => res.json())
   }
   getByTipo(idCargo) {
     let params: URLSearchParams = new URLSearchParams();
     params.set('id_cargo', idCargo);
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(url + 'personal/', { search: params })
+      .map(res => res.json())
+  }
+  getByCedula(cedula) {
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('cedula', cedula);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get(url + 'personal/', { search: params })

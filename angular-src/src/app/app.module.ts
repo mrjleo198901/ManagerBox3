@@ -52,7 +52,7 @@ import { MdTooltipModule, MdDialogModule, MdCheckboxModule, MdRadioModule, MdSli
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import {
   GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, InputSwitchModule,
-  ToggleButtonModule, SpinnerModule, SharedModule, CheckboxModule, TabViewModule, ListboxModule,
+  ToggleButtonModule, SpinnerModule, SharedModule, CheckboxModule, TabViewModule, ListboxModule, PasswordModule,
   CalendarModule, DataGridModule, DialogModule, BlockUIModule, SelectButtonModule, InputMaskModule, ProgressBarModule,
 } from 'primeng/primeng';
 
@@ -118,7 +118,7 @@ const appRoutes: Routes = [
     MdTooltipModule, MdDialogModule, MdCheckboxModule, MdRadioModule, MdSlideToggleModule,
     SimpleNotificationsModule.forRoot(),
     GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, SharedModule, CheckboxModule,
-    TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule,
+    TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule, PasswordModule,
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 const User = require('../models/user');
 const emailjs = require('emailjs/email');
+const bcrypt = require('bcryptjs');
 
 //Register
 router.post('/register', (req, res, next) => {
@@ -12,12 +13,11 @@ router.post('/register', (req, res, next) => {
         name: req.body.name,
         email: req.body.email,
         username: req.body.username,
-        password: req.body.password,
-        rol: req.body.rol
+        password: req.body.password
     });
     User.addUser(newUser, (err, user) => {
         if (err) {
-            res.json({ success: false, msg: 'No se pudo registrar este usuario!' });
+            res.json({ success: false, msg: 'No se pudo registrar este usuario! ' + err });
         } else {
             res.json({ success: true, msg: 'Usuario Registrado!' });
         }
@@ -49,7 +49,8 @@ router.post('/authenticate', (req, res, next) => {
                         id: user._id,
                         name: user.name,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        password: user.password
                     }
                 });
             } else {
@@ -95,7 +96,6 @@ router.post('/sendmail', (req, res, next) => {
 //updateUser
 router.post('/updateUser', (req, res, next) => {
     const username = req.body.username;
-    const password = req.body.password;
     const npass = req.body.npass;
 
     User.getUserByUsername(username, (err, user) => {
@@ -103,26 +103,19 @@ router.post('/updateUser', (req, res, next) => {
         if (!user) {
             return res.json({ success: false, msg: 'Usuario no encontrado!' });
         }
-        console.log(user)
-        User.comparePass(password, user.password, (err, isMatch) => {
-
-            if (err) throw err;
-            if (isMatch) {
-                const token = jwt.sign(user, config.secret, {
-                    expiresIn: 604800 //1 semana
-                });
-                user.password = npass;
+        user.password = npass;
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                if (err) throw err;
+                user.password = hash;
                 User.updateUserById(user, (err, user) => {
                     if (err) throw err;
                     if (user) {
                         return res.json({ success: true, msg: 'Cambio exitoso' });
                     }
-
                 })
-            } else {
-                return res.json({ success: false, msg: 'Contraseña incorrecta!' });
-            }
-        })
+            });
+        });
     })
 })
 

@@ -529,7 +529,7 @@ export class PersonalComponent implements OnInit {
   //MODIFICAR PERSONAL
   onUpdatePerSubmit() {
     const personal = {
-      id: this.idPersona,
+      _id: this.idPersona,
       cedula: this.cedula,
       nombres: this.nombres,
       apellidos: this.apellidos,

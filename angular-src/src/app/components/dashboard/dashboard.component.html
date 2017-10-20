@@ -1,42 +1,96 @@
 <h2 class="page-header">Mi Cuenta</h2>
-<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
     <div class="panel panel-default">
-      <!--<div class="panel-heading">
-        <label>Credenciales de Usuario</label>
-      </div>-->
-      <div class="panel-body">
-        <form (submit)="onLoginSubmit()">
-  
-          <div class="form-group">
-            <label>Username</label>
-            <div class="input-group">
-              <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i></span>
-              <input type="text" class="form-control" [(ngModel)]="username" id="username" name="username" aria-describedby="basic-addon1"
-                placeholder="Nombre de usuario">
+        <div class="panel-body">
+
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Usuario (Cédula)</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-id-card" aria-hidden="true"></i></span>
+                    <input type="text" class="form-control" [(ngModel)]="cedula" id="cedula" name="cedula" aria-describedby="basic-addon1" placeholder="Cédula de usuario"
+                        style="z-index: 1" readonly>
+                </div>
             </div>
-          </div>
-  
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-group">
-              <span class="input-group-addon" id="basic-addon2"><i class="fa fa-lock" aria-hidden="true"></i></span>
-              <input type="password" class="form-control" [(ngModel)]="password" name="password" id="password" aria-describedby="basic-addon2"
-                placeholder="Clave de usuario">
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Cargo</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon3"><i class="fa fa-address-book" aria-hidden="true"></i></span>
+                    <input type="text" class="form-control" [(ngModel)]="cargo" id="cargo" name="cargo" aria-describedby="basic-addon3" placeholder="Cargo de usuario"
+                        style="z-index: 1" readonly>
+                </div>
             </div>
-          </div>
-  
-          <fieldset data-role="controlgroup">
-            <input type="checkbox" name="chck-rememberme" id="chck-rememberme" [(ngModel)]="chckRememberme" checked="" style="font-size: 18px">
-            <label for="chck-rememberme">Recuerdame</label>
-          </fieldset>
-  
-          <p class="mc-top-margin-1-5"><a (click)="showDialog()">¿No puedes acceder a tu cuenta?</a></p>
-  
-          <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-            <input type="submit" class="btn btn-primary btn-block" value="Login" [disabled]="false">
-          </div>
-  
-        </form>
-      </div>
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Correo</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon2"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                    <input type="text" class="form-control" [(ngModel)]="email" (ngModelChange)="changeMail($event)" id="email" name="email"
+                        aria-describedby="basic-addon2" placeholder="Correo de usuario" style="z-index: 1" (click)="$event.target.select()">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Nombres</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres($event)" id="nombres"
+                        name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
+                        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Apellidos</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon5"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input type="text" pInputText class="form-control" [(ngModel)]="apellidos" (ngModelChange)="onChangeApellidos($event)" id="apellidos"
+                        name="apellidos" aria-describedby="basic-addon5" style="z-index: 1" placeholder="Apellidos de usuario"
+                        (click)="$event.target.select()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6"><br>
+                <label>Teléfono</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-phone-square" aria-hidden="true"></i></span>
+                    <input type="text" pInputText class="form-control" [(ngModel)]="telefono" id="telefono" name="telefono" aria-describedby="basic-addon6"
+                        style="z-index: 1" placeholder="Teléfono de usuario" (click)="$event.target.select()" maxlength="10"
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+                        tooltipPlacement="bottom">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><br>
+                <label>Cambiar Password</label><br>
+                <md-slide-toggle [color]="color" [(ngModel)]="flagChangePass" (ngModelChange)="showPass($event)" [ngModelOptions]="{standalone: true}">
+                </md-slide-toggle>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6" *ngIf="flagChangePass"><br>
+                <label>Nuevo Password</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                    <input type="password" [(ngModel)]="npass" (ngModelChange)="changePass($event)" class="form-control" pPassword style="z-index: 1">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6" *ngIf="flagChangePass"><br>
+                <label>Repite Password</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                    <input type="password" [(ngModel)]="rnpass" (ngModelChange)="changeNpass($event)" class="form-control" pPassword style="z-index: 1">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6" *ngIf="flagChangePass"><br><br><br>
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="flagShowError">
+                    <i class="fa fa-close"></i> Las contraseñas no coinciden.
+                </div>
+                <div class="ui-message ui-messages-success ui-corner-all" *ngIf="flagShowSuccess">
+                    <i class="fa fa-close"></i> Las contraseñas coinciden.
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+                <button (click)="onLoginSubmit()" class="btn btn-primary btn-block" [disabled]="!flagShowSuccess"> Actualizar</button>
+            </div>
+
+        </div>
     </div>
-  </div>
+</div>
