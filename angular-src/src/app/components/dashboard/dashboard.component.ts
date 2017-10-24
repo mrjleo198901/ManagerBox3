@@ -69,6 +69,11 @@ export class DashboardComponent implements OnInit {
     this.flagShowSuccess = true;
     this.flagSubmit = false;
     this.flagChangePass = false;
+    document.getElementById("cedula").style.borderColor = "";
+    document.getElementById("nombres").style.borderColor = "";
+    document.getElementById("apellidos").style.borderColor = "";
+    document.getElementById("telefono").style.borderColor = "";
+    document.getElementById("email").style.borderColor = "";
   }
 
   showPass($event) {
@@ -82,7 +87,6 @@ export class DashboardComponent implements OnInit {
   }
 
   onLoginSubmit() {
-    console.log("asd")
     if (this.flagChangePass) {
       this.pass = this.npass;
     } else {
@@ -95,7 +99,18 @@ export class DashboardComponent implements OnInit {
       email: this.email,
       npass: this.pass
     }
-    console.log(nUser)
+
+    this.newPersonal.email = this.email;
+    this.newPersonal.nombres = this.removeSpaces(this.nombres);
+    this.newPersonal.apellidos = this.removeSpaces(this.apellidos);
+    this.newPersonal.telefono = this.removeSpaces(this.telefono);
+
+    //Required fields
+    if (!this.validateService.validatePersonalU(this.newPersonal)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacíos!');
+      return false;
+    }
+
     if (this.flagChangePass) {
       this.authService.updateUser(nUser).subscribe(data => {
         this.user.password = data.password;
@@ -104,10 +119,6 @@ export class DashboardComponent implements OnInit {
         remember.password = this.npass;
         localStorage.setItem('rememberMe', JSON.stringify(remember));
         this.messageGrowlService.notify('info', 'Información', 'Se actualizaron tus datos!');
-        this.newPersonal.email = this.email;
-        this.newPersonal.nombres = this.removeSpaces(this.nombres);
-        this.newPersonal.apellidos = this.removeSpaces(this.apellidos);
-        this.newPersonal.telefono = this.removeSpaces(this.telefono);
         this.personalService.updatePersonal(this.newPersonal).subscribe(data => {
           this.ngOnInit();
           this.messageGrowlService.notify('info', 'Información', 'Se actualizaron tus datos!');
@@ -119,10 +130,6 @@ export class DashboardComponent implements OnInit {
         console.log(err)
       })
     } else {
-      this.newPersonal.email = this.email;
-      this.newPersonal.nombres = this.removeSpaces(this.nombres);
-      this.newPersonal.apellidos = this.removeSpaces(this.apellidos);
-      this.newPersonal.telefono = this.removeSpaces(this.telefono);
       this.personalService.updatePersonal(this.newPersonal).subscribe(data => {
         this.ngOnInit();
         this.messageGrowlService.notify('info', 'Información', 'Se actualizaron tus datos!');

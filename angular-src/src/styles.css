@@ -3329,7 +3329,6 @@
                       font-style:normal;
                       font-weight:normal;
                       letter-spacing:normal;
-                      line-break:auto;
                       line-height:1.42857143;
                       text-align:left;
                       text-align:start;
@@ -3445,7 +3444,6 @@
                       font-style:normal;
                       font-weight:normal;
                       letter-spacing:normal;
-                      line-break:auto;
                       line-height:1.42857143;
                       text-align:left;
                       text-align:start;
@@ -3801,7 +3799,8 @@
                           text-transform:uppercase
                       }
                       .navbar .nav>li>a{
-                          font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase
+                          /*Estilos barra menu*/
+                          font-size:14px;line-height:22px;font-weight:500;text-transform: capitalize
                       }
                       .navbar-form input,.navbar-form .form-control{border:none}
                       .btn{border:none;font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase}
@@ -3829,9 +3828,9 @@
                       .pagination{font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase}
                       .pager{font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase}
                       .pager li>a{color:#98978b}
-                      .dropdown-menu>li>a{font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase}
+                      .dropdown-menu>li>a{font-size:14px;line-height:22px;font-weight:500;text-transform:capitalize;}
                       .alert a,.alert .alert-link{color:#fff}
-                      .tooltip{font-size:11px;line-height:22px;font-weight:500;text-transform:uppercase}
+                      .tooltip{font-size:11px;line-height:22px;font-weight:500;}
                       .progress{border-radius:10px;background-color:#dfd7ca;-webkit-box-shadow:none;box-shadow:none}
                       .progress-bar{-webkit-box-shadow:none;box-shadow:none}
                       .list-group-item{padding:16px 24px}

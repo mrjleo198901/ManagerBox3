@@ -3,6 +3,9 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { ValidateService } from '../../services/validate.service';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { FormatterService } from '../../services/formatter.service';
+import { PersonalService } from '../../services/personal.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +20,19 @@ export class LoginComponent implements OnInit {
   display = false;
   correoRecuperacion;
   flagCorreo = false;
+  navbar: NavbarComponent;
+  cedula;
+  flagFindUser = false;
+  showMessages = false;
+  nombres;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private messageGrowlService: MessageGrowlService,
-    private validateService: ValidateService
+    private validateService: ValidateService,
+    private formatterService: FormatterService,
+    private personalService: PersonalService,
   ) { }
 
   ngOnInit() {
@@ -40,6 +50,7 @@ export class LoginComponent implements OnInit {
       document.getElementById('username').style.backgroundColor = '#FAFFBF';
       document.getElementById('password').style.backgroundColor = '#FAFFBF'
     }
+
   }
 
   onLoginSubmit() {
@@ -51,6 +62,9 @@ export class LoginComponent implements OnInit {
       if (data.success) {
         this.authService.storeUserData(data.token, data.user);
         this.messageGrowlService.notify('info', 'Información', 'Bienvenido!');
+
+        NavbarComponent.updateUserStatus.next(true);
+
         if (this.chckRememberme) {
           localStorage.setItem('rememberMe', JSON.stringify(user));
         } else {
@@ -67,8 +81,10 @@ export class LoginComponent implements OnInit {
   showDialog() {
     this.display = true;
     setTimeout(function () {
-      document.getElementById('correo').focus();
-    }, 0)
+      document.getElementById('ciA').focus();
+
+    }, 50)
+    //this.onChangeCI();
   }
 
   onChangeCorreo() {
@@ -82,12 +98,61 @@ export class LoginComponent implements OnInit {
 
   sendEmail() {
     const user = {
-      username: this.username,
-      password: this.password,
-      email: this.correoRecuperacion
+      name: this.nombres,
+      email: this.correoRecuperacion,
+      username: this.cedula,
+      npass: this.formatterService.makeId()
     }
     this.authService.sendEmail(user).subscribe(data => {
+      console.log(user.npass)
       console.log(data);
+      this.authService.updateUser(user).subscribe(data => {
+        console.log(data);
+        this.messageGrowlService.notify('info', 'Info', 'Se ha enviado el correo con la nueva clave');
+      }, err => {
+        console.log(err)
+      })
+
     });
   }
+
+  onChangeCI() {
+    if (this.cedula.length != 10) {
+      document.getElementById("ciA").style.borderColor = "#FE2E2E";
+      this.showMessages = false;
+      this.correoRecuperacion = '';
+      this.nombres = '';
+      this.flagCorreo = false;
+      this.flagFindUser = false;
+    }
+    if (this.cedula.length == 10) {
+      if (!this.validateService.validarRucCedula(this.cedula)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+        document.getElementById("ciA").style.borderColor = "#FE2E2E";
+      } else {
+        document.getElementById("ciA").style.borderColor = "#5ff442";
+        this.checkUser();
+        this.showMessages = true;
+      }
+    }
+  }
+
+  checkUser() {
+    this.personalService.getByCedula(this.cedula).subscribe(data => {
+      if (data.length > 0) {
+        this.correoRecuperacion = data[0].email;
+        this.nombres = data[0].nombres + ' ' + data[0].apellidos;
+        this.flagFindUser = true;
+        this.flagCorreo = true;
+      } else {
+        this.correoRecuperacion = '';
+        this.flagFindUser = false;
+        this.flagCorreo = false;
+      }
+    }, err => {
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!')
+      console.log(err);
+    })
+  }
+  
 }

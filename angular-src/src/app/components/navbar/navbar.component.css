@@ -9,6 +9,10 @@
     color : white;
 }
 
+#caretIcon {
+    color : white;
+}
+
 .dropdown{
     cursor: pointer;
 }

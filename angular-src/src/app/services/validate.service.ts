@@ -7,8 +7,8 @@ export class ValidateService {
   constructor(private messageGrowlService: MessageGrowlService) { }
 
   validateRegister(user) {
-    if (user.name == undefined || user.email == undefined || user.username == undefined || user.password == undefined ||
-      user.name == "" || user.email == "" || user.username == "" || user.password == "") {
+    if (user.name == undefined || user.email == undefined || user.username == undefined || user.npass == undefined ||
+      user.name == "" || user.email == "" || user.username == "" || user.npass == "") {
       return false;
     } else {
       return true;
@@ -444,6 +444,32 @@ export class ValidateService {
     } else {
       return true;
     }
+  }
+
+  validatePersonalU(personal) {
+
+    let res = true;
+    if (personal.cedula == "") {
+      document.getElementById("cedula").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (personal.nombres == "") {
+      document.getElementById("nombres").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (personal.apellidos == "") {
+      document.getElementById("apellidos").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (personal.telefono == "") {
+      document.getElementById("telefono").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (personal.email == "") {
+      document.getElementById("email").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
   }
 
   validateTarjeta(tarjeta) {
