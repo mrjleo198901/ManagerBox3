@@ -82,6 +82,21 @@ nav ul{overflow:hidden; overflow-y:scroll;}
   cursor: pointer;
 }
 
+#spanAdd{
+  background-color: #2499DC;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.span {
+  width: 14px !important;
+  }
+
+#addIconK {
+  margin-top: 5px;
+  cursor: pointer;
+}
+
 #iconPercent{
   background-color: #ffffff;
   cursor: pointer;
@@ -137,7 +152,3 @@ nav ul{overflow:hidden; overflow-y:scroll;}
 :host /deep/ .ng2-smart-filter select{
   text-align: center;
 }
-
-/*upload images*/
-
-

@@ -6,6 +6,7 @@ import { ValidateService } from '../../services/validate.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FormatterService } from '../../services/formatter.service';
 import { PersonalService } from '../../services/personal.service';
+import { InventarioComponent } from '../../components/inventario/inventario.component';
 
 @Component({
   selector: 'app-login',
@@ -154,5 +155,5 @@ export class LoginComponent implements OnInit {
       console.log(err);
     })
   }
-  
+
 }

@@ -23,6 +23,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { FacturacionComponent } from '../../components/facturacion/facturacion.component';
 import { PersonalService } from '../../services/personal.service';
 import { ActiveCardsService } from '../../services/active-cards.service';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-card',
@@ -151,8 +152,6 @@ export class CardComponent implements OnInit {
   @ViewChild('cedulaNew')
   myInputVariable1: any;
   cc;
-  @Input()
-  com1ref: FacturacionComponent;
   flagTC = false;
   flagTCU = false;
   coverMujeres = 3;
@@ -191,6 +190,7 @@ export class CardComponent implements OnInit {
     ingresoHombres: 0,
     _id: ''
   }
+  validCI = false;
 
   constructor(
     private validateService: ValidateService,
@@ -264,9 +264,6 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.com1ref = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
-    //this.com1ref.setTab();
-
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 50)
@@ -306,7 +303,7 @@ export class CardComponent implements OnInit {
           this.mapProdShow = [];
           let firstElement = this.mapTP[0]._id;
           //localStorage.removeItem("promosActivas");
-          this.localStorageService.removeItem();
+          //this.localStorageService.removeItem();
           for (let entry of p) {
             if (entry.promocion.length > 0) {
 
@@ -320,7 +317,7 @@ export class CardComponent implements OnInit {
               };
               this.selectedPromos.push(aux);
               myGlobals.addElementPromo(entry);
-              this.localStorageService.setItem(myGlobals.globalPromos)
+              //this.localStorageService.setItem(myGlobals.globalPromos)
 
             }
             if (entry.id_tipo_producto.localeCompare(firstElement) === 0) {
@@ -367,6 +364,7 @@ export class CardComponent implements OnInit {
     setTimeout(function () {
       document.getElementById('ciA').focus();
     }, 0)
+    this.onChangeCI();
   }
 
   public getDate(): number {
@@ -391,9 +389,9 @@ export class CardComponent implements OnInit {
       return false;
     }
     this.clienteService.registerCliente(newClient).subscribe(data => {
-      console.log(myGlobals.globalClients)
+      this.ngOnInitClient();
+      this.clientes.push(data)
       this.showDialog = false;
-      this.ngOnInit();
       this.checkClient();
       this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
     }, err => {
@@ -626,17 +624,20 @@ export class CardComponent implements OnInit {
         path: data[0].path,
         subproductoV: data[0].subproductoV,
         id_tipo_producto: data[0].id_tipo_producto,
-        //promocion: data[0].promocion
         promocion: data[0].promocion
       };
       myGlobals.sliceElement(producto);
-      /*localStorage.removeItem("promosActivas");
-      localStorage.setItem("promosActivas", JSON.stringify(myGlobals.globalPromos));*/
-      this.localStorageService.removeItem();
-      this.localStorageService.setItem(myGlobals.globalPromos);
-      this.cc = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
+      console.log(myGlobals.globalPromos);
+      if (myGlobals.globalPromos.length > 0) {
+        localStorage.removeItem('promosActivas');
+        localStorage.setItem('promosActivas', JSON.stringify(myGlobals.globalPromos));
+      } else {
+        localStorage.removeItem('promosActivas');
+      }
+      FacturacionComponent.updateUserStatus.next(true);
       this.productoService.updateProducto(producto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Se ha deshabilitado la promoción!");
+        FacturacionComponent.updateUserStatus.next(true);
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
@@ -673,12 +674,10 @@ export class CardComponent implements OnInit {
         promocion: [data[0].promocion]
       };
       myGlobals.addElementPromo(producto);
-      /*localStorage.removeItem("promosActivas");
-      localStorage.setItem("promosActivas", JSON.stringify(myGlobals.globalPromos));*/
-      this.localStorageService.removeItem();
-      this.localStorageService.setItem(myGlobals.globalPromos);
-      this.cc = new FacturacionComponent(this.productoService, this.tipoProductoService, this.personalService);
-      this.cc.prueba();
+      console.log(myGlobals.globalPromos);
+      localStorage.removeItem('promosActivas');
+      localStorage.setItem('promosActivas', JSON.stringify(myGlobals.globalPromos));
+      FacturacionComponent.updateUserStatus.next(true)
       this.productoService.updateProducto(producto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
       }, err => {
@@ -780,8 +779,8 @@ export class CardComponent implements OnInit {
       this.nfLael = "Usuario no encontrado.";
       document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
-      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
+      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
       this.cardNumber = "";
       this.flagCaUsFound = false;
     }
@@ -789,8 +788,8 @@ export class CardComponent implements OnInit {
       this.nfLael = "Usuario no encontrado.";
       document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
-      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
+      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
       this.cardNumber = "";
       this.flagCaUsFound = false;
     }
@@ -824,16 +823,28 @@ export class CardComponent implements OnInit {
   }
 
   onChangeCI() {
-    if (this.cedula.length != 10)
+    if (this.cedula.length != 10) {
       document.getElementById("ciA").style.borderColor = "#FE2E2E";
-    if (this.cedula.length != 13)
-      document.getElementById("ciA").style.borderColor = "#FE2E2E";
-    if (this.cedula.length == 10 || this.cedula.length == 13) {
+      this.validCI = false;
+    } else {
       if (!this.validateService.validarRucCedula(this.cedula)) {
-        this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
         document.getElementById("ciA").style.borderColor = "#FE2E2E";
-      } else
+        this.validCI = false;
+      } else {
         document.getElementById("ciA").style.borderColor = "#5ff442";
+        this.checkClient1();
+      }
+    }
+  }
+
+  checkClient1() {
+    this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
+    if (this.searchUser === undefined) {
+      this.validCI = true;
+    } else {
+      this.validCI = false;
+      this.messageGrowlService.notify('warn', 'Advertencia', 'El cliente ya ha sido ingresado!');
     }
   }
 
@@ -1096,23 +1107,7 @@ export class CardComponent implements OnInit {
       this.clienteService.getAll().subscribe(c => {
         this.clientes = c;
         let i = 0;
-        /*let aux = {
-          'value': {
-            'apellido': '',
-            'cedula': '',
-            'correo': '',
-            'fecha_nacimiento': '',
-            'id_tipo_cliente': '',
-            'nombre': '',
-            'sexo': '',
-            'telefono': '',
-            '_id': ''
-          },
-          'label': 'Selecciona..'
-        }*/
         this.clientesC = [];
-        //this.clientesC[0] = aux;
-        //this.selectedClientGP = aux;
         for (let entry of c) {
           let aux = {
             'value': {
@@ -1134,7 +1129,6 @@ export class CardComponent implements OnInit {
         this.tarjetaService.getAll().subscribe(t => {
           this.lstCards = t;
           this.sourceT.load(this.lstCards);
-          //console.log(this.lstCards)
           this.lstAddCardCI = this.filterCardCI(this.clientesC, this.lstCards);
         }), err => {
           console.log(err);
@@ -1147,6 +1141,18 @@ export class CardComponent implements OnInit {
         return false;
       });
 
+  }
+
+  ngOnInitClient() {
+
+    this.telefono = '';
+    this.nombre = '';
+    this.apellido = '';
+    this.correo = '';
+    this.sexo = 'M'
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
+    this.selected_tipo_cliente = '';
   }
 
   /*TAB CLOSE*/

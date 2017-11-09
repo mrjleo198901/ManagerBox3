@@ -39,6 +39,13 @@ export class ProductoService {
       .map(res => res.json())
   }
 
+  getByPromos() {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(url + 'producto/promocion__gt=0', { headers: headers })
+      .map(res => res.json())
+  }
+
   getAll() {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');

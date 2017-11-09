@@ -2,7 +2,7 @@
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <!-- TAB OPEN -->
-    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
+    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)" [active]="true">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -10,7 +10,7 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos del Cliente" [style]="{'height':'435px'}">
+        <p-panel header="Datos del Cliente" [style]="{'height':'435px','z-index':'1'}">
           <!-- Control Cliente-->
           <div class="form-group">
             <div class="row">
@@ -23,7 +23,7 @@
                 <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
                   name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cedula del cliente" style="z-index: 1;font-size: 18px"
-                  maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
+                  maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
                 <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <span (click)="showDialog = true; setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
               </div>
@@ -79,7 +79,7 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'435px'}">
+        <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'435px','z-index':'1'}">
           <!-- Validacion Tarjeta -->
           <div class="form-group">
             <div class="row">
@@ -163,7 +163,7 @@
       <!-- BOTTOM SIDE-->
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <br>
-        <p-panel #pnlPromos header="Seleccionar promociones">
+        <p-panel #pnlPromos header="Seleccionar promociones" [style]="{'z-index':'1'}">
           <div style="text-align: right">
             <label>Desactivar todas las promociones:</label>
             <button type="button" pButton (click)="deletePromos()" label="Desactivar" class="ui-button-warning"></button></div>
@@ -227,7 +227,7 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'min-height':'435px'}">
+        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'435px','z-index':'1'}">
           <!-- Verificacion de consumo -->
           <div class="form-group">
             <div class="row">
@@ -312,7 +312,7 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'min-height':'435px'}">
+        <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'height':'435px','z-index':'1'}">
           <!-- Resumen consumo -->
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -387,7 +387,7 @@
       </div>
     </tab>
     <!-- TAB EGRESOS -->
-    <tab heading="Ingreso/Egreso de personas" (select)="alertMe3(3)" [active]="true">
+    <tab heading="Ingreso/Egreso de personas" (select)="alertMe3(3)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Ingreso/Egreso de personas</h3>
@@ -395,7 +395,7 @@
       </div>
       <!--LEFT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'435px'}">
+        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'435px','z-index':'1'}">
           <!-- Verificacion de consumo -->
           <div class="form-group">
             <div class="row">
@@ -476,7 +476,7 @@
       </div>
       <!--RIGHT SIDE-->
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'435px'}">
+        <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'435px','z-index':'1'}">
           <!-- Cantidad de personas -->
           <div class="form-group">
             <div class="row">
@@ -570,7 +570,7 @@
     <div class="ui-g-6">
       <label for="ciA">Cedula*:</label>
       <input type="text" [(ngModel)]="cedula" id="ciA" name="ciA" (ngModelChange)="onChangeCI()" placeholder="Cedula del cliente"
-        class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+        class="form-control input-sm" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
         tooltipPlacement="bottom">
     </div>
     <div class="ui-g-6">
@@ -618,7 +618,7 @@
   </div>
   <hr>
   <div class="ui-g-12" style="text-align: center">
-    <button type="button" style="font-size: 11px" (click)="saveClient()" class="btn btn-primary">Registrar</button>
+    <button type="button" style="font-size: 11px" (click)="saveClient()" class="btn btn-primary" [disabled]="!validCI">Registrar</button>
     <button type="button" style="font-size: 11px" (click)="showDialog=false" class="btn btn-default">Cancelar</button>
   </div>
 </p-dialog>
@@ -831,9 +831,9 @@
   </div>
 </p-dialog>
 
-
+<!--Bloquear paneles-->
 <p-blockUI [target]="pnlTarjeta" [blocked]="!flagUserFound">
-  <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%;z-index: 1"></i>
+  <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
 <p-blockUI [target]="pnlPromos" [blocked]="!flagUserFound">

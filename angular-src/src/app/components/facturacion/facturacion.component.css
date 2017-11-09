@@ -104,12 +104,26 @@ a:hover,a:focus{
 #center{margin:0 auto;width:5px;}
 
 nav ul{height:400px; width:100%;}
-nav ul{overflow:hidden; overflow-y:scroll;}
+nav ul{overflow:hidden; overflow-y:auto;}
+
 .list-group-item {
   padding: 3px 10px
 }
+
 .example-tooltip-host {
     display: inline-flex;
     align-items: center;
     /*margin: 50px;*/
+}
+
+.list-group-item1 {
+    -webkit-column-count: 2;
+       -moz-column-count: 2;
+            column-count: 2;
+            padding: 3px 11px 0px 10px;
+  }
+
+  #iconTimes{
+    color: #ff0000;
+    cursor: pointer;
   }

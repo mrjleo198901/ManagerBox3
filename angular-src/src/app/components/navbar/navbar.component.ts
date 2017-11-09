@@ -33,6 +33,7 @@ export class NavbarComponent implements OnInit {
         console.log(err)
       })
     }
+
     NavbarComponent.updateUserStatus.subscribe(res => {
       let us = JSON.parse(localStorage.getItem('user'));
       this.personalService.getByCedula(us.username).subscribe(data => {

@@ -1,8 +1,8 @@
 <h2 class="page-header">Ventas</h2>
 <!--left DIV-->
-<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+<div class="col-lg-8 col-md-7 col-sm-7 col-xs-12">
     <div (click)="$event.preventDefault()">
-        <tabset [justified]="true">
+        <tabset>
             <tab heading="Promociones" (select)="loadLogos(100)">
                 <hr>
                 <h3 style="text-align: center">Promociones Disponibles</h3>
@@ -12,21 +12,13 @@
                         <div class="ui-g-12 ui-md-3">
                             <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
                                 <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                <hr class="ui-widget-content" style="border-top:0;">
-                                <i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer"></i>
+                                <!--<hr class="ui-widget-content" style="border-top:0;">-->
+                                <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
                             </p-panel>
                         </div>
                     </ng-template>
                 </p-dataGrid>
-                <!--<div *ngFor="let path of pathsTypePromos; let i = index">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                        <div class="example-tooltip-host" mdTooltip={{path.nombre}} [mdTooltipPosition]="position">
-                            <img src={{path.path}} (dblclick)="eventEmitDoubleClick($event,i)" />
-                        </div>
-                    </div>
-                </div>-->
             </tab>
-            <!--<tab heading="es una prueba" [active]="tabindex"></tab>-->
             <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                 <hr>
                 <h3 style="text-align: center">{{tabz.title}}</h3>
@@ -36,8 +28,7 @@
                         <div class="ui-g-12 ui-md-3">
                             <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
                                 <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                <hr class="ui-widget-content" style="border-top:0;">
-                                <i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer"></i>
+                                <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
                             </p-panel>
                         </div>
                     </ng-template>
@@ -47,96 +38,109 @@
     </div>
 </div>
 <!--right DIV-->
-<div class="col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-1 col-xs-12">
-    <form class="form-inline">
-        <h4 style="text-align: center">Productos Seleccionados</h4>
-    </form>
-    <br>
-    <div *ngIf="!flagProdSeleccionados">
-        <li class="list-group-item">
-            <p>Doble click en logotipo para añadir productos.</p>
-        </li>
+<div class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12">
+    <div class="panel panel-default" style="width: 100%">
+        <form class="form-inline">
+            <h4 style="text-align: center">Productos Seleccionados</h4>
+        </form>
         <br>
-    </div>
-    <nav>
-        <ul class="list-group" *ngIf="flagProdSeleccionados">
-            <li class="list-group-item" *ngFor="let item of selectedProductos; let i = index">
-                <form class="form-inline">
-                    <label style="display: inline-block"> {{item.nombre}}</label>
-                    <span style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                    <i class="fa fa-plus" aria-hidden="true"></i></span>
-                    <span style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                    <i class="fa fa-minus" aria-hidden="true"></i></span>
-                    <span style="display: inline-block" class="input-group-addon input-sm" style="width: 20px">
-                    <font size="5">{{item.cantidad}}</font></span>
-                </form>
+        <div *ngIf="!flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
+            <li class="list-group-item">
+                <p>Doble click en logotipo para añadir productos.</p>
             </li>
-        </ul>
-    </nav>
-    <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = !showDialogConfirmar;" class="btn btn-primary" style="width: 100%">Confirmar</button>
+            <br>
+        </div>
+        <nav>
+            <ul class="list-group" *ngIf="flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
+                <li class="list-group-item" *ngFor="let item of selectedProductos; let i = index">
+                    <h4 style="text-align: center">
+                        {{item.nombre}} <i id="iconTimes" (click)="removeProd(i)" class="fa fa-times" aria-hidden="true"
+                            mdTooltip="Eliminar producto"></i>
+                    </h4>
+                    <div class="input-group col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2"
+                        style="padding-bottom: 10px">
+                        <span style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm" style="width: 20px">
+                        <i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+                        <span style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm" style="width: 20px">
+                        <i class="fa fa-minus fa-lg" aria-hidden="true"></i></span>
+                        <span style="display: inline-block" class="input-group-addon input-sm" style="width: 20px">
+                        <font size="5">{{item.cantidad}}</font></span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div style="text-align: center; padding-bottom: 15px">
+            <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = true;setCursor();" class="btn btn-primary" style="width: 90%;">Confirmar</button>
+        </div>
+    </div>
 </div>
 <!--Control venta(Cajero & tarjeta)-->
-<app-dialog [(visible)]="showDialogConfirmar" (visibleChange)="change($event)" #dialog="dialog">
-    <h3 style="text-align: center">
-        Confirmacion de venta
-    </h3>
-    <hr>
-    <!-- Validacion Tarjeta -->
+<p-dialog header="Confirmación Venta" [(visible)]="showDialogConfirmar" [responsive]="true" [modal]="true" width="525">
     <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
         <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
         <div class="cols-sm-10">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
                 <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-                    name="cardNumber" id="cardNumber" placeholder="Codigo unico de tarjeta" />
+                    name="cardNumber" id="cardNumber" placeholder="Numero de tarjeta de consumo" style="z-index: 1;" tabindex="1"
+                    maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
                 <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+
             </div>
         </div>
     </div>
-    <!-- Control cajero -->
-    <div class="form-group">
-        <div class="col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
-            <label>Control mesero</label>
-        </div>
-        <div class="col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
-            <select class="form-control">
-                    <option value="" disabled selected hidden>Selecciona...</option>
-                    <option *ngFor="let c of listMeseros">{{c.nombres}}</option>
+    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+        <label>Control mesero</label>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+            <select class="form-control" [(ngModel)]="selectedMesero" tabindex="2">
+                <option *ngFor="let c of listMeseros" [ngValue]="c">{{c.cedula}}</option>
             </select>
         </div>
-        <div class="col-sm-5 col-xs-5">
-            <input [(ngModel)]="password" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario">
-            <br>
+    </div>
+    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+        <label>Password</label>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+            <input [(ngModel)]="password" (ngModelChange)="changePass($event)" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario"
+                tabindex="3">
         </div>
     </div>
     <!-- Button -->
     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary" style="width: 25%">Confirmar</button>
-        <button class="btn btn-default" (click)="showDialogConfirmar = !showDialogConfirmar" style="width: 25%">Cancelar</button>
+        <hr>
+        <button class="btn btn-primary" (click)="send()" style="width: 25%;font-size: 11px" [disabled]="!flagFindCard">Confirmar</button>
+        <button class="btn btn-default" (click)="showDialogConfirmar = false" style="width: 25%;font-size: 11px">Cancelar</button>
     </div>
-</app-dialog>
+</p-dialog>
 
-<p-dialog header="Detalle Producto" [(visible)]="displayDialog" [responsive]="true" [modal]="true" width="300" (onAfterHide)="onDialogHide()">
+<p-dialog header="Detalle Producto" [(visible)]="displayDialog" [responsive]="true" [modal]="true" width="400" (onAfterHide)="onDialogHide()">
     <div class="ui-grid ui-grid-responsive ui-grid-pad" *ngIf="selectedProd" style="font-size:16px;text-align:center;padding:20px">
         <div class="ui-grid-row">
             <div class="ui-grid-col-12" style="text-align:center"><img src="{{selectedProd.path}}" width="80"></div>
-        </div>
+        </div><br>
         <div class="ui-grid-row">
-            <div class="ui-grid-col-4">Nombre: </div>
-            <div class="ui-grid-col-8">{{selectedProd.nombre}}</div>
-        </div>
-        <div class="ui-grid-row" *ngIf="!flagPrecioPromo">
-            <div class="ui-grid-col-4">Precio: </div>
-            <div class="ui-grid-col-8">${{selectedProd.precio_venta | number : '1.2-2'}}</div>
-        </div>
-        <div class="ui-grid-row" *ngIf="flagPrecioPromo">
-            <div class="ui-grid-col-4">Precio Promo: </div>
-            <div class="ui-grid-col-8">${{selectedProd.promocion[0].precio_promo | number : '1.2-2'}}</div>
-        </div>
-        <div class="ui-grid-row">
-            <div class="ui-grid-col-4">Cantidad Existente: </div>
-            <div class="ui-grid-col-8">{{selectedProd.cant_existente | number : '1.2-2'}}</div>
+            <div class="panel panel-default" style="width: 100%">
+                <ul class="list-group" id="limheight">
+                    <li class="list-group-item list-group-item1">
+                        <p style="text-align: left">Nombre <br>Producto:</p>
+                        {{selectedProd.nombre}}
+                    </li>
+                    <li class="list-group-item list-group-item1" *ngIf="!flagPrecioPromo">
+                        <p style="text-align: left">Precio <br>Producto:</p>
+                        ${{selectedProd.precio_venta | number : '1.2-2'}}
+                    </li>
+                    <li class="list-group-item list-group-item1" *ngIf="flagPrecioPromo">
+                        <p style="text-align: left">Precio <br>Promoción:</p>
+                        ${{selectedProd.promocion[0].precio_promo | number : '1.2-2'}}
+                    </li>
+                    <li class="list-group-item list-group-item1">
+                        <p style="text-align: left">Cantidad Existente:</p>
+                        {{selectedProd.cant_existente | number : '1.2-2'}}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </p-dialog>

@@ -6,33 +6,33 @@ import { Observable } from 'rxjs/Rx';
 const url = 'http://localhost:3000/api/';
 
 @Injectable()
-export class TipoProductoService {
+export class KardexService {
 
   constructor(private http: Http) { }
 
-  registerTipoProducto(tipoProducto) {
+  register(kardex) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'tipo_producto', tipoProducto, { headers: headers })
+    return this.http.post(url + 'compras', kardex, { headers: headers })
       .map(res => res.json());
   }
   getAll() {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'tipo_producto', { headers: headers })
+    return this.http.get(url + 'compras', { headers: headers })
       .map(res => res.json());
   }
-  updateTipoProducto(tipoProducto) {
+  update(kardex) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'tipo_producto/' + tipoProducto._id, tipoProducto, { headers: headers })
+    return this.http.put(url + 'compras/' + kardex._id, kardex, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
-  deleteTipoProducto(tipoProducto) {
+  delete(kardex) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.delete(url + 'tipo_producto/' + tipoProducto, { headers: headers })
+    return this.http.delete(url + 'compras/' + kardex, { headers: headers })
       .map(res => res.json());
   }
 }

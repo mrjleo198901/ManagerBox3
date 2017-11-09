@@ -1,4 +1,4 @@
-import { Component, OnInit, Directive,ViewChild } from '@angular/core';
+import { Component, OnInit, Directive, ViewChild } from '@angular/core';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { ValidateService } from '../../services/validate.service';
 import { TipoProductoService } from '../../services/tipo-producto.service';
@@ -9,6 +9,7 @@ import { ProductoService } from '../../services/producto.service';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { ImageRenderComponent } from '../image-render/image-render.component';
+import { IconRenderComponent } from '../image-render/icon-render.component';
 import { PipeRenderComponent } from '../pipe-render/pipe-render.component';
 import { SubprodRenderComponent } from '../subprod-render/subprod-render.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
@@ -17,6 +18,8 @@ import { MessageGrowlService } from '../../services/message-growl.service';
 import { FormatterService } from '../../services/formatter.service';
 import { SelectItem } from 'primeng/primeng';
 import { PromocionService } from '../../services/promocion.service';
+import { ProveedorService } from '../../services/proveedor.service';
+import { KardexService } from '../../services/kardex.service';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -115,6 +118,10 @@ export class AdministracionComponent implements OnInit {
   myInputVariable: any;
   @ViewChild('myInput1')
   myInputVariable1: any;
+  @ViewChild('myInput2')
+  myInputVariable2: any;
+  @ViewChild('myInput3')
+  myInputVariable3: any;
   settingsPro = {
     mode: 'external',
     noDataMessage: 'No existen registros',
@@ -165,6 +172,99 @@ export class AdministracionComponent implements OnInit {
   precio_costoSubProd;
   selected_prodSelec;
   selected_prodSelecU;
+  tipoProductoUpdate: any;
+  oldTipoProductoUpdate: any;
+  settingsK = {
+    mode: 'external',
+    noDataMessage: 'No existen registros',
+    columns: {
+      num_factura: {
+        title: 'Número Factura',
+        width: '14%'
+      },
+      fecha: {
+        title: 'Fecha',
+        width: '15%'
+      },
+      desc_producto: {
+        title: 'Descripción Producto',
+        width: '22%'
+      },
+      proveedor: {
+        title: 'Proveedor',
+        width: '22%'
+      },
+      cantidad: {
+        title: 'Unidades',
+        width: '9%'
+      },
+      total: {
+        title: 'Total',
+        width: '9%'
+      },
+      unidades_vendidas: {
+        title: 'Unidades Vendidas',
+        width: '9%'
+      }
+    },
+    actions: {
+      // columnTitle: '',
+      add: true,
+      edit: true,
+      delete: true
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+    }
+  }
+  sourceK: LocalDataSource = new LocalDataSource();
+  showDialogK = false;
+  kardex = {
+    'fecha': '',
+    'desc_producto': '',
+    'proveedor': '',
+    'cantidad': 0,
+    'total': 0,
+    'num_factura': ''
+  };
+  dt: Date = new Date();
+  es: any;
+  filteredProductos: any[];
+  selectedProdK;
+  types: any[];
+  selectedIeProd = 'Nuevo';
+  flagProdK = true;
+  settingsProve = {};
+  sourceProve: LocalDataSource = new LocalDataSource();
+  showDialogProve = false;
+  objProve = {
+    nombre_proveedor: '',
+    ruc: '',
+    direccion: '',
+    ciudad: '',
+    telefono: '',
+    correo: ''
+  };
+  validRuc = false;
+  showComprasDetail = false;
+  lstComprasProve: any[];
+  showProveDialog;
+  oldProve: any;
+  showDialogProveU = false;
+  showDialogKU = false;
+  lstProveedoresK: any[];
+  todayDate: any;
+  selectedTP: any;
+  lstProductos: any[];
+  lstKardex: any[];
+  kardexU = {
+    'fecha': '',
+    'desc_producto': '',
+    'proveedor': '',
+    'cantidad': 0,
+    'total': 0,
+    'num_factura': ''
+  };
 
   constructor(
     private validateService: ValidateService,
@@ -175,7 +275,9 @@ export class AdministracionComponent implements OnInit {
     private messageGrowlService: MessageGrowlService,
     private formatterService: FormatterService,
     private formBuilder: FormBuilder,
-    private promocionService: PromocionService) {
+    private promocionService: PromocionService,
+    private proveedorService: ProveedorService,
+    private kardexService: KardexService) {
     this.id_mostar = 0;
     this.pathLogo = undefined;
     this.lstUnidades = [];
@@ -202,10 +304,37 @@ export class AdministracionComponent implements OnInit {
       hasta: 0,
       precio_promo: 0
     }
+    this.lstComprasProve = [
+      { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
+      { desc_producto: 'Cerveza pilsener 350ml', fecha: '20/01/2017', unidades: '25', total: '4' },
+      { desc_producto: 'Wiskey grants 1LT', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
+    ];
     //console.log((0.3 - 0.1).toFixed(2));
   }
 
   ngOnInit() {
+
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.todayDate = [initial[0], initial[1], initial[2]].join('/');
+    console.log
+    this.es = {
+      firstDayOfWeek: 1,
+      dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+      dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+      dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+      monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+      monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+      today: 'Hoy',
+      clear: 'Borrar'
+    }
+
+    this.types = [];
+    this.types.push({ label: 'Nuevo', value: 'Nuevo' });
+    this.types.push({ label: 'Existente', value: 'Existente' });
 
     this.productos = {
       'label': '',
@@ -223,6 +352,9 @@ export class AdministracionComponent implements OnInit {
     /* Get Tipo Productos*/
     this.tipoProductoService.getAll().subscribe(tp => {
       this.tipo_productos = tp;
+      if (this.tipo_productos.length > 0) {
+        this.selectedTP = this.tipo_productos[0]
+      }
       this.sourceTP = new LocalDataSource();
       this.sourceTP.load(this.tipo_productos);
       const selectShow: { value: string, title: string }[] = [];
@@ -235,6 +367,14 @@ export class AdministracionComponent implements OnInit {
       /* Get Productos*/
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
+        this.ngOnInitKardex();
+        this.lstProductos = [];
+        if (this.productos.length > 0) {
+          for (let entry of this.productos) {
+            if (entry.id_tipo_producto === this.selectedTP._id)
+              this.lstProductos.push(entry);
+          }
+        }
         let i = 0;
         for (const x of p) {
           const desc = this.search(x.id_tipo_producto, this.tipo_productos);
@@ -352,7 +492,55 @@ export class AdministracionComponent implements OnInit {
       this.sourcePro.load(data);
     }, err => {
       console.log(err);
+    });
+
+    this.proveedorService.getAll().subscribe(data => {
+      this.sourceProve.load(data);
+      this.settingsProve = {
+        mode: 'external',
+        noDataMessage: 'No existen registros',
+        columns: {
+          ruc: {
+            title: 'Ruc',
+            width: '14%'
+          },
+          nombre_proveedor: {
+            title: 'Nombre',
+            width: '25%'
+          },
+          direccion: {
+            title: 'Dirección',
+            width: '25%'
+          },
+          ciudad: {
+            title: 'Ciudad',
+            width: '12%'
+          },
+          telefono: {
+            title: 'Teléfono',
+            width: '12%'
+          },
+          compras: {
+            title: 'Compras',
+            width: '12%',
+            filter: false,
+            type: 'custom',
+            renderComponent: IconRenderComponent
+          }
+        },
+        actions: {
+          // columnTitle: '',
+          add: true,
+          edit: true,
+          delete: true
+        },
+        attr: {
+          class: 'table-bordered table-hover table-responsive'
+        }
+      }
     })
+
+    this.ngOnInitProve();
     this.ngOnInitProducto();
     this.ngOnInitTipoProducto();
   }
@@ -362,31 +550,29 @@ export class AdministracionComponent implements OnInit {
     setTimeout(function () {
       document.getElementById('descTPC').focus();
       document.getElementById('filesTP').style.backgroundColor = 'lightsalmon';
+      setOriginalColorsTPC();
     }, 50);
   }
 
   setCursorUpdateTP() {
     setTimeout(function () {
       document.getElementById('descTPU').focus();
+      setOriginalColorsTPU();
     }, 500);
   }
 
   setCursorAddP() {
     setTimeout(function () {
       document.getElementById('nombrePC').focus();
-      // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
       document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
-      // setOriginalColorsPC();
       setOriginalColorsPC();
-
     }, 0);
   }
 
   setCursorUpdateP() {
     setTimeout(function () {
       document.getElementById('nombrePU').focus();
-      // document.getElementById("iconPercent").style.backgroundColor = "#2196F3";
-      // setOriginalColorsPU();
+      setOriginalColorsPU();
     }, 0);
   }
 
@@ -403,104 +589,51 @@ export class AdministracionComponent implements OnInit {
   }
 
   onCreateTP(event: any) {
-    this.myInputVariable.nativeElement.value = '';
-    this.desc_tipo_producto = '';
-    this.pathLogoTP = '';
-    setOriginalColorsTPC();
+    this.myInputVariable2.nativeElement.value = '';
     this.ngOnInitTipoProducto();
   }
 
   onCreateP(event: any) {
     this.myInputVariable.nativeElement.value = '';
-    this.nombre = '';
     this.ngOnInitProducto();
   }
 
   onUpdateTP(event: any) {
-    this.id_mostar = event.data._id;
-    this.desc_tipo_producto = event.data.desc_tipo_producto;
-    this.pathLogoTPU = event.data.path;
-    setOriginalColorsTPU();
-    if (this.pathLogoTPU === undefined) {
+    this.myInputVariable3.nativeElement.value = '';
+    this.tipoProductoUpdate = event.data;
+    this.oldTipoProductoUpdate = event.data;
+    if (this.tipoProductoUpdate.path === undefined) {
       this.colorUpdate = 'black';
       setTimeout(function () {
         document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
-      }, 50);
+      }, 0);
     } else {
       this.colorUpdate = 'lightgreen';
       setTimeout(function () {
         document.getElementById('filesTPU').style.backgroundColor = 'lightgreen';
-      }, 50);
+      }, 0);
     }
   }
 
   onUpdateP(event: any) {
     this.myInputVariable1.nativeElement.value = '';
     this.productoUpdate = event.data;
-    //console.log(this.productoUpdate)
     if (this.productoUpdate.path === undefined) {
       this.colorUpdate = 'black';
       setTimeout(function () {
         document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
-      }, 50);
+      }, 0);
     } else {
       this.colorUpdate = 'lightgreen';
       setTimeout(function () {
         document.getElementById('filesU').style.backgroundColor = 'lightgreen';
-      }, 50);
+      }, 0);
     }
     if (this.productoUpdate.subproductoV.length !== 0) {
       this.flagSubProdUpdate = true;
     } else {
       this.flagSubProdUpdate = false;
     }
-    // bug 2 click edit
-    /*if (typeof (event.data.subproductoV) === 'object') {
-      let fila = '';
-      for (const entry of event.data.subproductoV) {
-        fila += '-' + entry.nombre + ' ' + entry.cantidad + ' ';
-      }
-      event.data.subproductoV = fila;
-    }
-    if (this.productoUpdate.subproductoV.length === 0) {
-      this.flagSubProdUpdate = false;
-    } else {
-      this.flagSubProdUpdate = true;
-      if (this.productoUpdate.subproductoV.length > 0) {
-        const a = this.productoUpdate.subproductoV.toString().replace(/ +(?= )/g, '');
-        this.productoUpdate.subproductoV = [];
-        this.productoUpdate.subproductoV.push(a);
-        if (this.auxSubprod === undefined) {
-          this.auxSubprod = this.productoUpdate.subproductoV;
-        }
-        const array = this.productoUpdate.subproductoV.toString().split('-');
-        this.productoUpdate.subproductoV = [];
-        let index = 0;
-        for (const entry of array) {
-          if (entry.length > 0) {
-            const vec = entry.split(' ');
-            const n = vec.length;
-            let nombre = vec[0];
-            const cant = vec[n - 3];
-            for (let i = 1; i < n - 3; i++) {
-              if (vec[i + 1] !== '') {
-                nombre += ' ' + vec[i];
-              }
-            }
-            // set subproducto to ul format
-            const aux = {
-              nombre: nombre,
-              cantidad: cant + ' ' + vec[n - 2],
-              label: nombre,
-              value: '',
-              precio_costo: this.costoCantSubProd
-            };
-            this.productoUpdate.subproductoV.push(aux);
-            index++;
-          }
-        }
-      }
-    }*/
   }
 
   onUpdatePro(event: any) {
@@ -519,18 +652,15 @@ export class AdministracionComponent implements OnInit {
     }
     this.productoService.uploadImage(this.pathLogoTP).subscribe(tp => {
       tipoProducto.path = tp;
+      console.log(tp)
       this.tipoProductoService.registerTipoProducto(tipoProducto).subscribe(data => {
         this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
-        //this.sourceTP.add(data);
-        //this.sourceTP.refresh();
-        this.showDialogTPC = false;
-        this.ngOnInit();
+        this.sourceTP.add(data);
+        this.sourceTP.refresh();
         this.ngOnInitTipoProducto();
-        this.myInputVariable.nativeElement.value = '';
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-
       });
     }, err => {
       console.log(err);
@@ -591,23 +721,44 @@ export class AdministracionComponent implements OnInit {
 
   onUpdateTPSubmit() {
     const tipoProducto = {
-      id: this.id_mostar,
-      desc_tipo_producto: this.desc_tipo_producto
+      _id: this.tipoProductoUpdate._id,
+      desc_tipo_producto: this.tipoProductoUpdate.desc_tipo_producto,
+      path: this.tipoProductoUpdate.path
     };
     if (!this.validateService.validateTipoProducto(tipoProducto)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
-    this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
-      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
-    }, err => {
-      // Log errors if any
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    });
-    this.sourceP.refresh();
-    this.ngOnInit();
-    this.showDialogTPU = false;
+    if (this.pathLogoTPU === undefined) {
+      this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+        this.sourceTP.update(this.oldTipoProductoUpdate, tipoProducto);
+        this.sourceTP.refresh();
+        this.myInputVariable3.nativeElement.value = '';
+        this.showDialogTPU = false;
+        this.tipoProductoUpdate = { '_id': '', 'desc_tipo_producto': '', 'path': '' }
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });
+    } else {
+      this.productoService.uploadImage(this.pathLogoTPU).subscribe(tp => {
+        tipoProducto.path = tp;
+        this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
+          this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+          this.sourceTP.update(this.oldTipoProductoUpdate, tipoProducto);
+          this.sourceTP.refresh();
+          this.myInputVariable3.nativeElement.value = '';
+          this.showDialogTPU = false;
+          this.tipoProductoUpdate = { '_id': '', 'desc_tipo_producto': '', 'path': '' }
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        });
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
   onUpdatePSubmit() {
@@ -642,7 +793,7 @@ export class AdministracionComponent implements OnInit {
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
       });
       this.ngOnInit();
-      this.myInputVariable.nativeElement.value = '';
+      this.myInputVariable1.nativeElement.value = '';
       this.showDialogPU = false;
       this.productoUpdate = {
         '_id': '',
@@ -665,7 +816,7 @@ export class AdministracionComponent implements OnInit {
 
         });
         this.ngOnInit();
-        this.myInputVariable.nativeElement.value = '';
+        this.myInputVariable1.nativeElement.value = '';
         this.showDialogPU = false;
       }, err => {
         console.log(err);
@@ -704,7 +855,6 @@ export class AdministracionComponent implements OnInit {
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
-
           });
         }
       }
@@ -1027,19 +1177,6 @@ export class AdministracionComponent implements OnInit {
     this.productoUpdate.precio_costo = this.productoUpdate.precio_venta * gain;
   }
 
-  /*valueChangeContenidoU($event) {
-    const onzaEnMl = 29.5735;
-    if (this.selectedLstContenido.localeCompare('Litros') == 0) {
-      this.contenidoMiliU = parseFloat((this.productoUpdate.contenidoU * 1000).toFixed(2));
-    }
-    if (this.selectedLstContenido.localeCompare('Onzas') == 0) {
-      this.contenidoMiliU = parseFloat((this.productoUpdate.contenidoU * 29.5735).toFixed(2));
-    }
-    if (this.selectedLstContenido.localeCompare('Mililitros') == 0) {
-      this.contenidoMiliU = parseFloat((this.productoUpdate.contenido).toFixed(2));
-    }
-  }*/
-
   reCalcPrevioVenta() {
     const gain = (this.utilidad / 100) + 1;
     this.precio_venta = this.precio_costo * gain;
@@ -1247,10 +1384,16 @@ export class AdministracionComponent implements OnInit {
 
   ngOnInitTipoProducto() {
     // Atributos SubProducto
+    this.tipoProductoUpdate = {
+      '_id': '',
+      'desc_tipo_producto': '',
+      'path': ''
+    };
     this.desc_tipo_producto = '';
     this.pathLogoTP = undefined;
-    this.id_mostar = '';
-    this.pathLogoTP = undefined;
+    this.pathLogoTPU = undefined;
+    this.myInputVariable2.nativeElement.value = '';
+    this.myInputVariable3.nativeElement.value = '';
   }
 
   ngOnInitProducto() {
@@ -1288,10 +1431,327 @@ export class AdministracionComponent implements OnInit {
     this.pathLogo = undefined;
     this.pathLogoU = undefined;
     this.precio_costoSubProd = 0;
+    this.myInputVariable.nativeElement.value = '';
+    this.myInputVariable1.nativeElement.value = '';
   }
 
   /* GESTION DE PROMOCIONES */
-  /* GESTION DE CONFIGURACIONES */
+
+  /* GESTION DE KARDEX */
+  public getDate(): number {
+    return this.dt && this.dt.getTime() || new Date().getTime();
+  }
+
+  ngOnInitKardex() {
+    this.kardex = {
+      'fecha': '',
+      'desc_producto': '',
+      'proveedor': '',
+      'cantidad': 0,
+      'total': 0,
+      'num_factura': ''
+    };
+    this.kardex.fecha = this.todayDate;
+    this.validRuc = false;
+    this.showDialogK = false;
+    this.showDialogKU = false;
+    this.proveedorService.getAll().subscribe(data => {
+      this.lstProveedoresK = data;
+      if (this.lstProveedoresK.length > 0) {
+        this.kardex.proveedor = this.lstProveedoresK[0];
+      }
+      this.kardexService.getAll().subscribe(data => {
+        this.lstKardex = data
+        let i = 0;
+        for (const x of data) {
+          const desc = this.searchDescProve(x.proveedor, this.lstProveedoresK);
+          this.lstKardex[i].proveedor = desc;
+          const desc1 = this.searchDescProd(x.desc_producto, this.productos);
+          this.lstKardex[i].desc_producto = desc1;
+          i++;
+        }
+        this.sourceK = new LocalDataSource();
+        this.sourceK.load(this.lstKardex);
+
+      }, err => {
+        console.log(err);
+      })
+    }, err => {
+      console.log(err);
+    })
+  }
+
+  saveKardex() {
+    console.log(this.lstProveedoresK);
+    console.log(this.kardex)
+    if (this.flagProdK === true) {
+      if (!this.validateService.validateKardex(this.kardex)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    } else {
+      if (!this.validateService.validateKardex1(this.kardex)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    }
+
+    let a: any = this.kardex.desc_producto;
+    let b: any = this.kardex.proveedor;
+    /*this.kardexService.register(this.kardex).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+      data.desc_producto = a.nombre;
+      data.proveedor = b.nombre_proveedor;
+      this.sourceK.add(data);
+      this.sourceK.refresh();
+      this.ngOnInitKardex();
+      if (this.flagProdK === true) {
+        setOriginalColorsKardex();
+      } else {
+        setOriginalColorsKardex1();
+      }
+
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });*/
+  }
+
+  showProveK() {
+    this.showDialogProve = true;
+    this.setCursorAddProve();
+  }
+
+  onClickSelectButton(event) {
+    if (this.selectedIeProd.localeCompare('Existente') == 0) {
+      this.flagProdK = false;
+      this.kardex.desc_producto = this.lstProductos[0];
+    } else {
+      this.flagProdK = true;
+      this.kardex.desc_producto = '';
+      this.setCursorAddK();
+    }
+  }
+
+  setCursorAddK() {
+    setTimeout(function () {
+      document.getElementById('desc_productoK').focus();
+      setOriginalColorsKardex();
+    }, 0);
+  }
+
+  setCursorUpdateK(event: any) {
+    this.selectedIeProd = 'Existente';
+    this.flagProdK = false;
+    this.kardexU = event.data;
+    console.log(typeof (this.kardexU.proveedor));
+    this.kardexU.proveedor = this.searchProveByDesc(this.kardexU.proveedor, this.lstProveedoresK);
+    this.kardexU.desc_producto = this.searchProdByDesc(this.kardexU.desc_producto, this.productos);
+  }
+
+  onChangelstTP($event) {
+    this.lstProductos = [];
+    for (let entry of this.productos) {
+      if (entry.id_tipo_producto.localeCompare(this.selectedTP.desc_tipo_producto) === 0) {
+        this.lstProductos.push(entry);
+      }
+    }
+    this.kardex.desc_producto = this.lstProductos[0];
+  }
+
+  searchDescProve(id, myArray) {
+    for (const entry of myArray) {
+      if (entry._id === id) {
+        return entry.nombre_proveedor;
+      }
+    }
+  }
+
+  searchProveByDesc(desc, myArray) {
+    for (const entry of myArray) {
+      if (entry.nombre_proveedor === desc) {
+        return entry;
+      }
+    }
+  }
+
+  searchProdByDesc(desc, myArray) {
+    for (const entry of myArray) {
+      if (entry.nombre === desc) {
+        return entry;
+      }
+    }
+  }
+
+  searchDescProd(id, myArray) {
+    for (const entry of myArray) {
+      if (entry._id === id) {
+        return entry.nombre;
+      }
+    }
+  }
+
+  /* GESTION DE PROVEEDORES*/
+  onChangeNombreProve($event) {
+    this.objProve.nombre_proveedor = this.formatterService.toTitleCase(this.objProve.nombre_proveedor);
+  }
+
+  onChangeEmail($event) {
+    this.objProve.correo = this.objProve.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.objProve.correo)) {
+      document.getElementById("correo").style.borderColor = "#5ff442";
+    }
+    else {
+      document.getElementById("correo").style.borderColor = "#FE2E2E";
+    }
+  }
+
+  onChangeEmailU($event) {
+    this.objProve.correo = this.objProve.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.objProve.correo)) {
+      document.getElementById("correoU").style.borderColor = "#5ff442";
+    }
+    else {
+      document.getElementById("correoU").style.borderColor = "#FE2E2E";
+    }
+  }
+
+  onChangeRuc() {
+    if (this.objProve.ruc.length != 13) {
+      document.getElementById("rucProve").style.borderColor = "#FE2E2E";
+      this.validRuc = false;
+    } else {
+      if (!this.validateService.validarRucCedula(this.objProve.ruc)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
+        document.getElementById("rucProve").style.borderColor = "#FE2E2E";
+        this.validRuc = false;
+      } else {
+        document.getElementById("rucProve").style.borderColor = "#5ff442";
+        this.validRuc = true;
+      }
+    }
+  }
+
+  onChangeRucU() {
+    if (this.objProve.ruc.length != 13) {
+      document.getElementById("rucProveU").style.borderColor = "#FE2E2E";
+      this.validRuc = false;
+    } else {
+      if (!this.validateService.validarRucCedula(this.objProve.ruc)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
+        document.getElementById("rucProveU").style.borderColor = "#FE2E2E";
+        this.validRuc = false;
+      } else {
+        document.getElementById("rucProveU").style.borderColor = "#5ff442";
+        this.validRuc = true;
+      }
+    }
+  }
+
+  onChangeCiudad($event) {
+    this.objProve.ciudad = this.formatterService.toTitleCase(this.objProve.ciudad);
+  }
+
+  setCursorAddProve() {
+    setTimeout(function () {
+      document.getElementById('nombreProve').focus();
+      setOriginalColorsProve();
+    }, 0);
+    this.objProve = {
+      nombre_proveedor: '',
+      ruc: '',
+      direccion: '',
+      ciudad: '',
+      telefono: '',
+      correo: ''
+    };
+  }
+
+  saveProveedor() {
+    if (!this.validateService.validateProveedor(this.objProve)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+      return false;
+    }
+    this.proveedorService.register(this.objProve).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+      this.sourceProve.add(data);
+      this.sourceProve.refresh();
+      this.ngOnInitProve();
+      setOriginalColorsProve();
+      this.lstProveedoresK.push(data);
+      this.kardex.proveedor = data;
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });
+  }
+
+  showProveedor(event: any) {
+    this.showProveDialog = event.data.nombre_proveedor;
+    this.showComprasDetail = true;
+  }
+
+  ngOnInitProve() {
+    this.objProve = {
+      nombre_proveedor: '',
+      ruc: '',
+      direccion: '',
+      ciudad: '',
+      telefono: '',
+      correo: ''
+    };
+    this.validRuc = false;
+    this.showDialogProve = false;
+    this.showDialogProveU = false;
+  }
+
+  setCursorUpdateProve(event: any) {
+    setTimeout(function () {
+      document.getElementById('nombreProve').focus();
+      setOriginalColorsProve();
+    }, 0);
+    this.validRuc = true;
+    this.objProve = event.data;
+  }
+
+  onDeleteProve(event): void {
+    this.openDialogProve(event.data);
+  }
+
+  openDialogProve(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          this.sourceProve.remove(data);
+          // remove from database
+          this.proveedorService.delete(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+          });
+        }
+      }
+    });
+  }
+
+  updateProveedor() {
+    if (!this.validateService.validateProveedor(this.objProve)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+      return false;
+    }
+    this.proveedorService.update(this.objProve).subscribe(data => {
+      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+      this.sourceProve.update(this.objProve, this.objProve);
+      this.sourceProve.refresh();
+      this.ngOnInitProve();
+      setOriginalColorsProve();
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });
+  }
 }
 
 function setOriginalColorsPC() {
@@ -1338,4 +1798,45 @@ function setOriginalColorsPromoU() {
   document.getElementById("nombrePromoU").style.borderColor = "#DADAD2";
   document.getElementById("desdePromoU").style.borderColor = "#DADAD2";
   document.getElementById("hastaPromoU").style.borderColor = "#DADAD2";
+}
+
+function setOriginalColorsProve() {
+  document.getElementById("rucProve").style.borderColor = "";
+  document.getElementById("correo").style.borderColor = "";
+}
+
+function setOriginalColorsKardex() {
+  document.getElementById("desc_productoK").style.borderColor = "";
+  document.getElementById("num_facturaK").style.borderColor = "";
+  document.getElementById("fechaK").style.borderColor = "";
+  document.getElementById("selectProve").style.borderColor = "";
+  document.getElementById("cantK").style.borderColor = "";
+  document.getElementById("totalK").style.borderColor = "";
+}
+
+function setOriginalColorsKardex1() {
+  document.getElementById("desc_productoK1").style.borderColor = "";
+  document.getElementById("num_facturaK").style.borderColor = "";
+  document.getElementById("fechaK").style.borderColor = "";
+  document.getElementById("selectProve").style.borderColor = "";
+  document.getElementById("cantK").style.borderColor = "";
+  document.getElementById("totalK").style.borderColor = "";
+}
+
+function setOriginalColorsKardexU() {
+  document.getElementById("desc_productoKU").style.borderColor = "";
+  document.getElementById("num_facturaKU").style.borderColor = "";
+  document.getElementById("fechaKU").style.borderColor = "";
+  document.getElementById("selectProve").style.borderColor = "";
+  document.getElementById("cantKU").style.borderColor = "";
+  document.getElementById("totalKU").style.borderColor = "";
+}
+
+function setOriginalColorsKardex1U() {
+  document.getElementById("desc_productoK1U").style.borderColor = "";
+  document.getElementById("num_facturaKU").style.borderColor = "";
+  document.getElementById("fechaKU").style.borderColor = "";
+  document.getElementById("selectProve").style.borderColor = "";
+  document.getElementById("cantKU").style.borderColor = "";
+  document.getElementById("totalKU").style.borderColor = "";
 }

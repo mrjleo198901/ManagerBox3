@@ -49,6 +49,76 @@ export class ValidateService {
     }
     return res;
   }
+  validateProveedor(proveedor) {
+    let res = true;
+    if (proveedor.nombre_proveedor == "") {
+      document.getElementById("nombreProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (proveedor.ruc == "") {
+      document.getElementById("rucProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateKardex(kardex) {
+    let res = true;
+    if (kardex.desc_producto == "") {
+      document.getElementById("desc_productoK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.num_factura == "") {
+      document.getElementById("num_facturaK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.fecha == "") {
+      document.getElementById("fechaK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.proveedor == "") {
+      document.getElementById("selectProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.cantidad == 0) {
+      document.getElementById("cantK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.total == 0) {
+      document.getElementById("totalK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateKardex1(kardex) {
+    let res = true;
+    if (kardex.desc_producto == "" || kardex.desc_producto == undefined)  {
+      document.getElementById("desc_productoK1").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.num_factura == "") {
+      document.getElementById("num_facturaK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.fecha == "") {
+      document.getElementById("fechaK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.proveedor == "") {
+      document.getElementById("selectProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.cantidad == 0) {
+      document.getElementById("cantK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.total == 0) {
+      document.getElementById("totalK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
 
   validatePromocion(promo) {
     let res = true;

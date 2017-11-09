@@ -4,6 +4,7 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { ValidateService } from '../../services/validate.service';
 import { Message, SelectItem } from 'primeng/primeng';
 import { AuthService } from '../../services/auth.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-inventario',
@@ -18,10 +19,15 @@ export class InventarioComponent implements OnInit {
   genders: SelectItem[];
   description: string;
   nombre;
+  public static updateUserStatus: Subject<boolean> = new Subject();
 
   constructor(private messageGrowlService: MessageGrowlService,
     private formBuilder: FormBuilder,
-    private validateService: ValidateService) { }
+    private validateService: ValidateService) {
+    InventarioComponent.updateUserStatus.subscribe(res => {
+      console.log("entrooooooo")
+    })
+  }
 
   ngOnInit() {
 
@@ -66,5 +72,21 @@ export class InventarioComponent implements OnInit {
   showSuccess() {
     this.messageGrowlService.notify('success', 'some component', 'ngOnInit was called!');
   }
+
+
+  //dynamic Tabs
+  public angular2TabsExample: Array<any> = [
+    { title: 'Angular Tab 1', content: 'Angular 2 Tabs are navigable windows, each window (called tab) contains content', disabled: false, removable: true },
+    { title: 'Angular Tab 2', content: 'generally we categorize contents depending on the theme', disabled: false, removable: true },
+    { title: 'Angular Tab (disabled) X', content: 'Angular 2 Tabs Content', disabled: true, removable: true }
+  ];
+  //on select a tab do something
+  public doOnTabSelect(currentTab: any) {
+    console.log("doOnTabSelect" + currentTab);
+  };
+  //on remove Tab do something
+  public removeThisTabHandler(tab: any) {
+    console.log('Remove Tab handler' + tab);
+  };
 
 }
