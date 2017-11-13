@@ -523,14 +523,15 @@
   <div class="ui-g ui-fluid">
     <div class="ui-g-12">
       <label>Descripción Producto*:</label>
-      <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButton($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
+      <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButtonU($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
     </div>
     <div class="ui-g-12" *ngIf="flagProdK">
       <input type="text" [(ngModel)]="kardexU.desc_producto" (ngModelChange)="onChangeNombrePC($event)" id="desc_productoK" name="desc_productoK"
         placeholder="Producto Nuevo" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
     </div>
+
     <div class="ui-g-6" *ngIf="!flagProdK">
-      <select [(ngModel)]="selectedTP" (ngModelChange)="onChangelstTP($event)" class="form-control input-sm">
+      <select [(ngModel)]="selectedTP" (ngModelChange)="onChangelstTPU($event)" class="form-control input-sm">
         <option *ngFor="let c of tipo_productos" [ngValue]="c" >{{c.desc_tipo_producto}}</option>
         </select>
     </div>
@@ -539,6 +540,7 @@
         <option *ngFor="let c of lstProductos" [ngValue]="c" >{{c.label}}</option>
       </select>
     </div>
+
     <div class="ui-g-12">
       <label>Proveedor*:</label>
       <div class="input-group">

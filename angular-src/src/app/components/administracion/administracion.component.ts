@@ -1482,8 +1482,6 @@ export class AdministracionComponent implements OnInit {
   }
 
   saveKardex() {
-    console.log(this.lstProveedoresK);
-    console.log(this.kardex)
     if (this.flagProdK === true) {
       if (!this.validateService.validateKardex(this.kardex)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
@@ -1495,10 +1493,9 @@ export class AdministracionComponent implements OnInit {
         return false;
       }
     }
-
     let a: any = this.kardex.desc_producto;
     let b: any = this.kardex.proveedor;
-    /*this.kardexService.register(this.kardex).subscribe(data => {
+    this.kardexService.register(this.kardex).subscribe(data => {
       this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
       data.desc_producto = a.nombre;
       data.proveedor = b.nombre_proveedor;
@@ -1510,11 +1507,10 @@ export class AdministracionComponent implements OnInit {
       } else {
         setOriginalColorsKardex1();
       }
-
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    });*/
+    });
   }
 
   showProveK() {
@@ -1533,6 +1529,17 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
+  onClickSelectButtonU(event) {
+    if (this.selectedIeProd.localeCompare('Existente') == 0) {
+      this.flagProdK = false;
+      this.kardexU.desc_producto = this.lstProductos[0];
+    } else {
+      this.flagProdK = true;
+      this.kardexU.desc_producto = '';
+      this.setCursorAddK();
+    }
+  }
+
   setCursorAddK() {
     setTimeout(function () {
       document.getElementById('desc_productoK').focus();
@@ -1544,9 +1551,20 @@ export class AdministracionComponent implements OnInit {
     this.selectedIeProd = 'Existente';
     this.flagProdK = false;
     this.kardexU = event.data;
-    console.log(typeof (this.kardexU.proveedor));
-    this.kardexU.proveedor = this.searchProveByDesc(this.kardexU.proveedor, this.lstProveedoresK);
-    this.kardexU.desc_producto = this.searchProdByDesc(this.kardexU.desc_producto, this.productos);
+    let typeProd = typeof (this.kardexU.desc_producto);
+    if (typeProd.localeCompare('string') === 0) {
+      this.kardexU.proveedor = this.searchProveByDesc(this.kardexU.proveedor, this.lstProveedoresK);
+      let prod = this.searchProdByDesc(this.kardexU.desc_producto, this.productos);
+      this.selectedTP = this.searchTipoProdByDesc(prod.id_tipo_producto, this.tipo_productos);
+      this.onChangelstTPU();
+      this.kardexU.desc_producto = prod;
+    } else {
+      let aux: any;
+      aux = this.kardexU.desc_producto;
+      this.selectedTP = this.searchTipoProdByDesc(aux.id_tipo_producto, this.tipo_productos);
+      this.onChangelstTPU();
+      this.kardexU.desc_producto = aux;
+    }
   }
 
   onChangelstTP($event) {
@@ -1557,6 +1575,16 @@ export class AdministracionComponent implements OnInit {
       }
     }
     this.kardex.desc_producto = this.lstProductos[0];
+  }
+
+  onChangelstTPU() {
+    this.lstProductos = [];
+    for (let entry of this.productos) {
+      if (entry.id_tipo_producto.localeCompare(this.selectedTP.desc_tipo_producto) === 0) {
+        this.lstProductos.push(entry);
+      }
+    }
+    this.kardexU.desc_producto = this.lstProductos[0];
   }
 
   searchDescProve(id, myArray) {
@@ -1583,12 +1611,53 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
+  searchTipoProdByDesc(desc, myArray) {
+    for (const entry of myArray) {
+      if (entry.desc_tipo_producto === desc) {
+        return entry;
+      }
+    }
+  }
+
   searchDescProd(id, myArray) {
     for (const entry of myArray) {
       if (entry._id === id) {
         return entry.nombre;
       }
     }
+  }
+
+  updateKardex() {
+    console.log(this.kardexU);
+    if (this.flagProdK === true) {
+      if (!this.validateService.validateKardex(this.kardexU)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    } else {
+      if (!this.validateService.validateKardex1(this.kardexU)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    }
+    let a: any = this.kardexU.desc_producto;
+    let b: any = this.kardexU.proveedor;
+    this.kardexService.update(this.kardexU).subscribe(data => {
+      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+      data.desc_producto = a.nombre;
+      data.proveedor = b.nombre_proveedor;
+      this.sourceK.update(this.kardexU, data);
+      this.sourceK.refresh();
+      this.ngOnInitKardex();
+      if (this.flagProdK === true) {
+        setOriginalColorsKardex();
+      } else {
+        setOriginalColorsKardex1();
+      }
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });
   }
 
   /* GESTION DE PROVEEDORES*/
