@@ -39,6 +39,17 @@ export class ProductoService {
       .map(res => res.json())
   }
 
+  getById(_id) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('_id', _id);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'producto/', options)
+      .map(res => res.json())
+  }
+
   getByPromos() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

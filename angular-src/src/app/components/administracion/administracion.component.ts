@@ -10,6 +10,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { ImageRenderComponent } from '../image-render/image-render.component';
 import { IconRenderComponent } from '../image-render/icon-render.component';
+import { IconRenderKComponent } from '../image-render/icon-renderK.component';
 import { PipeRenderComponent } from '../pipe-render/pipe-render.component';
 import { SubprodRenderComponent } from '../subprod-render/subprod-render.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
@@ -65,7 +66,6 @@ export class AdministracionComponent implements OnInit {
   selected_productoU;
   lista_subProductos: any = [];
   medidaUtilidad;
-
   cantSubprod: number;
   cantSubProdU: number;
   productos: any = [];
@@ -175,48 +175,7 @@ export class AdministracionComponent implements OnInit {
   tipoProductoUpdate: any;
   oldTipoProductoUpdate: any;
   settingsK = {
-    mode: 'external',
-    noDataMessage: 'No existen registros',
-    columns: {
-      num_factura: {
-        title: 'Número Factura',
-        width: '14%'
-      },
-      fecha: {
-        title: 'Fecha',
-        width: '15%'
-      },
-      desc_producto: {
-        title: 'Descripción Producto',
-        width: '22%'
-      },
-      proveedor: {
-        title: 'Proveedor',
-        width: '22%'
-      },
-      cantidad: {
-        title: 'Unidades',
-        width: '9%'
-      },
-      total: {
-        title: 'Total',
-        width: '9%'
-      },
-      unidades_vendidas: {
-        title: 'Unidades Vendidas',
-        width: '9%'
-      }
-    },
-    actions: {
-      // columnTitle: '',
-      add: true,
-      edit: true,
-      delete: true
-    },
-    attr: {
-      class: 'table-bordered table-hover table-responsive'
-    }
-  }
+  };
   sourceK: LocalDataSource = new LocalDataSource();
   showDialogK = false;
   kardex = {
@@ -225,7 +184,8 @@ export class AdministracionComponent implements OnInit {
     'proveedor': '',
     'cantidad': 0,
     'total': 0,
-    'num_factura': ''
+    'num_factura': '',
+    'contenido': 0
   };
   dt: Date = new Date();
   es: any;
@@ -263,8 +223,31 @@ export class AdministracionComponent implements OnInit {
     'proveedor': '',
     'cantidad': 0,
     'total': 0,
-    'num_factura': ''
+    'num_factura': '',
+    'contenido': 0
   };
+  newProd = {
+    nombre: '',
+    precio_costo: 0,
+    precio_venta: 0,
+    utilidad: 0,
+    cant_existente: 0,
+    subproductoV: '',
+    id_tipo_producto: '',
+    path: '',
+    contenido: 0,
+    promocion: [],
+    _id: ''
+  };
+  prizeKardex = 0;
+  aux;
+  showVentasDetail = false;
+  showProdDialog;
+  tipo_resumen_ventas: any[];
+  selectedTR: any;
+  flagResumenVentas = false;
+  lstFrecuencias: any[];
+  selectedFrecuencia: any;
 
   constructor(
     private validateService: ValidateService,
@@ -278,7 +261,7 @@ export class AdministracionComponent implements OnInit {
     private promocionService: PromocionService,
     private proveedorService: ProveedorService,
     private kardexService: KardexService) {
-    this.id_mostar = 0;
+
     this.pathLogo = undefined;
     this.lstUnidades = [];
     this.lstUnidades.push({ label: 'Litros', value: { id: 1, name: 'Litros', code: 'Lts' } });
@@ -336,6 +319,19 @@ export class AdministracionComponent implements OnInit {
     this.types.push({ label: 'Nuevo', value: 'Nuevo' });
     this.types.push({ label: 'Existente', value: 'Existente' });
 
+    this.tipo_resumen_ventas = [];
+    this.tipo_resumen_ventas.push({ label: 'Sin Rango de Fechas', value: 0 });
+    this.tipo_resumen_ventas.push({ label: 'Con Rango de Fechas', value: 1 });
+    this.selectedTR = this.tipo_resumen_ventas[0];
+
+    this.lstFrecuencias = [];
+    this.lstFrecuencias.push({ label: 'Ultimo Dia', value: 0 });
+    this.lstFrecuencias.push({ label: 'Ultima Semana', value: 1 });
+    this.lstFrecuencias.push({ label: 'Ultimo Mes', value: 2 });
+    this.lstFrecuencias.push({ label: 'Ultimo Trimestre', value: 3 });
+    this.lstFrecuencias.push({ label: 'Ultimo Semestre', value: 4 });
+    this.lstFrecuencias.push({ label: 'Ultimo Año', value: 5 });
+    this.selectedFrecuencia = this.lstFrecuencias[0];
     this.productos = {
       'label': '',
       'value': '',
@@ -367,7 +363,76 @@ export class AdministracionComponent implements OnInit {
       /* Get Productos*/
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
-        this.ngOnInitKardex();
+        this.proveedorService.getAll().subscribe(data => {
+          this.lstProveedoresK = data;
+          if (this.lstProveedoresK.length > 0) {
+            this.kardex.proveedor = this.lstProveedoresK[0];
+          }
+          this.kardexService.getAll().subscribe(data => {
+            this.lstKardex = data
+            let i = 0;
+            for (const x of data) {
+              const desc = this.searchDescProve(x.proveedor, this.lstProveedoresK);
+              this.lstKardex[i].proveedor = desc;
+              const desc1 = this.searchDescProd(x.desc_producto, this.productos);
+              this.lstKardex[i].desc_producto = desc1;
+              i++;
+            }
+            this.sourceK = new LocalDataSource();
+            this.sourceK.load(this.lstKardex);
+            this.settingsK = {
+              mode: 'external',
+              noDataMessage: 'No existen registros',
+              columns: {
+                num_factura: {
+                  title: 'Número Factura',
+                  width: '14%'
+                },
+                fecha: {
+                  title: 'Fecha',
+                  width: '15%'
+                },
+                desc_producto: {
+                  title: 'Descripción Producto',
+                  width: '22%'
+                },
+                proveedor: {
+                  title: 'Proveedor',
+                  width: '22%'
+                },
+                cantidad: {
+                  title: 'Unidades',
+                  width: '9%'
+                },
+                total: {
+                  title: 'Total',
+                  width: '9%'
+                },
+                unidades_vendidas: {
+                  title: 'Unidades Vendidas',
+                  width: '9%',
+                  filter: false,
+                  type: 'custom',
+                  renderComponent: IconRenderKComponent
+                }
+              },
+              actions: {
+                // columnTitle: '',
+                add: true,
+                edit: true,
+                delete: true
+              },
+              attr: {
+                class: 'table-bordered table-hover table-responsive'
+              }
+            }
+
+          }, err => {
+            console.log(err);
+          })
+        }, err => {
+          console.log(err);
+        })
         this.lstProductos = [];
         if (this.productos.length > 0) {
           for (let entry of this.productos) {
@@ -1449,36 +1514,13 @@ export class AdministracionComponent implements OnInit {
       'proveedor': '',
       'cantidad': 0,
       'total': 0,
-      'num_factura': ''
+      'num_factura': '',
+      'contenido': 0
     };
     this.kardex.fecha = this.todayDate;
     this.validRuc = false;
     this.showDialogK = false;
     this.showDialogKU = false;
-    this.proveedorService.getAll().subscribe(data => {
-      this.lstProveedoresK = data;
-      if (this.lstProveedoresK.length > 0) {
-        this.kardex.proveedor = this.lstProveedoresK[0];
-      }
-      this.kardexService.getAll().subscribe(data => {
-        this.lstKardex = data
-        let i = 0;
-        for (const x of data) {
-          const desc = this.searchDescProve(x.proveedor, this.lstProveedoresK);
-          this.lstKardex[i].proveedor = desc;
-          const desc1 = this.searchDescProd(x.desc_producto, this.productos);
-          this.lstKardex[i].desc_producto = desc1;
-          i++;
-        }
-        this.sourceK = new LocalDataSource();
-        this.sourceK.load(this.lstKardex);
-
-      }, err => {
-        console.log(err);
-      })
-    }, err => {
-      console.log(err);
-    })
   }
 
   saveKardex() {
@@ -1493,24 +1535,70 @@ export class AdministracionComponent implements OnInit {
         return false;
       }
     }
-    let a: any = this.kardex.desc_producto;
-    let b: any = this.kardex.proveedor;
-    this.kardexService.register(this.kardex).subscribe(data => {
-      this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
-      data.desc_producto = a.nombre;
-      data.proveedor = b.nombre_proveedor;
-      this.sourceK.add(data);
-      this.sourceK.refresh();
-      this.ngOnInitKardex();
-      if (this.flagProdK === true) {
-        setOriginalColorsKardex();
-      } else {
-        setOriginalColorsKardex1();
-      }
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    });
+    if (this.flagProdK === true) {
+      const producto = {
+        nombre: this.kardex.desc_producto,
+        precio_costo: this.kardex.total / this.kardex.cantidad,
+        precio_venta: 0,
+        utilidad: 30,
+        cant_existente: this.kardex.cantidad,
+        subproductoV: [],
+        id_tipo_producto: this.selectedTP._id,
+        path: '',
+        contenido: this.kardex.contenido,
+        promocion: []
+      };
+      producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
+      this.productoService.registerProducto(producto).subscribe(data => {
+        this.kardex.desc_producto = data._id;
+        this.kardexService.register(this.kardex).subscribe(dataP => {
+          this.sourceK.add(dataP);
+          this.sourceK.refresh();
+          this.ngOnInit();
+          this.ngOnInitKardex();
+          this.messageGrowlService.notify('info', 'Información', 'Se ha ingresado un nuevo producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });
+      setOriginalColorsKardex();
+    } else {
+      let prod: any;
+      prod = this.kardex.desc_producto;
+      const producto = {
+        nombre: prod.nombre,
+        precio_costo: (parseFloat(prod.precio_costo) + (this.kardex.total / this.kardex.cantidad)) / 2,
+        precio_venta: 0,
+        utilidad: prod.utilidad,
+        cant_existente: prod.cant_existente + this.kardex.cantidad,
+        subproductoV: prod.subproductoV,
+        id_tipo_producto: this.selectedTP._id,
+        path: prod.path,
+        contenido: prod.contenido,
+        promocion: prod.promocion,
+        _id: prod._id
+      };
+      producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
+      this.productoService.updateProducto(producto).subscribe(data => {
+        this.ngOnInit();
+        this.ngOnInitKardex();
+        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizada el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      })
+      setOriginalColorsKardex1();
+    }
+  }
+
+  calcPrecioVentaKardex(precio_costo, utilidad) {
+    precio_costo = (precio_costo * 100) / 100;
+    const gain = (utilidad / 100) + 1;
+    return (precio_costo * gain);
   }
 
   showProveK() {
@@ -1522,6 +1610,10 @@ export class AdministracionComponent implements OnInit {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
       this.flagProdK = false;
       this.kardex.desc_producto = this.lstProductos[0];
+      let a: any;
+      a = this.kardex.desc_producto
+      this.newProd = a;
+      this.kardex.contenido = this.newProd.contenido;
     } else {
       this.flagProdK = true;
       this.kardex.desc_producto = '';
@@ -1533,14 +1625,23 @@ export class AdministracionComponent implements OnInit {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
       this.flagProdK = false;
       this.kardexU.desc_producto = this.lstProductos[0];
+      let a: any;
+      a = this.kardexU.desc_producto
+      this.newProd = a;
+      this.kardexU.contenido = this.newProd.contenido;
     } else {
       this.flagProdK = true;
       this.kardexU.desc_producto = '';
-      this.setCursorAddK();
+      setTimeout(function () {
+        document.getElementById('desc_productoKU').focus();
+        setOriginalColorsKardex();
+      }, 0);
     }
   }
 
   setCursorAddK() {
+    this.selectedIeProd = 'Nuevo';
+    this.flagProdK = true;
     setTimeout(function () {
       document.getElementById('desc_productoK').focus();
       setOriginalColorsKardex();
@@ -1550,6 +1651,9 @@ export class AdministracionComponent implements OnInit {
   setCursorUpdateK(event: any) {
     this.selectedIeProd = 'Existente';
     this.flagProdK = false;
+    setTimeout(function () {
+      setOriginalColorsKardex1U();
+    }, 0);
     this.kardexU = event.data;
     let typeProd = typeof (this.kardexU.desc_producto);
     if (typeProd.localeCompare('string') === 0) {
@@ -1575,6 +1679,10 @@ export class AdministracionComponent implements OnInit {
       }
     }
     this.kardex.desc_producto = this.lstProductos[0];
+    let a: any;
+    a = this.kardex.desc_producto
+    this.newProd = a;
+    this.kardex.contenido = this.newProd.contenido;
   }
 
   onChangelstTPU() {
@@ -1585,6 +1693,44 @@ export class AdministracionComponent implements OnInit {
       }
     }
     this.kardexU.desc_producto = this.lstProductos[0];
+    let a: any;
+    a = this.kardexU.desc_producto
+    this.newProd = a;
+    this.kardexU.contenido = this.newProd.contenido;
+  }
+
+  onChangeProdK($event) {
+    let a: any;
+    a = this.kardex.desc_producto
+    this.newProd = a;
+    this.kardex.contenido = this.newProd.contenido;
+  }
+
+  onChangeProdKU($event) {
+    let a: any;
+    a = this.kardexU.desc_producto
+    this.newProd = a;
+    this.kardexU.contenido = this.newProd.contenido;
+  }
+
+  onChangeUnidades($event) {
+    if (this.kardex.total !== 0 && this.kardex.cantidad !== 0)
+      this.prizeKardex = this.kardex.total / this.kardex.cantidad
+  }
+
+  onChangeTotalK($event) {
+    if (this.kardex.total !== 0 && this.kardex.cantidad !== 0)
+      this.prizeKardex = this.kardex.total / this.kardex.cantidad
+  }
+
+  onChangeUnidadesU($event) {
+    if (this.kardexU.total !== 0 && this.kardexU.cantidad !== 0)
+      this.prizeKardex = this.kardexU.total / this.kardexU.cantidad
+  }
+
+  onChangeTotalKU($event) {
+    if (this.kardexU.total !== 0 && this.kardexU.cantidad !== 0)
+      this.prizeKardex = this.kardexU.total / this.kardexU.cantidad
   }
 
   searchDescProve(id, myArray) {
@@ -1627,37 +1773,178 @@ export class AdministracionComponent implements OnInit {
     }
   }
 
+  searchOldProdK(id, callback: (d) => void) {
+    this.kardexService.getById(id).subscribe(data => {
+      return this.productoService.getById(data[0].desc_producto).subscribe(res => {
+        callback(res);
+      }, err => {
+        console.error(err);
+      });
+    }, err => {
+      console.log(err);
+    })
+  }
+
   updateKardex() {
-    console.log(this.kardexU);
     if (this.flagProdK === true) {
-      if (!this.validateService.validateKardex(this.kardexU)) {
+      if (!this.validateService.validateKardexU(this.kardexU)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
       }
     } else {
-      if (!this.validateService.validateKardex1(this.kardexU)) {
+      if (!this.validateService.validateKardex1U(this.kardexU)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
       }
     }
-    let a: any = this.kardexU.desc_producto;
-    let b: any = this.kardexU.proveedor;
-    this.kardexService.update(this.kardexU).subscribe(data => {
-      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
-      data.desc_producto = a.nombre;
-      data.proveedor = b.nombre_proveedor;
-      this.sourceK.update(this.kardexU, data);
-      this.sourceK.refresh();
-      this.ngOnInitKardex();
-      if (this.flagProdK === true) {
-        setOriginalColorsKardex();
-      } else {
-        setOriginalColorsKardex1();
-      }
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    });
+    if (this.flagProdK === true) {
+
+      let prodToUpd: any;
+      let a: any = this.kardexU;
+      //Update old producto
+      this.searchOldProdK(a._id, (data) => {
+        prodToUpd = data;
+        this.kardexService.getById(a._id).subscribe(dataK => {
+          let cantToDrop = parseFloat(dataK[0].cantidad);
+          prodToUpd[0].cant_existente -= cantToDrop;
+          this.productoService.updateProducto(prodToUpd[0]).subscribe(res => {
+            this.ngOnInit();
+            this.ngOnInitKardex();
+          }, err => {
+            console.error(err);
+          });
+        }, err => {
+          console.log(err);
+        })
+      });
+      //Insert new producto
+      const producto = {
+        nombre: this.kardexU.desc_producto,
+        precio_costo: this.kardexU.total / this.kardexU.cantidad,
+        precio_venta: 0,
+        utilidad: 30,
+        cant_existente: this.kardexU.cantidad,
+        subproductoV: [],
+        id_tipo_producto: this.selectedTP._id,
+        path: '',
+        contenido: this.kardexU.contenido,
+        promocion: []
+      };
+      producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
+      this.productoService.registerProducto(producto).subscribe(data => {
+        this.kardexU.desc_producto = data._id;
+        this.kardexService.update(this.kardexU).subscribe(dataP => {
+          this.ngOnInit();
+          this.ngOnInitKardex();
+          this.messageGrowlService.notify('info', 'Información', 'Se ha ingresado un nuevo producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });
+      setOriginalColorsKardex();
+    } else {
+      //Verificar si se cambio de producto existente
+      let prod_actual: any = this.kardexU.desc_producto;
+      let a: any = this.kardexU;
+      this.kardexService.getById(a._id).subscribe(dataK => {
+        let idProdKardex = dataK[0].desc_producto;
+        if (prod_actual._id === idProdKardex) {
+          let cant1 = parseFloat(prod_actual.cant_existente);
+          let cant2 = this.kardexU.cantidad;
+          let cant3 = parseFloat(dataK[0].cantidad);
+          let promCant = (cant1 - cant3) + cant2;
+          console.log(promCant);
+          let pc1 = prod_actual.precio_costo;
+          let pc2 = this.kardexU.total / this.kardexU.cantidad;
+          let pc3 = dataK[0].total / dataK[0].cantidad;
+          let pcAnt = (pc1 * 2) - pc3;
+          let promPC = (pc2 + pcAnt) / 2
+          console.log(promPC);
+          const producto = {
+            nombre: prod_actual.nombre,
+            precio_costo: promPC,
+            precio_venta: 0,
+            utilidad: prod_actual.utilidad,
+            cant_existente: promCant,
+            subproductoV: prod_actual.subproductoV,
+            id_tipo_producto: this.selectedTP._id,
+            path: prod_actual.path,
+            contenido: prod_actual.contenido,
+            promocion: prod_actual.promocion,
+            _id: prod_actual._id
+          };
+          producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
+          this.productoService.updateProducto(producto).subscribe(data => {
+            this.kardexU.desc_producto = data._id;
+            this.kardexService.update(this.kardexU).subscribe(dataP => {
+              this.ngOnInit();
+              this.ngOnInitKardex();
+              this.messageGrowlService.notify('info', 'Información', 'Se ha cambiado el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+            }, err => {
+              console.log(err);
+              this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+            })
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+          })
+        } else {
+          let cant1 = parseFloat(prod_actual.cant_existente);
+          let cant2 = parseFloat(this.kardexU.cantidad.toString());
+          let cant3 = parseFloat(dataK[0].cantidad);
+          this.productoService.getById(idProdKardex).subscribe(dataP => {
+            dataP[0].cant_existente -= cant3;
+            this.productoService.updateProducto(dataP[0]).subscribe(dataP1 => {
+              this.productoService.getById(prod_actual._id).subscribe(dataP2 => {
+                let nCant = cant1 + cant2;
+                dataP2[0].cant_existente = nCant;
+                this.productoService.updateProducto(dataP2[0]).subscribe(dataP3 => {
+                  this.kardexService.update(this.kardexU).subscribe(dataK => {
+                    this.ngOnInit();
+                    this.ngOnInitKardex();
+                    this.messageGrowlService.notify('info', 'Información', 'Se ha cambiado el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+                  }, err => {
+                    console.log(err);
+                  })
+                }, err => {
+                  console.log(err);
+                })
+              }, err => {
+                console.log(err);
+              })
+            }, err => {
+              console.log(err);
+            })
+          }, err => {
+            console.log(err);
+          })
+        }
+      }, err => {
+        console.log(err);
+      })
+      setOriginalColorsKardex1();
+    }
+  }
+
+  showKardex(event: any) {
+    this.showProdDialog = event.data.desc_producto;
+    this.showVentasDetail = true;
+  }
+
+  onChangelstTR($event) {
+    if (this.selectedTR.value === 0) {
+      this.flagResumenVentas = false;
+    }
+    if (this.selectedTR.value === 1) {
+      this.flagResumenVentas = true;
+    }
+  }
+  onChangeFrecuencia($event) {
+    console.log(this.selectedFrecuencia);
   }
 
   /* GESTION DE PROVEEDORES*/
@@ -1902,10 +2189,7 @@ function setOriginalColorsKardexU() {
 }
 
 function setOriginalColorsKardex1U() {
-  document.getElementById("desc_productoK1U").style.borderColor = "";
   document.getElementById("num_facturaKU").style.borderColor = "";
-  document.getElementById("fechaKU").style.borderColor = "";
-  document.getElementById("selectProve").style.borderColor = "";
   document.getElementById("cantKU").style.borderColor = "";
   document.getElementById("totalKU").style.borderColor = "";
 }

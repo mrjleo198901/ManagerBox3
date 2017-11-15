@@ -20,6 +20,7 @@ import { PersonalComponent } from './components/personal/personal.component';
 import { AdministracionComponent } from './components/administracion/administracion.component';
 import { ImageRenderComponent } from './components/image-render/image-render.component';
 import { IconRenderComponent } from './components/image-render/icon-render.component';
+import { IconRenderKComponent } from './components/image-render/icon-renderK.component'
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { InventarioComponent } from './components/inventario/inventario.component';
 /*Services*/
@@ -97,6 +98,7 @@ const appRoutes: Routes = [
     AdministracionComponent,
     ImageRenderComponent,
     IconRenderComponent,
+    IconRenderKComponent,
     ConfirmDialogComponent,
     InventarioComponent,
     NotificationComponent,
@@ -104,7 +106,7 @@ const appRoutes: Routes = [
     PipeRenderComponent,
     SubprodRenderComponent
   ],
-  entryComponents: [ImageRenderComponent, IconRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
+  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

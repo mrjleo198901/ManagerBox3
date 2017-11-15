@@ -3,12 +3,13 @@ var mongoose = restful.mongoose;
 
 var comprasSchema = new mongoose.Schema({
 
-    cantidad: Number,
+    cantidad: String,
     desc_producto: mongoose.Schema.Types.ObjectId,
     fecha: String,
     num_factura: String,
     proveedor: mongoose.Schema.Types.ObjectId,
-    total: Number,
+    total: String,
+    contenido: String
 
 });
 

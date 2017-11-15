@@ -35,4 +35,14 @@ export class KardexService {
     return this.http.delete(url + 'compras/' + kardex, { headers: headers })
       .map(res => res.json());
   }
+  getById(_id) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('_id', _id);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'compras/', options)
+      .map(res => res.json())
+  }
 }

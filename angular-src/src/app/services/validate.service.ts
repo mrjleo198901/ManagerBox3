@@ -88,12 +88,16 @@ export class ValidateService {
       document.getElementById("totalK").style.borderColor = "#FE2E2E";
       res = false;
     }
+    if (kardex.contenido == 0) {
+      document.getElementById("contK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
     return res;
   }
 
   validateKardex1(kardex) {
     let res = true;
-    if (kardex.desc_producto == "" || kardex.desc_producto == undefined)  {
+    if (kardex.desc_producto == "" || kardex.desc_producto == undefined) {
       document.getElementById("desc_productoK1").style.borderColor = "#FE2E2E";
       res = false;
     }
@@ -115,6 +119,76 @@ export class ValidateService {
     }
     if (kardex.total == 0) {
       document.getElementById("totalK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.contenido == 0) {
+      document.getElementById("contK").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateKardexU(kardex) {
+    let res = true;
+    if (kardex.desc_producto == "") {
+      document.getElementById("desc_productoKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.num_factura == "") {
+      document.getElementById("num_facturaKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.fecha == "") {
+      document.getElementById("fechaKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.proveedor == "") {
+      document.getElementById("selectProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.cantidad == 0) {
+      document.getElementById("cantKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.total == 0) {
+      document.getElementById("totalKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.contenido == 0) {
+      document.getElementById("contKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateKardex1U(kardex) {
+    let res = true;
+    if (kardex.desc_producto == "" || kardex.desc_producto == undefined) {
+      document.getElementById("desc_productoK1U").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.num_factura == "") {
+      document.getElementById("num_facturaKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.fecha == "") {
+      document.getElementById("fechaKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.proveedor == "") {
+      document.getElementById("selectProve").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.cantidad == 0) {
+      document.getElementById("cantKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.total == 0) {
+      document.getElementById("totalKU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (kardex.contenido == 0) {
+      document.getElementById("contKU").style.borderColor = "#FE2E2E";
       res = false;
     }
     return res;
