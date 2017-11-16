@@ -1947,6 +1947,48 @@ export class AdministracionComponent implements OnInit {
     console.log(this.selectedFrecuencia);
   }
 
+  onDeleteK(event): void {
+    this.openDialogK(event.data);
+  }
+
+  openDialogK(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          let resCant = parseFloat(data.cantidad);
+          let prod: any = data.desc_producto;
+          console.log(prod);
+          // remove from database
+          this.kardexService.delete(data._id).subscribe(data => {
+            this.productoService.getByNombre(prod).subscribe(data => {
+              //Update producto
+              let cant_exis = data[0].cant_existente;
+              let res = cant_exis - resCant;
+              data[0].cant_existente = res;
+              this.productoService.updateProducto(data[0]).subscribe(data => {
+                this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+                this.ngOnInit();
+                this.ngOnInitKardex();
+                this.sourceK.remove(data);
+                this.sourceK.refresh();
+              }, err => {
+                console.log(err);
+                this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+              });
+            }, err => {
+              console.log(err);
+              this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+            });
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+          });
+        }
+      }
+    });
+  }
+
   /* GESTION DE PROVEEDORES*/
   onChangeNombreProve($event) {
     this.objProve.nombre_proveedor = this.formatterService.toTitleCase(this.objProve.nombre_proveedor);
