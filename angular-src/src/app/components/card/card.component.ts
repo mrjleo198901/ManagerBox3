@@ -160,10 +160,10 @@ export class CardComponent implements OnInit {
   rucFactura;
   flagFP = false;
   lstFP: any = [];
-  selectedFP;
+  selectedFP: any;
   flagInsertRuc = true;
   selectedRucFactura;
-  totalConsumo = 10;
+  totalConsumo: number = 0;
   flagCheckVenta = true;
   telefonoS;
   direccionS;
@@ -191,6 +191,13 @@ export class CardComponent implements OnInit {
     _id: ''
   }
   validCI = false;
+  abono: number = 0;
+  flagPrint = true;
+  flagCheckFP = false;
+  flagFP2 = false;
+  fpEfectivo = 0;
+  fpTarjeta = 0;
+  flagFP3 = false;
 
   constructor(
     private validateService: ValidateService,
@@ -250,17 +257,14 @@ export class CardComponent implements OnInit {
       'descripcion': ''
     };
 
-    this.lstFP = [
-      {
-        id: 1,
-        label: "Efectivo",
-        value: 1
-      }, {
-        id: 2,
-        label: "Credito",
-        value: 2
-      }
-    ];
+    this.lstFP = [];
+    this.lstFP.push({ label: 'Efectivo', value: 0 });
+    this.lstFP.push({ label: 'Tarjeta de Crédito', value: 1 });
+    this.lstFP.push({ label: 'Efectivo y Tarjeta de Crédito', value: 2 });
+    this.lstFP.push({ label: 'Por Cobrar', value: 3 });
+    this.lstFP.push({ label: 'Consumo en Cero', value: 4 });
+    this.selectedFP = this.lstFP[0];
+    console.log(this.selectedFP)
   }
 
   ngOnInit() {
@@ -776,7 +780,7 @@ export class CardComponent implements OnInit {
 
   onChangeCILength($event) {
     if (this.cedula.length != 10) {
-      this.nfLael = "Usuario no encontrado.";
+      this.nfLael = "";
       document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
       document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
@@ -784,42 +788,48 @@ export class CardComponent implements OnInit {
       this.cardNumber = "";
       this.flagCaUsFound = false;
     }
-    if (this.cedula.length != 13) {
-      this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
-      this.flagUserFound = false;
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
-      document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
-      this.cardNumber = "";
-      this.flagCaUsFound = false;
-    }
-    if (this.cedula.length == 10 || this.cedula.length == 13) {
-      this.checkClient();
+    if (this.cedula.length == 10) {
+      if (!this.validateService.validarRucCedula(this.cedula)) {
+        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
+      } else {
+        this.checkClient();
+      }
     }
   }
 
   checkClient() {
-    this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
-    if (this.searchUser !== undefined) {
-      this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
-      document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
-      this.flagUserFound = true;
-      this.checkCard();
-      setTimeout(function () {
-        document.getElementById('numero').focus();
-      }, 0)
-      if (this.flagCardFound && this.flagUserFound) {
-        this.flagCaUsFound = true;
+    let a = undefined;
+    this.activeCardsService.searchByCI(this.cedula).subscribe(data => {
+      a = data[0];
+      if (a === undefined) {
+        this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
+        if (this.searchUser !== undefined) {
+          this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
+          document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
+          this.flagUserFound = true;
+          this.checkCard();
+          setTimeout(function () {
+            document.getElementById('numero').focus();
+          }, 0)
+          if (this.flagCardFound && this.flagUserFound) {
+            this.flagCaUsFound = true;
+          } else {
+            this.flagCaUsFound = false;
+          }
+        } else {
+          this.flagCaUsFound = false;
+          this.nfLael = "Cliente no encontrado.";
+          document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+          this.flagUserFound = false;
+          this.cardNumber = "";
+        }
       } else {
-        this.flagCaUsFound = false;
+        this.messageGrowlService.notify('warn', 'Advertencia', 'El usuario ingresado ya registra un tarjeta activa!');
       }
-    } else {
-      this.flagCaUsFound = false;
-      this.nfLael = "Usuario no encontrado.";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
-      this.flagUserFound = false;
-      this.cardNumber = "";
-    }
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
   }
 
   onChangeCI() {
@@ -1158,21 +1168,44 @@ export class CardComponent implements OnInit {
   /*TAB CLOSE*/
   print(): void {
     this.showDialogFP = true;
-  }
 
-  print1(): void {
-    this.showDialogFP = true;
+    /*setTimeout(function () {
+      this.selectedFP = this.lstFP[0];
+    }, 0)*/
+
+    console.log(this.selectedFP)
+    this.flagPrint = true;
   }
 
   printConf($event) {
     //this.flagFP = true
+    console.log(this.flagPrint);
   }
 
   changeFP($event) {
-    if (this.selectedFP.localeCompare('Credito') == 0) {
+    console.log(this.selectedFP)
+    this.flagCheckFP = true;
+
+    if (this.selectedFP.value === 0) {
+      this.flagFP3 = true;
+    } else {
+      this.flagFP3 = false;
+    }
+
+    if (this.selectedFP.value === 1) {
+      this.openCheckout();
+    }
+
+    if (this.selectedFP.value === 3) {
       this.flagFP = true;
     } else {
       this.flagFP = false;
+    }
+
+    if (this.selectedFP.value === 2) {
+      this.flagFP2 = true;
+    } else {
+      this.flagFP2 = false;
     }
   }
 
@@ -1198,6 +1231,15 @@ export class CardComponent implements OnInit {
     this.direccionS = '';
     this.flagFP1 = false;
     this.rucFactura = '';
+  }
+
+  changeAbono($event) {
+    console.log(this.abono);
+    /*if (this.abono > this.totalPagar){
+      console.log("mayor")
+      this.abono = this.totalConsumo
+    }*/
+
   }
 
   checkCiRuc() {
@@ -1305,6 +1347,7 @@ export class CardComponent implements OnInit {
         this.lstConsumo.push(aux);
       }
       this.totalPagar = this.decimalPipe.transform(this.totalPagar, '1.2-2')
+      this.totalConsumo = parseFloat(this.totalPagar);
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
@@ -1312,7 +1355,8 @@ export class CardComponent implements OnInit {
   }
 
   confirmFP() {
-    let printContents, popupWin;
+    console.log(this.abono)
+    /*let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     popupWin.document.open();
@@ -1342,7 +1386,7 @@ export class CardComponent implements OnInit {
           <body onload="window.print();window.close()">${printContents}</body>
       </html>`
     );
-    popupWin.document.close();
+    popupWin.document.close();*/
     //Delete active card
     /*this.activeCardsService.searchByCard('ñ1234567_').subscribe(data => {
       this.activeCardsService.delete(data[0]._id).subscribe(data => {
@@ -1354,7 +1398,7 @@ export class CardComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     })*/
-    this.showDialogFP = true;
+    //this.showDialogFP = true;
   }
 
   onRowSelectTC(event) {
@@ -1506,6 +1550,24 @@ export class CardComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     })
+  }
+
+  openCheckout() {
+    var handler = (<any>window).StripeCheckout.configure({
+      key: 'pk_test_oi0sKPJYLGjdvOXOM8tE8cMa',
+      locale: 'auto',
+      token: function (token: any) {
+        // You can access the token ID with `token.id`.
+        // Get the token ID to your server-side code for use.
+      }
+    });
+
+    handler.open({
+      name: 'ManagerBox',
+      description: 'Pago en Línea',
+      amount: 20
+    });
+
   }
 
 }

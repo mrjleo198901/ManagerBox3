@@ -14,5 +14,4 @@ export class MessageGrowlService {
   notify(severity: Severities, summary: string, detail: string) {
     this.notificationChange.next({ severity, summary, detail });
   }
-
 }

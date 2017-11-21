@@ -28,6 +28,17 @@ export class ActiveCardsService {
       .map(res => res.json())
   }
 
+  searchByCI(ci) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('ci', ci);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'active_cards/', options)
+      .map(res => res.json())
+  }
+
   delete(active_cards) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

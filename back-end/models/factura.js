@@ -10,7 +10,8 @@ var facturaSchema = new mongoose.Schema({
     nombre: String,
     telefono: String,
     direccion: String,
-    detalleFacturaV: Array
+    detalleFacturaV: Array,
+    formaPago: String
 
 }); 
 

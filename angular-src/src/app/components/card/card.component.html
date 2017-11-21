@@ -2,7 +2,7 @@
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <!-- TAB OPEN -->
-    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)" [active]="true">
+    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -219,7 +219,7 @@
       </div>
     </tab>
     <!--TAB CLOSE-->
-    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
+    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -264,15 +264,15 @@
                       </li>
                       <li class="list-group-item">
                         <p>Cant. Mujeres:</p>
-                        <p>
+                        <div style="text-align: left">
                           <span class="badge">{{searchUserS.cantMujeres}}</span>
-                        </p>
+                        </div>
                       </li>
                       <li class="list-group-item">
                         <p>Cant. Hombres:</p>
-                        <p>
+                        <div style="text-align: left">
                           <span class="badge">{{searchUserS.cantHombres}}</span>
-                        </p>
+                        </div>
                       </li>
                       <li class="list-group-item">
                         <p>Eg. Mujeres:</p>
@@ -306,7 +306,6 @@
                 </div>
               </div>
             </div>
-            <!--<button (click)="print1();setDefaultValues()">prueba</button>-->
           </div>
         </p-panel>
       </div>
@@ -380,7 +379,8 @@
         <hr>
       </div>
       <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="flagConfirmFP">Aceptar</button>
+        <button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
+        <!--<button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="flagConfirmFP">Aceptar</button>-->
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -435,9 +435,9 @@
                       </li>
                       <li class="list-group-item">
                         <p>Consumo Actual:</p>
-                        <p>
+                        <div style="text-align: left">
                           <span class="badge">{{totalPagar}}</span>
-                        </p>
+                        </div>
                       </li>
                       <li class="list-group-item">
                         <p>Eg. Mujeres:</p>
@@ -525,6 +525,26 @@
                         <p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>
                       </div>
                       <br>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                <br>
+                <label class="cols-sm-2 control-label">Abono</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div class="row" style="text-align: center">
+                      <div class="ui-g-12" style="margin-left: 12px; margin-top: 12px">
+                        <input currencyMask type="text" [(ngModel)]="abono" [options]="{ prefix: '$ '}" id="inputAbono" name="inputAbono" placeholder="0.00">
+                        <br><br>
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -749,81 +769,88 @@
 </p-dialog>
 
 <!--Forma de Pago-->
-<p-dialog [(visible)]="showDialogFP" modal="modal" width="500" [responsive]="true" positionTop="150">
+<p-dialog [(visible)]="showDialogFP" modal="modal" width="550" [responsive]="true" positionTop="150">
   <p-header>
     Confirmación Datos Venta
   </p-header>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <label>Ruc*:</label>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-5" style="text-align: center">
-      <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="Si" offLabel="No" [style]="{'margin-top':'4px'}"></p-inputSwitch>
-    </div>
-    <div class="input-group col-lg-7">
-      <span class="input-group-addon input-sm" (click)="setClient()"><i class="fa fa-credit-card-alt "></i></span>
-      <input [(ngModel)]="rucFactura" style="font-size: 16px" type="text" placeholder="Consumidor Final" [disabled]="flagInsertRuc"
-        (ngModelChange)="checkCiRuc()" id="inputCiRuc" class="form-control input-sm">
-      <span class="input-group-addon input-sm" id="addonRUC1"><i class="fa fa-check" aria-hidden="true"></i></span>
-      <span class="input-group-addon input-sm" id="addonRUC2"><i class="fa fa-times" aria-hidden="true"></i></span>
-    </div><br>
-  </div>
-
-  <div class="row" *ngIf="flagFP1">
-    <div class="col-lg-5">
-      <label>Telefono:</label>
-      <input type="text" [(ngModel)]="telefonoS" id="telefonoS" placeholder="Telefono del cliente" class="form-control input-sm"
-        maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
-        tooltipPlacement="bottom">
-    </div>
-    <div class="input-group col-lg-7">
-      <label>Dirección:</label><br>
-      <textarea [(ngModel)]="direccionS" id="direccionS" style="width: 100%;font-size: 16px" placeholder="Dirección del cliente"
-        class="form-control input-sm"></textarea>
-    </div><br>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-5">
-      <label>Imprimir*:</label><br>
-    </div>
-    <div class="input-group col-lg-7">
-      <label>Forma de Pago*:</label>
-    </div>
-    <div class="col-lg-5" style="text-align: center">
-      <p-inputSwitch onLabel="Si" offLabel="No" (onChange)="printConf($event)" [style]="{'margin-top':'3px'}"></p-inputSwitch>
-    </div>
-    <div class="input-group col-lg-7">
-      <select [(ngModel)]="selectedFP" class="form-control input-sm" (ngModelChange)="changeFP($event)">
-        <option value="" disabled selected hidden>Selecciona...</option>
-        <option *ngFor="let c of lstFP" [ngValue]="c.label">{{c.label}}</option>
-      </select>
-    </div><br>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-5">
-    </div>
-    <div class="input-group col-lg-7" *ngIf="flagFP">
-      <div class="col-lg-6">
-        <label>Monto*:</label>
+  <div class="col-lg-10 col-lg-offset-1">
+    <div class="row">
+      <div class="col-lg-12">
+        <label>Ruc*:</label>
       </div>
-      <div class="col-lg-6">
-        <label>Abono*:</label>
+    </div>
+    <div class="row">
+      <div class="col-lg-5">
+        <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="Si" offLabel="No" [style]="{'margin-top':'4px'}"></p-inputSwitch>
       </div>
-      <div class="col-lg-6">
-        <input [(ngModel)]="totalConsumo" currencyMask type="text" class="form-control input-sm" style="z-index: 1" (click)="$event.target.select()"
+      <div class="input-group col-lg-7">
+        <span class="input-group-addon input-sm" (click)="setClient()"><i class="fa fa-credit-card-alt "></i></span>
+        <input [(ngModel)]="rucFactura" style="font-size: 16px" type="text" placeholder="Consumidor Final" [disabled]="flagInsertRuc"
+          (ngModelChange)="checkCiRuc()" id="inputCiRuc" class="form-control input-sm">
+        <span class="input-group-addon input-sm" id="addonRUC1"><i class="fa fa-check" aria-hidden="true"></i></span>
+        <span class="input-group-addon input-sm" id="addonRUC2"><i class="fa fa-times" aria-hidden="true"></i></span>
+      </div><br>
+    </div>
+    <div class="row" *ngIf="flagFP1">
+      <div class="col-lg-5">
+        <label>Telefono:</label>
+        <input type="text" [(ngModel)]="telefonoS" id="telefonoS" placeholder="Telefono del cliente" class="form-control input-sm"
+          maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom">
+      </div>
+      <div class="input-group col-lg-7">
+        <label>Dirección:</label><br>
+        <textarea [(ngModel)]="direccionS" id="direccionS" style="width: 100%;font-size: 16px" placeholder="Dirección del cliente"
+          class="form-control input-sm"></textarea>
+      </div><br>
+    </div>
+    <div class="row">
+      <div class="col-lg-5">
+        <label>Imprimir*:</label><br>
+      </div>
+      <div class="input-group col-lg-7">
+        <label>Forma de Pago*:</label>
+      </div>
+      <div class="col-lg-5">
+        <p-inputSwitch [(ngModel)]="flagPrint" (onChange)="printConf($event)" onLabel="Si" offLabel="No" [style]="{'margin-top':'4px'}"></p-inputSwitch>
+      </div>
+      <div class="input-group col-lg-7">
+        <select [(ngModel)]="selectedFP" class="form-control input-sm" (ngModelChange)="changeFP($event)">
+          <option value="" disabled selected hidden>Selecciona...</option>
+          <option *ngFor="let c of lstFP" [ngValue]="c">{{c.label}}</option>
+        </select>
+        <!--<p-dropdown [options]="lstFP" [(ngModel)]="selectedFP" [style]="{'width':'100%'}" (onChange)="changeFP($event)">
+        </p-dropdown>-->
+      </div><br>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-5" style="padding-right: 50px;">
+        <label>Monto Total*:</label>
+        <input [(ngModel)]="totalPagar" currencyMask type="text" class="form-control input-sm" style="z-index: 1; width: 100%" (click)="$event.target.select()"
           readonly>
       </div>
-      <div class="col-lg-6">
-        <input [(ngModel)]="cantHombres" currencyMask type="text" class="form-control input-sm" style="z-index: 1" (click)="$event.target.select()">
+      <div class="input-group col-lg-7" *ngIf="flagFP">
+        <div class="col-lg-6" style="padding-right: 0; padding-left: 0">
+          <label>Abono*:</label>
+          <!--<input [(ngModel)]="abono" (ngModelChange)="changeAbono($event)" currencyMask type="text" class="form-control input-sm" style="z-index: 1; width: 100%" (click)="$event.target.select()">-->
+          <p-spinner size="30" [(ngModel)]="abono" [step]="0.25" [min]="0" [max]="totalConsumo" [size]="13"></p-spinner>
+        </div>
       </div>
+      <div class="input-group col-lg-7" *ngIf="flagFP2">
+          <div class="col-lg-6" style="padding-right: 5%; padding-left: 0">
+            <label>Efectivo*:</label>
+            <p-spinner size="30" [(ngModel)]="fpEfectivo" [step]="0.25" [min]="0" [max]="totalConsumo - fpTarjeta" [size]="13"></p-spinner>
+          </div>
+          <div class="col-lg-6" style="padding-right: 0; padding-left: 5%">
+            <label>Tarjeta*:</label>
+            <p-spinner size="30" [(ngModel)]="fpTarjeta" [step]="0.25" [min]="0" [max]="totalConsumo - fpEfectivo" [size]="13"></p-spinner>
+          </div>
+        </div>
     </div>
-  </div>
 
+
+  </div>
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
     <hr>
     <button class="btn btn-primary" style="font-size: 11px" (click)="confirmFP()" [disabled]="!flagCheckVenta">Confirmar</button>
