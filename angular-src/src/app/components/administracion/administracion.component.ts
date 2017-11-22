@@ -270,9 +270,9 @@ export class AdministracionComponent implements OnInit {
     this.lstUnidades.push({ label: 'Unidades', value: { id: 4, name: 'Onzas', code: 'u' } });
     this.unidadMedidaSuproducto = this.lstUnidades[0];
     this.lstContenido = [];
-    this.lstContenido.push({ label: 'Litros', value: 'Litros' });
-    this.lstContenido.push({ label: 'Mililitros', value: 'Mililitros' });
-    this.lstContenido.push({ label: 'Onzas', value: 'Onzas' });
+    this.lstContenido.push({ label: 'l', value: 'Litros' });
+    this.lstContenido.push({ label: 'ml', value: 'Mililitros' });
+    this.lstContenido.push({ label: 'oz', value: 'Onzas' });
     this.objPromo = {
       nombre: '',
       producto: [],
@@ -1987,6 +1987,14 @@ export class AdministracionComponent implements OnInit {
         }
       }
     });
+  }
+
+  onChangeNombrePK($event) {
+    this.kardex.desc_producto = this.formatterService.toTitleCase(this.kardex.desc_producto);
+  }
+
+  onChangeNombrePKU($event) {
+    this.kardexU.desc_producto = this.formatterService.toTitleCase(this.kardexU.desc_producto);
   }
 
   /* GESTION DE PROVEEDORES*/

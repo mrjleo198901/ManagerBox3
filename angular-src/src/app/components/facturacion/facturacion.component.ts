@@ -21,7 +21,8 @@ export class FacturacionComponent implements OnInit {
   paths: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
   pathsType: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
   pathsTypePromos: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
-  selectedProductos;
+  selectedProductos = [];
+  selectedProductosShow: { cantidad: number, nombre: string, path: string, precio_venta: number, tipoProducto: string, total: number };
   showDialogConfirmar = false;
   cardNumber: String;
   mapTP = new Map();
@@ -122,13 +123,13 @@ export class FacturacionComponent implements OnInit {
 
   addProd(i) {
     this.selectedProductos[i].cantidad = this.selectedProductos[i].cantidad + 1;
-    this.selectedProductos[i].total += this.pathsType[i].precio_venta;
+    this.selectedProductos[i].total = parseFloat(this.selectedProductos[i].total) + parseFloat(this.pathsType[i].precio_venta.toString());
   }
 
   lessProd(i) {
     if (this.selectedProductos[i].cantidad > 1) {
       this.selectedProductos[i].cantidad = this.selectedProductos[i].cantidad - 1;
-      this.selectedProductos[i].total -= this.pathsType[i].precio_venta;
+      this.selectedProductos[i].total -= parseFloat(this.pathsType[i].precio_venta.toString());
     }
   }
 
@@ -169,6 +170,7 @@ export class FacturacionComponent implements OnInit {
     } else {
       this.addProd(indexOfInserted);
     }
+    console.log(this.selectedProductos)
   }
 
   public loadLogos(i) {
@@ -229,7 +231,8 @@ export class FacturacionComponent implements OnInit {
       if (finalChar.localeCompare("_") == 0) {
         this.checkCard();
       } else {
-        this.messageGrowlService.notify('warn', 'Advertencia', 'La tarjeta no pertenece al establecimiento!');
+        this.flagFindCard = false;
+        this.messageGrowlService.notify('warn', 'Advertencia', 'La tarjeta no pertenece a este establecimiento!');
       }
     } else {
       this.flagFindCard = false;
@@ -240,7 +243,7 @@ export class FacturacionComponent implements OnInit {
 
   checkCard() {
     this.activeCardsService.searchByCard(this.cardNumber).subscribe(data => {
-      this.idFact = data[0].idFactura;
+      //this.idFact = data[0].idFactura;
       if (data.length > 0) {
         this.flagFindCard = true;
         document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
@@ -249,7 +252,7 @@ export class FacturacionComponent implements OnInit {
         this.flagFindCard = false;
         document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
         document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
-        this.messageGrowlService.notify('error', 'Error', 'La tarjeta no ha sido ingresada!');
+        this.messageGrowlService.notify('error', 'Error', 'La tarjeta no ha sido activada!');
       }
     }, err => {
       console.log(err);
@@ -258,14 +261,18 @@ export class FacturacionComponent implements OnInit {
 
   changePass(event) {
     if (this.password.length > 0) {
-      this.flagMatchPass = true;
+      if (this.flagFindCard === true) {
+        this.flagMatchPass = true;
+      } else {
+        this.flagMatchPass = false;
+      }
     } else {
       this.flagMatchPass = false;
     }
   }
 
   send() {
-    console.log("pass:" + this.flagMatchPass + " card:" + this.flagMatchPass)
+    console.log("pass:" + this.flagMatchPass + " card:" + this.flagFindCard)
     const user = {
       username: this.selectedMesero.cedula,
       password: this.password

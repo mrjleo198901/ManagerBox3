@@ -80,12 +80,12 @@
         <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
         <div class="cols-sm-10">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-                    name="cardNumber" id="cardNumber" placeholder="Numero de tarjeta de consumo" style="z-index: 1;" tabindex="1"
-                    maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                <span class="input-group-addon input-sm"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                <input class="form-control input-sm" [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()"
+                    type="text" name="cardNumber" id="cardNumber" placeholder="Numero de tarjeta de consumo" style="z-index: 1;"
+                    tabindex="1" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                <span class="input-group-addon input-sm" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                <span class="input-group-addon input-sm" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
 
             </div>
         </div>
@@ -93,8 +93,8 @@
     <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
         <label>Control mesero</label>
         <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <select class="form-control" [(ngModel)]="selectedMesero" tabindex="2">
+            <span class="input-group-addon input-sm"><i class="fa fa-user" aria-hidden="true"></i></span>
+            <select class="form-control  input-sm" [(ngModel)]="selectedMesero" tabindex="2">
                 <option *ngFor="let c of listMeseros" [ngValue]="c">{{c.cedula}}</option>
             </select>
         </div>
@@ -102,15 +102,29 @@
     <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
         <label>Password</label>
         <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
-            <input [(ngModel)]="password" (ngModelChange)="changePass($event)" type="password" class="form-control" name="password" id="password" placeholder="Ingresa tu clave de usuario"
-                tabindex="3">
+            <span class="input-group-addon input-sm"><i class="fa fa-lock" aria-hidden="true"></i></span>
+            <input [(ngModel)]="password" (ngModelChange)="changePass($event)" type="password" class="form-control input-sm" name="password"
+                id="password" placeholder="Ingresa tu clave de usuario" tabindex="3">
         </div>
     </div>
+
+    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+        <p-listbox [options]="selectedProductos" [(ngModel)]="selected_producto" [style]="{'text-align':'left','max-height':'200px','height':'200px','width':'100%'}"
+            id="prodExistente" name="prodExistente" (onChange)="onChangeProdExistentes($event)">
+            <ng-template let-car pTemplate="item">
+                {{car.nombre}}
+                <span class="badge">{{car.cantidad}} u</span>
+                <span class="badge">$ {{ car.precio_venta | number : '1.2-2'}}</span>
+                <span class="badge">$ {{ car.total | number : '1.2-2'}}</span>
+            </ng-template>
+        </p-listbox>
+    </div>
+
+
     <!-- Button -->
     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
         <hr>
-        <button class="btn btn-primary" (click)="send()" style="width: 25%;font-size: 11px" [disabled]="!flagFindCard">Confirmar</button>
+        <button class="btn btn-primary" (click)="send()" style="width: 25%;font-size: 11px" [disabled]="!flagMatchPass">Confirmar</button>
         <button class="btn btn-default" (click)="showDialogConfirmar = false" style="width: 25%;font-size: 11px">Cancelar</button>
     </div>
 </p-dialog>

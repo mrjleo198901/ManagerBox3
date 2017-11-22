@@ -16,7 +16,7 @@
         <hr>
       </div>
     </tab>
-    <tab heading="Productos">
+    <tab heading="Productos" [active]="true">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Productos</h3>
@@ -42,7 +42,7 @@
         <hr>
       </div>
     </tab>
-    <tab heading="Kardex" [active]="true">
+    <tab heading="Kardex">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Kardex</h3>
@@ -153,7 +153,7 @@
   <div class="ui-g ui-fluid">
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
       <label for="nombrePC">Nombre*:</label>
-      <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="nombre único del producto"
+      <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="Nombre único del producto"
         class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
@@ -464,7 +464,7 @@
       <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButton($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
     </div>
     <div class="ui-g-12" *ngIf="flagProdK">
-      <input type="text" [(ngModel)]="kardex.desc_producto" (ngModelChange)="onChangeNombrePC($event)" id="desc_productoK" name="desc_productoK"
+      <input type="text" [(ngModel)]="kardex.desc_producto" (ngModelChange)="onChangeNombrePK($event)" id="desc_productoK" name="desc_productoK"
         placeholder="Producto Nuevo" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
     </div>
     <div class="ui-g-6" *ngIf="!flagProdK">
@@ -547,7 +547,7 @@
       <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButtonU($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
     </div>
     <div class="ui-g-12" *ngIf="flagProdK">
-      <input type="text" [(ngModel)]="kardexU.desc_producto" (ngModelChange)="onChangeNombrePC($event)" id="desc_productoKU" name="desc_productoKU"
+      <input type="text" [(ngModel)]="kardexU.desc_producto" (ngModelChange)="onChangeNombrePKU($event)" id="desc_productoKU" name="desc_productoKU"
         placeholder="Producto Nuevo" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
     </div>
     <div class="ui-g-6" *ngIf="!flagProdK">
