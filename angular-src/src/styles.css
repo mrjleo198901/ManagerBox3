@@ -3,12 +3,6 @@
 
 /* You can add global styles to this file, and also import other style files */
 /* My custom FM style*/
-.alert-danger{
-    background-color: lightsalmon;
-  }
-  .alert-success{
-    background-color: lightgreen;
-  }
   table > thead > tr > th {
     text-align: center;
     font-size: 14px;
