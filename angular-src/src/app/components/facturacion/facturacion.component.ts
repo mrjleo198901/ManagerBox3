@@ -42,6 +42,7 @@ export class FacturacionComponent implements OnInit {
   flagMatchPass = false;
   selectedMesero: any;
   idFact;
+  colorZeroStock = '';
 
   public static updateUserStatus: Subject<boolean> = new Subject();
 
@@ -154,6 +155,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   eventEmitDoubleClick($event, i) {
+
     this.flagProdSeleccionados = true;
     let aux = {
       path: this.pathsType[i].path,
@@ -171,6 +173,7 @@ export class FacturacionComponent implements OnInit {
       this.addProd(indexOfInserted);
     }
     console.log(this.selectedProductos)
+
   }
 
   public loadLogos(i) {
@@ -193,35 +196,27 @@ export class FacturacionComponent implements OnInit {
           cant_existente: entry.cant_existente,
           promocion: entry.promocion
         }
+        aux.precio_venta = parseFloat(aux.precio_venta.toString());
+        aux.cant_existente = parseFloat(aux.cant_existente.toString());
+        if (aux.cant_existente === 0) {
+          this.colorZeroStock = '#FE2E2E';
+        } else {
+          if (aux.cant_existente > 15) {
+            this.colorZeroStock = '#5ff442';
+          } else {
+            this.colorZeroStock = '#e5e500';
+          }
+        }
         this.pathsType[index] = aux;
         index++;
       }
     }
-
-    /*this.pathsTypePromos = [];
-    let ind1 = 0;
-    let promos = JSON.parse(localStorage.getItem("promosActivas"))
-    if (promos !== null) {
-      for (let entry of promos) {
-        let aux = {
-          path: entry.path,
-          tipoProducto: entry.tipoProducto,
-          nombre: entry.nombre,
-          precio_venta: entry.precio_venta,
-          cant_existente: entry.cant_existente,
-          promocion: entry.promocion
-        }
-        this.pathsTypePromos[ind1] = aux;
-        ind1++;
-      }
-    }*/
     this.pathsTypePromos = [];
     for (let entry of this.paths) {
       if (entry.promocion.length > 0) {
         this.pathsTypePromos.push(entry);
       }
     }
-
   }
 
   onChange(event) {

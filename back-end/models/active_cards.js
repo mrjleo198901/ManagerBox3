@@ -12,7 +12,8 @@ var activeCardsSchema = new mongoose.Schema({
     egresoMujeres: Number,
     egresoHombres: Number,
     ingresoMujeres: Number,
-    ingresoHombres: Number
+    ingresoHombres: Number,
+    abono: String
 
 });
 

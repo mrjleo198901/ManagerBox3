@@ -65,6 +65,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { AppLoaderComponent } from './components/app-loader/app-loader.component';
 import { PipeRenderComponent } from './components/pipe-render/pipe-render.component';
 import { SubprodRenderComponent } from './components/subprod-render/subprod-render.component';
+import { ConfigurationComponent } from './components/configuration/configuration.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -78,6 +79,9 @@ const appRoutes: Routes = [
   { path: 'administracion', component: AdministracionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+
+  { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
+
   { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard] }
 ]
 
@@ -104,7 +108,8 @@ const appRoutes: Routes = [
     NotificationComponent,
     AppLoaderComponent,
     PipeRenderComponent,
-    SubprodRenderComponent
+    SubprodRenderComponent,
+    ConfigurationComponent
   ],
   entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
   imports: [

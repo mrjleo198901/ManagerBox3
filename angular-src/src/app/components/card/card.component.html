@@ -2,7 +2,7 @@
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <!-- TAB OPEN -->
-    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
+    <tab heading="Apertura de tarjeta" [active]="true" (select)="alertMe1(1)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -15,19 +15,54 @@
           <div class="form-group">
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                <label for="cedula" class="cols-sm-2 control-label">CI. Cliente</label>
+                <label for="cedula" class="cols-sm-2 control-label">Tipo de documento</label>
               </div>
             </div>
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
-                  name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cedula del cliente" style="z-index: 1;font-size: 18px"
-                  maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
-                <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
-                <span (click)="showDialog = true; setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                <span class="input-group-addon"><i class="fa fa-id-card" aria-hidden="true"></i></span>
+                <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc($event)" id="tipoDoc" name="tipoDoc" class="form-control"
+                  [disabled]="flagProductoGasto" style="z-index: 1;">
+                  <option *ngFor="let c of tipo_documentos" [ngValue]="c">{{c.label}}</option>
+                </select>
               </div>
             </div>
+          </div>
+          <div class="form-group" *ngIf="tipoDoc">
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                <p-checkbox name="group1" binary="true" label="¿Usar verificador de CI?" [(ngModel)]="checked" inputId="ny" [style]="{'margin-bottom':'5px'}"></p-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                <label for="cedula" class="cols-sm-2 control-label">Nro. Documento</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
+                *ngIf="tipoDoc">
+                <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
+                  name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cédula del cliente" style="z-index: 1;" maxlength="10"
+                  onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
+                <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
+                <span (click)=" setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
+              </div>
+
+              <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
+                *ngIf="!tipoDoc">
+                <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                <input [(ngModel)]="cedula" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
+                  name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;" maxlength="15"
+                  onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="1" />
+                <span class="input-group-addon" id="basic-addonPass1" (click)=" searchPass()"><i class="fa fa-search" aria-hidden="true"></i></span>
+                <span class="input-group-addon" id="basic-addonPass2" (click)=" setCursorAdd()"><i class="fa fa-plus" aria-hidden="true"></i></span>
+              </div>
+            </div>
+
           </div>
           <!-- Mostrar cliente -->
           <div class="form-group">
@@ -219,7 +254,7 @@
       </div>
     </tab>
     <!--TAB CLOSE-->
-    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
+    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
         <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -232,7 +267,7 @@
           <div class="form-group">
             <div class="row">
               <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                <label class="cols-sm-2 control-label">Numero de tarjeta</label>
+                <label class="cols-sm-2 control-label">Número de tarjeta</label>
               </div>
             </div>
             <div class="row">
@@ -565,16 +600,46 @@
       </div>
     </tab>
     <!-- TAB TARJETAS -->
-    <tab heading="Tarjetas">
+    <tab heading="Tarjetas" (select)="alertMe4(4)">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
-        <h3 style="text-align: center">Ingreso de tarjetas</h3>
+        <h3 style="text-align: center">Gestión de tarjetas</h3>
         <hr>
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <p-panel header="Ingreso Rápido" [style]="{'z-index':'1'}">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6">
+                <label>Número de tarjeta</label>
+                <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                  <input [(ngModel)]="cardNumberG" (ngModelChange)="onChangeG($event)" (click)="$event.target.select()" type="text" class="form-control"
+                    name="numeroTar" id="numeroTar" placeholder="Codigo único de tarjeta" style="z-index: 1;" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                  <span class="input-group-addon" id="addonCnT1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                  <span class="input-group-addon" id="addonCnT2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                </div>
+              </div>
+              <div class="col-lg-5 col-lg-offset-2 col-md-6 col-sm-6 col-xs-6">
+                <label>Límite de Consumo</label>
+                <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                  <input currencyMask type="text" class="form-control" [(ngModel)]="limiteConsumo" [options]="{ prefix: '$ '}" id="inputAbono"
+                    name="inputAbono" placeholder="0.00">
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <br>
         <ng2-smart-table id="dtT" [settings]="settingsT" [source]="sourceT" (create)="showDialogT = !showDialogT;setCursorAddT()"
           (edit)="showDialogTU = !showDialogTU;onUpdateT($event);setCursorUpdateT()" (delete)="onDeleteT($event)">
         </ng2-smart-table>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
       </div>
     </tab>
   </tabset>
@@ -838,15 +903,15 @@
         </div>
       </div>
       <div class="input-group col-lg-7" *ngIf="flagFP2">
-          <div class="col-lg-6" style="padding-right: 5%; padding-left: 0">
-            <label>Efectivo*:</label>
-            <p-spinner size="30" [(ngModel)]="fpEfectivo" [step]="0.25" [min]="0" [max]="totalConsumo - fpTarjeta" [size]="13"></p-spinner>
-          </div>
-          <div class="col-lg-6" style="padding-right: 0; padding-left: 5%">
-            <label>Tarjeta*:</label>
-            <p-spinner size="30" [(ngModel)]="fpTarjeta" [step]="0.25" [min]="0" [max]="totalConsumo - fpEfectivo" [size]="13"></p-spinner>
-          </div>
+        <div class="col-lg-6" style="padding-right: 5%; padding-left: 0">
+          <label>Efectivo*:</label>
+          <p-spinner size="30" [(ngModel)]="fpEfectivo" [step]="0.25" [min]="0" [max]="totalConsumo - fpTarjeta" [size]="13"></p-spinner>
         </div>
+        <div class="col-lg-6" style="padding-right: 0; padding-left: 5%">
+          <label>Tarjeta*:</label>
+          <p-spinner size="30" [(ngModel)]="fpTarjeta" [step]="0.25" [min]="0" [max]="totalConsumo - fpEfectivo" [size]="13"></p-spinner>
+        </div>
+      </div>
     </div>
 
 

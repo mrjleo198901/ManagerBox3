@@ -8,6 +8,7 @@ var productoSchema = new mongoose.Schema({
     precio_venta: String,
     utilidad: String,
     cant_existente: String,
+    cant_minima: String,
     subproductoV: Array,
     id_tipo_producto: mongoose.Schema.Types.ObjectId,
     path: String,

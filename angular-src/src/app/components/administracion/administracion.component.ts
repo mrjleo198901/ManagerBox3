@@ -54,6 +54,7 @@ export class AdministracionComponent implements OnInit {
   precio_venta;
   utilidad;
   cant_existente;
+  cant_minima;
   subproductoV;
   selected_tipo_producto;
   pathLogo;
@@ -113,7 +114,7 @@ export class AdministracionComponent implements OnInit {
   unidadMedidaSuproducto: any;
   userform: FormGroup;
   lstContenido: SelectItem[];
-  selectedLstContenido: String = 'Mililitros';
+  selectedLstContenido: number = 1;
   @ViewChild('myInput')
   myInputVariable: any;
   @ViewChild('myInput1')
@@ -248,6 +249,8 @@ export class AdministracionComponent implements OnInit {
   flagResumenVentas = false;
   lstFrecuencias: any[];
   selectedFrecuencia: any;
+  flagProductoGasto = false;
+  productosShow: any[];
 
   constructor(
     private validateService: ValidateService,
@@ -270,9 +273,9 @@ export class AdministracionComponent implements OnInit {
     this.lstUnidades.push({ label: 'Unidades', value: { id: 4, name: 'Onzas', code: 'u' } });
     this.unidadMedidaSuproducto = this.lstUnidades[0];
     this.lstContenido = [];
-    this.lstContenido.push({ label: 'l', value: 'Litros' });
-    this.lstContenido.push({ label: 'ml', value: 'Mililitros' });
-    this.lstContenido.push({ label: 'oz', value: 'Onzas' });
+    this.lstContenido.push({ label: 'l', value: 0 });
+    this.lstContenido.push({ label: 'ml', value: 1 });
+    this.lstContenido.push({ label: 'oz', value: 2 });
     this.objPromo = {
       nombre: '',
       producto: [],
@@ -351,6 +354,7 @@ export class AdministracionComponent implements OnInit {
       if (this.tipo_productos.length > 0) {
         this.selectedTP = this.tipo_productos[0]
       }
+      localStorage.setItem('lstTipoProductos', JSON.stringify(this.tipo_productos));
       this.sourceTP = new LocalDataSource();
       this.sourceTP.load(this.tipo_productos);
       const selectShow: { value: string, title: string }[] = [];
@@ -363,6 +367,13 @@ export class AdministracionComponent implements OnInit {
       /* Get Productos*/
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
+
+        this.productosShow = [];
+        for (let entry of p) {
+          if (entry.subproductoV.length < 1)
+            this.productosShow.push(entry);
+        }
+
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
           if (this.lstProveedoresK.length > 0) {
@@ -378,6 +389,7 @@ export class AdministracionComponent implements OnInit {
               this.lstKardex[i].desc_producto = desc1;
               i++;
             }
+            localStorage.setItem('lstKardex', JSON.stringify(this.lstKardex));
             this.sourceK = new LocalDataSource();
             this.sourceK.load(this.lstKardex);
             this.settingsK = {
@@ -453,6 +465,7 @@ export class AdministracionComponent implements OnInit {
           this.productos[i].utilidad = parseFloat(x.utilidad);
           i++;
         }
+        localStorage.setItem('lstProductos', JSON.stringify(this.productos));
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
         this.settingsP = {
@@ -554,12 +567,21 @@ export class AdministracionComponent implements OnInit {
         return false;
       });
     this.promocionService.getAll().subscribe(data => {
+      this.sourcePro = new LocalDataSource();
       this.sourcePro.load(data);
     }, err => {
       console.log(err);
     });
 
+    /*this.productoService.getById('5a16324902d5772a300e6511').subscribe(data => {
+      console.log(data[0].path);
+    }, err => {
+      console.log(err);
+    });*/
+
     this.proveedorService.getAll().subscribe(data => {
+      localStorage.setItem('lstProveedor', JSON.stringify(data));
+      this.sourceProve = new LocalDataSource();
       this.sourceProve.load(data);
       this.settingsProve = {
         mode: 'external',
@@ -660,39 +682,41 @@ export class AdministracionComponent implements OnInit {
 
   onCreateP(event: any) {
     this.myInputVariable.nativeElement.value = '';
+    this.flagProductoGasto = false;
     this.ngOnInitProducto();
   }
 
   onUpdateTP(event: any) {
+    let lst = JSON.parse(localStorage.getItem('lstTipoProductos'));
+    let prodUpdt = lst.filter(function (obj) {
+      return obj._id.localeCompare(event.data._id) === 0;
+    });
+    this.tipoProductoUpdate = prodUpdt[0];
     this.myInputVariable3.nativeElement.value = '';
-    this.tipoProductoUpdate = event.data;
     this.oldTipoProductoUpdate = event.data;
     if (this.tipoProductoUpdate.path === undefined) {
-      this.colorUpdate = 'black';
-      setTimeout(function () {
-        document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
-      }, 0);
+      document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
+      document.getElementById('filesTPU').style.color = 'black';
     } else {
-      this.colorUpdate = 'lightgreen';
-      setTimeout(function () {
-        document.getElementById('filesTPU').style.backgroundColor = 'lightgreen';
-      }, 0);
+      document.getElementById('filesTPU').style.backgroundColor = 'lightgreen';
+      document.getElementById('filesTPU').style.color = 'lightgreen';
     }
   }
 
   onUpdateP(event: any) {
+    let lst = JSON.parse(localStorage.getItem('lstProductos'));
+    let prodUpdt = lst.filter(function (obj) {
+      return obj._id.localeCompare(event.data._id) === 0;
+    });
+    this.productoUpdate = prodUpdt[0];
     this.myInputVariable1.nativeElement.value = '';
-    this.productoUpdate = event.data;
+    this.selectedLstContenido = 1;
     if (this.productoUpdate.path === undefined) {
-      this.colorUpdate = 'black';
-      setTimeout(function () {
-        document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
-      }, 0);
+      document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
+      document.getElementById('filesU').style.color = 'black';
     } else {
-      this.colorUpdate = 'lightgreen';
-      setTimeout(function () {
-        document.getElementById('filesU').style.backgroundColor = 'lightgreen';
-      }, 0);
+      document.getElementById('filesU').style.backgroundColor = 'lightgreen';
+      document.getElementById('filesU').style.color = 'lightgreen';
     }
     if (this.productoUpdate.subproductoV.length !== 0) {
       this.flagSubProdUpdate = true;
@@ -745,27 +769,64 @@ export class AdministracionComponent implements OnInit {
       contenido: this.contenido,
       promocion: []
     };
-    if (!this.validateService.customValidateProducto(producto)) {
-      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
-      return false;
-    }
-    this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
-      producto.path = tp;
+    producto.contenido = this.calcContenido();
+
+    if (producto.utilidad === 0) {
+      if (!this.validateService.customValidateProductoGasto(producto)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
       this.productoService.registerProducto(producto).subscribe(data => {
-        data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
+        /*data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
         this.sourceP.add(data);
-        this.sourceP.refresh();
+        this.sourceP.refresh();*/
         this.ngOnInitProducto();
-        this.myInputVariable.nativeElement.value = '';
+        this.ngOnInit();
         this.showDialogPC = false;
         this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
       });
-    }, err => {
-      console.log(err);
-    });
+
+    } else {
+      if (!this.validateService.customValidateProducto(producto)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+      if (producto.path !== undefined) {
+        this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
+          producto.path = tp;
+          this.productoService.registerProducto(producto).subscribe(data => {
+            /*data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
+            this.sourceP.add(data);
+            this.sourceP.refresh();*/
+            this.ngOnInitProducto();
+            this.ngOnInit();
+            this.showDialogPC = false;
+            this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+          });
+
+        }, err => {
+          console.log(err);
+        });
+      } else {
+        producto.path = this.selected_tipo_producto.path;
+        this.productoService.registerProducto(producto).subscribe(data => {
+          this.ngOnInitProducto();
+          this.ngOnInit();
+          this.showDialogPC = false;
+          this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        });
+        console.log(producto)
+      }
+    }
   }
 
   onAddPromoSubmit() {
@@ -794,6 +855,7 @@ export class AdministracionComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
+
     if (this.pathLogoTPU === undefined) {
       this.tipoProductoService.updateTipoProducto(tipoProducto).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
@@ -824,6 +886,7 @@ export class AdministracionComponent implements OnInit {
         console.log(err);
       });
     }
+
   }
 
   onUpdatePSubmit() {
@@ -845,47 +908,66 @@ export class AdministracionComponent implements OnInit {
       id_tipo_producto: idTpBus,
       promocion: []
     };
-    console.log(producto);
-    if (!this.validateService.customValidateProductoU(producto)) {
-      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-      return false;
-    }
-    if (this.pathLogoU === undefined) {
+    producto.contenido = this.calcContenidoU();
+    if (producto.utilidad === 0) {
+      console.log(producto)
+      /*if (!this.validateService.customValidateProductoGastoU(producto)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
       this.productoService.updateProducto(producto).subscribe(data => {
+        this.ngOnInit();
+        this.myInputVariable1.nativeElement.value = '';
+        this.showDialogPU = false;
         this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-      });
-      this.ngOnInit();
-      this.myInputVariable1.nativeElement.value = '';
-      this.showDialogPU = false;
-      this.productoUpdate = {
-        '_id': '',
-        'nombre': '',
-        'precio_unitario': 0,
-        'utilidad': 0,
-        'cant_existente': 0,
-        'subproductoV': [],
-        'id_tipo_producto': '',
-        'path': ''
-      };
+      });*/
+
     } else {
-      this.productoService.uploadImage(this.pathLogoU).subscribe(tp => {
-        producto.path = tp;
+      if (!this.validateService.customValidateProductoU(producto)) {
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+        return false;
+      }
+
+      if (this.pathLogoU === undefined) {
         this.productoService.updateProducto(producto).subscribe(data => {
           this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-
         });
         this.ngOnInit();
         this.myInputVariable1.nativeElement.value = '';
         this.showDialogPU = false;
-      }, err => {
-        console.log(err);
-      });
+        this.productoUpdate = {
+          '_id': '',
+          'nombre': '',
+          'precio_unitario': 0,
+          'utilidad': 0,
+          'cant_existente': 0,
+          'subproductoV': [],
+          'id_tipo_producto': '',
+          'path': ''
+        };
+      } else {
+        this.productoService.uploadImage(this.pathLogoU).subscribe(tp => {
+          producto.path = tp;
+          this.productoService.updateProducto(producto).subscribe(data => {
+            this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+
+          });
+          this.ngOnInit();
+          this.myInputVariable1.nativeElement.value = '';
+          this.showDialogPU = false;
+        }, err => {
+          console.log(err);
+        });
+      }
     }
   }
 
@@ -1146,6 +1228,7 @@ export class AdministracionComponent implements OnInit {
     }
     this.pathLogoU = files;
     document.getElementById('filesU').style.backgroundColor = color;
+    document.getElementById('filesU').style.color = this.colorUpdate;
   }
 
   onChangeFileTP(event) {
@@ -1213,33 +1296,55 @@ export class AdministracionComponent implements OnInit {
   valueChangeGanancia($event) {
     const gain = (this.utilidad / 100) + 1;
     this.precio_venta = this.precio_costo * gain;
+    if (this.utilidad == 0) {
+      this.flagProductoGasto = true;
+      this.messageGrowlService.notify('info', 'Información', 'El producto NO se visualizará en el módulo de VENTAS');
+      this.selected_tipo_producto = 'Producto Gasto';
+      this.pathLogo = undefined;
+      document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
+      document.getElementById('filesU').style.color = 'black';
+    } else {
+      this.flagProductoGasto = false;
+      this.selected_tipo_producto = '';
+    }
   }
 
   valueChangePrecioCompra($event) {
-    this.precio_costo = (this.precio_costo * 100) / 100;
+    //this.precio_costo = (this.precio_costo * 100) / 100;
     const gain = (this.utilidad / 100) + 1;
     this.precio_venta = (this.precio_costo * gain);
   }
 
   valueChangePrecioVenta($event) {
-    const gain = 1 - (this.utilidad / 100);
-    this.precio_costo = this.precio_venta * gain;
+    let dif = this.precio_venta - this.precio_costo;
+    this.utilidad = (dif * 100) / this.precio_costo;
   }
 
   valueChangeGananciaU($event) {
     const gain = (this.productoUpdate.utilidad / 100) + 1;
     this.productoUpdate.precio_venta = this.productoUpdate.precio_costo * gain;
+    if (this.productoUpdate.utilidad == 0) {
+      this.flagProductoGasto = true;
+      this.messageGrowlService.notify('info', 'Información', 'El producto NO se visualizará en el módulo de VENTAS');
+      this.productoUpdate.id_tipo_producto = 'Producto Gasto';
+      this.pathLogoU = undefined;
+      document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
+      document.getElementById('filesU').style.color = 'black';
+    } else {
+      this.flagProductoGasto = false;
+      this.productoUpdate.id_tipo_producto = '';
+    }
   }
 
   valueChangePrecioCompraU($event) {
-    this.productoUpdate.precio_costo = (this.productoUpdate.precio_costo * 100) / 100;
-    const gain = (this.utilidad / 100) + 1;
+    //this.productoUpdate.precio_costo = (this.productoUpdate.precio_costo * 100) / 100;
+    const gain = (this.productoUpdate.utilidad / 100) + 1;
     this.productoUpdate.precio_venta = (this.productoUpdate.precio_costo * gain);
   }
 
   valueChangePrecioVentaU($event) {
-    const gain = 1 - (this.productoUpdate.utilidad / 100);
-    this.productoUpdate.precio_costo = this.productoUpdate.precio_venta * gain;
+    let dif = this.productoUpdate.precio_venta - this.productoUpdate.precio_costo;
+    this.productoUpdate.utilidad = (dif * 100) / this.productoUpdate.precio_costo;
   }
 
   reCalcPrevioVenta() {
@@ -1447,6 +1552,40 @@ export class AdministracionComponent implements OnInit {
     this.borderStyleProdSelec = '#DADAD2';
   }
 
+  calcContenido() {
+    let nContMl = 0;
+    if (this.contenido > 0) {
+      const onzaEnMl = 29.5735;
+      if (this.selectedLstContenido === 0) {
+        nContMl = (this.contenido * 1000);
+      }
+      if (this.selectedLstContenido === 1) {
+        nContMl = this.contenido;
+      }
+      if (this.selectedLstContenido === 2) {
+        nContMl = (this.contenido * onzaEnMl);
+      }
+    }
+    return nContMl;
+  }
+
+  calcContenidoU() {
+    let nContMl = 0;
+    if (this.productoUpdate.contenido > 0) {
+      const onzaEnMl = 29.5735;
+      if (this.selectedLstContenido === 0) {
+        nContMl = (this.productoUpdate.contenido * 1000);
+      }
+      if (this.selectedLstContenido === 1) {
+        nContMl = this.productoUpdate.contenido;
+      }
+      if (this.selectedLstContenido === 2) {
+        nContMl = (this.productoUpdate.contenido * onzaEnMl);
+      }
+    }
+    return nContMl;
+  }
+
   ngOnInitTipoProducto() {
     // Atributos SubProducto
     this.tipoProductoUpdate = {
@@ -1470,6 +1609,7 @@ export class AdministracionComponent implements OnInit {
       'precio_venta': 0,
       'utilidad': 0,
       'cant_existente': 0,
+      'cant_minima': 0,
       'subproductoV': [],
       'id_tipo_producto': '',
       'path': '',
@@ -1480,6 +1620,7 @@ export class AdministracionComponent implements OnInit {
     this.precio_venta = 0;
     this.utilidad = 30;
     this.cant_existente = 0;
+    this.cant_minima = 0;
     this.contenido = 0;
     this.contenidoMili = 0;
     this.contenidoMiliU = 0;
@@ -1535,6 +1676,7 @@ export class AdministracionComponent implements OnInit {
         return false;
       }
     }
+    //new product
     if (this.flagProdK === true) {
       const producto = {
         nombre: this.kardex.desc_producto,
@@ -1544,7 +1686,7 @@ export class AdministracionComponent implements OnInit {
         cant_existente: this.kardex.cantidad,
         subproductoV: [],
         id_tipo_producto: this.selectedTP._id,
-        path: '',
+        path: this.selectedTP.path,
         contenido: this.kardex.contenido,
         promocion: []
       };
@@ -1567,6 +1709,7 @@ export class AdministracionComponent implements OnInit {
       });
       setOriginalColorsKardex();
     } else {
+      //update product
       let prod: any;
       prod = this.kardex.desc_producto;
       const producto = {
@@ -1584,9 +1727,18 @@ export class AdministracionComponent implements OnInit {
       };
       producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
       this.productoService.updateProducto(producto).subscribe(data => {
-        this.ngOnInit();
-        this.ngOnInitKardex();
-        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizada el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        this.kardex.desc_producto = producto._id;
+        this.kardexService.register(this.kardex).subscribe(dataP => {
+          this.sourceK.add(dataP);
+          this.sourceK.refresh();
+          this.ngOnInit();
+          this.ngOnInitKardex();
+          this.messageGrowlService.notify('info', 'Información', 'Se ha actualizada el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -1640,6 +1792,7 @@ export class AdministracionComponent implements OnInit {
   }
 
   setCursorAddK() {
+    this.kardex.desc_producto = '';
     this.selectedIeProd = 'Nuevo';
     this.flagProdK = true;
     setTimeout(function () {
@@ -1649,12 +1802,16 @@ export class AdministracionComponent implements OnInit {
   }
 
   setCursorUpdateK(event: any) {
+    let lst = JSON.parse(localStorage.getItem('lstKardex'));
+    let prodUpdt = lst.filter(function (obj) {
+      return obj._id.localeCompare(event.data._id) === 0;
+    });
+    this.kardexU = prodUpdt[0];
     this.selectedIeProd = 'Existente';
     this.flagProdK = false;
     setTimeout(function () {
       setOriginalColorsKardex1U();
     }, 0);
-    this.kardexU = event.data;
     let typeProd = typeof (this.kardexU.desc_producto);
     if (typeProd.localeCompare('string') === 0) {
       this.kardexU.proveedor = this.searchProveByDesc(this.kardexU.proveedor, this.lstProveedoresK);
@@ -1943,6 +2100,7 @@ export class AdministracionComponent implements OnInit {
       this.flagResumenVentas = true;
     }
   }
+
   onChangeFrecuencia($event) {
     console.log(this.selectedFrecuencia);
   }
@@ -2080,12 +2238,13 @@ export class AdministracionComponent implements OnInit {
     }
     this.proveedorService.register(this.objProve).subscribe(data => {
       this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
-      this.sourceProve.add(data);
-      this.sourceProve.refresh();
-      this.ngOnInitProve();
-      setOriginalColorsProve();
+      /*this.sourceProve.add(data);
+      this.sourceProve.refresh();*/
       this.lstProveedoresK.push(data);
       this.kardex.proveedor = data;
+      this.ngOnInitProve();
+      this.ngOnInit();
+      setOriginalColorsProve();
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -2113,11 +2272,16 @@ export class AdministracionComponent implements OnInit {
 
   setCursorUpdateProve(event: any) {
     setTimeout(function () {
-      document.getElementById('nombreProve').focus();
+      document.getElementById('nombreProveU').focus();
       setOriginalColorsProve();
     }, 0);
     this.validRuc = true;
-    this.objProve = event.data;
+    let lst = JSON.parse(localStorage.getItem('lstProveedor'));
+    let prodUpdt = lst.filter(function (obj) {
+      return obj._id.localeCompare(event.data._id) === 0;
+    });
+    this.objProve = prodUpdt[0];
+    //this.objProve = event.data;
   }
 
   onDeleteProve(event): void {
@@ -2167,21 +2331,16 @@ function setOriginalColorsPC() {
   document.getElementById("nombrePC").style.borderColor = "#DADAD2";
   document.getElementById("pcPC").style.borderColor = "#DADAD2";
   document.getElementById("pvPC").style.borderColor = "#DADAD2";
-  document.getElementById("utilidadPC").style.borderColor = "#DADAD2";
-  document.getElementById("cantPC").style.borderColor = "#DADAD2";
   document.getElementById("tipoPC").style.borderColor = "#DADAD2";
   document.getElementById("contPC").style.borderColor = "#DADAD2";
-  //this.borderStyle = '#DADAD2';
 }
 
 function setOriginalColorsPU() {
   document.getElementById('nombrePU').style.borderColor = '#DADAD2';
-  // document.getElementById("puPU").style.borderColor = "#DADAD2";
-  // document.getElementById("utilidadPU").style.borderColor = "#DADAD2";
-  document.getElementById('cantPU').style.borderColor = '#DADAD2';
+  document.getElementById("pcPU").style.borderColor = "#DADAD2";
+  document.getElementById("pvPU").style.borderColor = "#DADAD2";;
   document.getElementById('tipoPU').style.borderColor = '#DADAD2';
-  document.getElementById('tipoP').style.borderColor = '#DADAD2';
-  document.getElementById('filesU').style.borderColor = '#DADAD2';
+  document.getElementById('contPU').style.borderColor = '#DADAD2';
 }
 
 function setOriginalColorsTPC() {

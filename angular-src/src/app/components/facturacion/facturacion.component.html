@@ -21,12 +21,12 @@
             </tab>
             <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                 <hr>
-                <h3 style="text-align: center">{{tabz.title}}</h3>
+                <h3 style="text-align: center;">{{tabz.title}}</h3>
                 <hr>
                 <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false">
                     <ng-template let-prod let-i="index" pTemplate="item">
                         <div class="ui-g-12 ui-md-3">
-                            <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
+                            <p-panel [header]="prod.nombre" [style]="{'text-align':'center','border-color':colorZeroStock}">
                                 <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
                                 <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
                             </p-panel>

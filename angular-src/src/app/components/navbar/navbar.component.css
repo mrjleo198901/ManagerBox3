@@ -16,3 +16,7 @@
 .dropdown{
     cursor: pointer;
 }
+
+#confIcon{
+    color : white;
+}

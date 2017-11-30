@@ -257,10 +257,10 @@ export class ValidateService {
       document.getElementById("pvPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.utilidad == 0) {
+    /*if (producto.utilidad == 0) {
       document.getElementById("utilidadPC").style.borderColor = "#FE2E2E";
       res = false;
-    }
+    }*/
     if (producto.id_tipo_producto == undefined) {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
       res = false;
@@ -302,6 +302,32 @@ export class ValidateService {
       document.getElementById("filesU").style.borderColor = "#FE2E2E";
       res = false;
     }*/
+    return res;
+  }
+
+  customValidateProductoGasto(producto) {
+    let res = true;
+    if (producto.nombre == "") {
+      document.getElementById("nombrePC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.precio_costo == 0) {
+      document.getElementById("pcPC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+  
+  customValidateProductoGastoU(producto) {
+    let res = true;
+    if (producto.nombre == "") {
+      document.getElementById("nombrePU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (producto.precio_costo == 0) {
+      document.getElementById("pcPU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
     return res;
   }
 

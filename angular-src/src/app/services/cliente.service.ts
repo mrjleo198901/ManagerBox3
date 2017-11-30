@@ -43,4 +43,14 @@ export class ClienteService {
     return this.http.delete(url + 'cliente/' + cliente, { headers: headers })
       .map(res => res.json())
   }
+  getByCedula(cedula) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('cedula', cedula);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'cliente/', options)
+      .map(res => res.json())
+  }
 }

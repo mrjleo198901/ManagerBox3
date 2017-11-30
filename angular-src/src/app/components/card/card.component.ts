@@ -198,6 +198,12 @@ export class CardComponent implements OnInit {
   fpEfectivo = 0;
   fpTarjeta = 0;
   flagFP3 = false;
+  cardNumberG;
+  flagCheckCI = true;
+  checked = true;
+  tipoDoc = true;
+  tipo_documentos: any;
+  selected_tipo_doc;
 
   constructor(
     private validateService: ValidateService,
@@ -249,6 +255,11 @@ export class CardComponent implements OnInit {
     this.tipoTarjetas.push({ label: 'VIP', value: 'VIP' });
     this.selectedTipoTarjeta = this.tipoTarjetas[0].label;
 
+    this.tipo_documentos = [];
+    this.tipo_documentos.push({ label: 'Cédula', value: '1' });
+    this.tipo_documentos.push({ label: 'Pasaporte', value: '2' });
+    this.selected_tipo_doc = this.tipo_documentos[0];
+
     this.updateTarjeta = {
       'numero': '',
       'cedula': '',
@@ -264,7 +275,6 @@ export class CardComponent implements OnInit {
     this.lstFP.push({ label: 'Por Cobrar', value: 3 });
     this.lstFP.push({ label: 'Consumo en Cero', value: 4 });
     this.selectedFP = this.lstFP[0];
-    console.log(this.selectedFP)
   }
 
   ngOnInit() {
@@ -365,10 +375,35 @@ export class CardComponent implements OnInit {
   }
 
   setCursorAdd() {
-    setTimeout(function () {
-      document.getElementById('ciA').focus();
-    }, 0)
-    this.onChangeCI();
+
+    if (!this.flagUserFound) {
+      this.showDialog = true;
+      setTimeout(function () {
+        document.getElementById('ciA').focus();
+      }, 0)
+      this.onChangeCI();
+    }
+
+
+  }
+
+  onChangeTipoDoc() {
+    if (this.selected_tipo_doc.value == 1) {
+      this.tipoDoc = true;
+      setTimeout(function () {
+        let v = document.getElementById('cedulaNew');
+        if (v != null)
+          v.click();
+      }, 50);
+    } else {
+      this.checked = false;
+      this.tipoDoc = false;
+      setTimeout(function () {
+        let v = document.getElementById('cedulaNew');
+        if (v != null)
+          v.click();
+      }, 50);
+    }
   }
 
   public getDate(): number {
@@ -614,6 +649,17 @@ export class CardComponent implements OnInit {
     this.selectedTab = 3;
   };
 
+  public alertMe4(st) {
+    if (!this.selectedTab != st) {
+      setTimeout(function () {
+        let v = document.getElementById('numeroTar');
+        if (v != null)
+          v.click();
+      }, 50);
+    }
+    this.selectedTab = 3;
+  };
+
   onRowUnselect(event) {
     this.productoService.getByNombre(event.data.nombre).subscribe(data => {
       data[0].promocion = [];
@@ -778,21 +824,65 @@ export class CardComponent implements OnInit {
     }
   }
 
+  onChangePassLength($event) {
+
+    this.nfLael = "";
+    this.flagUserFound = false;
+    this.cardNumber = "";
+    this.flagCaUsFound = false;
+
+    document.getElementById('basic-addonPass1').style.backgroundColor = '';
+  }
+
+  searchPass() {
+    this.clienteService.getByCedula(this.cedula).subscribe(data => {
+      if (data.length > 0) {
+        this.searchUser = data[0];
+        document.getElementById('basic-addonPass1').style.backgroundColor = '#6ce600';
+        this.flagUserFound = true;
+      } else {
+        this.flagCaUsFound = false;
+        this.nfLael = "Cliente no encontrado.";
+        document.getElementById("basic-addonPass1").style.backgroundColor = "#FE2E2E";
+        this.flagUserFound = false;
+        this.cardNumber = "";
+      }
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
+  }
+
   onChangeCILength($event) {
-    if (this.cedula.length != 10) {
+
+    if (this.cedula.length == 0) {
+      document.getElementById('basic-addon3').style.backgroundColor = '';
       this.nfLael = "";
-      document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
       this.flagUserFound = false;
       document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
       document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
       this.cardNumber = "";
       this.flagCaUsFound = false;
-    }
-    if (this.cedula.length == 10) {
-      if (!this.validateService.validarRucCedula(this.cedula)) {
-        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
-      } else {
-        this.checkClient();
+    } else {
+      if (this.cedula.length != 10) {
+        this.nfLael = "";
+        document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+        this.flagUserFound = false;
+        document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
+        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
+        this.cardNumber = "";
+        this.flagCaUsFound = false;
+      }
+      if (this.cedula.length == 10) {
+        if (this.checked === true) {
+          if (!this.validateService.validarRucCedula(this.cedula)) {
+            this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
+          } else {
+            this.checkClient();
+          }
+        } else {
+          this.checkClient();
+        }
       }
     }
   }
@@ -837,12 +927,16 @@ export class CardComponent implements OnInit {
       document.getElementById("ciA").style.borderColor = "#FE2E2E";
       this.validCI = false;
     } else {
-      if (!this.validateService.validarRucCedula(this.cedula)) {
-        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
-        document.getElementById("ciA").style.borderColor = "#FE2E2E";
-        this.validCI = false;
+      if (this.checked === true) {
+        if (!this.validateService.validarRucCedula(this.cedula)) {
+          this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
+          document.getElementById("ciA").style.borderColor = "#FE2E2E";
+          this.validCI = false;
+        } else {
+          document.getElementById("ciA").style.borderColor = "#5ff442";
+          this.checkClient1();
+        }
       } else {
-        document.getElementById("ciA").style.borderColor = "#5ff442";
         this.checkClient1();
       }
     }
@@ -1088,22 +1182,24 @@ export class CardComponent implements OnInit {
       this.lstAddCardCI1.push(entry);
     }
     let b = this.clientes.find(x => x.cedula === event.data.cedula);
-    let aux = {
-      'value': {
-        'apellido': b.apellido,
-        'cedula': b.cedula,
-        'correo': b.correo,
-        'fecha_nacimiento': b.fecha_nacimiento,
-        'id_tipo_cliente': b.id_tipo_cliente,
-        'nombre': b.nombre,
-        'sexo': b.sexo,
-        'telefono': b.telefono,
-        '_id': b._id
-      },
-      'label': b.nombre + ' ' + b.apellido
+    if (b !== undefined) {
+      let aux = {
+        'value': {
+          'apellido': b.apellido,
+          'cedula': b.cedula,
+          'correo': b.correo,
+          'fecha_nacimiento': b.fecha_nacimiento,
+          'id_tipo_cliente': b.id_tipo_cliente,
+          'nombre': b.nombre,
+          'sexo': b.sexo,
+          'telefono': b.telefono,
+          '_id': b._id
+        },
+        'label': b.nombre + ' ' + b.apellido
+      }
+      this.lstAddCardCI1.push(aux);
+      this.selectedClientGP = aux.value;
     }
-    this.lstAddCardCI1.push(aux);
-    this.selectedClientGP = aux.value;
   }
 
   public ngOnInitCards() {
@@ -1567,6 +1663,68 @@ export class CardComponent implements OnInit {
       description: 'Pago en Línea',
       amount: 20
     });
+
+  }
+  /* TAB TARJETAS*/
+  onChangeG($event) {
+    this.cardNumberG = this.cardNumberG.toLowerCase();
+    if (this.cardNumberG.length == 0) {
+      document.getElementById('addonCnT2').style.backgroundColor = '';
+      document.getElementById('addonCnT1').style.backgroundColor = '';
+    } else {
+      if (this.cardNumberG.length == 9) {
+        let finalChar = this.cardNumberG.slice(-1);
+        if (finalChar.localeCompare("_") == 0) {
+          this.tarjetaService.getByNumero(this.cardNumberG).subscribe(data => {
+            if (data.length === 0) {
+              document.getElementById('addonCnT1').style.backgroundColor = '#6ce600';//green
+              document.getElementById('addonCnT2').style.backgroundColor = '';
+              this.onAddTSubmitNew();
+            } else {
+              document.getElementById('addonCnT2').style.backgroundColor = '#FE2E2E';
+              document.getElementById('addonCnT1').style.backgroundColor = '';
+              this.messageGrowlService.notify('warn', 'Advertencia', 'Esta tarjeta ya ha sido ingrsada!');
+            }
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+          })
+        }
+      } else {
+        document.getElementById('addonCnT2').style.backgroundColor = '#FE2E2E';
+        document.getElementById('addonCnT1').style.backgroundColor = '';
+        this.flagCardEFound = false;
+        this.nfLaelE = '';
+      }
+    }
+  }
+
+  searchCard(card) {
+
+  }
+
+  onAddTSubmitNew() {
+    const newCard = {
+      numero: this.cardNumberG,
+      nombre: '',
+      apellido: '',
+      cedula: '',
+      limite: this.limiteConsumo,
+      descripcion: '',
+      tipo: ''
+    }
+    this.tarjetaService.register(newCard).subscribe(data => {
+      this.sourceT.add(newCard);
+      this.sourceT.refresh();
+      let row = this.lstAddCardCI.find(x => x.value.cedula === newCard.cedula);
+      this.ngOnInit();
+      this.ngOnInitCards();
+      this.showDialogT = false;
+      this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })
 
   }
 
