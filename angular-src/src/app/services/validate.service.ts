@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MessageGrowlService } from './message-growl.service';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class ValidateService {
 
-  constructor(private messageGrowlService: MessageGrowlService) { }
+  constructor(private messageGrowlService: MessageGrowlService,
+    private datePipe: DatePipe) { }
 
   validateRegister(user) {
     if (user.name == undefined || user.email == undefined || user.username == undefined || user.npass == undefined ||
@@ -317,7 +319,7 @@ export class ValidateService {
     }
     return res;
   }
-  
+
   customValidateProductoGastoU(producto) {
     let res = true;
     if (producto.nombre == "") {
@@ -683,7 +685,20 @@ export class ValidateService {
   getDateTime() {
     var tzoffset = (new Date()).getTimezoneOffset() * 60000;
     var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    return localISOTime
+    return localISOTime;
+  }
+
+  getDateTimeEs() {
+    let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    return currentDateTime;
+  }
+  getDateEs() {
+    let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy');
+    return currentDateTime;
+  }
+  getTimeEs() {
+    let currentDateTime = this.datePipe.transform(new Date(), 'hh:mm:ss');
+    return currentDateTime;
   }
 
 }

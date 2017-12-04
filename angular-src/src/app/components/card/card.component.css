@@ -69,3 +69,21 @@ option {
 .list-group {
   margin-bottom: 0px;
 }
+
+#comprasDetail{
+  cursor: pointer;
+}
+
+.fa-flag:hover {
+  color: #495555;
+  /*font-size: 2em;*/
+  cursor: pointer;
+}
+
+/*:host /deep/ .ui-fluid .ui-inputtext {
+  color: red;
+}*/
+
+.one {
+  color: red;
+}

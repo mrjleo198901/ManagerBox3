@@ -18,7 +18,7 @@ import * as myGlobals from '../../components/globals';
 import { FacturaService } from '../../services/factura.service';
 import { DetalleFacturaService } from '../../services/detalle-factura.service';
 import { PromocionService } from '../../services/promocion.service';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, DatePipe } from '@angular/common';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { FacturacionComponent } from '../../components/facturacion/facturacion.component';
 import { PersonalService } from '../../services/personal.service';
@@ -30,6 +30,8 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css']
 })
+
+
 export class CardComponent implements OnInit {
 
   cardNumber: string;
@@ -204,6 +206,14 @@ export class CardComponent implements OnInit {
   tipoDoc = true;
   tipo_documentos: any;
   selected_tipo_doc;
+  position = 'below';
+  showCompras = false;
+  showDateApertura;
+  showHourApertura;
+  currentDateTime;
+  lstComprasCliente: any = [];
+  lstComprasClienteOld: any = [];
+  cantColor = '#0000FF'
 
   constructor(
     private validateService: ValidateService,
@@ -220,6 +230,7 @@ export class CardComponent implements OnInit {
     private detalleFacturaService: DetalleFacturaService,
     private promocionService: PromocionService,
     private decimalPipe: DecimalPipe,
+    private datePipe: DatePipe,
     private localStorageService: LocalStorageService,
     private personalService: PersonalService,
     private activeCardsService: ActiveCardsService) {
@@ -278,6 +289,12 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    console.log(this.currentDateTime);
+    this.showDateApertura = this.currentDateTime.split(' ')[0];
+    this.showHourApertura = this.currentDateTime.split(' ')[1];
+
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 50)
@@ -984,6 +1001,7 @@ export class CardComponent implements OnInit {
       ci: '',
       cardNumber: '',
       nombre: '',
+      fechaHora: this.validateService.getDateTimeEs(),
       cantMujeres: 0,
       cantHombres: 0,
       egresoMujeres: 0,
@@ -1014,14 +1032,14 @@ export class CardComponent implements OnInit {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
         //set factura & detalle factura
         let auxM = {
-          fecha: this.validateService.getDateTime(),
+          fecha: this.validateService.getDateTimeEs(),
           cantidad: this.cantMujeres,
           descripcion: 'cover mujer',
           total: (this.cantMujeres * this.coverMujeres),
           precio_venta: this.coverMujeres
         }
         let auxH = {
-          fecha: this.validateService.getDateTime(),
+          fecha: this.validateService.getDateTimeEs(),
           cantidad: this.cantHombres,
           descripcion: 'cover hombre',
           total: (this.cantHombres * this.coverHombres),
@@ -1533,6 +1551,11 @@ export class CardComponent implements OnInit {
           ingresoHombres: data[0].ingresoHombres,
           _id: data[0]._id
         }
+        //fill partial consummation
+        this.fillPartialSales(data[0].idFactura);
+        this.showDateApertura = data[0].fechaHora.split(' ')[0];
+        this.showHourApertura = data[0].fechaHora.split(' ')[1];
+
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
         this.flagCardEFound = true;
         document.getElementById('addonCnE2').style.backgroundColor = '';
@@ -1548,6 +1571,36 @@ export class CardComponent implements OnInit {
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
+    })
+  }
+
+  changeCantidad($event) {
+    for (let i = 0; i < this.lstComprasCliente.length; i++) {
+      if (this.lstComprasCliente[i].cantidad !== this.lstComprasCliente[i].cantidadOld) {
+        this.cantColor = '#FF0000';
+      } else {
+        this.cantColor = '#0000FF'
+      }
+    }
+  }
+
+  fillPartialSales(idFactura) {
+    this.facturaService.getById(idFactura).subscribe(data => {
+      this.lstComprasCliente = [];
+      for (let entry of data[0].detalleFacturaV) {
+        let aux = {
+          'fecha': entry.fecha.split(' ')[0],
+          'hora': entry.fecha.split(' ')[1],
+          'cantidad': entry.cantidad,
+          'descripcion': entry.descripcion,
+          'precio_venta': entry.precio_venta,
+          'total': entry.total,
+          'cantidadOld': entry.cantidad
+        }
+        this.lstComprasCliente.push(aux);
+      }
+    }, err => {
+      console.log(err);
     })
   }
 
@@ -1665,6 +1718,81 @@ export class CardComponent implements OnInit {
     });
 
   }
+
+  showComprasDetail() {
+    this.showCompras = true;
+  }
+
+  updateComprasDetail() {
+    console.log(this.lstComprasCliente);
+
+    let flagDtChanges = false;
+    let n = this.lstComprasCliente.length;
+    for (let i = 0; i < n; i++) {
+      if (this.lstComprasCliente[i].cantidad !== this.lstComprasCliente[i].cantidadOld) {
+        flagDtChanges = true;
+        break;
+      }
+    }
+    if (flagDtChanges) {
+      this.facturaService.getById(this.searchUserE.idFactura).subscribe(data => {
+        let updatedFact = data;
+        let vecDF: any = [];
+        for (let entry of this.lstComprasCliente) {
+          let aux = {
+            precio_venta: entry.precio_venta,
+            total: (entry.precio_venta * entry.cantidad),
+            descripcion: entry.descripcion,
+            cantidad: entry.cantidad,
+            fecha: entry.fecha
+          }
+          vecDF.push(aux);
+        }
+        updatedFact[0].detalleFacturaV = vecDF;
+        this.facturaService.update(updatedFact[0]).subscribe(data => {
+          this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
+          this.showCompras = false;
+          this.checkActiveCardE(this.cardNumberE);
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+        })
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+    } else {
+      this.messageGrowlService.notify('warn', 'Advertencia', 'No se realizaron cambios!');
+    }
+
+
+    /*this.facturaService.getById(this.searchUserE.idFactura).subscribe(data => {
+      let updatedFact = data;
+      let vecDF: any = [];
+      for (let entry of this.lstComprasCliente) {
+        let aux = {
+          precio_venta: entry.precio_venta,
+          total: entry.total,
+          descripcion: entry.descripcion,
+          cantidad: entry.cantidad,
+          fecha: entry.fecha
+        }
+        vecDF.push(aux)
+      }
+      updatedFact[0].detalleFacturaV = vecDF;
+      this.facturaService.update(updatedFact[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    })*/
+
+  }
+
   /* TAB TARJETAS*/
   onChangeG($event) {
     this.cardNumberG = this.cardNumberG.toLowerCase();

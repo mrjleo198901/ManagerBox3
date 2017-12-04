@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, DatePipe } from '@angular/common';
 /*My Components*/
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
@@ -134,7 +134,7 @@ const appRoutes: Routes = [
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
     CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService,
-    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService],
+    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService],
   bootstrap: [AppComponent]
 })
 
