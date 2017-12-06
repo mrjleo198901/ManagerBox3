@@ -310,7 +310,7 @@ export class ValidateService {
   customValidateProductoGasto(producto) {
     let res = true;
     if (producto.nombre == "") {
-      document.getElementById("nombrePC").style.borderColor = "#FE2E2E";
+      document.getElementById("nombrePC1").style.borderColor = "#FE2E2E";
       res = false;
     }
     if (producto.precio_costo == 0) {

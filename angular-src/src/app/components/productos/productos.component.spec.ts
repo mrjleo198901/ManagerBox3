@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdministracionComponent } from './administracion.component';
+import { AdministracionComponent } from './productos.component';
 
 describe('AdministracionComponent', () => {
   let component: AdministracionComponent;

@@ -1,4 +1,4 @@
-<h2 class="page-header">Administración</h2>
+<h2 class="page-header">Productos</h2>
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <tab heading="Tipo Produtos">
@@ -29,19 +29,6 @@
         <hr>
       </div>
     </tab>
-    <tab heading="Promociones">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Promociones</h3>
-        <hr>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <ng2-smart-table id="dtPro" [settings]="settingsPro" [source]="sourcePro" (create)="showDialogPro = true;setCursorAddPro()"
-          (edit)="showDialogProU = true;onUpdatePro($event);setCursorUpdatePro()" (delete)="onDeletePro($event)">
-        </ng2-smart-table>
-        <hr>
-      </div>
-    </tab>
     <tab heading="Kardex">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <hr>
@@ -64,6 +51,19 @@
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <ng2-smart-table id="dtProve" [settings]="settingsProve" [source]="sourceProve" (create)="showDialogProve = true;setCursorAddProve()"
           (edit)="showDialogProveU = true;setCursorUpdateProve($event)" (delete)="onDeleteProve($event)" (userRowSelect)="showProveedor($event)">
+        </ng2-smart-table>
+        <hr>
+      </div>
+    </tab>
+    <tab heading="Promociones">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Promociones</h3>
+        <hr>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ng2-smart-table id="dtPro" [settings]="settingsPro" [source]="sourcePro" (create)="showDialogPro = true;setCursorAddPro()"
+          (edit)="showDialogProU = true;onUpdatePro($event);setCursorUpdatePro()" (delete)="onDeletePro($event)">
         </ng2-smart-table>
         <hr>
       </div>
@@ -177,34 +177,34 @@
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label style="color: white">.</label>
-      <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
         class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml." tooltipPlacement="bottom"
         [disabled]="flagSubProd" (click)="$event.target.select()">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="cantPC">Cantidad Existente*:</label>
+      <label>Cantidad Existente*:</label>
       <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
         class="form-control input-sm" (click)="$event.target.select()" [disabled]="flagSubProd">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="cantPC">Cantidad Mínima*:</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantPC" name="cantPC" placeholder="0.00"
+      <label>Cantidad Mínima*:</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantMinPC" name="cantMinPC" placeholder="0.00"
         class="form-control input-sm" (click)="$event.target.select()" tooltip="Cuando el producto sea menor a esta cantidad, se mostrará una alerta en el módulo de VENTAS."
         tooltipPlacement="bottom" [disabled]="flagSubProd">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="pcPC">Precio Costo*:</label>
-      <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" class="form-control input-sm" placeholder="0.00"
-        (ngModelChange)="valueChangePrecioCompra($event)" [disabled]="flagSubProd" (click)="$event.target.select()">
+      <label>Precio Costo*:</label>
+      <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" placeholder="0.00" class="form-control input-sm"
+        (ngModelChange)="valueChangePrecioCompra($event)" (click)="$event.target.select()" [disabled]="flagSubProd">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="utilidadPC">Ganancia*:</label>
+      <label>Ganancia*:</label>
       <input currencyMask type="text" [options]="{ suffix :' %',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
         placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)" (click)="$event.target.select()"
         tooltip="Los productos con ganancia 0%, no se mostrarán en el módulo de VENTAS." tooltipPlacement="bottom">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="pvPC">Precio Venta*:</label>
+      <label>Precio Venta*:</label>
       <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
         (ngModelChange)="valueChangePrecioVenta($event)" (click)="$event.target.select()" [readonly]="flagProductoGasto">
     </div>
@@ -316,8 +316,8 @@
         placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()" [disabled]="flagSubProdUpdate">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="cantPC">Cantidad Mínima*:</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantPC" name="cantPC" placeholder="0.00"
+      <label>Cantidad Mínima*:</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantMinPU" name="cantMinPU" placeholder="0.00"
         class="form-control input-sm" (click)="$event.target.select()" tooltip="Cuando el producto sea menor a esta cantidad, se mostrará una alerta en el módulo de VENTAS."
         tooltipPlacement="bottom" [disabled]="flagSubProd">
     </div>

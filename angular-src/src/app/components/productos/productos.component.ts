@@ -24,12 +24,12 @@ import { KardexService } from '../../services/kardex.service';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
-  selector: 'app-administracion',
-  templateUrl: './administracion.component.html',
-  styleUrls: ['./administracion.component.css']
+  selector: 'app-productos',
+  templateUrl: './productos.component.html',
+  styleUrls: ['./productos.component.css']
 })
 
-export class AdministracionComponent implements OnInit {
+export class ProductosComponent implements OnInit {
 
   tmpProd;
   borderStyleProdExistente = '#DADAD2';
@@ -650,9 +650,9 @@ export class AdministracionComponent implements OnInit {
   setCursorAddP() {
     setTimeout(function () {
       document.getElementById('nombrePC').focus();
-      document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
-      setOriginalColorsPC();
     }, 0);
+    document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
+    setOriginalColorsPC();
   }
 
   setCursorUpdateP() {

@@ -17,7 +17,7 @@ import { DialogComponent } from './components/dialogLogin/dialog.component';
 import { FacturacionComponent } from './components/facturacion/facturacion.component';
 import { ClientesComponent } from './components/clientes/clientes.component';
 import { PersonalComponent } from './components/personal/personal.component';
-import { AdministracionComponent } from './components/administracion/administracion.component';
+import { ProductosComponent } from './components/productos/productos.component';
 import { ImageRenderComponent } from './components/image-render/image-render.component';
 import { IconRenderComponent } from './components/image-render/icon-render.component';
 import { IconRenderKComponent } from './components/image-render/icon-renderK.component'
@@ -66,6 +66,7 @@ import { AppLoaderComponent } from './components/app-loader/app-loader.component
 import { PipeRenderComponent } from './components/pipe-render/pipe-render.component';
 import { SubprodRenderComponent } from './components/subprod-render/subprod-render.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
+import { AdministrarComponent } from './components/administrar/administrar.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -76,10 +77,10 @@ const appRoutes: Routes = [
   { path: 'facturacion', component: FacturacionComponent, canActivate: [AuthGuard] },
   { path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard] },
   { path: 'personal', component: PersonalComponent, canActivate: [AuthGuard] },
-  { path: 'administracion', component: AdministracionComponent, canActivate: [AuthGuard] },
+  { path: 'productos', component: ProductosComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-
+  { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard] },
   { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
 
   { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard] }
@@ -99,7 +100,7 @@ const appRoutes: Routes = [
     FacturacionComponent,
     ClientesComponent,
     PersonalComponent,
-    AdministracionComponent,
+    ProductosComponent,
     ImageRenderComponent,
     IconRenderComponent,
     IconRenderKComponent,
@@ -109,7 +110,8 @@ const appRoutes: Routes = [
     AppLoaderComponent,
     PipeRenderComponent,
     SubprodRenderComponent,
-    ConfigurationComponent
+    ConfigurationComponent,
+    AdministrarComponent
   ],
   entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
   imports: [

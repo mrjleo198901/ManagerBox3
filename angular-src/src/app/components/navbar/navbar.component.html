@@ -15,15 +15,17 @@
         <div id="navbar1" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                    <a [routerLink]="['/administracion']">Administrar</a></li>
+                    <a [routerLink]="['/productos']">Productos</a></li>
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                    <a [routerLink]="['/personal']">Personal</a></li>
-                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                    <a [routerLink]="['/card']">Atencion</a></li>
+                    <a [routerLink]="['/card']">Atención</a></li>
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                     <a [routerLink]="['/facturacion']">Ventas</a></li>
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                     <a [routerLink]="['/clientes']">Clientes</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/personal']">Personal</a></li>
+                <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                    <a [routerLink]="['/administrar']">Administración</a></li>
                 <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
                     <a [routerLink]="['/inventario']">Reportes</a></li>
             </ul>

@@ -1227,7 +1227,7 @@ export class CardComponent implements OnInit {
       for (let x of tc) {
         this.citiesDD.push({ label: x.desc_tipo_cliente, value: x.desc_tipo_cliente });
       }
-      this.selected_tipo_cliente = this.citiesDD[0].label;
+      this.selected_tipo_cliente = this.tipo_clientes[0];
       this.clienteService.getAll().subscribe(c => {
         this.clientes = c;
         let i = 0;
@@ -1725,7 +1725,6 @@ export class CardComponent implements OnInit {
 
   updateComprasDetail() {
     console.log(this.lstComprasCliente);
-
     let flagDtChanges = false;
     let n = this.lstComprasCliente.length;
     for (let i = 0; i < n; i++) {
@@ -1764,33 +1763,6 @@ export class CardComponent implements OnInit {
     } else {
       this.messageGrowlService.notify('warn', 'Advertencia', 'No se realizaron cambios!');
     }
-
-
-    /*this.facturaService.getById(this.searchUserE.idFactura).subscribe(data => {
-      let updatedFact = data;
-      let vecDF: any = [];
-      for (let entry of this.lstComprasCliente) {
-        let aux = {
-          precio_venta: entry.precio_venta,
-          total: entry.total,
-          descripcion: entry.descripcion,
-          cantidad: entry.cantidad,
-          fecha: entry.fecha
-        }
-        vecDF.push(aux)
-      }
-      updatedFact[0].detalleFacturaV = vecDF;
-      this.facturaService.update(updatedFact[0]).subscribe(data => {
-        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
-      }, err => {
-        console.log(err);
-        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-      })
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-    })*/
-
   }
 
   /* TAB TARJETAS*/
