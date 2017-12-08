@@ -144,11 +144,3 @@ nav ul{overflow:hidden; overflow-y:scroll;}
   top: 0;
   left: 4px;
 }
-
-:host /deep/ .ng2-smart-filter input{
-  height: 35px;
-  text-align: center;
-}
-:host /deep/ .ng2-smart-filter select{
-  text-align: center;
-}

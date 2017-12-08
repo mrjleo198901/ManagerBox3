@@ -33,7 +33,8 @@
               <div class="form-group" *ngIf="tipoDoc"><br>
                 <div class="row">
                   <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <p-checkbox name="group1" binary="true" label="¿Usar verificador de CI?" [(ngModel)]="checked" inputId="ny" [style]="{'margin-bottom':'5px'}"  tabindex="2"></p-checkbox>
+                    <p-checkbox name="group1" binary="true" label="¿Usar verificador de CI?" [(ngModel)]="checked" inputId="ny" [style]="{'margin-bottom':'5px'}"
+                      tabindex="2"></p-checkbox>
                   </div>
                 </div>
               </div>
@@ -146,10 +147,10 @@
                   </div>
                 </div>
                 <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                  <div class="ui-g-3 ui-md-6">
+                  <div class="ui-g-3 ui-md-3">
                     <p style="font-size: 12px;">Nro. Mujeres</p>
                   </div>
-                  <div class="input-group ui-g-3 ui-md-6">
+                  <div class="input-group ui-g-3 ui-md-3">
                     <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                       maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="5" (click)="$event.target.select()">
                     <div class="input-group-btn-vertical">
@@ -157,10 +158,10 @@
                       <button id="lessW" (click)="lessWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
                     </div>
                   </div>
-                  <div class="ui-g-3 ui-md-6">
+                  <div class="ui-g-3 ui-md-3">
                     <p style="font-size: 12px; padding: 2px">Nro. Hombres</p>
                   </div>
-                  <div class="input-group ui-g-3 ui-md-6">
+                  <div class="input-group ui-g-3 ui-md-3">
                     <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                       maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
                     <div class="input-group-btn-vertical">
@@ -170,16 +171,26 @@
                   </div>
                 </div>
               </div>
-              <!-- Tipo Cliente -->
+              <!-- Cover -->
               <div class="form-group">
                 <div class="row">
                   <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label>Tipo de cliente</label>
+                    <label>Cover</label>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
+                <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                  <div class="ui-g-6 ui-md-6">
+                    <p style="font-size: 12px;">Cover Mujeres</p>
+                  </div>
+                  <div class="ui-g-6 ui-md-6">
+                    <p style="font-size: 12px;">Cover Hombres</p>
+                  </div>
+                  <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
+                    <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
+                        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
+                    </select>
+                  </div>
+                  <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
                     <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
                         <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
                     </select>
@@ -187,7 +198,7 @@
                 </div>
               </div>
               <!-- Limite de Consumo -->
-              <div class="panel-body" style="padding-left: 0; padding-right: 0">
+              <div class="panel-body" style="padding-left: 0; padding-right: 0;">
                 <div class="form-group" style="margin: 0px;">
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
@@ -197,8 +208,8 @@
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                       <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="coverMujeres" id="limCons" name="limCons" class="form-control" placeholder="0.00"
-                        (click)="$event.target.select()" tabindex="8">
+                      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="coverMujeres" id="limCons" name="limCons"
+                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="8" style="margin: 0px">
                     </div>
                   </div>
                 </div>

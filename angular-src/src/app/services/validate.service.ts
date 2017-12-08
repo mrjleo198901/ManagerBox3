@@ -51,6 +51,7 @@ export class ValidateService {
     }
     return res;
   }
+  
   validateProveedor(proveedor) {
     let res = true;
     if (proveedor.nombre_proveedor == "") {
@@ -331,6 +332,23 @@ export class ValidateService {
       res = false;
     }
     return res;
+  }
+
+  customValidateCover(cover) {
+    let res = true;
+    if (cover.nombre == '') {
+      document.getElementById("nombre").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  customValidateCoverU(cover) {
+    let res = true;
+    if (cover.nombre == '') {
+      document.getElementById("nombreU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
   }
 
   validadorCedula(cedula) {

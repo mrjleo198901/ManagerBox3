@@ -2,25 +2,295 @@
 <div (click)="$event.preventDefault()">
   <tabset [justified]="true">
     <tab heading="Cover">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <hr>
-            <h3 style="text-align: center">Gestión de Covers</h3>
-            <hr>
-          </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Gestión de Covers</h3>
+        <hr>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ng2-smart-table id="dtTP" [settings]="settingsC" [source]="sourceC" (create)="showDialogCC = true;setCursorAddC()" (edit)="showDialogCU = true;onUpdateC($event);setCursorUpdateC()"
+          (delete)="onDeleteC($event)">
+        </ng2-smart-table>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+      </div>
     </tab>
     <tab heading="Tarjetas">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <hr>
-            <h3 style="text-align: center">Gestión de Tarjetas</h3>
-            <hr>
-          </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Gestión de Tarjetas</h3>
+        <hr>
+      </div>
     </tab>
     <tab heading="Corte de caja">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <hr>
-            <h3 style="text-align: center">Corte de Caja</h3>
-            <hr>
-          </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <hr>
+        <h3 style="text-align: center">Corte de Caja</h3>
+        <hr>
+      </div>
     </tab>
   </tabset>
 </div>
+
+
+<!-- Add Cover -->
+<p-dialog [(visible)]="showDialogCC" modal="modal" width="800" [responsive]="true" positionTop="40">
+  <p-header>
+    Registrar Cover
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Nombre*:</label>
+      <input type="text" [(ngModel)]="objCover.nombre" (ngModelChange)="onChangeNombreCover($event)" id="nombre" name="nombre"
+        placeholder="Nombre único de cover" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 37px">
+      <p-checkbox name="group1" binary="true" label="¿Diferenciar entre Hombres y Mujeres?" [(ngModel)]="checked" inputId="ny"
+        [style]="{'margin-bottom':'5px'}"></p-checkbox>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom: 0px; width: 48%; margin-right: 1%; margin-left: 1%;">
+      <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Nro. Mujeres</p>
+        </div>
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Precio Mujeres</p>
+        </div>
+        <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px">
+          <input [(ngModel)]="objCover.numMujeres" type="text" class="form-control input-sm" name="numMujeres" id="numMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+          <div class="input-group-btn-vertical">
+            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+          </div>
+        </div>
+        <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
+          <input currencyMask type="text" [(ngModel)]="objCover.precioMujeres" class="form-control input-sm" placeholder="0.00" tooltip="Precio del cover"
+            tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: '$ '}" tabindex="3" id="precio" name="precio"
+            (click)="$event.target.select()">
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+          <div class="ui-g-6 ui-md-6">
+            <label>Producto Asociado*:</label>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="padding-top: 10px; text-align: center">
+            <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagProdM" (ngModelChange)="changeProdM($event)">
+            </md-slide-toggle>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdM">
+            <p style="font-size: 12px;text-align: center;">Cantidad</p>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdM">
+            <p style="font-size: 12px;text-align: center;">Nombre</p>
+          </div>
+          <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
+            <input [(ngModel)]="objCover.cantProdMujeres" type="text" class="form-control input-sm" name="cantProdMujeres" id="cantProdMujeres"
+              onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
+              (click)="$event.target.select()">
+            <div class="input-group-btn-vertical">
+              <button id="addM" (click)="plusCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            </div>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
+            <input type="text" [(ngModel)]="objCover.productoMujeres.nombre" id="prodInputM" name="prodInputM" placeholder="Producto"
+              class="form-control input-sm" readonly>
+          </div>
+          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoMujeres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
+            #listBox *ngIf="flagProdM">
+            <ng-template let-car pTemplate="item">
+              {{car.value.nombre}}
+              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
+              <span class="badge">{{car.value.contenido}} ml</span>
+            </ng-template>
+          </p-listbox>
+          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdM" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom: 0px; width: 48%; margin-left: 1%; margin-right: 1%;">
+      <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Nro. Hombres</p>
+        </div>
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Precio Hombres</p>
+        </div>
+        <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px">
+          <input [(ngModel)]="objCover.numHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+          <div class="input-group-btn-vertical">
+            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+          </div>
+        </div>
+        <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
+          <input currencyMask type="text" [(ngModel)]="objCover.precioHombres" class="form-control input-sm" placeholder="0.00" tooltip="Precio del cover"
+            tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: '$ '}" tabindex="3" id="precio" name="precio"
+            (click)="$event.target.select()">
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+          <div class="ui-g-6 ui-md-6">
+            <label>Producto Asociado*:</label>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="padding-top: 10px;text-align: center;">
+            <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagProdH" (ngModelChange)="changeProdH($event)">
+            </md-slide-toggle>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdH">
+            <p style="font-size: 12px;text-align: center;">Cantidad</p>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdH">
+            <p style="font-size: 12px;text-align: center;">Nombre</p>
+          </div>
+          <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
+            <input [(ngModel)]="objCover.cantProdHombres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres"
+              onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
+              (click)="$event.target.select()">
+            <div class="input-group-btn-vertical">
+              <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            </div>
+          </div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
+            <input type="text" id="prodInputM" [(ngModel)]="objCover.productoHombres.nombre" name="prodInputM" placeholder="Producto"
+              class="form-control input-sm" readonly>
+          </div>
+          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoHombres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
+            #listBox *ngIf="flagProdH">
+            <ng-template let-car pTemplate="item">
+              {{car.value.nombre}}
+              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
+              <span class="badge">{{car.value.contenido}} ml</span>
+            </ng-template>
+          </p-listbox>
+          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdH" readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="saveCover()" tabindex="4">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCC = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Update Cover -->
+<p-dialog [(visible)]="showDialogCU" modal="modal" width="700" [responsive]="true" positionTop="80">
+  <p-header>
+    Actualizar Cover
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label>Nombre*:</label>
+      <input type="text" [(ngModel)]="objCoverUpdate.nombre" (ngModelChange)="onChangeNombreCover($event)" id="nombre" name="nombre"
+        placeholder="Nombre único de cover" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+    </div>
+
+    <div class="ui-g-12 ui-md-12" style="margin-bottom: 0px">
+      <label>Cantidad de Personas*:</label>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom: 0px; width: 49%; margin-right: 1%;">
+      <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Nro. Mujeres</p>
+        </div>
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Precio Mujeres</p>
+        </div>
+        <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px">
+          <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+          <div class="input-group-btn-vertical">
+            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+          </div>
+        </div>
+        <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
+          <input currencyMask type="text" [(ngModel)]="objCover.precio" class="form-control input-sm" placeholder="0.00" tooltip="Precio del cover"
+            tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: '$ '}" tabindex="3" id="precio" name="precio"
+            (click)="$event.target.select()">
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+          <label>Producto Asociado*:&nbsp;&nbsp;</label>
+          <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagProd" (ngModelChange)="changeProd($event)">
+          </md-slide-toggle>
+          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.producto" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
+            #listBox *ngIf="flagProd">
+            <ng-template let-car pTemplate="item">
+              {{car.value.nombre}}
+              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
+              <span class="badge">{{car.value.contenido}} ml</span>
+            </ng-template>
+          </p-listbox>
+          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProd" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom: 0px; width: 49%; margin-left: 1%;">
+      <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Nro. Hombres</p>
+        </div>
+        <div class="ui-g-6 ui-md-6">
+          <p style="font-size: 12px;text-align: center;">Precio Hombres</p>
+        </div>
+        <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px">
+          <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+          <div class="input-group-btn-vertical">
+            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+          </div>
+        </div>
+        <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
+          <input currencyMask type="text" [(ngModel)]="objCover.precio" class="form-control input-sm" placeholder="0.00" tooltip="Precio del cover"
+            tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: '$ '}" tabindex="3" id="precio" name="precio"
+            (click)="$event.target.select()">
+        </div>
+        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+          <label>Producto Asociado*:&nbsp;&nbsp;</label>
+          <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagProd" (ngModelChange)="changeProd($event)">
+          </md-slide-toggle>
+          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.producto" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
+            #listBox *ngIf="flagProd">
+            <ng-template let-car pTemplate="item">
+              {{car.value.nombre}}
+              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
+              <span class="badge">{{car.value.contenido}} ml</span>
+            </ng-template>
+          </p-listbox>
+          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProd" readonly>
+        </div>
+      </div>
+    </div>
+    <!--<div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <label>Género*:</label><br>
+        <div style="text-align: center">
+          <md-radio-group [(ngModel)]="objCover.genero">
+            <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+            </md-radio-button>
+          </md-radio-group>
+        </div>
+      </div>-->
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="updateCover()" tabindex="4">Actualizar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCU = false">Cancelar</button>
+  </div>
+</p-dialog>
