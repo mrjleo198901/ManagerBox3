@@ -23,45 +23,45 @@ export class AdministrarComponent implements OnInit {
     columns: {
       nombre: {
         title: 'Nombre',
-        width: '15%'
+        width: '20%'
       },
       numMujeres: {
         title: 'Nro. Mujeres',
-        width: '25%'
+        width: '10%'
       },
       precioMujeres: {
         title: 'Precio Mujeres',
-        width: '25%'
+        width: '10%'
       },
       productoMujeres: {
         title: 'Producto Mujeres',
-        width: '17.5%'
+        width: '10%'
       },
       cantProdMujeres: {
         title: 'Cant. Prod. Mujeres',
-        width: '17.5%'
+        width: '10%'
       },
       numHombres: {
         title: 'Nro. Hombres',
-        width: '25%'
+        width: '10%'
       },
       precioHombres: {
         title: 'Precio Hombres',
-        width: '25%'
+        width: '10%'
       },
       productoHombres: {
         title: 'Producto Hombres',
-        width: '17.5%'
+        width: '10%'
       },
       cantProdHombres: {
         title: 'Cant. Prod. Hombres',
-        width: '17.5%'
+        width: '10%'
       }
     },
     actions: {
       // columnTitle: '',
       add: true,
-      edit: true,
+      edit: false,
       delete: true
     },
     attr: {
@@ -69,7 +69,8 @@ export class AdministrarComponent implements OnInit {
     }
   }
   sourceC: LocalDataSource = new LocalDataSource();
-  showDialogCC = true;
+  showDialogCC = false;
+  showDialogCU = false
   objCover = {
     nombre: '',
     numMujeres: 1,
@@ -109,9 +110,29 @@ export class AdministrarComponent implements OnInit {
   lstCover: any = [];
   nombreProdM;
   nombreProdH;
+  widthPanel = '98%';
+  onUpdateFlag = false;
+  ventasTotales;
+  ventasEfectivo = 750;
+  ventasTarjeta = 100;
+  ventasCheque = 50;
+  ventasCredito = 10;
+  dineroCaja;
+  fondoCaja = 100;
+  abonosEfectivo = 200;
+  entradas = 80;
+  salidas = 30;
+  ganancia = 320;
+  cantPersonas;
+  inMujeres = 48;
+  inHombres = 57;
+  outMujeres = 12;
+  outHombres = 28;
+  selected_caja
+  lstCajas: any = [];
 
-  @ViewChild('listBox') accessor: Listbox;
-  @ViewChild('listBox', { read: NgModel }) model: NgModel;
+  @ViewChild('listBoxMU') accessor: Listbox;
+  @ViewChild('listBoxMU', { read: NgModel }) model: NgModel;
   differ: any;
 
   constructor(private messageGrowlService: MessageGrowlService,
@@ -121,6 +142,9 @@ export class AdministrarComponent implements OnInit {
     private differs: KeyValueDiffers,
     private validateService: ValidateService) {
     this.differ = differs.find([]).create(null);
+    this.calcVentas();
+    this.calcMoney();
+    this.calcPersonas();
   }
 
   ngOnInit() {
@@ -141,31 +165,27 @@ export class AdministrarComponent implements OnInit {
             nombre: entry.nombre,
             numMujeres: entry.numMujeres,
             precioMujeres: parseFloat(entry.precioMujeres).toFixed(2),
-            productoMujeres: entry.productoMujeres.nombre,
+            productoMujeres: entry.productoMujeres,
             cantProdMujeres: entry.cantProdMujeres,
             numHombres: entry.numHombres,
             precioHombres: parseFloat(entry.precioHombres).toFixed(2),
-            productoHombres: entry.productoHombres.nombre,
+            productoHombres: entry.productoHombres,
             cantProdHombres: entry.cantProdHombres
           };
+          if (aux.productoMujeres == undefined) {
+            aux.cantProdMujeres = '';
+          } else {
+            aux.productoMujeres = aux.productoMujeres.nombre;
+          }
+          if (aux.productoHombres == undefined) {
+            aux.cantProdHombres = '';
+          } else {
+            aux.productoHombres = aux.productoHombres.nombre;
+          }
           this.lstCover.push(aux);
         }
         this.sourceC = new LocalDataSource();
         this.sourceC.load(this.lstCover);
-
-        /*this.objCover.productoMujeres = this.lstProductos[0].value;
-        this.objCover.productoHombres = this.lstProductos[0].value;
-        this.objCoverUpdate.productoMujeres = this.lstProductos[0].value;
-        this.objCoverUpdate.productoHombres = this.lstProductos[0].value;
-        this.accessor.registerOnChange = (fn: (val: any) => void) => {
-          this.accessor.onModelChange = (val) => {
-            if (val && val.groupId === 0) {
-              this.model.control.setValue(this.model.value);
-              return;
-            }
-            return fn(val);
-          };
-        }*/
       }, err => {
         console.log(err)
       });
@@ -179,11 +199,63 @@ export class AdministrarComponent implements OnInit {
       document.getElementById('nombre').focus();
     }, 0);
     this.setOriginalColorsCover();
+    this.checked = false;
+    this.flagProdM = false;
+    this.flagProdH = false;
+    this.objCover = {
+      nombre: '',
+      numMujeres: 1,
+      precioMujeres: 0,
+      productoMujeres: undefined,
+      cantProdMujeres: 1,
+      numHombres: 1,
+      precioHombres: 0,
+      productoHombres: undefined,
+      cantProdHombres: 1
+    };
+    this.widthPanel = '98%';
   }
 
   onUpdateC(event: any) {
-    this.setOriginalColorsCoverU()
+    this.onUpdateFlag = true;
+    this.setOriginalColorsCoverU();
     this.objCoverUpdate = event.data;
+    if (this.objCoverUpdate.productoMujeres !== undefined) {
+      this.flagProdM = true;
+      //this.objCoverUpdate.productoMujeres = this.lstProductos[1].value;
+      //console.log(this.lstProductos[1].value);
+      this.productoService.getByNombre(this.objCoverUpdate.productoMujeres).subscribe(data => {
+        this.objCoverUpdate.productoMujeres = data[0];
+        console.log(this.objCoverUpdate);
+        this.accessor.registerOnChange = (fn: (val: any) => void) => {
+          this.accessor.onModelChange = (val) => {
+            if (val && val.groupId === 0) {
+              this.model.control.setValue(this.model.value);
+              return;
+            }
+            return fn(val);
+          };
+        }
+
+      }, err => {
+        console.log(err)
+      })
+    }
+    if (this.objCoverUpdate.productoHombres !== undefined) {
+      this.flagProdH = true;
+    }
+    if (JSON.stringify(this.objCoverUpdate.productoMujeres) == JSON.stringify(this.objCoverUpdate.productoHombres)
+      && this.objCoverUpdate.cantProdMujeres == this.objCoverUpdate.cantProdHombres
+      && this.objCoverUpdate.numMujeres == this.objCoverUpdate.numHombres
+      && this.objCoverUpdate.precioMujeres == this.objCoverUpdate.precioHombres) {
+
+      this.checked = false;
+      this.widthPanel = '98%';
+    } else {
+
+      this.checked = true;
+      this.widthPanel = '48%';
+    }
   }
 
   setCursorUpdateC() {
@@ -230,40 +302,63 @@ export class AdministrarComponent implements OnInit {
     this.nombreProdH = this.objCover.productoHombres;
   }*/
 
+  onChangeCheckBox($event) {
+    if (this.checked) {
+      this.widthPanel = '48%';
+    } else {
+      this.widthPanel = '98%';
+    }
+  }
+
   changeProdM($event) {
+
     if (!this.flagProdM) {
       this.objCover.productoMujeres = '';
+      this.objCover.cantProdMujeres = 0;
       this.objCoverUpdate.productoMujeres = '';
+      this.objCoverUpdate.cantProdMujeres = 0;
     } else {
-      if (this.lstProductos.length > 0) {
-        this.objCover.productoMujeres = this.lstProductos[0].value;
-        this.objCoverUpdate.productoMujeres = this.lstProductos[0].value;
+      if (this.onUpdateFlag == false) {
+        console.log("inside")
+        if (this.lstProductos.length > 0) {
+          this.objCover.productoMujeres = this.lstProductos[0].value;
+          this.objCover.cantProdMujeres = 1;
+          this.objCoverUpdate.productoMujeres = this.lstProductos[1].value;
+          this.objCoverUpdate.cantProdMujeres = 1;
+        }
       }
+
     }
   }
 
   changeProdH($event) {
     if (!this.flagProdH) {
       this.objCover.productoHombres = '';
+      this.objCover.cantProdHombres = 0;
       this.objCoverUpdate.productoHombres = '';
+      this.objCoverUpdate.cantProdHombres = 0;
     } else {
       if (this.lstProductos.length > 0) {
         this.objCover.productoHombres = this.lstProductos[0].value;
+        this.objCover.cantProdHombres = 1;
         this.objCoverUpdate.productoHombres = this.lstProductos[0].value;
+        this.objCoverUpdate.cantProdHombres = 1;
       }
     }
   }
 
   saveCover() {
+    console.log(this.objCover);
     if (!this.validateService.customValidateCover(this.objCover)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
-    /*if (this.flagProdM) {
-      let prod: any = this.objCover.producto
-      this.objCover.producto = prod._id;
-    }*/
-    console.log(this.objCover)
+    if (!this.checked) {
+      this.objCover.numHombres = this.objCover.numMujeres;
+      this.objCover.precioHombres = this.objCover.precioMujeres;
+      this.objCover.cantProdHombres = this.objCover.cantProdMujeres;
+      this.objCover.productoHombres = this.objCover.productoMujeres;
+    }
     this.coverService.register(this.objCover).subscribe(data => {
       this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
       this.ngOnInit();
@@ -320,14 +415,22 @@ export class AdministrarComponent implements OnInit {
 
   setOriginalColorsCover() {
     document.getElementById("nombre").style.borderColor = "#DADAD2";
-    document.getElementById("precio").style.borderColor = "#DADAD2";
-    this.borderStyleProdExistente = '#DADAD2';
   }
 
   setOriginalColorsCoverU() {
     document.getElementById("nombreU").style.borderColor = "#DADAD2";
-    document.getElementById("precioU").style.borderColor = "#DADAD2";
-    this.borderStyleProdExistente = '#DADAD2';
+  }
+  /*Corte Caja*/
+  calcVentas() {
+    this.ventasTotales = this.ventasEfectivo + this.ventasTarjeta + this.ventasCheque + this.ventasCredito;
+  }
+
+  calcMoney() {
+    this.dineroCaja = this.fondoCaja + this.abonosEfectivo + this.entradas - this.salidas + this.ventasEfectivo;
+  }
+
+  calcPersonas() {
+    this.cantPersonas = this.inMujeres + this.inHombres - this.outMujeres - this.outHombres;
   }
 
 }

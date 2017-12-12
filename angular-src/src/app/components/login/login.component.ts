@@ -7,6 +7,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FormatterService } from '../../services/formatter.service';
 import { PersonalService } from '../../services/personal.service';
 import { InventarioComponent } from '../../components/inventario/inventario.component';
+import { CardComponent } from '../../components/card/card.component';
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,12 @@ export class LoginComponent implements OnInit {
   correoRecuperacion;
   flagCorreo = false;
   navbar: NavbarComponent;
+  card: CardComponent;
   cedula;
   flagFindUser = false;
   showMessages = false;
   nombres;
+  displayCaja = false;
 
   constructor(
     private authService: AuthService,
@@ -71,7 +74,21 @@ export class LoginComponent implements OnInit {
         } else {
           localStorage.removeItem('rememberMe');
         }
-        this.router.navigate(['card']);
+        //Check cajero
+        this.personalService.getByCedula(user.username).subscribe(data => {
+
+          if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
+            NavbarComponent.updateDisplayCaja.next(true);
+            this.router.navigate(['card']);
+          }
+          if (data[0].id_cargo === '59937c6337eac33cd4819873') {
+            this.router.navigate(['facturacion']);
+          }
+        }, err => {
+
+        })
+
+        //this.router.navigate(['card']);
       } else {
         this.messageGrowlService.notify('error', 'Error', data.msg);
         this.router.navigate(['login']);

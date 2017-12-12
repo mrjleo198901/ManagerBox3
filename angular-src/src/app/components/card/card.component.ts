@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer, Output, EventEmitter, Input, ViewChild, AfterViewInit } from '@angular/core';
 import * as moment from 'moment';
 import { ValidateService } from '../../services/validate.service';
 import { TabMenuModule, MenuItem } from 'primeng/primeng';
@@ -24,6 +24,7 @@ import { FacturacionComponent } from '../../components/facturacion/facturacion.c
 import { PersonalService } from '../../services/personal.service';
 import { ActiveCardsService } from '../../services/active-cards.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-card',
@@ -213,7 +214,8 @@ export class CardComponent implements OnInit {
   currentDateTime;
   lstComprasCliente: any = [];
   lstComprasClienteOld: any = [];
-  cantColor = '#0000FF'
+  cantColor = '#0000FF';
+  displayOpenCaja: boolean;
 
   constructor(
     private validateService: ValidateService,
@@ -289,12 +291,10 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
-    console.log(this.currentDateTime);
+    //console.log(this.currentDateTime);
     this.showDateApertura = this.currentDateTime.split(' ')[0];
     this.showHourApertura = this.currentDateTime.split(' ')[1];
-
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 50)
@@ -392,7 +392,6 @@ export class CardComponent implements OnInit {
   }
 
   setCursorAdd() {
-
     if (!this.flagUserFound) {
       this.showDialog = true;
       setTimeout(function () {
@@ -400,8 +399,6 @@ export class CardComponent implements OnInit {
       }, 0)
       this.onChangeCI();
     }
-
-
   }
 
   onChangeTipoDoc() {

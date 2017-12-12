@@ -1041,3 +1041,12 @@
 <p-blockUI [target]="pnlCantPersonas" [blocked]="!flagCardEFound">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
+
+
+<p-dialog header="Abrir caja" [(visible)]="displayOpenCaja" modal="modal" width="550" [responsive]="true">
+
+  <p-footer>
+    <button type="button" pButton icon="fa-check" (click)="displayOpenCaja=false;openCaja()" label="Si"></button>
+    <button type="button" pButton icon="fa-close" (click)="displayOpenCaja=false" label="No"></button>
+  </p-footer>
+</p-dialog>

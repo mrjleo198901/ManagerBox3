@@ -14,6 +14,8 @@ export class NavbarComponent implements OnInit {
 
   public user;
   public static updateUserStatus: Subject<boolean> = new Subject();
+  public static updateDisplayCaja: Subject<boolean> = new Subject();
+  displayOpenCaja;
 
   constructor(
     public authService: AuthService,
@@ -45,6 +47,11 @@ export class NavbarComponent implements OnInit {
       }, err => {
         console.log(err)
       })
+    })
+    this.displayOpenCaja = false;
+    NavbarComponent.updateDisplayCaja.subscribe(res => {
+      console.log("innn")
+      this.displayOpenCaja = true;
     })
 
   }
