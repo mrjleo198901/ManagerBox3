@@ -147,41 +147,41 @@ router.post('/sendcorte', (req, res, next) => {
                 "</head>" +
                 "<body>" +
                 "<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>" +
-                "<div class='jumbotron text-center'>" +
-                "<h2>Mundo Cocoa</h2>" +
+                "<div style='text-align:center;background-color: #f5f5f5;'>" +
+                "<h2 style='padding-top:70px; padding-bottom:70px'>Mundo Cocoa</h2>" +
                 "</div>" +
                 "<div style='text-align:center'>" +
                 "<h3>Corte de caja</h3>" +
                 "<p><b>Desde:</b>12/12/2017 20:52:00 <b>Hasta:</b> 13/12/2017 02:49:13</p>" +
                 "<p><b>Cajero:</b> Administrador de la Tienda</p><br>" +
                 "</div>" +
-                "<div class='row'>" +
+                "<div style='text-align:center'>" +
                 "<h3 style='text-align:center'>Dinero en Caja</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
-                "<table style='width: 100%;' class='table-bordered table-hover table-responsive'>" +
+                "<table style='width: 70%;margin-left: 15%'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Fondo de caja</td>" +
-                "<td style='text-align: right;padding: 8px;'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Fondo de caja</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>$ 450,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px'>Ventas en efectivo</td>" +
-                "<td style='text-align: right;padding: 8px'>+ $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Ventas en efectivo</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Abonos</td>" +
-                "<td style='text-align: right;padding: 8px'>+ $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Abonos</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Entradas</td>" +
-                "<td style='text-align: right;padding: 8px'>+ $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Entradas</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Salidas</td>" +
-                "<td style='text-align: right;padding: 8px'>- $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Salidas</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>- $ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Total esperado</td>" +
-                "<td style='text-align: right;padding: 8px'> $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Total esperado</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'> $ 159,00</td>" +
                 "</tr>" +
                 "</table>" +
                 "</div>" +
@@ -189,22 +189,22 @@ router.post('/sendcorte', (req, res, next) => {
                 "<div class='row'>" +
                 "<h3 style='text-align:center'>Ventas</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
-                "<table style='width: 100%;' class='table-bordered table-hover table-responsive'>" +
+                "<table style='width: 70%;margin-left: 15%;'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Efectivo</td>" +
-                "<td style='text-align: right;padding: 8px;'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Efectivo</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 450,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px'>Cheque</td>" +
-                "<td style='text-align: right;padding: 8px'>$ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Cheque</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px'>Tarjeta de crédito</td>" +
-                "<td style='text-align: right;padding: 8px'>$ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Tarjeta de crédito</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px'>Crédito directo</td>" +
-                "<td style='text-align: right;padding: 8px'>$ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Crédito directo</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "</table>" +
                 "</div>" +
@@ -212,26 +212,27 @@ router.post('/sendcorte', (req, res, next) => {
                 "<div class='row'>" +
                 "<h3 style='text-align:center'>Resúmen</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
-                "<table style='width: 100%;' class='table-bordered table-hover table-responsive'>" +
+                "<table style='width: 70%;margin-left: 15%;'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Ventas Totales</td>" +
-                "<td style='text-align: right;padding: 8px;'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Ventas Totales</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 450,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Ganancia</td>" +
-                "<td style='text-align: right;padding: 8px;'>$ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Ganancia</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Producto mas vendido</td>" +
-                "<td style='text-align: right;padding: 8px;'>Pilsener 350ml</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Producto mas vendido</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>Pilsener 350ml</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;'>Número total de ventas</td>" +
-                "<td style='text-align: right;padding: 8px;'>850</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Número total de ventas</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>850</td>" +
                 "</tr>" +
                 "</table>" +
                 "</div>" +
                 "</div>" +
+                "<br>"+
                 "<footer class='footer' style='position: absolute;width: 100%;  background-color: #f5f5f5;'>" +
                 "<div class='container' style='text-align:center'><br>" +
                 "<p>Generado por <a href='http://localhost:4200/login' target='_blank' data-saferedirecturl='http://www.riobytes.com'>© Managerbox</a> gestor de comercios. Versión 1.15</p>" +
