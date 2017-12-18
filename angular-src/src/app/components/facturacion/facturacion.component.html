@@ -1,79 +1,86 @@
-<h2 class="page-header">Ventas</h2>
-<!--left DIV-->
-<div class="col-lg-8 col-md-7 col-sm-7 col-xs-12">
-    <div (click)="$event.preventDefault()">
-        <tabset>
-            <tab heading="Promociones" (select)="loadLogos(100)">
-                <hr>
-                <h3 style="text-align: center">Promociones Disponibles</h3>
-                <hr>
-                <p-dataGrid [value]="pathsTypePromos" [paginator]="true" [rows]="16">
-                    <ng-template let-prod let-i="index" pTemplate="item">
-                        <div class="ui-g-12 ui-md-3">
-                            <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
-                                <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                <!--<hr class="ui-widget-content" style="border-top:0;">-->
-                                <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
-                            </p-panel>
-                        </div>
-                    </ng-template>
-                </p-dataGrid>
-            </tab>
-            <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
-                <hr>
-                <h3 style="text-align: center;">{{tabz.title}}</h3>
-                <hr>
-                <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false">
-                    <ng-template let-prod let-i="index" pTemplate="item">
-                        <div class="ui-g-12 ui-md-3">
-                            <p-panel [header]="prod.nombre" [style]="{'text-align':'center','border-color':colorZeroStock}">
-                                <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
-                            </p-panel>
-                        </div>
-                    </ng-template>
-                </p-dataGrid>
-            </tab>
-        </tabset>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
+    <div class="col-lg-6" style="padding: 0">
+        <h2>Ventas</h2>
     </div>
 </div>
-<!--right DIV-->
-<div class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12">
-    <div class="panel panel-default" style="width: 100%">
-        <form class="form-inline">
-            <h4 style="text-align: center">Productos Seleccionados</h4>
-        </form>
-        <br>
-        <div *ngIf="!flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
-            <li class="list-group-item">
-                <p>Doble click en logotipo para añadir productos.</p>
-            </li>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
+    <!--left DIV-->
+    <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12">
+        <div (click)="$event.preventDefault()">
+            <tabset>
+                <tab heading="Promociones" (select)="loadLogos(100)">
+                    <hr>
+                    <h3 style="text-align: center">Promociones Disponibles</h3>
+                    <hr>
+                    <p-dataGrid [value]="pathsTypePromos" [paginator]="true" [rows]="16">
+                        <ng-template let-prod let-i="index" pTemplate="item">
+                            <div class="ui-g-12 ui-md-3">
+                                <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
+                                    <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
+                                    <!--<hr class="ui-widget-content" style="border-top:0;">-->
+                                    <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
+                                </p-panel>
+                            </div>
+                        </ng-template>
+                    </p-dataGrid>
+                </tab>
+                <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
+                    <hr>
+                    <h3 style="text-align: center;">{{tabz.title}}</h3>
+                    <hr>
+                    <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false">
+                        <ng-template let-prod let-i="index" pTemplate="item">
+                            <div class="ui-g-12 ui-md-3">
+                                <p-panel [header]="prod.nombre" [style]="{'text-align':'center','border-color':colorZeroStock}">
+                                    <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
+                                    <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
+                                </p-panel>
+                            </div>
+                        </ng-template>
+                    </p-dataGrid>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+    <!--right DIV-->
+    <div class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12">
+        <div class="panel panel-default" style="width: 100%">
+            <form class="form-inline">
+                <h4 style="text-align: center">Productos Seleccionados</h4>
+            </form>
             <br>
-        </div>
-        <nav>
-            <ul class="list-group" *ngIf="flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
-                <li class="list-group-item" *ngFor="let item of selectedProductos; let i = index">
-                    <h4 style="text-align: center">
-                        {{item.nombre}} <i id="iconTimes" (click)="removeProd(i)" class="fa fa-times" aria-hidden="true"
-                            mdTooltip="Eliminar producto"></i>
-                    </h4>
-                    <div class="input-group col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2"
-                        style="padding-bottom: 10px">
-                        <span style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                        <i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
-                        <span style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                        <i class="fa fa-minus fa-lg" aria-hidden="true"></i></span>
-                        <span style="display: inline-block" class="input-group-addon input-sm" style="width: 20px">
-                        <font size="5">{{item.cantidad}}</font></span>
-                    </div>
+            <div *ngIf="!flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
+                <li class="list-group-item">
+                    <p>Doble click en logotipo para añadir productos.</p>
                 </li>
-            </ul>
-        </nav>
-        <div style="text-align: center; padding-bottom: 15px">
-            <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = true;setCursor();" class="btn btn-primary" style="width: 90%;">Confirmar</button>
+                <br>
+            </div>
+            <nav>
+                <ul class="list-group" *ngIf="flagProdSeleccionados" style="padding-left: 5%;padding-right: 5%">
+                    <li class="list-group-item" *ngFor="let item of selectedProductos; let i = index">
+                        <h4 style="text-align: center">
+                            {{item.nombre}} <i id="iconTimes" (click)="removeProd(i)" class="fa fa-times" aria-hidden="true"
+                                mdTooltip="Eliminar producto"></i>
+                        </h4>
+                        <div class="input-group col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2"
+                            style="padding-bottom: 10px">
+                            <span style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm" style="width: 20px">
+                        <i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+                            <span style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm" style="width: 20px">
+                        <i class="fa fa-minus fa-lg" aria-hidden="true"></i></span>
+                            <span style="display: inline-block" class="input-group-addon input-sm" style="width: 20px">
+                        <font size="5">{{item.cantidad}}</font></span>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div style="text-align: center; padding-bottom: 15px">
+                <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = true;setCursor();" class="btn btn-primary" style="width: 90%;">Confirmar</button>
+            </div>
         </div>
     </div>
 </div>
+
 <!--Control venta(Cajero & tarjeta)-->
 <p-dialog header="Confirmación Venta" [(visible)]="showDialogConfirmar" [responsive]="true" [modal]="true" width="525">
     <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">

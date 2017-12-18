@@ -293,7 +293,7 @@ export class FacturacionComponent implements OnInit {
               precio_venta: entry.precio_venta,
               total: entry.total,
               cantidad: entry.cantidad,
-              fecha: this.validateService.getDateTime()
+              fecha: this.validateService.getDateTimeEs()
             }
             vecDF.push(aux)
           }

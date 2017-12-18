@@ -43,7 +43,8 @@ import { LocalStorageService } from './services/local-storage.service';
 import { ActiveCardsService } from './services/active-cards.service';
 import { ProveedorService } from './services/proveedor.service';
 import { KardexService } from './services/kardex.service';
-import { CoverService } from './services/cover.service'
+import { CoverService } from './services/cover.service';
+import { CajaService } from './services/caja.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -136,7 +137,7 @@ const appRoutes: Routes = [
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule, AutoCompleteModule
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService,
-    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService, CoverService,
+    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService, CoverService, CajaService,
     FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService],
   bootstrap: [AppComponent]
 })

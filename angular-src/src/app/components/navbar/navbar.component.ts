@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { PersonalService } from '../../services/personal.service';
 import { Subject } from 'rxjs/Subject';
+import { CajaService } from '../../services/caja.service';
+import { CardComponent } from '../../components/card/card.component';
 
 @Component({
   selector: 'app-navbar',
@@ -14,14 +16,14 @@ export class NavbarComponent implements OnInit {
 
   public user;
   public static updateUserStatus: Subject<boolean> = new Subject();
-  public static updateDisplayCaja: Subject<boolean> = new Subject();
-  displayOpenCaja;
 
   constructor(
     public authService: AuthService,
     private router: Router,
     private messageGrowlService: MessageGrowlService,
-    private personalService: PersonalService) {
+    private personalService: PersonalService,
+    private cajaService: CajaService) {
+
     let us = JSON.parse(localStorage.getItem('user'));
     if (us !== null) {
       this.personalService.getByCedula(us.username).subscribe(data => {
@@ -48,11 +50,6 @@ export class NavbarComponent implements OnInit {
         console.log(err)
       })
     })
-    this.displayOpenCaja = false;
-    NavbarComponent.updateDisplayCaja.subscribe(res => {
-      console.log("innn")
-      this.displayOpenCaja = true;
-    })
 
   }
 
@@ -61,9 +58,18 @@ export class NavbarComponent implements OnInit {
   }
 
   onLogOutClick() {
-    this.authService.logout();
-    this.messageGrowlService.notify('info', 'Información', 'Saliste!');
-    this.router.navigate(['/login']);
-    return false;
+    let us = JSON.parse(localStorage.getItem('user'));
+    this.cajaService.getActiveCajaById('open', us.id).subscribe(data => {
+      console.log(data);
+      if (data.length > 0) {
+        CardComponent.checkOpenCaja.next(true);
+      }
+      //this.authService.logout();
+      //this.messageGrowlService.notify('info', 'Información', 'Saliste!');
+      //this.router.navigate(['/login']);
+      //return false;
+    }, err => {
+      console.log(err)
+    })
   }
 }

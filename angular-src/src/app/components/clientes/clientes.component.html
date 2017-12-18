@@ -1,37 +1,43 @@
-<h2 class="page-header">Gestion de Clientes</h2>
-<div (click)="$event.preventDefault()">
-    <tabset [justified]="true">
-        <tab heading="Tipo Clientes">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <hr>
-                <h3 style="text-align:center">Tipo de Clientes</h3>
-                <hr>
-            </div>
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = !showDialog2;" (edit)="showDialog3 = !showDialog3;onUpdateTC($event);setCursorUpdateTC()"
-                    (delete)="onDeleteTC($event)"></ng2-smart-table>
-            </div>
-        </tab>
-        <tab heading="Clientes">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <hr>
-                <h3 style="text-align:center">Clientes</h3>
-                <hr>
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
-                    (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)"></ng2-smart-table>
-            </div>
-        </tab>
-        <tab heading="Estado de Cuentas">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <hr>
-                <h3 style="text-align:center">Estado de Cuentas</h3>
-                <hr>
-            </div>
-        </tab>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
+    <div class="col-lg-6" style="padding: 0">
+        <h2>Gestión de Clientes</h2>
+    </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
+    <div (click)="$event.preventDefault()">
+        <tabset [justified]="true">
+            <tab heading="Tipo Clientes">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <hr>
+                    <h3 style="text-align:center">Tipo de Clientes</h3>
+                    <hr>
+                </div>
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                    <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = !showDialog2;" (edit)="showDialog3 = !showDialog3;onUpdateTC($event);setCursorUpdateTC()"
+                        (delete)="onDeleteTC($event)"></ng2-smart-table>
+                </div>
+            </tab>
+            <tab heading="Clientes">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <hr>
+                    <h3 style="text-align:center">Clientes</h3>
+                    <hr>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
+                        (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)"></ng2-smart-table>
+                </div>
+            </tab>
+            <tab heading="Estado de Cuentas">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <hr>
+                    <h3 style="text-align:center">Estado de Cuentas</h3>
+                    <hr>
+                </div>
+            </tab>
 
-    </tabset>
+        </tabset>
+    </div>
 </div>
 
 <!-- ADD CLIENT -->

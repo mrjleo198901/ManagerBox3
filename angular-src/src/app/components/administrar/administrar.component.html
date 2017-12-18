@@ -1,149 +1,156 @@
-<h2 class="page-header">Administración</h2>
-<div (click)="$event.preventDefault()">
-  <tabset [justified]="true">
-    <tab heading="Cover">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Gestión de Covers</h3>
-        <hr>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <ng2-smart-table id="dtTP" [settings]="settingsC" [source]="sourceC" (create)="showDialogCC = true;setCursorAddC()" (edit)="showDialogCU = true;onUpdateC($event);setCursorUpdateC()"
-          (delete)="onDeleteC($event)">
-        </ng2-smart-table>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-    </tab>
-    <tab heading="Tarjetas">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Gestión de Tarjetas</h3>
-        <hr>
-      </div>
-    </tab>
-    <tab heading="Corte de caja" [active]="true">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Corte de Caja</h3>
-        <hr>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-        <h3>Caja/s: </h3>
-        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right: 16px;">
-          <span class="input-group-addon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>
-          <select [(ngModel)]="selected_caja" (ngModelChange)="onChangeCaja($event)" id="tipoCaja" name="tipoCaja" class="form-control"
-            style="z-index: 1;" tabindex="1">
-              <option *ngFor="let c of lstCajas" [ngValue]="c">{{c.label}}</option>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
+  <div class="col-lg-6" style="padding: 0">
+    <h2>Administración</h2>
+  </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
+  <div (click)="$event.preventDefault()">
+    <tabset [justified]="true">
+      <tab heading="Cover">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Gestión de Covers</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <ng2-smart-table id="dtTP" [settings]="settingsC" [source]="sourceC" (create)="showDialogCC = true;setCursorAddC()" (edit)="showDialogCU = true;onUpdateC($event);setCursorUpdateC()"
+            (delete)="onDeleteC($event)">
+          </ng2-smart-table>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+      </tab>
+      <tab heading="Tarjetas">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Gestión de Tarjetas</h3>
+          <hr>
+        </div>
+      </tab>
+      <tab heading="Corte de caja" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Corte de Caja</h3>
+          <hr>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <h3>Caja/s:</h3>
+          <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <span class="input-group-addon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>
+            <select [(ngModel)]="selected_caja" (ngModelChange)="onChangeCaja($event)" id="tipoCaja" name="tipoCaja" class="form-control"
+              style="z-index: 1;" tabindex="1">
+              <option value="Todas" selected="selected">Todas</option>
+              <option *ngFor="let c of lstCajas" [ngValue]="c">{{c.nombres}}&nbsp;{{c.apellidos}}&nbsp;--&nbsp;{{c.cedula}}</option>
             </select>
+          </div>
         </div>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <h3>Período: </h3>
-        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <span class="input-group-addon"><i class="fa fa-calendar-minus-o" aria-hidden="true"></i></span>
-          <input [(ngModel)]="fechaApertura" type="text" class="form-control" [disabled]="true" style="z-index: 1;">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <h3>Período: </h3>
+          <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <span class="input-group-addon"><i class="fa fa-calendar-minus-o" aria-hidden="true"></i></span>
+            <input [(ngModel)]="fechaApertura" type="text" class="form-control" [disabled]="true" style="z-index: 1;">
+          </div>
         </div>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-        <h3 style="color: white">Período: </h3>
-        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <span class="input-group-addon"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></span>
-          <input [(ngModel)]="fechaApertura" type="text" class="form-control" [disabled]="true" style="z-index: 1;">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <h3 style="color: white">Período: </h3>
+          <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <span class="input-group-addon"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></span>
+            <input [(ngModel)]="currentDateTime" type="text" class="form-control" [disabled]="true" style="z-index: 1;">
+          </div>
         </div>
-      </div>
 
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
-        <ul class="list-group" id="limheight">
-          <li class="list-group-item">
-            <h3>Ventas Totales: </h3>
-            <h3 style="padding-top: 20px" class="total">$&nbsp;{{ventasTotales}}</h3>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Efectivo: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasEfectivo}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Tarjeta: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasTarjeta}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Cheque: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCheque}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Crédito Directo: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCredito}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4 style="color: white"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Crédito Directo: </h4>
-            <h4 style="padding-top: 9px; color: white"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCredito}}</h4>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
-        <ul class="list-group" id="limheight">
-          <li class="list-group-item">
-            <h3>Dinero en Caja: </h3>
-            <h3 style="padding-top: 20px" class="total">$&nbsp;{{dineroCaja}}</h3>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Fondo de caja: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{fondoCaja}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ventas en efectivo: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasEfectivo}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Abonos en efectivo: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{abonosEfectivo}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Entradas: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{entradas}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Salidas: </h4>
-            <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{salidas}}</h4>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
-        <ul class="list-group" id="limheight">
-          <li class="list-group-item">
-            <h3>Cantidad de Personas: </h3>
-            <h3 style="padding-top: 20px" class="total">$&nbsp;{{cantPersonas}}</h3>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ingreso Mujeres: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{inMujeres}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ingreso Hombres: </h4>
-            <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{inHombres}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Egreso Mujeres: </h4>
-            <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{outMujeres}}</h4>
-          </li>
-          <li class="list-group-item">
-            <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Egreso Hombres: </h4>
-            <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{outHombres}}</h4>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
-        <ul class="list-group" id="limheight">
-          <li class="list-group-item">
-            <h3>Ganancias: </h3>
-            <h3 style="padding-top: 20px" class="total">$&nbsp;{{ganancia}}</h3>
-          </li>
-        </ul>
-      </div>
-    </tab>
-  </tabset>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
+          <ul class="list-group" id="limheight">
+            <li class="list-group-item">
+              <h3>Ventas Totales: </h3>
+              <h3 style="padding-top: 20px" class="total">$&nbsp;{{ventasTotales}}</h3>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Efectivo: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasEfectivo}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Tarjeta: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasTarjeta}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Cheque: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCheque}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Crédito Directo: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCredito}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4 style="color: white"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Crédito Directo: </h4>
+              <h4 style="padding-top: 9px; color: white"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasCredito}}</h4>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
+          <ul class="list-group" id="limheight">
+            <li class="list-group-item">
+              <h3>Dinero en Caja: </h3>
+              <h3 style="padding-top: 20px" class="total">$&nbsp;{{dineroCaja}}</h3>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Fondo de caja: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{fondoCaja}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ventas en efectivo: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{ventasEfectivo}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Abonos en efectivo: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{abonosEfectivo}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Entradas: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{entradas}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Salidas: </h4>
+              <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{salidas}}</h4>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
+          <ul class="list-group" id="limheight">
+            <li class="list-group-item">
+              <h3>Cantidad de Personas: </h3>
+              <h3 style="padding-top: 20px" class="total">$&nbsp;{{cantPersonas}}</h3>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ingreso Mujeres: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{inMujeres}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Ingreso Hombres: </h4>
+              <h4 style="padding-top: 9px" class="plus"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;{{inHombres}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Egreso Mujeres: </h4>
+              <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{outMujeres}}</h4>
+            </li>
+            <li class="list-group-item">
+              <h4><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Egreso Hombres: </h4>
+              <h4 style="padding-top: 9px" class="minus"><i class="fa fa-minus" aria-hidden="true"></i>&nbsp;{{outHombres}}</h4>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><br><br>
+          <ul class="list-group" id="limheight">
+            <li class="list-group-item">
+              <h3>Ganancias: </h3>
+              <h3 style="padding-top: 20px" class="total">$&nbsp;{{ganancia}}</h3>
+            </li>
+          </ul>
+        </div>
+      </tab>
+    </tabset>
+  </div>
 </div>
 
 

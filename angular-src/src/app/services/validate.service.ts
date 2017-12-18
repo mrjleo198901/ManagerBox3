@@ -700,11 +700,11 @@ export class ValidateService {
       return true;
   }
 
-  getDateTime() {
+  /*getDateTime() {
     var tzoffset = (new Date()).getTimezoneOffset() * 60000;
     var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace(/T/, ' ').replace(/\..+/, '');
     return localISOTime;
-  }
+  }*/
 
   getDateTimeEs() {
     let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');

@@ -35,7 +35,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown"><i id="userIcon" class="fa fa-user-o" aria-hidden="true"></i>&nbsp;{{user}}&nbsp;<i id="caretIcon"class="fa fa-caret-down" aria-hidden="true"></i></a>
                     <ul class="dropdown-menu">
                         <li><a [routerLink]="['/dashboard']">Mi Perfil</a></li>
-                        <li><a (click)="onLogOutClick()" href="#">Salir</a></li>
+                        <li><a (click)="onLogOutClick()" >Salir</a></li>
                     </ul>
                 </li>
                 <li class="dropdown" *ngIf="authService.loggedIn()">
@@ -46,11 +46,3 @@
         </div>
     </div>
 </nav>
-
-
-<p-dialog header="Abrir caja" [(visible)]="displayOpenCaja" modal="modal" width="550" [responsive]="true">
-    <p-footer>
-        <button type="button" pButton icon="fa-check" (click)="displayOpenCaja=false;openCaja()" label="Si"></button>
-        <button type="button" pButton icon="fa-close" (click)="displayOpenCaja=false" label="No"></button>
-    </p-footer>
-</p-dialog>

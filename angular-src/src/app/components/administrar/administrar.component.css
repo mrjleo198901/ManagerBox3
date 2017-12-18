@@ -64,6 +64,18 @@
 .minus{
   color: red;
 }
+
 .total{
   color: #2C98C2;
+}
+
+.select {
+  text-align: center;
+  text-align-last: center;
+  /* webkit*/
+}
+
+.option {
+  text-align: center;
+  text-align-last: center;
 }

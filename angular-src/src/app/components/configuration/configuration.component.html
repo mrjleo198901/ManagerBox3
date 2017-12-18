@@ -1,7 +1,12 @@
-<h2 class="page-header">Configuración</h2>
-<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
+  <div class="col-lg-6" style="padding: 0">
+    <h2>Configuraciones Generales</h2>
+  </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
   <div class="panel panel-default">
     <div class="panel-body">
+
       <div class="col-lg-4 col-md-6 col-sm-6"><br>
         <label>Nro. Personas por Tarjeta</label>
         <div class="input-group">
@@ -13,6 +18,7 @@
             tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
         </div>
       </div>
+
       <div class="col-lg-4 col-md-6 col-sm-6"><br>
         <label>Limite de Consumo por Defecto</label>
         <div class="input-group">
@@ -24,8 +30,11 @@
             tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
         </div>
       </div>
+
+      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+        <button (click)="onLoginSubmit()" class="btn btn-primary btn-block" [disabled]="!flagShowSuccess"> Actualizar</button>
+      </div>
+
     </div>
   </div>
-
-  
 </div>

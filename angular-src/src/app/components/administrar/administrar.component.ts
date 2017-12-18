@@ -5,10 +5,12 @@ import { MessageGrowlService } from '../../services/message-growl.service';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CoverService } from '../../services/cover.service';
+import { PersonalService } from '../../services/personal.service';
 import { FormatterService } from '../../services/formatter.service';
 import { ProductoService } from '../../services/producto.service';
 import { ValidateService } from '../../services/validate.service';
 import { SelectItem, Listbox } from 'primeng/primeng';
+import { DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-administrar',
@@ -130,6 +132,7 @@ export class AdministrarComponent implements OnInit {
   outHombres = 28;
   selected_caja
   lstCajas: any = [];
+  currentDateTime;
 
   @ViewChild('listBoxMU') accessor: Listbox;
   @ViewChild('listBoxMU', { read: NgModel }) model: NgModel;
@@ -140,7 +143,9 @@ export class AdministrarComponent implements OnInit {
     private formatterService: FormatterService,
     private productoService: ProductoService,
     private differs: KeyValueDiffers,
-    private validateService: ValidateService) {
+    private validateService: ValidateService,
+    private personalService: PersonalService,
+    private datePipe: DatePipe) {
     this.differ = differs.find([]).create(null);
     this.calcVentas();
     this.calcMoney();
@@ -192,6 +197,19 @@ export class AdministrarComponent implements OnInit {
     }, err => {
       console.log(err);
     });
+
+    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    //Get Cajas
+    this.personalService.getByTipo('59a054715c0bf80b7cab502d').subscribe(data => {
+      if (data.length > 0) {
+        this.lstCajas = data;
+        console.log(this.lstCajas);
+        this.selected_caja = 'Todas';
+      }
+    }, err => {
+      console.log(err);
+    })
+
   }
 
   setCursorAddC() {
@@ -431,6 +449,10 @@ export class AdministrarComponent implements OnInit {
 
   calcPersonas() {
     this.cantPersonas = this.inMujeres + this.inHombres - this.outMujeres - this.outHombres;
+  }
+
+  onChangeCaja($event) {
+    console.log(this.selected_caja)
   }
 
 }

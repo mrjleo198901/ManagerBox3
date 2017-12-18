@@ -1,643 +1,654 @@
-<h2 class="page-header">Gestion de Tarjetas</h2>
-<div (click)="$event.preventDefault()">
-  <tabset [justified]="true">
-    <!-- TAB OPEN -->
-    <tab heading="Apertura de tarjeta" (select)="alertMe1(1)" [active]="true">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
-        <hr>
-      </div>
-      <!--LEFT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos del Cliente" [style]="{'height':'530px','z-index':'1'}">
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <!-- Control Cliente-->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label for="cedula" class="cols-sm-2 control-label">Tipo de documento</label>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
+  <div class="col-lg-6" style="padding: 0">
+    <h2>Gestión de Tarjetas</h2>
+  </div>
+  <div class="col-lg-6" style="padding-top: 20px; text-align: right">
+    <button type="button" pButton (click)="openCloseCaja()" label="{{btnLabel}}" [ngStyle]='{"font-size": "14px", "width": "250px", "background-color": btnClass, "border-color": btnClass}'></button>
+    <!--<button type="button" pButton (click)="ShowClose()" label="Cerrar Caja" class="ui-button-default" style="font-size: 14px; width: 180px;"></button>-->
+  </div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
+  <div (click)="$event.preventDefault()">
+    <tabset [justified]="true">
+      <!-- TAB OPEN -->
+      <tab heading="Apertura de tarjeta" (select)="alertMe1(1)" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
+          <hr>
+        </div>
+        <!--LEFT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel header="Datos del Cliente" [style]="{'height':'530px','z-index':'1'}">
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <!-- Control Cliente-->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label for="cedula" class="cols-sm-2 control-label">Tipo de documento</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <span class="input-group-addon"><i class="fa fa-id-card" aria-hidden="true"></i></span>
-                    <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc($event)" id="tipoDoc" name="tipoDoc" class="form-control"
-                      [disabled]="flagProductoGasto" style="z-index: 1;" tabindex="1">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <span class="input-group-addon"><i class="fa fa-id-card" aria-hidden="true"></i></span>
+                      <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc($event)" id="tipoDoc" name="tipoDoc" class="form-control"
+                        [disabled]="flagProductoGasto" style="z-index: 1;" tabindex="1">
                       <option *ngFor="let c of tipo_documentos" [ngValue]="c">{{c.label}}</option>
                     </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="form-group" *ngIf="tipoDoc"><br>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <p-checkbox name="group1" binary="true" label="¿Usar verificador de CI?" [(ngModel)]="checked" inputId="ny" [style]="{'margin-bottom':'5px'}"
-                      tabindex="2"></p-checkbox>
+                <div class="form-group" *ngIf="tipoDoc"><br>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <p-checkbox name="group1" binary="true" label="¿Usar verificador de CI?" [(ngModel)]="checked" inputId="ny" [style]="{'margin-bottom':'5px'}"
+                        tabindex="2"></p-checkbox>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label for="cedula" class="cols-sm-2 control-label">Nro. Documento</label>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label for="cedula" class="cols-sm-2 control-label">Nro. Documento</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
-                    *ngIf="tipoDoc">
-                    <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                    <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
-                      name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cédula del cliente" style="z-index: 1;" maxlength="10"
-                      onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
-                    <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
-                    <span (click)=" setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                  </div>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
+                      *ngIf="tipoDoc">
+                      <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cédula del cliente" style="z-index: 1;" maxlength="10"
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
+                      <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
+                      <span (click)=" setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                    </div>
 
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
-                    *ngIf="!tipoDoc">
-                    <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                    <input [(ngModel)]="cedula" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
-                      name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;"
-                      maxlength="15" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
-                    <span class="input-group-addon" id="basic-addonPass1" (click)=" searchPass()"><i class="fa fa-search" aria-hidden="true"></i></span>
-                    <span class="input-group-addon" id="basic-addonPass2" (click)=" setCursorAdd()"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
+                      *ngIf="!tipoDoc">
+                      <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cedula" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;"
+                        maxlength="15" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
+                      <span class="input-group-addon" id="basic-addonPass1" (click)=" searchPass()"><i class="fa fa-search" aria-hidden="true"></i></span>
+                      <span class="input-group-addon" id="basic-addonPass2" (click)=" setCursorAdd()"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- Mostrar cliente -->
-              <div class="form-group" style="margin: 0px;">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label for="datosCliente">Datos del cliente</label>
+                <!-- Mostrar cliente -->
+                <div class="form-group" style="margin: 0px;"><br>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label for="datosCliente">Datos del cliente</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row" *ngIf="flagUserFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <!--Nombre:&nbsp;{{searchUser.nombre}}&nbsp;{{searchUser.apellido}}<br>Cedula:&nbsp;{{searchUser.cedula}}<br>Email:&nbsp;{{searchUser.correo}}
+                  <div class="row" *ngIf="flagUserFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <!--Nombre:&nbsp;{{searchUser.nombre}}&nbsp;{{searchUser.apellido}}<br>Cedula:&nbsp;{{searchUser.cedula}}<br>Email:&nbsp;{{searchUser.correo}}
                     <br>Telefono:&nbsp;{{searchUser.telefono}}<br>Fecha de Nacimiento:&nbsp;{{searchUser.fecha_nacimiento}}<br>Sexo:&nbsp;{{searchUser.sexo}}
                     <br>Tipo Cliente:&nbsp;{{searchUser.id_tipo_cliente}}-->
-                        <ul class="list-group" id="limheight">
-                          <li class="list-group-item">
-                            <p>Nombre:</p>
-                            {{searchUser.nombre}}&nbsp;{{searchUser.apellido}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Fecha de Nacimiento:</p>
-                            {{searchUser.fecha_nacimiento}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Tipo Cliente:</p>
-                            {{searchUser.id_tipo_cliente}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Crédito:</p>
-                            $&nbsp;{{searchUser.cedula}}
-                          </li>
-                        </ul>
+                          <ul class="list-group" id="limheight">
+                            <li class="list-group-item">
+                              <p>Nombre:</p>
+                              {{searchUser.nombre}}&nbsp;{{searchUser.apellido}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Fecha de Nacimiento:</p>
+                              {{searchUser.fecha_nacimiento}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Tipo Cliente:</p>
+                              {{searchUser.id_tipo_cliente}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Crédito:</p>
+                              $&nbsp;{{searchUser.cedula}}
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="row" *ngIf="!flagUserFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
+                  <div class="row" *ngIf="!flagUserFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLael}}</label>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!--RIGHT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'530px','z-index':'1'}">
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <!-- Validacion Tarjeta -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label>Numero de tarjeta</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                    <input [(ngModel)]="cardNumber" (ngModelChange)="onChangeOpen($event)" (click)="$event.target.select()" type="text" class="form-control"
-                      name="numero" id="numero" placeholder="Codigo único de tarjeta" [disabled]="!flagUserFound" style="z-index: 1;"
-                      tabindex="4" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                    <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
-                  </div>
-                </div>
-              </div>
-              <!-- Cantidad de personas -->
-              <div class="form-group"><br>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label>Cantidad de personas</label>
-                  </div>
-                </div>
-                <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                  <div class="ui-g-3 ui-md-3">
-                    <p style="font-size: 12px;">Nro. Mujeres</p>
-                  </div>
-                  <div class="input-group ui-g-3 ui-md-3">
-                    <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                      maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="5" (click)="$event.target.select()">
-                    <div class="input-group-btn-vertical">
-                      <button id="addW" (click)="plusWoman1()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
-                      <button id="lessW" (click)="lessWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
-                    </div>
-                  </div>
-                  <div class="ui-g-3 ui-md-3">
-                    <p style="font-size: 12px; padding: 2px">Nro. Hombres</p>
-                  </div>
-                  <div class="input-group ui-g-3 ui-md-3">
-                    <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                      maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
-                    <div class="input-group-btn-vertical">
-                      <button id="addM" (click)="plusMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
-                      <button id="lessM" (click)="lessMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Cover -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label>Cover</label>
-                  </div>
-                </div>
-                <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                  <div class="ui-g-6 ui-md-6">
-                    <p style="font-size: 12px;">Cover Mujeres</p>
-                  </div>
-                  <div class="ui-g-6 ui-md-6">
-                    <p style="font-size: 12px;">Cover Hombres</p>
-                  </div>
-                  <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
-                    <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
-                        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
-                    </select>
-                  </div>
-                  <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
-                    <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
-                        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <!-- Limite de Consumo -->
-              <div class="panel-body" style="padding-left: 0; padding-right: 0;">
-                <div class="form-group" style="margin: 0px;">
+          </p-panel>
+        </div>
+        <!--RIGHT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel #pnlTarjeta header="Datos de Tarjeta" [style]="{'height':'530px','z-index':'1'}">
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <!-- Validacion Tarjeta -->
+                <div class="form-group">
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                      <label>Límite de consumo</label>
+                      <label>Numero de tarjeta</label>
                     </div>
                   </div>
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                      <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                      <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="coverMujeres" id="limCons" name="limCons"
-                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="8" style="margin: 0px">
+                      <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cardNumber" (ngModelChange)="onChangeOpen($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="numero" id="numero" placeholder="Codigo único de tarjeta" [disabled]="!flagUserFound" style="z-index: 1;"
+                        tabindex="4" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                      <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                      <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
                     </div>
                   </div>
                 </div>
+                <!-- Cantidad de personas -->
+                <div class="form-group"><br>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label>Cantidad de personas</label>
+                    </div>
+                  </div>
+                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                    <div class="ui-g-3 ui-md-3">
+                      <p style="font-size: 12px;">Nro. Mujeres</p>
+                    </div>
+                    <div class="input-group ui-g-3 ui-md-3">
+                      <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                        maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="5" (click)="$event.target.select()"
+                        readonly>
+                      <div class="input-group-btn-vertical">
+                        <button id="addW" (click)="plusWoman1()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
+                        <button id="lessW" (click)="lessWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
+                      </div>
+                    </div>
+                    <div class="ui-g-3 ui-md-3">
+                      <p style="font-size: 12px; padding: 2px">Nro. Hombres</p>
+                    </div>
+                    <div class="input-group ui-g-3 ui-md-3">
+                      <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                        maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="6" (click)="$event.target.select()"
+                        readonly>
+                      <div class="input-group-btn-vertical">
+                        <button id="addM" (click)="plusMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-up"></i></button>
+                        <button id="lessM" (click)="lessMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button"><i class="fa fa-caret-down"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Cover -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label>Cover</label>
+                    </div>
+                  </div>
+                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                    <div class="ui-g-6 ui-md-6">
+                      <p style="font-size: 12px;">Cover Mujeres</p>
+                    </div>
+                    <div class="ui-g-6 ui-md-6">
+                      <p style="font-size: 12px;">Cover Hombres</p>
+                    </div>
+                    <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
+                      <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
+                        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
+                    </select>
+                    </div>
+                    <div class="ui-g-6 ui-md-6" style="padding-top: 0px">
+                      <select [(ngModel)]="selected_tipo_cliente" id="tipoCli" name="tipoCli" class="form-control" style="z-index: 1;" tabindex="7">
+                        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.desc_tipo_cliente}}</option>
+                    </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- Limite de Consumo -->
+                <div class="panel-body" style="padding-left: 0; padding-right: 0;">
+                  <div class="form-group" style="margin: 0px;">
+                    <div class="row">
+                      <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                        <label>Límite de consumo</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                        <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                        <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="coverMujeres" id="limCons" name="limCons"
+                          class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="8" style="margin: 0px">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Imprimir Factura -->
+                <div id="print-section">
+                </div>
+                <br><br>
               </div>
-
-              <div id="print-section">
-              </div>
-              <br><br>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!-- BOTTOM SIDE-->
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <br>
-        <p-panel #pnlPromos header="Seleccionar promociones" [style]="{'z-index':'1'}">
-          <div style="text-align: right">
-            <label>Desactivar todas las promociones:</label>
-            <button type="button" pButton (click)="deletePromos()" label="Desactivar" class="ui-button-warning"></button></div>
-          <p-tabView (onChange)="handleChange($event)">
-            <p-tabPanel *ngFor="let tabz of tabs; let i = index;let first = first;" [selected]="first" [header]="tabz.label" lazy="true">
+          </p-panel>
+        </div>
+        <!-- BOTTOM SIDE-->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <p-panel #pnlPromos header="Seleccionar promociones" [style]="{'z-index':'1'}">
+            <div style="text-align: right">
+              <label>Desactivar todas las promociones:</label>
+              <button type="button" pButton (click)="deletePromos()" label="Desactivar" class="ui-button-warning"></button></div>
+            <p-tabView (onChange)="handleChange($event)">
+              <p-tabPanel *ngFor="let tabz of tabs; let i = index;let first = first;" [selected]="first" [header]="tabz.label" lazy="true">
 
-              <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)"
-                (onRowUnselect)="onRowUnselect($event)">
-                <p-column [style]="{'width':'29px'}" selectionMode="multiple">
-                </p-column>
+                <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)"
+                  (onRowUnselect)="onRowUnselect($event)">
+                  <p-column [style]="{'width':'29px'}" selectionMode="multiple">
+                  </p-column>
 
-                <p-column field="selectedPromo" header="Promoción" [editable]="false" [style]="{'width':'130px'}">
-                  <ng-template let-car="rowData" pTemplate type="body">
-                    <select [(ngModel)]="car.selectedPromo" [ngStyle]='{"width": "100%", "background": "rgba(255,255,255,0)"}'>
+                  <p-column field="selectedPromo" header="Promoción" [editable]="false" [style]="{'width':'130px'}">
+                    <ng-template let-car="rowData" pTemplate type="body">
+                      <select [(ngModel)]="car.selectedPromo" [ngStyle]='{"width": "100%", "background": "rgba(255,255,255,0)"}'>
                       <option *ngFor="let row of lstPromociones">{{row.nombre}}</option>
                     </select>
-                  </ng-template>
-                </p-column>
+                    </ng-template>
+                  </p-column>
 
-                <p-column *ngFor="let header of headers" [field]="header.field " [header]="header.header" [sortable]="true" [filter]="true"
-                  filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
+                  <p-column *ngFor="let header of headers" [field]="header.field " [header]="header.header" [sortable]="true" [filter]="true"
+                    filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
 
-                <p-column header="Precio Promo" [style]="{'width':'13%'}">
-                  <ng-template let-car="rowData" pTemplate>
-                    <input type="text" currencyMask [(ngModel)]="car.precio_promo" [options]="{ align : 'center' }" style="max-width: 100%; color: black;">
-                  </ng-template>
-                </p-column>
+                  <p-column header="Precio Promo" [style]="{'width':'13%'}">
+                    <ng-template let-car="rowData" pTemplate>
+                      <input type="text" currencyMask [(ngModel)]="car.precio_promo" [options]="{ align : 'center' }" style="max-width: 100%; color: black;">
+                    </ng-template>
+                  </p-column>
 
-                <p-footer>
-                  <ul>
-                    <div *ngIf="selectedPromos.length !== 0" style="text-align: center">
-                      <h3>Promociones Activas</h3>
+                  <p-footer>
+                    <ul>
+                      <div *ngIf="selectedPromos.length !== 0" style="text-align: center">
+                        <h3>Promociones Activas</h3>
+                      </div>
+                      <li *ngFor="let car of selectedPromos" style="text-align: left">
+                        {{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_promo}}</li>
+                    </ul>
+                  </p-footer>
+                </p-dataTable>
+
+              </p-tabPanel>
+            </p-tabView>
+          </p-panel>
+        </div>
+        <!-- Button -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+        <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+          <button class="btn btn-primary btn-block" (click)="insertClientCard()" [disabled]="!flagCaUsFound">Ingresar</button>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+      </tab>
+      <!--TAB CLOSE-->
+      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
+          <hr>
+        </div>
+        <!--LEFT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'530px','z-index':'1'}">
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <!-- Verificacion de consumo -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label class="cols-sm-2 control-label">Número de tarjeta</label>
                     </div>
-                    <li *ngFor="let car of selectedPromos" style="text-align: left">
-                      {{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_promo}}</li>
-                  </ul>
-                </p-footer>
-              </p-dataTable>
+                  </div>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="numeroS" id="numeroS" placeholder="Codigo único de tarjeta" style="z-index: 1;" maxlength="9"
+                        onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                      <span class="input-group-addon" id="addonCnS1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                      <span class="input-group-addon" id="addonCnS2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Mostrar cliente -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label for="datosCliente">Datos del cliente</label>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="flagCardSFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <ul class="list-group" id="limheight">
+                            <li class="list-group-item">
+                              <p>Nombre:</p>
+                              {{searchUserS.nombre}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Cant. Mujeres:</p>
+                              <div style="text-align: left">
+                                <span class="badge">{{searchUserS.cantMujeres}}</span>
+                              </div>
+                            </li>
+                            <li class="list-group-item">
+                              <p>Cant. Hombres:</p>
+                              <div style="text-align: left">
+                                <span class="badge">{{searchUserS.cantHombres}}</span>
+                              </div>
+                            </li>
+                            <li class="list-group-item">
+                              <p>Eg. Mujeres:</p>
+                              {{searchUserS.egresoMujeres}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Eg. Hombres:</p>
+                              {{searchUserS.egresoHombres}}
+                            </li>
 
-            </p-tabPanel>
-          </p-tabView>
-        </p-panel>
-      </div>
-      <!-- Button -->
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary btn-block" (click)="insertClientCard()" [disabled]="!flagCaUsFound">Ingresar</button>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-    </tab>
-    <!--TAB CLOSE-->
-    <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
-        <hr>
-      </div>
-      <!--LEFT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'530px','z-index':'1'}">
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <!-- Verificacion de consumo -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label class="cols-sm-2 control-label">Número de tarjeta</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                    <input [(ngModel)]="cardNumberS" (ngModelChange)="onChangeClose($event)" (click)="$event.target.select()" type="text" class="form-control"
-                      name="numeroS" id="numeroS" placeholder="Codigo unico de tarjeta" style="z-index: 1;font-size: 18px"
-                      maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                    <span class="input-group-addon" id="addonCnS1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                    <span class="input-group-addon" id="addonCnS2"><i class="fa fa-times" aria-hidden="true"></i></span>
-                  </div>
-                </div>
-              </div>
-              <!-- Mostrar cliente -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label for="datosCliente">Datos del cliente</label>
-                  </div>
-                </div>
-                <div class="row" *ngIf="flagCardSFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <ul class="list-group" id="limheight">
-                          <li class="list-group-item">
-                            <p>Nombre:</p>
-                            {{searchUserS.nombre}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Cant. Mujeres:</p>
-                            <div style="text-align: left">
-                              <span class="badge">{{searchUserS.cantMujeres}}</span>
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <p>Cant. Hombres:</p>
-                            <div style="text-align: left">
-                              <span class="badge">{{searchUserS.cantHombres}}</span>
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <p>Eg. Mujeres:</p>
-                            {{searchUserS.egresoMujeres}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Eg. Hombres:</p>
-                            {{searchUserS.egresoHombres}}
-                          </li>
-
-                          <li class="list-group-item">
-                            <p>Ing. Mujeres:</p>
-                            {{searchUserS.egresoHombres}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Ing. Hombres:</p>
-                            {{searchUserS.egresoHombres}}
-                          </li>
-                        </ul>
+                            <li class="list-group-item">
+                              <p>Ing. Mujeres:</p>
+                              {{searchUserS.egresoHombres}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Ing. Hombres:</p>
+                              {{searchUserS.egresoHombres}}
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="row" *ngIf="!flagCardSFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLaelS}}</label>
+                  <div class="row" *ngIf="!flagCardSFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLaelS}}</label>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!--RIGHT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'height':'530px','z-index':'1'}">
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <!-- Resumen consumo -->
-              <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <label for="tabla" class="control-label">Resumen Consumo</label>
+          </p-panel>
+        </div>
+        <!--RIGHT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel #pnlTablaConsumo header="Datos del Consumo" [style]="{'height':'530px','z-index':'1'}">
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <!-- Resumen consumo -->
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <label for="tabla" class="control-label">Resumen Consumo</label>
+                  </div>
                 </div>
-              </div>
-              <!-- Tabla de Resumen consumo -->
-              <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <p-dataTable [value]="lstConsumo" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowClick)="onRowSelectTC($event)">
-                    <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'15%'}">
-                      <ng-template pTemplate="body" let-col let-row="rowData">
-                        <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                <!-- Tabla de Resumen consumo -->
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p-dataTable [value]="lstConsumo" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowClick)="onRowSelectTC($event)">
+                      <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'15%'}">
+                        <ng-template pTemplate="body" let-col let-row="rowData">
+                          <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
                       {{row[col.field]}}
                     </span>
-                      </ng-template>
-                    </p-column>
-                    <p-column field="descripcion" header="Descripción" [style]="{'overflow':'visible','width':'52.5%'}">
-                      <ng-template pTemplate="body" let-col let-row="rowData">
-                        <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                        </ng-template>
+                      </p-column>
+                      <p-column field="descripcion" header="Descripción" [style]="{'overflow':'visible','width':'52.5%'}">
+                        <ng-template pTemplate="body" let-col let-row="rowData">
+                          <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
                       {{row[col.field]}}
                     </span>
-                      </ng-template>
-                    </p-column>
-                    <p-column field="precio_venta" header="Precio Unitario" header="Descripción" [style]="{'overflow':'visible','width':'16.25%'}">
-                      <ng-template pTemplate="body" let-col let-row="rowData">
-                        <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                        </ng-template>
+                      </p-column>
+                      <p-column field="precio_venta" header="Precio Unitario" header="Descripción" [style]="{'overflow':'visible','width':'16.25%'}">
+                        <ng-template pTemplate="body" let-col let-row="rowData">
+                          <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
                       {{row[col.field]}}
                     </span>
-                      </ng-template>
-                    </p-column>
-                    <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'16.25%'}">
-                      <ng-template pTemplate="body" let-col let-row="rowData">
-                        <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                        </ng-template>
+                      </p-column>
+                      <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'16.25%'}">
+                        <ng-template pTemplate="body" let-col let-row="rowData">
+                          <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
                       {{row[col.field]}}
                     </span>
-                      </ng-template>
-                    </p-column>
-                    <p-column field="fecha" header="Fecha" [hidden]="true">
-                      <ng-template pTemplate="body" let-col let-row="rowData">
-                        <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
+                        </ng-template>
+                      </p-column>
+                      <p-column field="fecha" header="Fecha" [hidden]="true">
+                        <ng-template pTemplate="body" let-col let-row="rowData">
+                          <span tooltip="{{row.fecha}}" tooltipPlacement="right" appendTo="target" style="position: relative">
                       {{row[col.field]}}
                     </span>
-                      </ng-template>
-                    </p-column>
-                  </p-dataTable>
+                        </ng-template>
+                      </p-column>
+                    </p-dataTable>
+                  </div>
                 </div>
-              </div>
-              <!-- Total a pagar -->
-              <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <br>
-                  <div class="input-group">
-                    <span class="input-group-addon"><label class="control-label" style="font-size: 17px; text-align: center">Total a pagar:</label></span>
-                    <input type="text" [(ngModel)]="totalPagar" currencyMask class="form-control" placeholder="9999" style="font-size: 18px; text-align: right; background-color: white"
-                      readonly>
-                    <!--<span class="input-group-addon" style="font-size: 18px; text-align: right"><i class="fa fa-money" aria-hidden="true"></i></span>-->
+                <!-- Total a pagar -->
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon"><label class="control-label" style="font-size: 17px; text-align: center">Total a pagar:</label></span>
+                      <input type="text" [(ngModel)]="totalPagar" currencyMask class="form-control" placeholder="9999" style="font-size: 18px; text-align: right; background-color: white"
+                        readonly>
+                      <!--<span class="input-group-addon" style="font-size: 18px; text-align: right"><i class="fa fa-money" aria-hidden="true"></i></span>-->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!-- Button -->
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
-        <!--<button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="flagConfirmFP">Aceptar</button>-->
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-    </tab>
-    <!-- TAB EGRESOS -->
-    <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Ingreso/Egreso</h3>
-        <hr>
-      </div>
-      <!--LEFT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'530px','z-index':'1'}">
-          <!-- Verificacion de consumo -->
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label class="cols-sm-2 control-label">Número de tarjeta</label>
+          </p-panel>
+        </div>
+        <!-- Button -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+        <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+          <button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>
+          <!--<button (click)="print();setDefaultValues()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="flagConfirmFP">Aceptar</button>-->
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+      </tab>
+      <!-- TAB EGRESOS -->
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Ingreso/Egreso</h3>
+          <hr>
+        </div>
+        <!--LEFT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'530px','z-index':'1'}">
+            <!-- Verificacion de consumo -->
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label class="cols-sm-2 control-label">Número de tarjeta</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cardNumberE" (ngModelChange)="onChangeEgreso($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="numeroT" id="numeroT" placeholder="Codigo único de tarjeta" style="z-index: 1;" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                      <span class="input-group-addon" id="addonCnE1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                      <span class="input-group-addon" id="addonCnE2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                    </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                    <input [(ngModel)]="cardNumberE" (ngModelChange)="onChangeEgreso($event)" (click)="$event.target.select()" type="text" class="form-control"
-                      name="numeroT" id="numeroT" placeholder="Codigo unico de tarjeta" style="z-index: 1; font-size: 18px"
-                      onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                    <span class="input-group-addon" id="addonCnE1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                    <span class="input-group-addon" id="addonCnE2"><i class="fa fa-times" aria-hidden="true"></i></span>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Mostrar cliente -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label for="datosCliente">Datos del cliente</label>
+                <!-- Mostrar cliente -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label for="datosCliente">Datos del cliente</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row" *ngIf="flagCardEFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <ul class="list-group" id="limheight">
-                          <li class="list-group-item">
-                            <p>Nombre:</p>
-                            {{searchUserE.nombre}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Cédula:</p>
-                            {{searchUserE.ci}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Consumo Actual:</p>
-                            <div style="text-align: left">
-                              <span class="badge">{{totalPagar}}</span>
-                            </div>
-                          </li>
-                          <li class="list-group-item">
-                            <p>Eg. Mujeres:</p>
-                            {{searchUserE.egresoMujeres}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Eg. Hombres:</p>
-                            {{searchUserE.egresoHombres}}
-                          </li>
+                  <div class="row" *ngIf="flagCardEFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <ul class="list-group" id="limheight">
+                            <li class="list-group-item">
+                              <p>Nombre:</p>
+                              {{searchUserE.nombre}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Cédula:</p>
+                              {{searchUserE.ci}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Consumo Actual:</p>
+                              <div style="text-align: left">
+                                <span class="badge">{{totalPagar}}</span>
+                              </div>
+                            </li>
+                            <li class="list-group-item">
+                              <p>Eg. Mujeres:</p>
+                              {{searchUserE.egresoMujeres}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Eg. Hombres:</p>
+                              {{searchUserE.egresoHombres}}
+                            </li>
 
-                          <li class="list-group-item">
-                            <p>Ing. Mujeres:</p>
-                            {{searchUserE.egresoHombres}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Ing. Hombres:</p>
-                            {{searchUserE.egresoHombres}}
-                          </li>
-                          <li class="list-group-item">
-                            <p>Detalle de Consumo:</p>
-                            <ng-template #toolTipTemplate>
-                              Ver detalle de compras
-                            </ng-template>
-                            <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
+                            <li class="list-group-item">
+                              <p>Ing. Mujeres:</p>
+                              {{searchUserE.egresoHombres}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Ing. Hombres:</p>
+                              {{searchUserE.egresoHombres}}
+                            </li>
+                            <li class="list-group-item">
+                              <p>Detalle de Consumo:</p>
+                              <ng-template #toolTipTemplate>
+                                Ver detalle de compras
+                              </ng-template>
+                              <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
                            <i (click)="showComprasDetail()" class="fa fa-shopping-cart fa-flag fa-lg" aria-hidden="true"></i>
                         </a>
-                          </li>
-                        </ul>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="!flagCardEFound">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLaelE}}</label>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="row" *ngIf="!flagCardEFound">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <label id="lblNotFound" style="color: red; font-size: 14px">{{nfLaelE}}</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
+              </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!--RIGHT SIDE-->
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'530px','z-index':'1'}">
-          <div class="panel panel-default" style="border: transparent">
-            <div class="panel-body">
-              <!-- Cantidad de personas -->
-              <div class="form-group">
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <label class="cols-sm-2 control-label">Cantidad de personas</label>
+          </p-panel>
+        </div>
+        <!--RIGHT SIDE-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'530px','z-index':'1'}">
+            <div class="panel panel-default" style="border: transparent">
+              <div class="panel-body">
+                <!-- Cantidad de personas -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <label class="cols-sm-2 control-label">Cantidad de personas</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <ul class="list-group">
-                      <li class="list-group-item">
-                        <div class="row" style="text-align: center">
-                          <div class="ui-g-12" style="padding-top: 4%">
-                            <p>Total Mujeres</p>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <ul class="list-group">
+                        <li class="list-group-item">
+                          <div class="row" style="text-align: center">
+                            <div class="ui-g-12" style="padding-top: 4%">
+                              <p>Total Mujeres</p>
+                            </div>
+                            <div class="ui-g-12">
+                              <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres" [style]="{'margin-top':'11px'}"></p-selectButton>
+                            </div>
                           </div>
-                          <div class="ui-g-12">
-                            <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres" [style]="{'margin-top':'11px'}"></p-selectButton>
-                          </div>
-                        </div>
-                        <div class="row" style="text-align: center">
-                          <div class="ui-g-12">
-                            <span class="badge" style="font-size: 16px">{{searchUserE.cantMujeres}}</span>
-                          </div>
-                          <div class="ui-g-12">
+                          <div class="row" style="text-align: center">
+                            <div class="ui-g-12">
+                              <span class="badge" style="font-size: 16px">{{searchUserE.cantMujeres}}</span>
+                            </div>
+                            <div class="ui-g-12">
+                              <br>
+                              <p-spinner size="5" [(ngModel)]="cantSalenM" [min]="0" [max]="100"></p-spinner>
+                            </div>
                             <br>
-                            <p-spinner size="5" [(ngModel)]="cantSalenM" [min]="0" [max]="100"></p-spinner>
                           </div>
-                          <br>
-                        </div>
-                      </li>
-                      <li class="list-group-item">
-                        <div class="row" style="text-align: center">
-                          <div class="ui-g-12" style="padding-top: 4%">
-                            <p>Total Hombres</p>
+                        </li>
+                        <li class="list-group-item">
+                          <div class="row" style="text-align: center">
+                            <div class="ui-g-12" style="padding-top: 4%">
+                              <p>Total Hombres</p>
+                            </div>
+                            <div class="ui-g-12" style="padding-top: 3%">
+                              <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres" [style]="{'margin-top':'11px'}"></p-selectButton>
+                            </div>
                           </div>
-                          <div class="ui-g-12" style="padding-top: 3%">
-                            <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres" [style]="{'margin-top':'11px'}"></p-selectButton>
-                          </div>
-                        </div>
-                        <div class="row" style="text-align: center">
-                          <div class="ui-g-12">
-                            <span class="badge" style="font-size: 16px">{{searchUserE.cantHombres}}</span>
-                          </div>
-                          <div class="ui-g-12" style="padding-top: 2.5%">
+                          <div class="row" style="text-align: center">
+                            <div class="ui-g-12">
+                              <span class="badge" style="font-size: 16px">{{searchUserE.cantHombres}}</span>
+                            </div>
+                            <div class="ui-g-12" style="padding-top: 2.5%">
+                              <br>
+                              <p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>
+                            </div>
                             <br>
-                            <p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>
                           </div>
-                          <br>
-                        </div>
-                      </li>
-                    </ul>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <br>
-                    <label class="cols-sm-2 control-label">Abono</label>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <br>
+                      <label class="cols-sm-2 control-label">Abono</label>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-                    <!--<div class="row" style="text-align: center">
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <!--<div class="row" style="text-align: center">
                       <div class="ui-g-12" style="margin-left: 12px; margin-top: 12px">
                         <input currencyMask type="text" [(ngModel)]="abono" [options]="{ prefix: '$ '}" id="inputAbono" name="inputAbono" placeholder="0.00">
                         <br><br>
                       </div>
                     </div>-->
-                    <div class="panel panel-default">
-                      <div class="panel-body">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="input-group col-lg-10 col-md-10 col-sm-10 col-xs-10" style="margin-left: 24px; margin-bottom: -14px">
-                              <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                              <input currencyMask type="text" class="form-control" [(ngModel)]="abono" [options]="{ prefix: '$ '}" id="inputAbono" name="inputAbono"
-                                placeholder="0.00">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="input-group col-lg-10 col-md-10 col-sm-10 col-xs-10" style="margin-left: 24px; margin-bottom: -14px">
+                                <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                                <input currencyMask type="text" class="form-control" [(ngModel)]="abono" [options]="{ prefix: '$ '}" id="inputAbono" name="inputAbono"
+                                  placeholder="0.00">
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -647,64 +658,64 @@
                 </div>
               </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <!-- Button -->
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-        <button (click)="ConfEgreso()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="!flagCardEFound">Confirmar</button>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-    </tab>
-    <!-- TAB TARJETAS -->
-    <tab heading="Tarjetas" (select)="alertMe4(4)">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-        <h3 style="text-align: center">Gestión de tarjetas</h3>
-        <hr>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <p-panel header="Ingreso Rápido" [style]="{'z-index':'1'}">
-          <div class="form-group">
-            <div class="row">
-              <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6">
-                <label>Número de tarjeta</label>
-                <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                  <input [(ngModel)]="cardNumberG" (ngModelChange)="onChangeG($event)" (click)="$event.target.select()" type="text" class="form-control"
-                    name="numeroTar" id="numeroTar" placeholder="Codigo único de tarjeta" style="z-index: 1;" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                  <span class="input-group-addon" id="addonCnT1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                  <span class="input-group-addon" id="addonCnT2"><i class="fa fa-times" aria-hidden="true"></i></span>
+          </p-panel>
+        </div>
+        <!-- Button -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+        <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
+          <button (click)="ConfEgreso()" class="btn btn-primary btn-block" id="basic-addonPrint" [disabled]="!flagCardEFound">Confirmar</button>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+      </tab>
+      <!-- TAB TARJETAS -->
+      <tab heading="Tarjetas" (select)="alertMe4(4)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Gestión de tarjetas</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <p-panel header="Ingreso Rápido" [style]="{'z-index':'1'}">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-lg-5 col-md-6 col-sm-6 col-xs-6">
+                  <label>Número de tarjeta</label>
+                  <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                    <input [(ngModel)]="cardNumberG" (ngModelChange)="onChangeG($event)" (click)="$event.target.select()" type="text" class="form-control"
+                      name="numeroTar" id="numeroTar" placeholder="Codigo único de tarjeta" style="z-index: 1;" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                    <span class="input-group-addon" id="addonCnT1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                    <span class="input-group-addon" id="addonCnT2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                  </div>
                 </div>
-              </div>
-              <div class="col-lg-5 col-lg-offset-2 col-md-6 col-sm-6 col-xs-6">
-                <label>Límite de Consumo</label>
-                <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                  <input currencyMask type="text" class="form-control" [(ngModel)]="limiteConsumo" [options]="{ prefix: '$ '}" id="inputAbono"
-                    name="inputAbono" placeholder="0.00">
+                <div class="col-lg-5 col-lg-offset-2 col-md-6 col-sm-6 col-xs-6">
+                  <label>Límite de Consumo</label>
+                  <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                    <input currencyMask type="text" class="form-control" [(ngModel)]="limiteConsumo" [options]="{ prefix: '$ '}" id="inputAbono"
+                      name="inputAbono" placeholder="0.00">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </p-panel>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <br>
-        <ng2-smart-table id="dtT" [settings]="settingsT" [source]="sourceT" (create)="showDialogT = !showDialogT;setCursorAddT()"
-          (edit)="showDialogTU = !showDialogTU;onUpdateT($event);setCursorUpdateT()" (delete)="onDeleteT($event)">
-        </ng2-smart-table>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <hr>
-      </div>
-    </tab>
-  </tabset>
+          </p-panel>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <ng2-smart-table id="dtT" [settings]="settingsT" [source]="sourceT" (create)="showDialogT = !showDialogT;setCursorAddT()"
+            (edit)="showDialogTU = !showDialogTU;onUpdateT($event);setCursorUpdateT()" (delete)="onDeleteT($event)">
+          </ng2-smart-table>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+        </div>
+      </tab>
+    </tabset>
+  </div>
 </div>
 
 <!-- ADD CLIENT -->
@@ -1042,11 +1053,179 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
+<!--Advertencia-->
+<p-dialog [(visible)]="displayOptions" modal="modal" width="580" [showHeader]="false" [responsive]="true">
+  <h3 style="text-align: center">
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;Atención
+  </h3>
+  <hr>
+  <p><strong>Existe un turno abierto!</strong></p>
+  <p>Estimad@ {{username}} cerraste tu sesión sin haber cerrado tu turno, por lo que es necesario continuar con dicho turno
+    o iniciar uno nuevo.</p>
+  <hr>
+  <div style="text-align: center">
+    <button type="button" pButton (click)="displayOptions=false;" style="width: 40%" label="Continuar con turno"></button>
+    <button type="button" pButton (click)="displayOptions=false;displayCloseCaja=true;" style="width: 40%" label="Empezar un nuevo turno"></button>
+  </div>
+</p-dialog>
 
-<p-dialog header="Abrir caja" [(visible)]="displayOpenCaja" modal="modal" width="550" [responsive]="true">
+<!--Abrir-->
+<p-dialog [(visible)]="displayOpenCaja" modal="modal" width="550" [showHeader]="false" [responsive]="true">
+  <h3 style="text-align: center">
+    Apertura de Turno
+  </h3>
+  <hr>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <p><strong>¿Cuánto dinero existe en caja?</strong></p>
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" type="text" class="form-control">
+    </div>
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button type="button" pButton icon="fa-check" (click)="displayOpenCaja=false;" label="Abrir Turno" style="width: 25%"></button>
+    <button type="button" pButton icon="fa-close" (click)="displayOpenCaja=false;displayOptions=true;" label="Regresar" style="width: 25%"></button>
+  </div>
+</p-dialog>
 
-  <p-footer>
-    <button type="button" pButton icon="fa-check" (click)="displayOpenCaja=false;openCaja()" label="Si"></button>
-    <button type="button" pButton icon="fa-close" (click)="displayOpenCaja=false" label="No"></button>
-  </p-footer>
+<!--Cerrar-->
+<p-dialog [(visible)]="displayCloseCaja" modal="modal" width="550" [showHeader]="false" [responsive]="true">
+  <h3 style="text-align: center">
+    Cierre de Turno
+  </h3>
+  <hr>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p><strong>Efectivo esperado en caja</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" type="text" class="form-control" readonly>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p><strong>Efectivo existente en caja</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" type="text" class="form-control">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p><strong>Diferencia</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" type="text" class="form-control" readonly>
+    </div>
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button type="button" pButton icon="fa-check" (click)="displayCloseCaja=false;displayOpenCaja=true;" label="Cerrar Turno"
+      style="width: 25%"></button>
+    <button type="button" pButton icon="fa-close" (click)="displayCloseCaja=false;displayOptions=true;" label="Regresar" style="width: 25%"></button>
+  </div>
+</p-dialog>
+
+<!--Abrir No Login-->
+<p-dialog [(visible)]="displayOpenCajaN" modal="modal" width="450" [responsive]="true">
+  <p-header>
+    Apertura de Turno
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <p style="text-align: center"><strong>¿Cuánto dinero existe en caja?</strong></p>
+    </div>
+    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-lg-12">
+      <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" id="montoO" name="montoO" type="text" class="form-control">
+    </div>
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px; width: 25%;" (click)="openCaja()">Abrir Turno</button>
+    <button class="btn btn-default" style="font-size: 11px; width: 25%;" (click)="displayOpenCajaN = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!--Cerrar No Login-->
+<p-dialog [(visible)]="displayCloseCajaN" modal="modal" width="550" [responsive]="true">
+  <p-header>
+    Cierre de Turno
+  </p-header><br>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Efectivo esperado en caja:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="efectivoEsp" currencyMask (click)="$event.target.select()" type="text" class="form-control" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Efectivo existente en caja:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="efectivoExis" (ngModelChange)="onChangeExis()" currencyMask (click)="$event.target.select()" type="text"
+        class="form-control">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Diferencia:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input currencyMask (click)="$event.target.select()" type="text" class="form-control" value={{efectivoExis-efectivoEsp}}
+        [disabled]="true">
+    </div>
+    <div class="col-lg-6 col-lg-offset-6">
+      <div class="ui-message ui-messages-warn ui-corner-all" *ngIf="!flagShowAlert">
+        <i class="fa fa-exclamation-circle"></i>&nbsp;Advertencia: Los valores no coinciden.
+      </div>
+      <div class="ui-message ui-messages-success ui-corner-all" *ngIf="flagShowAlert">
+        <i class="fa fa-check"></i>&nbsp;Excelente: Todo en orden.
+      </div>
+    </div>
+
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px; width: 25%;" (click)="closeCaja()">Cerrar Turno</button>
+    <button class="btn btn-default" style="font-size: 11px; width: 25%;" (click)="displayCloseCajaN = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!--Cerrar Logout-->
+<p-dialog [(visible)]="displayCloseCajaL" modal="modal" width="550" [responsive]="true">
+  <p-header>
+    Cierre de Turno
+  </p-header><br>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Efectivo esperado en caja:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="efectivoEsp" currencyMask (click)="$event.target.select()" type="text" class="form-control" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Efectivo existente en caja:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input [(ngModel)]="efectivoExis" (ngModelChange)="onChangeExis()" currencyMask (click)="$event.target.select()" type="text"
+        class="form-control">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <p style="padding-top: 13px"><strong>Diferencia:</strong></p>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <input currencyMask (click)="$event.target.select()" type="text" class="form-control" value={{efectivoExis-efectivoEsp}}
+        [disabled]="true">
+    </div>
+    <div class="col-lg-6 col-lg-offset-6">
+      <div class="ui-message ui-messages-warn ui-corner-all" *ngIf="!flagShowAlert">
+        <i class="fa fa-exclamation-circle"></i>&nbsp;Advertencia: Los valores no coinciden.
+      </div>
+      <div class="ui-message ui-messages-success ui-corner-all" *ngIf="flagShowAlert">
+        <i class="fa fa-check"></i>&nbsp;Excelente: Todo en orden.
+      </div>
+    </div>
+
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px; width: 25%;" (click)="closeCajaL()">Cerrar y salir</button>
+    <button class="btn btn-default" style="font-size: 11px; width: 25%;" (click)="logOut()">Salir sin Cerrar</button>
+  </div>
 </p-dialog>

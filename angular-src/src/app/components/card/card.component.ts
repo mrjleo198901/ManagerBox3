@@ -25,6 +25,8 @@ import { PersonalService } from '../../services/personal.service';
 import { ActiveCardsService } from '../../services/active-cards.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Subject } from 'rxjs/Subject';
+import { CajaService } from '../../services/caja.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -215,7 +217,23 @@ export class CardComponent implements OnInit {
   lstComprasCliente: any = [];
   lstComprasClienteOld: any = [];
   cantColor = '#0000FF';
-  displayOpenCaja: boolean;
+  displayOpenCaja;
+  displayCloseCaja;
+  displayOptions;
+  username;
+  us;
+  btnLabel;
+  btnClass;
+  public static updateDisplayCaja: Subject<boolean> = new Subject();
+  displayOpenCajaN = false;
+  displayCloseCajaN = false;
+  montoO = 0;
+  montoF = 0;
+  efectivoExis = 0;
+  efectivoEsp = 45;
+  flagShowAlert;
+  public static checkOpenCaja: Subject<boolean> = new Subject();
+  displayCloseCajaL = false;
 
   constructor(
     private validateService: ValidateService,
@@ -235,7 +253,86 @@ export class CardComponent implements OnInit {
     private datePipe: DatePipe,
     private localStorageService: LocalStorageService,
     private personalService: PersonalService,
-    private activeCardsService: ActiveCardsService) {
+    private activeCardsService: ActiveCardsService,
+    private cajaService: CajaService,
+    public authService: AuthService,
+    private router: Router) {
+
+    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    this.showDateApertura = this.currentDateTime.split(' ')[0];
+    this.showHourApertura = this.currentDateTime.split(' ')[1];
+
+    this.displayOpenCaja = false;
+    this.displayCloseCaja = false;
+    this.displayOptions = false;
+
+    this.us = JSON.parse(localStorage.getItem('user'));
+    if (this.us !== null) {
+      this.personalService.getByCedula(this.us.username).subscribe(data => {
+        if (data.length > 0) {
+          let nombres = data[0].nombres.split(' ');
+          this.username = nombres[0];
+        }
+      }, err => {
+        console.log(err);
+      })
+    }
+
+    //Verificar si acabo de loguearse
+    CardComponent.updateDisplayCaja.subscribe(res => {
+      //console.log("insideeeeeeeeeee");
+      this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+        if (data.length > 0) {
+          this.displayOptions = true;
+        }
+      }, err => {
+        console.log(err);
+      });
+    })
+
+    //Chequear caja abierta no loguin
+    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+      if (data.length > 0) {
+        this.btnLabel = 'Cerrar Turno';
+        this.btnClass = '#EFAD4D';
+      } else {
+        this.btnLabel = 'Abrir Turno';
+        this.btnClass = '#2398E5';
+      }
+    }, err => {
+      console.log(err);
+    });
+
+    //Verificar si caja se cerro antes de salir
+    CardComponent.checkOpenCaja.subscribe(res => {
+      this.displayCloseCajaL = true;
+    })
+
+    /*this.displayOptions = true;
+    let caja1 = {
+      idUser: '5a2f07113d4776179c860762',
+      montoO: '50',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja1).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });
+    let caja2 = {
+      idUser: '5a30a670747bd11f78a51331',
+      montoO: '35',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja2).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });*/
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
@@ -291,10 +388,6 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
-    //console.log(this.currentDateTime);
-    this.showDateApertura = this.currentDateTime.split(' ')[0];
-    this.showHourApertura = this.currentDateTime.split(' ')[1];
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 50)
@@ -379,6 +472,106 @@ export class CardComponent implements OnInit {
     this.rucFactura = '';
   }
 
+  openCloseCaja() {
+    if (this.btnLabel.localeCompare('Cerrar Turno') == 0) {
+      this.displayCloseCajaN = true;
+    } else {
+      this.displayOpenCajaN = true;
+      setTimeout(function () {
+        document.getElementById('montoO').focus();
+      }, 0);
+    }
+  }
+
+  closeCaja() {
+    this.montoF = this.efectivoExis;
+    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+      let caja = {
+        idUser: this.us.id,
+        montoO: data[0].montoO,
+        montoF: this.montoF,
+        fechaO: data[0].fechaO,
+        fechaF: this.validateService.getDateTimeEs()
+      }
+      this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
+      /*this.cajaService.register(caja).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
+      }, err => {
+        console.log(err);
+      })*/
+    }, err => {
+      console.log(err);
+    });
+    this.sendEmail();
+  }
+
+  sendEmail() {
+    const user = {
+      name: 'asd',
+      email: 'jmunoz@riobytes.com',
+      username: this.cedula,
+      npass: this.formatterService.makeId()
+    }
+    this.cajaService.sendCorte(user).subscribe(data => {
+      console.log(data);
+    });
+  }
+
+  openCaja() {
+    let caja = {
+      idUser: this.us.id,
+      montoO: this.montoO,
+      montoF: 'open',
+      fechaO: this.validateService.getDateTimeEs(),
+      fechaF: ''
+    }
+    console.log(caja);
+    /*this.cajaService.register(caja).subscribe(data => {
+
+    }, err => {
+
+    })*/
+  }
+
+  closeCajaL() {
+    this.montoF = this.efectivoExis;
+    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+
+      let caja = {
+        idUser: this.us.id,
+        montoO: data[0].montoO,
+        montoF: this.montoF,
+        fechaO: data[0].fechaO,
+        fechaF: this.validateService.getDateTimeEs()
+      }
+      /*this.cajaService.register(caja).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
+          this.displayCloseCajaL = false;
+          this.authService.logout();
+          this.router.navigate(['/login']);
+      }, err => {
+        console.log(err);
+      })*/
+    }, err => {
+      console.log(err);
+    })
+  }
+
+  logOut() {
+    this.displayCloseCajaL = false;
+    this.authService.logout();
+    this.messageGrowlService.notify('info', 'Información', 'Saliste!');
+    this.router.navigate(['/login']);
+  }
+
+  onChangeExis() {
+    if ((this.efectivoExis - this.efectivoEsp) == 0) {
+      this.flagShowAlert = true;
+    } else {
+      this.flagShowAlert = false;
+    }
+  }
+
   FillHeaders(mapP) {
     for (let property in mapP[0]) {
       if (mapP[0].hasOwnProperty(property)) {
@@ -446,7 +639,7 @@ export class CardComponent implements OnInit {
       this.clientes.push(data)
       this.showDialog = false;
       this.checkClient();
-      this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+      this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Existoso!');
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
@@ -560,7 +753,6 @@ export class CardComponent implements OnInit {
   }
 
   onUpdateTSubmit() {
-
     this.updateTarjeta.cedula = '';
     this.updateTarjeta.nombre = '';
     this.updateTarjeta.apellido = '';
@@ -803,39 +995,42 @@ export class CardComponent implements OnInit {
   }
 
   checkCard() {
-    let searchCard = this.lstCards.find(x => x.cedula === this.cedula);
+    /*let searchCard = this.lstCards.find(x => x.cedula === this.cedula);
     if (searchCard !== undefined) {
       this.flagCardFound = true;
-      this.cardNumber = searchCard.numero;
+      //this.cardNumber = searchCard.numero;
       this.flagActivateInsertCard = false;
       this.flagCaUsFound = true;
       setTimeout(function () {
         document.getElementById('cantMujeres').focus();
       }, 0)
-    } else {
-      if (this.cardNumber.length == 9) {
-        this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
-          console.log(data)
-          if (data.length > 0) {
-            this.flagCardFound = true;
-            document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-            document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
-            if (this.flagCardFound && this.flagUserFound) {
-              this.flagCaUsFound = true;
-            } else {
-              this.flagCaUsFound = false;
-            }
+    } else {*/
+    if (this.cardNumber.length == 9) {
+      this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
+        console.log(data)
+        if (data.length > 0) {
+          this.flagCardFound = true;
+          document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
+          document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+          setTimeout(function () {
+            document.getElementById('cantMujeres').focus();
+          }, 0)
+          if (this.flagCardFound && this.flagUserFound) {
+            this.flagCaUsFound = true;
           } else {
             this.flagCaUsFound = false;
-            this.flagCardFound = false;
-            document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-            document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
           }
-        }, err => {
-          console.log(err);
-        })
-      }
+        } else {
+          this.flagCaUsFound = false;
+          this.flagCardFound = false;
+          document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
+          document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+        }
+      }, err => {
+        console.log(err);
+      })
     }
+    //}
   }
 
   onChangePassLength($event) {
@@ -868,7 +1063,6 @@ export class CardComponent implements OnInit {
   }
 
   onChangeCILength($event) {
-
     if (this.cedula.length == 0) {
       document.getElementById('basic-addon3').style.backgroundColor = '';
       this.nfLael = "";
@@ -1023,7 +1217,7 @@ export class CardComponent implements OnInit {
     activeCard.cardNumber = newClient.tarjeta;
     activeCard.cantMujeres = this.cantMujeres;
     activeCard.cantHombres = this.cantHombres;
-    let total = this.cantMujeres + this.cantHombres
+    let total = this.cantMujeres + this.cantHombres;
     if (total > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
@@ -1033,14 +1227,16 @@ export class CardComponent implements OnInit {
           cantidad: this.cantMujeres,
           descripcion: 'cover mujer',
           total: (this.cantMujeres * this.coverMujeres),
-          precio_venta: this.coverMujeres
+          precio_venta: this.coverMujeres,
+          cajero: this.us.id
         }
         let auxH = {
           fecha: this.validateService.getDateTimeEs(),
           cantidad: this.cantHombres,
           descripcion: 'cover hombre',
           total: (this.cantHombres * this.coverHombres),
-          precio_venta: this.coverHombres
+          precio_venta: this.coverHombres,
+          cajero: this.us.id
         }
         let detalle: any = [];
         detalle.push(auxM);
@@ -1609,7 +1805,7 @@ export class CardComponent implements OnInit {
       if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
         if (this.cantSalenM > 0) {
           let aux = {
-            fecha: this.validateService.getDateTime(),
+            fecha: this.validateService.getDateTimeEs(),
             cantidad: this.cantSalenM,
             descripcion: 'cover mujer',
             total: (this.cantSalenM * this.coverMujeres),
@@ -1622,7 +1818,7 @@ export class CardComponent implements OnInit {
       if (this.selectedIeHombres.localeCompare('Ingreso') == 0) {
         if (this.cantSalenH > 0) {
           let aux = {
-            fecha: this.validateService.getDateTime(),
+            fecha: this.validateService.getDateTimeEs(),
             cantidad: this.cantSalenH,
             descripcion: 'cover hombre',
             total: (this.cantSalenH * this.coverHombres),

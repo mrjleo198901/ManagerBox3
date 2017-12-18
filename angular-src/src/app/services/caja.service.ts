@@ -48,6 +48,28 @@ export class CajaService {
       .map(res => res.json())
   }
 
+  getActiveCaja(montoF) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('montoF', montoF);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'caja/', options)
+      .map(res => res.json())
+  }
+
+  getActiveCajaById(montoF, idUser) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('montoF', montoF);
+    params.set('idUser', idUser);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(url + 'caja/', options)
+      .map(res => res.json())
+  }
 
   getAll() {
     const headers = new Headers();
@@ -62,6 +84,14 @@ export class CajaService {
     return this.http.delete(url + 'caja/' + cover, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  public sendCorte(user) {
+    console.log(user)
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(url + 'sendcorte', user, { headers: headers })
+      .map(res => res.json());
   }
 
 }

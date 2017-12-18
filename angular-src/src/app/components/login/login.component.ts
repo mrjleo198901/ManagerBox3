@@ -23,12 +23,12 @@ export class LoginComponent implements OnInit {
   correoRecuperacion;
   flagCorreo = false;
   navbar: NavbarComponent;
-  card: CardComponent;
   cedula;
   flagFindUser = false;
   showMessages = false;
   nombres;
   displayCaja = false;
+  card: CardComponent;
 
   constructor(
     private authService: AuthService,
@@ -78,17 +78,16 @@ export class LoginComponent implements OnInit {
         this.personalService.getByCedula(user.username).subscribe(data => {
 
           if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
-            NavbarComponent.updateDisplayCaja.next(true);
+            CardComponent.updateDisplayCaja.next(true);
             this.router.navigate(['card']);
           }
           if (data[0].id_cargo === '59937c6337eac33cd4819873') {
             this.router.navigate(['facturacion']);
           }
         }, err => {
-
+          console.log(err);
         })
-
-        //this.router.navigate(['card']);
+        this.router.navigate(['card']);
       } else {
         this.messageGrowlService.notify('error', 'Error', data.msg);
         this.router.navigate(['login']);
