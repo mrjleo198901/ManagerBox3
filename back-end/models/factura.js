@@ -11,9 +11,8 @@ var facturaSchema = new mongoose.Schema({
     telefono: String,
     direccion: String,
     detalleFacturaV: Array,
-    formaPago: String,
+    formaPago: Array,
     cajero: mongoose.Schema.Types.ObjectId
-
 });
 
 module.exports = restful.model('factura', facturaSchema);

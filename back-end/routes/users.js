@@ -151,56 +151,56 @@ router.post('/sendcorte', (req, res, next) => {
                 "<h2 style='padding-top:70px; padding-bottom:70px'>Mundo Cocoa</h2>" +
                 "</div>" +
                 "<div style='text-align:center'>" +
-                "<h3>Corte de caja</h3>" +
-                "<p><b>Desde:</b>12/12/2017 20:52:00 <b>Hasta:</b> 13/12/2017 02:49:13</p>" +
-                "<p><b>Cajero:</b> Administrador de la Tienda</p><br>" +
+                "<h3 style='color:#1F5DD1'>Corte de caja</h3>" +
+                "<p><b>Desde: </b>12/12/2017 20:52:00 <b>Hasta:</b> 13/12/2017 02:49:13</p>" +
+                "<p><b>Cajero: </b>" + username + "</p><br>" +
                 "</div>" +
                 "<div style='text-align:center'>" +
-                "<h3 style='text-align:center'>Dinero en Caja</h3>" +
+                "<h3 style='text-align:center;color:#1F5DD1'>Dinero en Caja</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
                 "<table style='width: 70%;margin-left: 15%'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Fondo de caja</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'>Fondo de caja</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'>$450,00</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Ventas en efectivo</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'><p style='color:#3EAB1D'>+ $159,00</p></td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Abonos</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'>Abonos</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'><p style='color:#3EAB1D'>+ $159,00</p></td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Entradas</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>+ $ 159,00</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'><p style='color:#3EAB1D'>+ $159,00</p></td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Salidas</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'>- $ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'>Salidas</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;' bgcolor='#f5f5f5'><p style='color:#EA2424'>+ $159,00</p></td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd;'>Total esperado</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'> $ 159,00</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd;'><h4 style='color:#1F5DD1'>$159,00</h4></td>" +
                 "</tr>" +
                 "</table>" +
                 "</div>" +
                 "</div>" +
                 "<div class='row'>" +
-                "<h3 style='text-align:center'>Ventas</h3>" +
+                "<h3 style='text-align:center;color:#1F5DD1'>Ventas</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
                 "<table style='width: 70%;margin-left: 15%;'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Efectivo</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>Efectivo</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>$ 450,00</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Cheque</td>" +
                 "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Tarjeta de crédito</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>Tarjeta de crédito</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Crédito directo</td>" +
@@ -210,20 +210,20 @@ router.post('/sendcorte', (req, res, next) => {
                 "</div>" +
                 "</div>" +
                 "<div class='row'>" +
-                "<h3 style='text-align:center'>Resúmen</h3>" +
+                "<h3 style='text-align:center;color:#1F5DD1'>Resúmen</h3>" +
                 "<div class='col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1'>" +
                 "<table style='width: 70%;margin-left: 15%;'>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Ventas Totales</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 450,00</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>Ventas Totales</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'><h4 style='color:#1F5DD1'>$1020,00</h4></td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Ganancia</td>" +
                 "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>$ 159,00</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Producto mas vendido</td>" +
-                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd'>Pilsener 350ml</td>" +
+                "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>Producto más vendido</td>" +
+                "<td style='text-align: right;padding: 8px;border: 1px solid #dddddd' bgcolor='#f5f5f5'>Pilsener 350ml</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style='text-align:left;padding: 8px;border: 1px solid #dddddd'>Número total de ventas</td>" +
@@ -232,13 +232,13 @@ router.post('/sendcorte', (req, res, next) => {
                 "</table>" +
                 "</div>" +
                 "</div>" +
-                "<br>"+
-                "<footer class='footer' style='position: absolute;width: 100%;  background-color: #f5f5f5;'>" +
-                "<div class='container' style='text-align:center'><br>" +
-                "<p>Generado por <a href='http://localhost:4200/login' target='_blank' data-saferedirecturl='http://www.riobytes.com'>© Managerbox</a> gestor de comercios. Versión 1.15</p>" +
+                "<br>" +
+                "<footer class='footer' style='position: absolute;width: 100%; background-color: #f5f5f5;'>" +
+                "<div class='container' style='text-align:center;'><br>" +
+                "<p>Generado por <a href='http://www.riobytes.com' target='_blank' data-saferedirecturl='http://www.riobytes.com'>© Managerbox</a> gestor de comercios. Versión 1.15</p>" +
                 "<p class='text-muted' style='font-size:11px'>Si deseas dejar de recibir estos reportes, por favor desactiva el envío desde el módulo de Configuración.</p>" +
                 "<p class='text-muted'>© Riobytes Solutions. Todos los derechos reservados 2018.</p>" +
-                "<p class='text-muted'>Visita nuestro sitio, para mas información <a href='http://localhost:4200/login' target='_blank' data-saferedirecturl='http://www.riobytes.com'>www.riobytes.com</a></p><br>" +
+                "<p class='text-muted'>Visita nuestro sitio, para más información <a href='http://localhost:4200/login' target='_blank' data-saferedirecturl='http://www.riobytes.com'>www.riobytes.com</a></p><br>" +
                 "</div>" +
                 "</footer>" +
                 "</body>" +

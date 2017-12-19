@@ -172,7 +172,6 @@ export class CardComponent implements OnInit {
   flagCheckVenta = true;
   telefonoS;
   direccionS;
-  flagFP1 = false;
   flagConfirmFP = true;
   flagCardSFound = false;
   nfLaelS;
@@ -196,12 +195,15 @@ export class CardComponent implements OnInit {
     _id: ''
   }
   validCI = false;
-  abono: number = 0;
-  flagPrint = true;
   flagCheckFP = false;
   flagFP2 = false;
+
   fpEfectivo = 0;
   fpTarjeta = 0;
+  fpPorCobrar = 0;
+  fpCheque = 0;
+  flagConsCero = true;
+  abono = 0;
   flagFP3 = false;
   cardNumberG;
   flagCheckCI = true;
@@ -234,6 +236,11 @@ export class CardComponent implements OnInit {
   flagShowAlert;
   public static checkOpenCaja: Subject<boolean> = new Subject();
   displayCloseCajaL = false;
+  colorConsCero = 'ui-state-error ui-message ui-corner-all';
+  textoConsumo = 'Consumo en cero';
+  flagErrorFP = false;
+  campoFP;
+  maximoFP;
 
   constructor(
     private validateService: ValidateService,
@@ -508,8 +515,8 @@ export class CardComponent implements OnInit {
   sendEmail() {
     const user = {
       name: 'asd',
-      email: 'jmunoz@riobytes.com',
-      username: this.cedula,
+      email: 'mrjleo1989@gmail.com',
+      username: this.us.name,
       npass: this.formatterService.makeId()
     }
     this.cajaService.sendCorte(user).subscribe(data => {
@@ -989,8 +996,8 @@ export class CardComponent implements OnInit {
     } else {
       this.flagCaUsFound = false;
       this.flagCardFound = false;
-      document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
+      document.getElementById('basic-addon1').style.backgroundColor = '';//default color
     }
   }
 
@@ -1010,8 +1017,8 @@ export class CardComponent implements OnInit {
         console.log(data)
         if (data.length > 0) {
           this.flagCardFound = true;
-          document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-          document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+          document.getElementById('basic-addon1').style.backgroundColor = '#8FC941';//soft green
+          document.getElementById('basic-addon2').style.backgroundColor = '';//default color
           setTimeout(function () {
             document.getElementById('cantMujeres').focus();
           }, 0)
@@ -1023,8 +1030,8 @@ export class CardComponent implements OnInit {
         } else {
           this.flagCaUsFound = false;
           this.flagCardFound = false;
-          document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-          document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+          document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
+          document.getElementById('basic-addon1').style.backgroundColor = '';//default color
         }
       }, err => {
         console.log(err);
@@ -1047,12 +1054,12 @@ export class CardComponent implements OnInit {
     this.clienteService.getByCedula(this.cedula).subscribe(data => {
       if (data.length > 0) {
         this.searchUser = data[0];
-        document.getElementById('basic-addonPass1').style.backgroundColor = '#6ce600';
+        document.getElementById('basic-addonPass1').style.backgroundColor = '#8FC941';
         this.flagUserFound = true;
       } else {
         this.flagCaUsFound = false;
         this.nfLael = "Cliente no encontrado.";
-        document.getElementById("basic-addonPass1").style.backgroundColor = "#FE2E2E";
+        document.getElementById("basic-addonPass1").style.backgroundColor = "#FF4B36";
         this.flagUserFound = false;
         this.cardNumber = "";
       }
@@ -1074,7 +1081,7 @@ export class CardComponent implements OnInit {
     } else {
       if (this.cedula.length != 10) {
         this.nfLael = "";
-        document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+        document.getElementById("basic-addon3").style.backgroundColor = "#FF4B36";
         this.flagUserFound = false;
         document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
         document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';
@@ -1103,7 +1110,7 @@ export class CardComponent implements OnInit {
         this.searchUser = this.clientes.find(x => x.cedula === this.cedula);
         if (this.searchUser !== undefined) {
           this.searchUser.id_tipo_cliente = this.searchById(this.searchUser.id_tipo_cliente, this.tipo_clientes);
-          document.getElementById('basic-addon3').style.backgroundColor = '#6ce600';
+          document.getElementById('basic-addon3').style.backgroundColor = '#8FC941';
           this.flagUserFound = true;
           this.checkCard();
           setTimeout(function () {
@@ -1117,7 +1124,7 @@ export class CardComponent implements OnInit {
         } else {
           this.flagCaUsFound = false;
           this.nfLael = "Cliente no encontrado.";
-          document.getElementById("basic-addon3").style.backgroundColor = "#FE2E2E";
+          document.getElementById("basic-addon3").style.backgroundColor = "#FF4B36";
           this.flagUserFound = false;
           this.cardNumber = "";
         }
@@ -1132,13 +1139,13 @@ export class CardComponent implements OnInit {
 
   onChangeCI() {
     if (this.cedula.length != 10) {
-      document.getElementById("ciA").style.borderColor = "#FE2E2E";
+      document.getElementById("ciA").style.borderColor = "#FF4B36";
       this.validCI = false;
     } else {
       if (this.checked === true) {
         if (!this.validateService.validarRucCedula(this.cedula)) {
           this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
-          document.getElementById("ciA").style.borderColor = "#FE2E2E";
+          document.getElementById("ciA").style.borderColor = "#FF4B36";
           this.validCI = false;
         } else {
           document.getElementById("ciA").style.borderColor = "#5ff442";
@@ -1174,7 +1181,7 @@ export class CardComponent implements OnInit {
       document.getElementById("correo").style.borderColor = "#5ff442";
     }
     else {
-      document.getElementById("correo").style.borderColor = "#FE2E2E";
+      document.getElementById("correo").style.borderColor = "#FF4B36";
     }
   }
 
@@ -1228,7 +1235,7 @@ export class CardComponent implements OnInit {
           descripcion: 'cover mujer',
           total: (this.cantMujeres * this.coverMujeres),
           precio_venta: this.coverMujeres,
-          cajero: this.us.id
+          vendedor: this.us.id
         }
         let auxH = {
           fecha: this.validateService.getDateTimeEs(),
@@ -1236,7 +1243,7 @@ export class CardComponent implements OnInit {
           descripcion: 'cover hombre',
           total: (this.cantHombres * this.coverHombres),
           precio_venta: this.coverHombres,
-          cajero: this.us.id
+          vendedor: this.us.id
         }
         let detalle: any = [];
         detalle.push(auxM);
@@ -1299,19 +1306,19 @@ export class CardComponent implements OnInit {
         let existingCard = this.lstCards.find(x => x.numero === this.cardNumberGT);
         if (existingCard === undefined) {
           this.flagCN = true;
-          document.getElementById('basic-addon7').style.backgroundColor = '#6ce600';
+          document.getElementById('basic-addon7').style.backgroundColor = '#8FC941';
           document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
         } else {
           this.messageGrowlService.notify('warn', 'Advertencia', 'La tarjeta ya fue ingresada!');
         }
       } else {
         this.flagCN = false;
-        document.getElementById("basic-addon8").style.backgroundColor = "#FE2E2E";
+        document.getElementById("basic-addon8").style.backgroundColor = "#FF4B36";
         document.getElementById('basic-addon7').style.backgroundColor = '#f8f5f0';
       }
     } else {
       this.flagCN = false;
-      document.getElementById("basic-addon8").style.backgroundColor = "#FE2E2E";
+      document.getElementById("basic-addon8").style.backgroundColor = "#FF4B36";
       document.getElementById('basic-addon7').style.backgroundColor = '#f8f5f0';
     }
   }
@@ -1320,16 +1327,16 @@ export class CardComponent implements OnInit {
     if (this.cardNumberGT.length === 9) {
       if (this.cardNumberGT.charAt(0).localeCompare('ñ') == 0 && this.cardNumberGT.charAt(8).localeCompare('_') == 0) {
         this.flagCN = true;
-        document.getElementById('basic-addon9').style.backgroundColor = '#6ce600';
+        document.getElementById('basic-addon9').style.backgroundColor = '#8FC941';
         document.getElementById('basic-addon10').style.backgroundColor = '#f8f5f0';
       } else {
         this.flagCN = false;
-        document.getElementById("basic-addon10").style.backgroundColor = "#FE2E2E";
+        document.getElementById("basic-addon10").style.backgroundColor = "#FF4B36";
         document.getElementById('basic-addon9').style.backgroundColor = '#f8f5f0';
       }
     } else {
       this.flagCN = false;
-      document.getElementById("basic-addon10").style.backgroundColor = "#FE2E2E";
+      document.getElementById("basic-addon10").style.backgroundColor = "#FF4B36";
       document.getElementById('basic-addon9').style.backgroundColor = '#f8f5f0';
     }
   }
@@ -1473,58 +1480,101 @@ export class CardComponent implements OnInit {
   }
 
   /*TAB CLOSE*/
-  print(): void {
+  openFP(): void {
     this.showDialogFP = true;
-
-    /*setTimeout(function () {
-      this.selectedFP = this.lstFP[0];
-    }, 0)*/
-
-    console.log(this.selectedFP)
-    this.flagPrint = true;
+    if (this.totalPagar !== 0) {
+      this.colorConsCero = 'ui-state-highlight ui-message ui-corner-all';
+      //this.colorConsCero = 'ui-state-error-text ui-message ui-corner-all';
+      this.textoConsumo = 'Consumo normal';
+      this.flagConsCero = false;
+    }
+  }
+  onChangeFPE($event) {
+    if (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque > parseFloat(this.totalPagar)) {
+      this.fpEfectivo = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpEfectivo');
+        if (v != null) {
+          v.click();
+          this.fpEfectivo = 0;
+        }
+      }, 0);
+      this.flagErrorFP = true;
+      this.campoFP = 'Efectivo';
+      this.maximoFP = this.totalPagar - (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque);
+    } else {
+      this.flagErrorFP = false;
+    }
   }
 
-  printConf($event) {
-    //this.flagFP = true
-    console.log(this.flagPrint);
+  onChangeFPT($event) {
+    if (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque > parseFloat(this.totalPagar)) {
+      this.fpTarjeta = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpTarjeta');
+        if (v != null) {
+          v.click();
+          this.fpTarjeta = 0;
+        }
+      }, 0);
+      this.campoFP = 'Tarjeta de Crédito';
+      this.maximoFP = this.totalPagar - (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque);
+      this.flagErrorFP = true;
+    } else {
+      this.flagErrorFP = false;
+    }
   }
 
-  changeFP($event) {
-    console.log(this.selectedFP)
-    this.flagCheckFP = true;
-
-    if (this.selectedFP.value === 0) {
-      this.flagFP3 = true;
+  onChangeFPC($event) {
+    if (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque > parseFloat(this.totalPagar)) {
+      this.fpPorCobrar = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpPorCobrar');
+        if (v != null) {
+          v.click();
+          this.fpPorCobrar = 0;
+        }
+      }, 0);
+      this.campoFP = 'Crédito Directo';
+      this.maximoFP = this.totalPagar - (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque);
+      this.flagErrorFP = true;
     } else {
-      this.flagFP3 = false;
+      this.flagErrorFP = false;
     }
+  }
 
-    if (this.selectedFP.value === 1) {
-      this.openCheckout();
-    }
-
-    if (this.selectedFP.value === 3) {
-      this.flagFP = true;
+  onChangeFPCH($event) {
+    if (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque > parseFloat(this.totalPagar)) {
+      this.fpCheque = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpCheque');
+        if (v != null) {
+          v.click();
+          this.fpCheque = 0;
+        }
+      }, 0);
+      this.campoFP = 'Cheque';
+      this.maximoFP = this.totalPagar - (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque);
+      this.flagErrorFP = true;
     } else {
-      this.flagFP = false;
-    }
-
-    if (this.selectedFP.value === 2) {
-      this.flagFP2 = true;
-    } else {
-      this.flagFP2 = false;
+      this.flagErrorFP = false;
     }
   }
 
   insertRuc($event) {
     this.flagInsertRuc = !this.flagInsertRuc;
     if (!this.selectedRucFactura) {
-      this.rucFactura = '';
+      this.rucFactura = 'Consumidor Final';
+      this.telefonoS = '9999999999';
+      this.direccionS = 'Riobamba';
       this.flagCheckVenta = true;
-      this.flagFP1 = false;
+      this.flagFP = false;
     } else {
       this.checkCiRuc();
-      this.flagFP1 = true;
+      this.flagFP = true;
+      if (this.searchUserS !== undefined) {
+        this.rucFactura = this.searchUserS.ci;
+      }
       setTimeout(function () {
         document.getElementById('inputCiRuc').focus();
       }, 0)
@@ -1532,38 +1582,27 @@ export class CardComponent implements OnInit {
   }
 
   setDefaultValues() {
-    this.selectedFP = 'Efectivo';
+    this.rucFactura = 'Consumidor Final';
+    this.telefonoS = '9999999999';
+    this.direccionS = 'Riobamba';
     this.flagFP = false;
-    this.telefonoS = '';
-    this.direccionS = '';
-    this.flagFP1 = false;
-    this.rucFactura = '';
-  }
-
-  changeAbono($event) {
-    console.log(this.abono);
-    /*if (this.abono > this.totalPagar){
-      console.log("mayor")
-      this.abono = this.totalConsumo
-    }*/
-
   }
 
   checkCiRuc() {
     if (this.rucFactura.length != 10) {
-      document.getElementById("addonRUC2").style.color = '#FE2E2E';
+      document.getElementById("addonRUC2").style.color = '#FF4B36';
       document.getElementById("addonRUC1").style.color = '';
       this.flagCheckVenta = false;
     }
     if (this.rucFactura.length != 13) {
-      document.getElementById("addonRUC2").style.color = "#FE2E2E";
+      document.getElementById("addonRUC2").style.color = "#FF4B36";
       document.getElementById("addonRUC1").style.color = '';
       this.flagCheckVenta = false;
     }
     if (this.rucFactura.length == 10 || this.rucFactura.length == 13) {
       if (!this.validateService.validarRucCedula(this.rucFactura)) {
         this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
-        document.getElementById("addonRUC2").style.color = "#FE2E2E";
+        document.getElementById("addonRUC2").style.color = "#FF4B36";
         document.getElementById("addonRUC1").style.color = '';
         this.flagCheckVenta = false;
       } else {
@@ -1594,7 +1633,7 @@ export class CardComponent implements OnInit {
         this.checkActiveCard(this.cardNumberS);
       }
     } else {
-      document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';
+      document.getElementById('addonCnS2').style.backgroundColor = '#FF4B36';
       document.getElementById('addonCnS1').style.backgroundColor = '';
       this.flagConfirmFP = true;
       this.flagCardSFound = false;
@@ -1620,7 +1659,7 @@ export class CardComponent implements OnInit {
         this.flagConfirmFP = false;
         this.flagCardSFound = true;
         document.getElementById('addonCnS2').style.backgroundColor = '';
-        document.getElementById('addonCnS1').style.backgroundColor = '#6ce600';//green
+        document.getElementById('addonCnS1').style.backgroundColor = '#8FC941';//green
         this.searchConsumo(this.searchUserS.idFactura);
       } else {
         this.flagConfirmFP = true;
@@ -1629,7 +1668,7 @@ export class CardComponent implements OnInit {
         this.lstConsumo = [];
         this.totalPagar = 0;
         this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
-        document.getElementById('addonCnS2').style.backgroundColor = '#FE2E2E';//soft red
+        document.getElementById('addonCnS2').style.backgroundColor = '#FF4B36';//soft red
         document.getElementById('addonCnS1').style.backgroundColor = '';//default color
       }
     }, err => {
@@ -1662,7 +1701,7 @@ export class CardComponent implements OnInit {
   }
 
   confirmFP() {
-    console.log(this.abono)
+    console.log(this.fpPorCobrar)
     /*let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
@@ -1721,7 +1760,7 @@ export class CardComponent implements OnInit {
         this.checkActiveCardE(this.cardNumberE);
       }
     } else {
-      document.getElementById('addonCnE2').style.backgroundColor = '#FE2E2E';
+      document.getElementById('addonCnE2').style.backgroundColor = '#FF4B36';
       document.getElementById('addonCnE1').style.backgroundColor = '';
       this.flagCardEFound = false;
       this.nfLaelE = '';
@@ -1752,13 +1791,13 @@ export class CardComponent implements OnInit {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
         this.flagCardEFound = true;
         document.getElementById('addonCnE2').style.backgroundColor = '';
-        document.getElementById('addonCnE1').style.backgroundColor = '#6ce600';//green
+        document.getElementById('addonCnE1').style.backgroundColor = '#8FC941';//green
         this.searchConsumo(this.searchUserE.idFactura);
       } else {
         this.flagCardEFound = false;
         this.nfLaelE = 'Tarjeta no ingresada.';
         this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
-        document.getElementById('addonCnE2').style.backgroundColor = '#FE2E2E';//soft red
+        document.getElementById('addonCnE2').style.backgroundColor = '#FF4B36';//soft red
         document.getElementById('addonCnE1').style.backgroundColor = '';//default color
       }
     }, err => {
@@ -1970,11 +2009,11 @@ export class CardComponent implements OnInit {
         if (finalChar.localeCompare("_") == 0) {
           this.tarjetaService.getByNumero(this.cardNumberG).subscribe(data => {
             if (data.length === 0) {
-              document.getElementById('addonCnT1').style.backgroundColor = '#6ce600';//green
+              document.getElementById('addonCnT1').style.backgroundColor = '#8FC941';//green
               document.getElementById('addonCnT2').style.backgroundColor = '';
               this.onAddTSubmitNew();
             } else {
-              document.getElementById('addonCnT2').style.backgroundColor = '#FE2E2E';
+              document.getElementById('addonCnT2').style.backgroundColor = '#FF4B36';
               document.getElementById('addonCnT1').style.backgroundColor = '';
               this.messageGrowlService.notify('warn', 'Advertencia', 'Esta tarjeta ya ha sido ingrsada!');
             }
@@ -1984,7 +2023,7 @@ export class CardComponent implements OnInit {
           })
         }
       } else {
-        document.getElementById('addonCnT2').style.backgroundColor = '#FE2E2E';
+        document.getElementById('addonCnT2').style.backgroundColor = '#FF4B36';
         document.getElementById('addonCnT1').style.backgroundColor = '';
         this.flagCardEFound = false;
         this.nfLaelE = '';
