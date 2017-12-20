@@ -51,7 +51,7 @@ export class ValidateService {
     }
     return res;
   }
-  
+
   validateProveedor(proveedor) {
     let res = true;
     if (proveedor.nombre_proveedor == "") {
@@ -675,6 +675,42 @@ export class ValidateService {
     if (tarjeta.limite == undefined || tarjeta.limite == '') {
       document.getElementById("limite").style.borderColor = "#FE2E2E";
       console.log
+      res = false;
+    }
+    return res;
+  }
+
+  validateFormaPago(fp) {
+    let res = true;
+    let sum = fp.formaPago.efectivo + fp.formaPago.tarjeta + fp.formaPago.credito + fp.formaPago.cheque;
+    if (sum !== fp.totalPagar) {
+      document.getElementById("pnlFp").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateFormaPago1(fp) {
+    let res = true;
+    let sum = fp.formaPago.efectivo + fp.formaPago.tarjeta + fp.formaPago.credito + fp.formaPago.cheque;
+    if (sum !== fp.totalPagar) {
+      document.getElementById("pnlFp").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (fp.ruc == '') {
+      document.getElementById("inputCiRuc").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (fp.nombre == '') {
+      document.getElementById("nombreS").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (fp.telefono == '') {
+      document.getElementById("telefonoS").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    if (fp.direccion == '') {
+      document.getElementById("direccionS").style.borderColor = "#FE2E2E";
       res = false;
     }
     return res;

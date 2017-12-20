@@ -167,9 +167,10 @@ export class CardComponent implements OnInit {
   lstFP: any = [];
   selectedFP: any;
   flagInsertRuc = true;
-  selectedRucFactura;
+  selectedRucFactura = false;
   totalConsumo: number = 0;
   flagCheckVenta = true;
+  nombreS;
   telefonoS;
   direccionS;
   flagConfirmFP = true;
@@ -237,7 +238,7 @@ export class CardComponent implements OnInit {
   public static checkOpenCaja: Subject<boolean> = new Subject();
   displayCloseCajaL = false;
   colorConsCero = 'ui-state-error ui-message ui-corner-all';
-  textoConsumo = 'Consumo en cero';
+  textoConsumo = 'Consumo Cero';
   flagErrorFP = false;
   campoFP;
   maximoFP;
@@ -1256,7 +1257,9 @@ export class CardComponent implements OnInit {
           nombre: this.searchUser.nombre + ' ' + this.searchUser.apellido,
           telefono: this.searchUser.telefono,
           direccion: 'Riobamba',
-          detalleFacturaV: detalle
+          detalleFacturaV: detalle,
+          formaPago: [],
+          cajero: this.us.id
         }
         activeCard.nombre = newFactura.nombre;
         this.setDvInsertCard();
@@ -1485,10 +1488,16 @@ export class CardComponent implements OnInit {
     if (this.totalPagar !== 0) {
       this.colorConsCero = 'ui-state-highlight ui-message ui-corner-all';
       //this.colorConsCero = 'ui-state-error-text ui-message ui-corner-all';
-      this.textoConsumo = 'Consumo normal';
+      this.textoConsumo = 'Consumo Normal';
       this.flagConsCero = false;
+    } else {
+      this.fpEfectivo = 0;
+      this.fpTarjeta = 0;
+      this.fpPorCobrar = 0;
+      this.fpCheque = 0;
     }
   }
+
   onChangeFPE($event) {
     if (this.fpEfectivo + this.fpTarjeta + this.fpPorCobrar + this.fpCheque > parseFloat(this.totalPagar)) {
       this.fpEfectivo = 0;
@@ -1564,17 +1573,21 @@ export class CardComponent implements OnInit {
   insertRuc($event) {
     this.flagInsertRuc = !this.flagInsertRuc;
     if (!this.selectedRucFactura) {
-      this.rucFactura = 'Consumidor Final';
+      this.rucFactura = '9999999999';
       this.telefonoS = '9999999999';
+      this.nombreS = 'Consumidor Final';
       this.direccionS = 'Riobamba';
       this.flagCheckVenta = true;
       this.flagFP = false;
+      document.getElementById("addonRUC1").style.color = '';
+      document.getElementById("addonRUC2").style.color = '';
     } else {
-      this.checkCiRuc();
       this.flagFP = true;
       if (this.searchUserS !== undefined) {
         this.rucFactura = this.searchUserS.ci;
+        this.nombreS = this.searchUserS.nombre;
       }
+      this.checkCiRuc();
       setTimeout(function () {
         document.getElementById('inputCiRuc').focus();
       }, 0)
@@ -1582,10 +1595,17 @@ export class CardComponent implements OnInit {
   }
 
   setDefaultValues() {
-    this.rucFactura = 'Consumidor Final';
+    this.rucFactura = '9999999999';
     this.telefonoS = '9999999999';
+    this.nombreS = 'Consumidor Final';
     this.direccionS = 'Riobamba';
     this.flagFP = false;
+
+    document.getElementById("pnlFp").style.borderColor = "";
+    document.getElementById("inputCiRuc").style.borderColor = "";
+    document.getElementById("nombreS").style.borderColor = "";
+    document.getElementById("telefonoS").style.borderColor = "";
+    document.getElementById("direccionS").style.borderColor = "";
   }
 
   checkCiRuc() {
@@ -1610,18 +1630,6 @@ export class CardComponent implements OnInit {
         document.getElementById("addonRUC2").style.color = '';
         this.flagCheckVenta = true;
       }
-    }
-  }
-
-  setClient() {
-    if (this.selectedRucFactura) {
-      this.rucFactura = '0502926819';
-      this.checkCiRuc();
-      setTimeout(function () {
-        document.getElementById('inputCiRuc').focus();
-      }, 0)
-    } else {
-      this.rucFactura = '';
     }
   }
 
@@ -1700,9 +1708,72 @@ export class CardComponent implements OnInit {
     })
   }
 
-  confirmFP() {
-    console.log(this.fpPorCobrar)
-    /*let printContents, popupWin;
+  confirmarSalida() {
+    const newFP = {
+      ruc: this.rucFactura,
+      nombre: this.nombreS,
+      telefono: this.telefonoS,
+      direccion: this.direccionS,
+      cajero: this.us.id,
+      formaPago: {
+        efectivo: this.fpEfectivo,
+        tarjeta: this.fpTarjeta,
+        credito: this.fpPorCobrar,
+        cheque: this.fpCheque
+      },
+      totalPagar: parseFloat(this.totalPagar)
+    }
+    console.log(newFP)
+    //Required fields
+    if (!this.selectedRucFactura) {
+      if (!this.validateService.validateFormaPago(newFP)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    } else {
+      if (!this.validateService.validateFormaPago1(newFP)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    }
+    this.activeCardsService.searchByCard(this.cardNumberS).subscribe(data => {
+      //update tabla factura
+      this.facturaService.getById(data[0].idFactura).subscribe(data1 => {
+        let vecFP: any = [];
+        vecFP.push(newFP.formaPago);
+        data1[0].ruc = newFP.ruc;
+        data1[0].nombre = newFP.nombre;
+        data1[0].telefono = newFP.telefono;
+        data1[0].direccion = newFP.direccion;
+        data1[0].cajero = newFP.cajero;
+        data1[0].formaPago = vecFP;
+        this.facturaService.update(data1[0]).subscribe(data2 => {
+          //remove from active cards
+          this.activeCardsService.delete(data[0]._id).subscribe(data => {
+            this.showDialogFP = false;
+            this.setDefaultValues();
+            this.messageGrowlService.notify('success', 'Éxito', 'Se ha relizado la venta exitosamente!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+          });
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+        });
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      });
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    });
+
+  }
+
+  printFactura() {
+    let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     popupWin.document.open();
@@ -1732,19 +1803,41 @@ export class CardComponent implements OnInit {
           <body onload="window.print();window.close()">${printContents}</body>
       </html>`
     );
-    popupWin.document.close();*/
-    //Delete active card
-    /*this.activeCardsService.searchByCard('ñ1234567_').subscribe(data => {
-      this.activeCardsService.delete(data[0]._id).subscribe(data => {
-      }, err => {
-        console.log(err);
-        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-      })
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-    })*/
-    //this.showDialogFP = true;
+    popupWin.document.close();
+  }
+
+  printOrdenSalida() {
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tabs</title>
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                <th style="text-align: center">Tipo de Promocion</th>
+                <th style="text-align: center">Descripcion</th>
+              </tr>
+              </thead>
+              <tbody style="text-align: center">
+                <tr>
+                <td>1</td>
+                  <td>Tipo 1</td>
+                </tr>
+                <tr>
+                <td>2</td>
+                  <td>Tipo 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </head>
+          <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
   }
 
   onRowSelectTC(event) {

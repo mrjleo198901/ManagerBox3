@@ -4,7 +4,6 @@
   </div>
   <div class="col-lg-6" style="padding-top: 20px; text-align: right">
     <button type="button" pButton (click)="openCloseCaja()" label="{{btnLabel}}" [ngStyle]='{"font-size": "14px", "width": "250px", "background-color": btnClass, "border-color": btnClass}'></button>
-    <!--<button type="button" pButton (click)="ShowClose()" label="Cerrar Caja" class="ui-button-default" style="font-size: 14px; width: 180px;"></button>-->
   </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
@@ -926,7 +925,7 @@
   <p-progressBar [value]="value"></p-progressBar>
 </p-dialog>
 
-<!--Forma de Pago 1-->
+<!--Forma de Pago-->
 <p-dialog [(visible)]="showDialogFP" modal="modal" width="600" [responsive]="true">
   <p-header>
     Confirmación Datos Venta
@@ -935,12 +934,11 @@
 
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
 
-      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad" style="padding-top: 16px;text-align: center">
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad" style="padding-top: 16px; padding-right: 10px; text-align: center">
         <div [ngClass]="colorConsCero">
           <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i>&nbsp;{{textoConsumo}}</p>
         </div>
       </div>
-
       <div class="panel-body" style="width: 100%">
         <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad" style="padding-left: 6px;">
           <div class="input-group" style="width: 106%">
@@ -952,16 +950,16 @@
       </div>
 
       <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12 ui-g-nopad">
-        <label>Ruc*:</label>
+        <label>RUC/CI:</label>
       </div>
       <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad">
         <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           offLabel="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" [style]="{'margin-top':'12px'}"></p-inputSwitch>
       </div>
       <div class="panel-body">
-        <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad" style="padding-left: 6px">
+        <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad" style="padding-left: 6px;">
           <div class="input-group" style="width: 106%">
-            <span class="input-group-addon" (click)="setClient()"><i class="fa fa-credit-card-alt "></i></span>
+            <span class="input-group-addon"><i class="fa fa-credit-card-alt "></i></span>
             <input [(ngModel)]="rucFactura" type="text" placeholder="Consumidor Final" [disabled]="flagInsertRuc" (ngModelChange)="checkCiRuc()"
               id="inputCiRuc" class="form-control">
             <span class="input-group-addon" id="addonRUC1"><i class="fa fa-check" aria-hidden="true"></i></span>
@@ -977,12 +975,17 @@
         tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" (click)="$event.target.select()" [disabled]="!flagFP">
     </div>
     <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9" style="padding-left: 11px">
+      <label>Nombre:</label><br>
+      <input type="text" [(ngModel)]="nombreS" id="nombreS" placeholder="Nombre cliente" class="form-control" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+        tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" (click)="$event.target.select()" [disabled]="!flagFP">
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label>Dirección:</label><br>
       <textarea [(ngModel)]="direccionS" id="direccionS" style="width: 100%;height: 61%" placeholder="Dirección del cliente" class="form-control input-sm"
         (click)="$event.target.select()" [disabled]="!flagFP"></textarea>
     </div>
 
-    <div class="panel panel-default" style="width: 100%;margin-bottom: 0px">
+    <div class="panel panel-default" style="width: 100%;margin-bottom: 0px;" id="pnlFp">
       <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
         <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad">
           <label>Formas de Pago*:</label>
@@ -1029,13 +1032,10 @@
   </div>
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
     <hr>
-    <button class="btn btn-primary" style="font-size: 11px" (click)="confirmFP()" [disabled]="!flagCheckVenta">Confirmar</button>
+    <button class="btn btn-primary" style="font-size: 11px" (click)="confirmarSalida()" [disabled]="!flagCheckVenta">Confirmar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogFP = false">Cancelar</button>
   </div>
 </p-dialog>
-
-
-
 
 <!-- Show Compras-->
 <p-dialog [(visible)]="showCompras" modal="modal" width="800" [responsive]="true">
