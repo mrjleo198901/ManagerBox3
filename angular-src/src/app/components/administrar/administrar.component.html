@@ -6,7 +6,7 @@
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
-      <tab heading="Cover">
+      <tab heading="Cover" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Gestión de Covers</h3>
@@ -28,7 +28,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Corte de caja" [active]="true">
+      <tab heading="Corte de caja">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Corte de Caja</h3>
@@ -162,9 +162,8 @@
   <div class="ui-g ui-fluid">
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Nombre*:</label>
-      <input type="text" [(ngModel)]="objCover.nombre" (ngModelChange)="onChangeNombreCover($event)" id="nombre" name="nombre"
-        placeholder="Nombre único de cover" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
-          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+      <input type="text" [(ngModel)]="objCover.nombre" (ngModelChange)="onChangeNombreCover($event)" id="nombre" placeholder="Nombre único de cover"
+        class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 37px">
@@ -186,8 +185,8 @@
           <input [(ngModel)]="objCover.numMujeres" type="text" class="form-control input-sm" name="numMujeres" id="numMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
             maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
           <div class="input-group-btn-vertical">
-            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
           </div>
         </div>
         <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
@@ -214,8 +213,8 @@
               onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
               (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
-              <button id="addM" (click)="plusCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-              <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+              <button id="addM" (click)="plusCantProdM()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
           <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
@@ -248,8 +247,8 @@
           <input [(ngModel)]="objCover.numHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
             maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
           <div class="input-group-btn-vertical">
-            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
           </div>
         </div>
         <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
@@ -276,8 +275,8 @@
               onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
               (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
-              <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-              <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+              <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
           <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
@@ -337,8 +336,8 @@
           <input [(ngModel)]="objCover.numMujeres" type="text" class="form-control input-sm" name="numMujeres" id="numMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
             maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
           <div class="input-group-btn-vertical">
-            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            <button id="addM" (click)="plusWoman()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessWoman()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
           </div>
         </div>
         <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
@@ -365,8 +364,8 @@
               onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
               (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
-              <button id="addM" (click)="plusCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-              <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+              <button id="addM" (click)="plusCantProdM()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
           <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
@@ -399,8 +398,8 @@
           <input [(ngModel)]="objCover.numHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
             maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
           <div class="input-group-btn-vertical">
-            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+            <button id="addM" (click)="plusMan()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+            <button id="lessM" (click)="lessMan()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
           </div>
         </div>
         <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="margin-top: -10px">
@@ -427,8 +426,8 @@
               onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
               (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
-              <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-              <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+              <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+              <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
           <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">

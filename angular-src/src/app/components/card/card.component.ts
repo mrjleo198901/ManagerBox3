@@ -242,6 +242,7 @@ export class CardComponent implements OnInit {
   flagErrorFP = false;
   campoFP;
   maximoFP;
+  limCons = 0;
 
   constructor(
     private validateService: ValidateService,
@@ -1018,6 +1019,7 @@ export class CardComponent implements OnInit {
         console.log(data)
         if (data.length > 0) {
           this.flagCardFound = true;
+          this.limCons = data[0].limite;
           document.getElementById('basic-addon1').style.backgroundColor = '#8FC941';//soft green
           document.getElementById('basic-addon2').style.backgroundColor = '';//default color
           setTimeout(function () {

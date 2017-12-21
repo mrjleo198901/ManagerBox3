@@ -25,39 +25,39 @@ export class AdministrarComponent implements OnInit {
     columns: {
       nombre: {
         title: 'Nombre',
-        width: '20%'
+        width: '24%'
       },
       numMujeres: {
         title: 'Nro. Mujeres',
-        width: '10%'
+        width: '8%'
       },
       precioMujeres: {
         title: 'Precio Mujeres',
-        width: '10%'
+        width: '8%'
       },
       productoMujeres: {
         title: 'Producto Mujeres',
-        width: '10%'
+        width: '14%'
       },
       cantProdMujeres: {
         title: 'Cant. Prod. Mujeres',
-        width: '10%'
+        width: '8%'
       },
       numHombres: {
         title: 'Nro. Hombres',
-        width: '10%'
+        width: '8%'
       },
       precioHombres: {
         title: 'Precio Hombres',
-        width: '10%'
+        width: '8%'
       },
       productoHombres: {
         title: 'Producto Hombres',
-        width: '10%'
+        width: '14%'
       },
       cantProdHombres: {
         title: 'Cant. Prod. Hombres',
-        width: '10%'
+        width: '8%'
       }
     },
     actions: {
