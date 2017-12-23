@@ -249,7 +249,6 @@ export class CardComponent implements OnInit {
   selectedCoverH;
   lstResumenOpen: any[];
 
-
   constructor(
     private validateService: ValidateService,
     public el: ElementRef, public renderer: Renderer,
@@ -1437,7 +1436,8 @@ export class CardComponent implements OnInit {
       producto: prod,
       precio: this.selectedCoverM.precioMujeres
     }
-    this.lstResumenOpen = [...this.lstResumenOpen, { label: this.selectedCoverM.nombre, value: aux }];
+    this.lstResumenOpen = [...this.lstResumenOpen,  aux ];
+    console.log(this.lstResumenOpen)
   }
 
 
@@ -1453,7 +1453,8 @@ export class CardComponent implements OnInit {
       producto: prod,
       precio: this.selectedCoverH.precioHombres
     }
-    this.lstResumenOpen = [...this.lstResumenOpen, { label: this.selectedCoverH.nombre, value: aux }];
+    this.lstResumenOpen = [...this.lstResumenOpen,  aux ];
+    console.log(this.lstResumenOpen)
   }
 
   public ngOnInitCards() {
@@ -2201,7 +2202,6 @@ export class CardComponent implements OnInit {
 
   onResize(event) {
     let x = event.target.innerWidth;
-    console.log(x)
     if (x < 768) {
       this.marginBot = '20px';
       this.textAlign = 'center';
