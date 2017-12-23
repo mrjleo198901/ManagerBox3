@@ -300,6 +300,9 @@ export class ProductosComponent implements OnInit {
       { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
     ];
     //console.log((0.3 - 0.1).toFixed(2));
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -2321,6 +2324,28 @@ export class ProductosComponent implements OnInit {
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
   }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
 }
 
 function setOriginalColorsPC() {

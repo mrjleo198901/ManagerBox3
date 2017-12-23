@@ -96,7 +96,10 @@ export class FacturacionComponent implements OnInit {
     FacturacionComponent.updateUserStatus.subscribe(res => {
       console.log("entro");
       this.ngOnInitPromos();
-    })
+    });
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -337,6 +340,28 @@ export class FacturacionComponent implements OnInit {
       document.getElementById('cardNumber').focus();
     }, 0)
   }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
 }
 
 

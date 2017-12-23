@@ -1,5 +1,5 @@
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
-  <div class="col-lg-6" style="padding: 0">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
     <h2>Gestión de Productos</h2>
   </div>
 </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <ng2-smart-table id="dtP" [settings]="settingsP" [source]="sourceP" (create)="showDialogPC = !showDialogPC;onCreateP($event);setCursorAddP()"
-            (edit)="showDialogPU = !showDialogPU;onUpdateP($event);setCursorUpdateP()" (delete)="onDeleteP($event)">
+            (edit)="showDialogPU = !showDialogPU;onUpdateP($event);setCursorUpdateP()" (delete)="onDeleteP($event)" style="overflow-y: hidden;">
           </ng2-smart-table>
           <hr>
         </div>

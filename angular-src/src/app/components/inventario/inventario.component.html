@@ -1,6 +1,9 @@
-<p>
-    Inventario works!
-</p>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
+        <h2>Reportes</h2>
+    </div>
+</div>
+
 <button type="button" pButton (click)="showSuccess()" label="Success" class="ui-button-success"></button>
 <button type="button" pButton (click)="showInfo()" label="Info" class="ui-button-info"></button>
 <button type="button" pButton (click)="showWarn()" label="Warn" class="ui-button-warning"></button>

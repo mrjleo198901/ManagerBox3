@@ -27,6 +27,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Subject } from 'rxjs/Subject';
 import { CajaService } from '../../services/caja.service';
 import { Router } from '@angular/router';
+import { CoverService } from '../../services/cover.service';
 
 @Component({
   selector: 'app-card',
@@ -243,6 +244,11 @@ export class CardComponent implements OnInit {
   campoFP;
   maximoFP;
   limCons = 0;
+  lstCovers: any = [];
+  selectedCoverM;
+  selectedCoverH;
+  lstResumenOpen: any[];
+
 
   constructor(
     private validateService: ValidateService,
@@ -265,7 +271,8 @@ export class CardComponent implements OnInit {
     private activeCardsService: ActiveCardsService,
     private cajaService: CajaService,
     public authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private coverService: CoverService) {
 
     this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
     this.showDateApertura = this.currentDateTime.split(' ')[0];
@@ -394,6 +401,9 @@ export class CardComponent implements OnInit {
     this.lstFP.push({ label: 'Por Cobrar', value: 3 });
     this.lstFP.push({ label: 'Consumo en Cero', value: 4 });
     this.selectedFP = this.lstFP[0];
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -407,15 +417,6 @@ export class CardComponent implements OnInit {
     this.cantSalenH = 0;
     this.selectedTab = 0;
     this.selectedPromos = [];
-    /*this.lstConsumo = [
-      { descripcion: 'Cerveza budweiser 350ml', pu: '3.25', total: '25', cantidad: '5' },
-      { descripcion: 'Cerveza pilsener 350ml', pu: '2.80', total: '25', cantidad: '4' },
-      { descripcion: 'Wiskey grants 1LT', pu: '4.25', total: '25', cantidad: '2' },
-      { descripcion: 'Pecera jaggerboom', pu: '4.25', total: '25', cantidad: '2' },
-      { descripcion: 'Pecera jaggerboom', pu: '4.25', total: '25', cantidad: '2' },
-      { descripcion: 'Pecera jaggerboom', pu: '4.25', total: '25', cantidad: '2' },
-      { descripcion: 'Cerveza corona pequeña', pu: '4.30', total: '25', cantidad: '7' }
-    ];*/
     this.types = [];
     this.types.push({ label: 'Entran', value: 'Ingreso' });
     this.types.push({ label: 'Salen', value: 'Egreso' });
@@ -450,8 +451,6 @@ export class CardComponent implements OnInit {
               };
               this.selectedPromos.push(aux);
               myGlobals.addElementPromo(entry);
-              //this.localStorageService.setItem(myGlobals.globalPromos)
-
             }
             if (entry.id_tipo_producto.localeCompare(firstElement) === 0) {
               let aux = {
@@ -479,6 +478,7 @@ export class CardComponent implements OnInit {
     })
     this.ngOnInitCards();
     this.rucFactura = '';
+    this.lstResumenOpen = [];
   }
 
   openCloseCaja() {
@@ -796,7 +796,7 @@ export class CardComponent implements OnInit {
       this.cantMujeres--;
   }
 
-  plusWoman1() {
+  plusWoman() {
     if (this.cantMujeres < 100)
       this.cantMujeres++;
   }
@@ -1425,6 +1425,37 @@ export class CardComponent implements OnInit {
     }
   }
 
+  addCoverM() {
+    let prod = '-';
+    if (this.selectedCoverM.productoMujeres !== undefined) {
+      prod = this.selectedCoverM.cantProdMujeres + ' ' + this.selectedCoverM.productoMujeres.nombre;
+    }
+    let aux = {
+      nombre: this.selectedCoverM.nombre,
+      cantidad: this.cantMujeres,
+      genero: 'Mujer',
+      producto: prod,
+      precio: this.selectedCoverM.precioMujeres
+    }
+    this.lstResumenOpen = [...this.lstResumenOpen, { label: this.selectedCoverM.nombre, value: aux }];
+  }
+
+
+  addCoverH() {
+    let prod = '-';
+    if (this.selectedCoverH.productoHombres !== undefined) {
+      prod = this.selectedCoverH.cantProdHombres + ' ' + this.selectedCoverH.productoHombres.nombre;
+    }
+    let aux = {
+      nombre: this.selectedCoverH.nombre,
+      cantidad: this.cantMujeres,
+      genero: 'Hombre',
+      producto: prod,
+      precio: this.selectedCoverH.precioHombres
+    }
+    this.lstResumenOpen = [...this.lstResumenOpen, { label: this.selectedCoverH.nombre, value: aux }];
+  }
+
   public ngOnInitCards() {
     this.tipoClienteService.getAll().subscribe(tc => {
       this.tipo_clientes = tc;
@@ -1469,6 +1500,13 @@ export class CardComponent implements OnInit {
         console.log(err);
         return false;
       });
+    this.coverService.getAll().subscribe(data => {
+      this.lstCovers = data;
+      this.selectedCoverM = this.lstCovers[0];
+      this.selectedCoverH = this.lstCovers[0];
+    }, err => {
+      console.log(err);
+    })
 
   }
 
@@ -2127,7 +2165,6 @@ export class CardComponent implements OnInit {
   }
 
   searchCard(card) {
-
   }
 
   onAddTSubmitNew() {
@@ -2155,4 +2192,36 @@ export class CardComponent implements OnInit {
 
   }
 
+  //Width detection
+  marginBot = '0px';
+  textAlign = 'right';
+  textAlignTitle = 'left';
+  flagSp = false;
+  flagSp1 = false;
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    console.log(x)
+    if (x < 768) {
+      this.marginBot = '20px';
+      this.textAlign = 'center';
+      this.textAlignTitle = 'center';
+    } else {
+      this.marginBot = '0px';
+      this.textAlign = 'right';
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.marginBot = '20px';
+      this.textAlign = 'center';
+      this.textAlignTitle = 'center';
+    } else {
+      this.marginBot = '0px';
+      this.textAlign = 'right';
+      this.textAlignTitle = 'left';
+    }
+  }
 }

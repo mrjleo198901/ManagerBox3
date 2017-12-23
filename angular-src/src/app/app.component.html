@@ -1,6 +1,13 @@
-<app-navbar></app-navbar>
+<app-navbar>
+</app-navbar>
 <br><br><br>
-<div class="container" style="width: 80%">
+<div class="container" style="width: 80%" (window:resize)="onResize($event)">
+  <div *ngIf="flagSp">
+    <br><br><br><br><br><br>
+  </div>
+  <div *ngIf="flagSp1">
+    <br><br><br>
+  </div>
   <app-notification></app-notification>
   <router-outlet></router-outlet>
 </div>

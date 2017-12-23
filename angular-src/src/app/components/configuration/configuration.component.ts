@@ -7,9 +7,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConfigurationComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
+  }
 
   ngOnInit() {
+  }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
   }
 
 }

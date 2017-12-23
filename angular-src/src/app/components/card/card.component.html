@@ -1,9 +1,9 @@
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px">
-  <div class="col-lg-6" style="padding: 0">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
     <h2>Gestión de Tarjetas</h2>
   </div>
-  <div class="col-lg-6" style="padding-top: 20px; text-align: right">
-    <button type="button" pButton (click)="openCloseCaja()" label="{{btnLabel}}" [ngStyle]='{"font-size": "14px", "width": "250px", "background-color": btnClass, "border-color": btnClass}'></button>
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" [ngStyle]='{"text-align": textAlign}'>
+    <button type="button" pButton (click)="openCloseCaja()" label="{{btnLabel}}" [ngStyle]='{"margin-top": "20px", "margin-bottom": marginBot, "font-size": "14px", "width": "50%", "background-color": btnClass, "border-color": btnClass}'></button>
   </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
@@ -165,38 +165,38 @@
                   </div>
                 </div>
                 <!-- Cover & Cantidad de personas -->
-                <div class="form-group"><br>
+                <div class="form-group" style="margin: 0px;"><br>
 
                   <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                     <div class="ui-g-6 ui-md-6 ui-g-nopad">
                       <label>Cover</label>
                     </div>
                     <div class="ui-g-6 ui-md-6 ui-g-nopad">
-                      <label>Cantidad de personas</label>
+                      <label>&nbsp;&nbsp;Cantidad de personas</label>
                     </div>
                   </div>
                   <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                     <div class="ui-g-6 ui-md-6 ui-g-nopad">
                       <p style="font-size: 12px; padding-top: 5px">Cover Mujeres</p>
                     </div>
-                    <div class="ui-g-6 ui-md-6 ui-g-nopad">
-                      <p style="font-size: 12px; padding-top: 5px">Nro. Mujeres</p>
+                    <div class="ui-g-6 ui-md-6 ui-g-nopad" style="padding-right: 0; padding-top: 0;">
+                      <p style="font-size: 12px; padding-top: 5px">&nbsp;&nbsp;&nbsp;Nro. Mujeres</p>
                     </div>
-                    <div class="ui-g-6 ui-md-6">
+                    <div class="ui-g-6 ui-md-6" style="padding-left: 0; padding-top: 0;padding-right: 0">
                       <select [(ngModel)]="selectedCoverM" id="coverM" class="form-control input-sm" style="z-index: 1" tabindex="6">
                         <option *ngFor="let c of lstCovers" [ngValue]="c">{{c.nombre}}</option>
                       </select>
                     </div>
-                    <div class="input-group ui-g-4 ui-md-4">
+                    <div class="input-group ui-g-4 ui-md-4" style="padding-right: 0; padding-top: 0;">
                       <input [(ngModel)]="cantMujeres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                         maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="7" (click)="$event.target.select()"
                         readonly>
                       <div class="input-group-btn-vertical">
-                        <button id="addW" (click)="plusWoman1()" class="btn btn-default" [disabled]="!flagUserFound" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+                        <button id="addW" (click)="plusWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
                         <button id="lessW" (click)="lessWoman()" class="btn btn-default" [disabled]="!flagUserFound" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
                       </div>
                     </div>
-                    <div class="input-group ui-g-2 ui-md-2">
+                    <div class="input-group ui-g-2 ui-md-2" style="padding-top: 0">
                       <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addCoverM()" aria-hidden="true" style="padding-top: 2px"></i>
                     </div>
                   </div>
@@ -207,12 +207,12 @@
                     <div class="ui-g-6 ui-md-6 ui-g-nopad">
                       <p style="font-size: 12px; padding-top: 5px">Nro. Hombres</p>
                     </div>
-                    <div class="ui-g-6 ui-md-6">
+                    <div class="ui-g-6 ui-md-6" style="padding-left: 0; padding-top: 0;padding-right: 0">
                       <select [(ngModel)]="selectedCoverH" id="coverH" class="form-control input-sm" style="z-index: 1" tabindex="8">
                       <option *ngFor="let c of lstCovers" [ngValue]="c">{{c.nombre}}</option>
                     </select>
                     </div>
-                    <div class="input-group ui-g-4 ui-md-4">
+                    <div class="input-group ui-g-4 ui-md-4" style="padding-right: 0; padding-top: 0;">
                       <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                         maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="9" (click)="$event.target.select()"
                         readonly>
@@ -221,13 +221,12 @@
                         <button id="lessM" (click)="lessMan()" class="btn btn-default" [disabled]="!flagUserFound" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
                       </div>
                     </div>
-                    <div class="input-group ui-g-2 ui-md-2">
-                      <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addCoverH()" aria-hidden="true" style="vertical-align: middle"></i>
+                    <div class="input-group ui-g-2 ui-md-2" style="padding-top: 0">
+                      <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addCoverH()" aria-hidden="true" style="padding-top: 2px"></i>
                     </div>
                   </div>
 
                 </div>
-
                 <!-- Imprimir Factura -->
                 <div id="print-section">
                 </div>
@@ -237,87 +236,33 @@
           </p-panel>
         </div>
         <!-- BOTTOM SIDE-->
-        <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <br>
-          <p-panel #pnlPromos header="Seleccionar promociones" [style]="{'z-index':'1'}">
-            <div style="text-align: right">
-              <label>Desactivar todas las promociones:</label>
-              <button type="button" pButton (click)="deletePromos()" label="Desactivar" class="ui-button-warning"></button></div>
-            <p-tabView (onChange)="handleChange($event)">
-              <p-tabPanel *ngFor="let tabz of tabs; let i = index;let first = first;" [selected]="first" [header]="tabz.label" lazy="true">
-
-                <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)"
-                  (onRowUnselect)="onRowUnselect($event)">
-                  <p-column [style]="{'width':'29px'}" selectionMode="multiple">
-                  </p-column>
-
-                  <p-column field="selectedPromo" header="Promoción" [editable]="false" [style]="{'width':'130px'}">
-                    <ng-template let-car="rowData" pTemplate type="body">
-                      <select [(ngModel)]="car.selectedPromo" [ngStyle]='{"width": "100%", "background": "rgba(255,255,255,0)"}'>
-                      <option *ngFor="let row of lstPromociones">{{row.nombre}}</option>
-                    </select>
-                    </ng-template>
-                  </p-column>
-
-                  <p-column *ngFor="let header of headers" [field]="header.field " [header]="header.header" [sortable]="true" [filter]="true"
-                    filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
-
-                  <p-column header="Precio Promo" [style]="{'width':'13%'}">
-                    <ng-template let-car="rowData" pTemplate>
-                      <input type="text" currencyMask [(ngModel)]="car.precio_promo" [options]="{ align : 'center' }" style="max-width: 100%; color: black;">
-                    </ng-template>
-                  </p-column>
-
-                  <p-footer>
-                    <ul>
-                      <div *ngIf="selectedPromos.length !== 0" style="text-align: center">
-                        <h3>Promociones Activas</h3>
-                      </div>
-                      <li *ngFor="let car of selectedPromos" style="text-align: left">
-                        {{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_promo}}</li>
-                    </ul>
-                  </p-footer>
-                </p-dataTable>
-
-              </p-tabPanel>
-            </p-tabView>
-          </p-panel>
-        </div>-->
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <br>
-          <p-panel #pnlPromos header="Resúmen Cover" [style]="{'z-index':'1'}">
-            <p-dataTable [value]="mapProdShow" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowSelect)="onRowSelect($event)"
-            (onRowUnselect)="onRowUnselect($event)">
-            <p-column [style]="{'width':'29px'}" selectionMode="multiple">
-            </p-column>
+          <p-panel #pnlPromos header="Resúmen apertura nueva tarjeta" [style]="{'z-index':'1'}">
+            <p-dataTable [value]="lstResumenOpen" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5">
 
-            <p-column field="selectedPromo" header="Promoción" [editable]="false" [style]="{'width':'130px'}">
-              <ng-template let-car="rowData" pTemplate type="body">
-                <select [(ngModel)]="car.selectedPromo" [ngStyle]='{"width": "100%", "background": "rgba(255,255,255,0)"}'>
-                <option *ngFor="let row of lstPromociones">{{row.nombre}}</option>
-              </select>
-              </ng-template>
-            </p-column>
+              <p-column [style]="{'width':'5%'}">
+                <ng-template let-car="rowData" pTemplate>
+                  <button pButton type="button" (click)="count()" icon="fa-close" class="ui-button-danger"></button>
+                </ng-template>
+              </p-column>
 
-            <p-column *ngFor="let header of headers" [field]="header.field " [header]="header.header" [sortable]="true" [filter]="true"
-              filterMatchMode="contains" [style]="{'width':'17%'}"></p-column>
+              <p-column field="value.nombre" header="Nombre cover" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'25%'}">
+              </p-column>
 
-            <p-column header="Precio Promo" [style]="{'width':'13%'}">
-              <ng-template let-car="rowData" pTemplate>
-                <input type="text" currencyMask [(ngModel)]="car.precio_promo" [options]="{ align : 'center' }" style="max-width: 100%; color: black;">
-              </ng-template>
-            </p-column>
+              <p-column field="value.cantidad" header="Cant. personas" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'15%'}">
+              </p-column>
 
-            <p-footer>
-              <ul>
-                <div *ngIf="selectedPromos.length !== 0" style="text-align: center">
-                  <h3>Promociones Activas</h3>
-                </div>
-                <li *ngFor="let car of selectedPromos" style="text-align: left">
-                  {{car.selectedPromo + ' - ' + car.nombre + ' - $' + car.precio_promo}}</li>
-              </ul>
-            </p-footer>
-          </p-dataTable>
+              <p-column field="value.genero" header="Género" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'15%'}">
+              </p-column>
+
+              <p-column field="value.producto" header="Productos" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'25%'}">
+              </p-column>
+
+              <p-column field="value.precio" header="Precio Total" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'15%'}">
+              </p-column>
+
+            </p-dataTable>
           </p-panel>
         </div>
 

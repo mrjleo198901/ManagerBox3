@@ -38,7 +38,12 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private cargoPersonalService: CargoPersonalService,
     private validateService: ValidateService,
-    private formatterService: FormatterService) { }
+    private formatterService: FormatterService) {
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
+
+  }
 
   ngOnInit() {
 
@@ -198,6 +203,27 @@ export class DashboardComponent implements OnInit {
   removeSpaces(cad) {
     cad = cad.trim().replace(/\s+/g, " ");
     return cad;
+  }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
   }
 
 }

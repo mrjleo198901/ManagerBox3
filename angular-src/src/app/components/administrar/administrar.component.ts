@@ -150,6 +150,9 @@ export class AdministrarComponent implements OnInit {
     this.calcVentas();
     this.calcMoney();
     this.calcPersonas();
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -454,5 +457,26 @@ export class AdministrarComponent implements OnInit {
   onChangeCaja($event) {
     console.log(this.selected_caja)
   }
+
+    //Width detection
+    textAlignTitle = 'left';
+    
+      onResize(event) {
+        let x = event.target.innerWidth;
+        //console.log(x)
+        if (x < 768) {
+          this.textAlignTitle = 'center';
+        } else {
+          this.textAlignTitle = 'left';
+        }
+      }
+    
+      onRzOnInit(x) {
+        if (x < 768) {
+          this.textAlignTitle = 'center';
+        } else {
+          this.textAlignTitle = 'left';
+        }
+      }
 
 }

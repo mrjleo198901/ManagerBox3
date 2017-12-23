@@ -161,7 +161,8 @@ export class ClientesComponent implements OnInit {
       formatterService,
       dialog
     );*/
-
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -464,4 +465,26 @@ export class ClientesComponent implements OnInit {
       document.getElementById("correoU").style.borderColor = "#FE2E2E";
     }
   }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+  
 }

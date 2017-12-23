@@ -26,7 +26,13 @@ export class InventarioComponent implements OnInit {
     private validateService: ValidateService) {
     InventarioComponent.updateUserStatus.subscribe(res => {
       console.log("entrooooooo")
-    })
+    });
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
+
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
   }
 
   ngOnInit() {
@@ -106,6 +112,27 @@ export class InventarioComponent implements OnInit {
       amount: 20
     });
 
+  }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
   }
 
 }

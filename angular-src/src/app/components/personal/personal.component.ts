@@ -84,6 +84,9 @@ export class PersonalComponent implements OnInit {
     this.idCargoPersona = "";
     this.banCalendar = 1;
 
+    var x = window.innerWidth;
+    this.onRzOnInit(x);
+
   }
 
   // inicializador de variables
@@ -560,6 +563,27 @@ export class PersonalComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
+  }
+
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
   }
 
 }
