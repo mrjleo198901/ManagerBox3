@@ -221,6 +221,8 @@
             <input type="text" [(ngModel)]="objCover.productoMujeres.nombre" id="prodInputM" name="prodInputM" placeholder="Producto"
               class="form-control input-sm" readonly>
           </div>
+          
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
           <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoMujeres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
             #listBoxM *ngIf="flagProdM">
             <ng-template let-car pTemplate="item">
@@ -229,7 +231,18 @@
               <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
               <span class="badge">{{car.value.contenido}} ml</span>
             </ng-template>
-          </p-listbox>
+          </p-listbox></div>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
+              <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoMujeres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
+                #listBoxM *ngIf="flagProdM">
+                <ng-template let-car pTemplate="item">
+                  {{car.value.nombre}}
+                  <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+                  <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
+                  <span class="badge">{{car.value.contenido}} ml</span>
+                </ng-template>
+              </p-listbox></div>
+
           <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdM" readonly>
         </div>
       </div>

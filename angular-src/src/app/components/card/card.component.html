@@ -192,7 +192,41 @@
                       <p style="font-size: 12px; padding-top: 5px">&nbsp;&nbsp;&nbsp;Nro. Mujeres</p>
                     </div>
                     <div class="ui-g-6 ui-md-6" style="padding-left: 0; padding-top: 0;padding-right: 0">
-                      <select [(ngModel)]="selectedCoverM" id="coverM" class="form-control input-sm" style="z-index: 1" tabindex="6">
+                      <ng-template #toolTipTemplateTP>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Nro. Mujeres:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Nro. Hombres:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p>{{selectedCoverM.numMujeres}}</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p>{{selectedCoverM.numHombres}}</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Prod. Mujer:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Prod. Hombre:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px;">
+                          <p *ngIf="selectedCoverM.productoMujeres!==undefined;else other">
+                            {{selectedCoverM.cantProdMujeres}} {{selectedCoverM.productoMujeres.nombre}}
+                          </p>
+                          <ng-template #other>-</ng-template>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p *ngIf="selectedCoverM.productoHombres!==undefined;else other">
+                            {{selectedCoverM.cantProdHombres}} {{selectedCoverM.productoHombres.nombre}}
+                          </p>
+                          <ng-template #other>-</ng-template>
+                        </div>
+                        <p style="color: #3E3F3A;">sp</p>
+                      </ng-template>
+                      <select [(ngModel)]="selectedCoverM" (ngModelChange)="onChangeSelectCoverM($event)" id="coverM" class="form-control input-sm"
+                        style="z-index: 1" tabindex="6" [tooltipHtml]="toolTipTemplateTP" tooltipPlacement="left" tooltipAnimation=false>
                         <option *ngFor="let c of lstCovers" [ngValue]="c">{{c.nombre}}</option>
                       </select>
                     </div>
@@ -214,12 +248,46 @@
                       <p style="font-size: 12px; padding-top: 5px">Cover Hombres</p>
                     </div>
                     <div class="ui-g-6 ui-md-6 ui-g-nopad">
-                      <p style="font-size: 12px; padding-top: 5px">Nro. Hombres</p>
+                      <p style="font-size: 12px; padding-top: 5px">&nbsp;&nbsp;&nbsp;Nro. Hombres</p>
                     </div>
                     <div class="ui-g-6 ui-md-6" style="padding-left: 0; padding-top: 0;padding-right: 0">
-                      <select [(ngModel)]="selectedCoverH" id="coverH" class="form-control input-sm" style="z-index: 1" tabindex="8">
-                      <option *ngFor="let c of lstCovers" [ngValue]="c">{{c.nombre}}</option>
-                    </select>
+                      <ng-template #toolTipTemplateTP1>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Nro. Mujeres:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Nro. Hombres:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p>{{selectedCoverH.numMujeres}}</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p>{{selectedCoverH.numHombres}}</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Prod. Mujer:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad">
+                          <p>Prod. Hombre:</p>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px;">
+                          <p *ngIf="selectedCoverH.productoMujeres!==undefined;else other">
+                            {{selectedCoverH.cantProdMujeres}} {{selectedCoverH.productoMujeres.nombre}}
+                          </p>
+                          <ng-template #other>-</ng-template>
+                        </div>
+                        <div class="ui-g-6 ui-md-6 ui-g-nopad" style="margin-top: -5px">
+                          <p *ngIf="selectedCoverH.productoHombres!==undefined;else other">
+                            {{selectedCoverH.cantProdHombres}} {{selectedCoverH.productoHombres.nombre}}
+                          </p>
+                          <ng-template #other>-</ng-template>
+                        </div>
+                        <p style="color: #3E3F3A;">sp</p>
+                      </ng-template>
+                      <select [(ngModel)]="selectedCoverH" (ngModelChange)="onChangeSelectCoverH($event)" id="coverH" class="form-control input-sm"
+                        style="z-index: 1" tabindex="8" [tooltipHtml]="toolTipTemplateTP1" tooltipPlacement="left">
+                        <option *ngFor="let c of lstCovers" [ngValue]="c">{{c.nombre}}</option>
+                      </select>
                     </div>
                     <div class="input-group ui-g-4 ui-md-4" style="padding-right: 0; padding-top: 0;">
                       <input [(ngModel)]="cantHombres" type="text" class="form-control input-sm" name="cantHombres" id="cantHombres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
@@ -251,8 +319,8 @@
             <p-dataTable [value]="lstResumenOpen" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5">
 
               <p-column [style]="{'width':'5%'}">
-                <ng-template let-car="rowData" pTemplate>
-                  <button pButton type="button" (click)="count()" icon="fa-close" class="ui-button-danger"></button>
+                <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+                  <button pButton type="button" (click)="deleteRowCover(index)" icon="fa-close" class="ui-button-danger"></button>
                 </ng-template>
               </p-column>
 

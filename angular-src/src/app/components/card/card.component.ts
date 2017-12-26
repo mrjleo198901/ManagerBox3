@@ -792,22 +792,25 @@ export class CardComponent implements OnInit {
 
   lessWoman() {
     if (this.cantMujeres > 0)
-      this.cantMujeres--;
+      //this.cantMujeres--;
+      this.cantMujeres -= this.stepMujeres;
   }
 
+  stepMujeres = 0;
   plusWoman() {
     if (this.cantMujeres < 100)
-      this.cantMujeres++;
+      this.cantMujeres += this.stepMujeres;
   }
 
   lessMan() {
     if (this.cantHombres > 0)
-      this.cantHombres--;
+      this.cantHombres -= this.stepHombres;
   }
 
+  stepHombres = 0;
   plusMan() {
     if (this.cantHombres < 100)
-      this.cantHombres++;
+      this.cantHombres += this.stepHombres;
   }
 
   lessTotalM() {
@@ -1425,36 +1428,64 @@ export class CardComponent implements OnInit {
   }
 
   addCoverM() {
-    let prod = '-';
-    if (this.selectedCoverM.productoMujeres !== undefined) {
-      prod = this.selectedCoverM.cantProdMujeres + ' ' + this.selectedCoverM.productoMujeres.nombre;
+
+    if (this.cantMujeres > 0) {
+      let prod = '-';
+      if (this.selectedCoverM.productoMujeres !== undefined) {
+        prod = this.selectedCoverM.cantProdMujeres + ' ' + this.selectedCoverM.productoMujeres.nombre;
+      }
+      let aux = {
+        nombre: this.selectedCoverM.nombre,
+        cantidad: this.cantMujeres,
+        genero: 'Mujer',
+        producto: prod,
+        precio: this.selectedCoverM.precioMujeres
+      }
+      this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      document.getElementById('coverM').style.borderColor = '';
+    } else {
+      document.getElementById('coverM').style.borderColor = '#FF4B36';
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
     }
-    let aux = {
-      nombre: this.selectedCoverM.nombre,
-      cantidad: this.cantMujeres,
-      genero: 'Mujer',
-      producto: prod,
-      precio: this.selectedCoverM.precioMujeres
-    }
-    this.lstResumenOpen = [...this.lstResumenOpen,  aux ];
-    console.log(this.lstResumenOpen)
   }
 
 
   addCoverH() {
-    let prod = '-';
-    if (this.selectedCoverH.productoHombres !== undefined) {
-      prod = this.selectedCoverH.cantProdHombres + ' ' + this.selectedCoverH.productoHombres.nombre;
+    if (this.cantHombres > 0) {
+      let prod = '-';
+      if (this.selectedCoverH.productoHombres !== undefined) {
+        prod = this.selectedCoverH.cantProdHombres + ' ' + this.selectedCoverH.productoHombres.nombre;
+      }
+      let aux = {
+        nombre: this.selectedCoverH.nombre,
+        cantidad: this.cantMujeres,
+        genero: 'Hombre',
+        producto: prod,
+        precio: this.selectedCoverH.precioHombres
+      }
+      this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      document.getElementById('coverH').style.borderColor = '';
+    } else {
+      document.getElementById('coverH').style.borderColor = '#FF4B36';
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
     }
-    let aux = {
-      nombre: this.selectedCoverH.nombre,
-      cantidad: this.cantMujeres,
-      genero: 'Hombre',
-      producto: prod,
-      precio: this.selectedCoverH.precioHombres
-    }
-    this.lstResumenOpen = [...this.lstResumenOpen,  aux ];
-    console.log(this.lstResumenOpen)
+  }
+
+  onChangeSelectCoverM($event) {
+    console.log(this.selectedCoverM);
+    this.stepMujeres = parseFloat(this.selectedCoverM.numMujeres);
+    this.cantMujeres = parseFloat(this.selectedCoverM.numMujeres);
+  }
+
+  onChangeSelectCoverH($event) {
+    console.log(this.selectedCoverH);
+    this.stepHombres = parseFloat(this.selectedCoverH.numHombres);
+    this.cantHombres = parseFloat(this.selectedCoverH.numHombres);
+  }
+
+  deleteRowCover(index) {
+    this.lstResumenOpen.splice(index, 1);
+    this.lstResumenOpen = [...this.lstResumenOpen];
   }
 
   public ngOnInitCards() {
@@ -1505,6 +1536,12 @@ export class CardComponent implements OnInit {
       this.lstCovers = data;
       this.selectedCoverM = this.lstCovers[0];
       this.selectedCoverH = this.lstCovers[0];
+
+      this.stepMujeres = parseFloat(this.selectedCoverM.numMujeres);
+      this.cantMujeres = parseFloat(this.selectedCoverM.numMujeres);
+      this.stepHombres = parseFloat(this.selectedCoverH.numHombres);
+      this.cantHombres = parseFloat(this.selectedCoverH.numHombres);
+
     }, err => {
       console.log(err);
     })
