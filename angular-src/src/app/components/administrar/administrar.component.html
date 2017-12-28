@@ -155,7 +155,7 @@
 
 
 <!-- Add Cover -->
-<p-dialog [(visible)]="showDialogCC" modal="modal" width="800" [responsive]="true" positionTop="40">
+<p-dialog [(visible)]="showDialogCC" modal="modal" width={{widthCover}} [responsive]="true" positionTop="40">
   <p-header>
     Registrar Cover
   </p-header>
@@ -202,14 +202,8 @@
             <md-slide-toggle [color]="color" [(ngModel)]="flagProdM" (ngModelChange)="changeProdM($event)">
             </md-slide-toggle>
           </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdM">
-            <p style="font-size: 12px;text-align: center;">Cantidad</p>
-          </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdM">
-            <p style="font-size: 12px;text-align: center;">Nombre</p>
-          </div>
           <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
-            <input [(ngModel)]="objCover.cantProdMujeres" type="text" class="form-control input-sm" name="cantProdMujeres" id="cantProdMujeres"
+            <input [(ngModel)]="cantProdMujeres" type="text" class="form-control input-sm" name="cantProdMujeres" id="cantProdMujeres"
               onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
               (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
@@ -217,34 +211,35 @@
               <button id="lessM" (click)="lessCantProdM()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
-            <input type="text" [(ngModel)]="objCover.productoMujeres.nombre" id="prodInputM" name="prodInputM" placeholder="Producto"
-              class="form-control input-sm" readonly>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px; text-align: center" *ngIf="flagProdM">
+            <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemM()" aria-hidden="true"></i>
+            <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItemM()" aria-hidden="true"></i>
           </div>
-          
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
-          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoMujeres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
-            #listBoxM *ngIf="flagProdM">
-            <ng-template let-car pTemplate="item">
-              {{car.value.nombre}}
-              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
-              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
-              <span class="badge">{{car.value.contenido}} ml</span>
-            </ng-template>
-          </p-listbox></div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
-              <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoMujeres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
-                #listBoxM *ngIf="flagProdM">
-                <ng-template let-car pTemplate="item">
-                  {{car.value.nombre}}
-                  <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
-                  <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
-                  <span class="badge">{{car.value.contenido}} ml</span>
-                </ng-template>
-              </p-listbox></div>
-
-          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdM" readonly>
         </div>
+        <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
+          <p-dataTable [value]="lstProductos" selectionMode="single" [(selection)]="selected_productoM" (onRowSelect)="selecProdM($event)"
+            [paginator]="true" rows="4" [responsive]="true" [style]="{'border-color': bcLstProdExisM }">
+            <p-column field="nombre" header="Nombre" [sortable]="true" [filter]="true" filterPlaceholder="Buscar" filterMatchMode="contains"
+              [style]="{'width': '65%'}"></p-column>
+            <p-column field="precio_venta" header="Precio" [sortable]="true" [style]="{'width': '35%'}">
+              <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+                <span class="badge">$ {{ car.precio_venta| number : '1.2-2'}}</span>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+        <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdM">
+          <p-listbox [options]="lstSelectedProdM" [(ngModel)]="selected_selProductoM" [listStyle]="{'max-height':'140px'}" [style]="{'border-color': bcLstProdM }"
+            #listBoxSelecM *ngIf="flagProdM">
+            <p-header>
+              <p style="font-size: 12px;text-align: center;">Productos Seleccionados</p>
+            </p-header>
+            <ng-template let-car pTemplate="item">
+              <span class="badge" style="margin-top: -3px;">{{car.cantidad}}u</span>&nbsp;{{car.label}}
+            </ng-template>
+          </p-listbox>
+        </div>
+        <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdM" readonly>
       </div>
     </div>
 
@@ -277,37 +272,45 @@
             <md-slide-toggle [color]="color" [(ngModel)]="flagProdH" (ngModelChange)="changeProdH($event)">
             </md-slide-toggle>
           </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdH">
-            <p style="font-size: 12px;text-align: center;">Cantidad</p>
-          </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px;" *ngIf="flagProdH">
-            <p style="font-size: 12px;text-align: center;">Nombre</p>
-          </div>
           <div class="input-group ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
-            <input [(ngModel)]="objCover.cantProdHombres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres"
-              onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2" min="0" style="z-index: 1" tabindex="6"
-              (click)="$event.target.select()">
+            <input [(ngModel)]="cantProdHombres" type="text" class="form-control input-sm" name="cantMujeres" id="cantMujeres" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+              maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
             <div class="input-group-btn-vertical">
               <button id="addM" (click)="plusCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
               <button id="lessM" (click)="lessCantProdH()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
             </div>
           </div>
-          <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
-            <input type="text" id="prodInputM" [(ngModel)]="objCover.productoHombres.nombre" name="prodInputM" placeholder="Producto"
-              class="form-control input-sm" readonly>
+          <div class="ui-g-6 ui-md-6" style="margin-top: -10px; text-align: center" *ngIf="flagProdH">
+            <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemH()" aria-hidden="true"></i>
+            <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItemH()" aria-hidden="true"></i>
           </div>
-          <p-listbox [options]="lstProductos" [(ngModel)]="objCover.productoHombres" filter="filter" [style]="{'text-align':'left','max-height':'210px','height':'210px','width':'100%','border-color':borderStyleProdExistente}"
-            #listBoxH *ngIf="flagProdH">
+        </div>
+        <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
+          <p-dataTable [value]="lstProductos" selectionMode="single" [(selection)]="selected_productoH" (onRowSelect)="selecProdH($event)"
+            [paginator]="true" rows="4" [responsive]="true" [style]="{'color': 'red'}">
+            <p-column field="nombre" header="Nombre" [sortable]="true" [filter]="true" filterPlaceholder="Buscar" filterMatchMode="contains"
+              [style]="{'width': '65%'}"></p-column>
+            <p-column field="precio_venta" header="Precio" [sortable]="true" [style]="{'width': '35%'}">
+              <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+                <span class="badge">$ {{ car.precio_venta| number : '1.2-2'}}</span>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+        <div class="ui-g-6 ui-md-6" style="margin-top: -10px" *ngIf="flagProdH">
+          <p-listbox [options]="lstSelectedProdH" [(ngModel)]="selected_selProductoH" [listStyle]="{'max-height':'140px'}" [style]="{'border-color': bcLstProdH }"
+            #listBoxSelecH *ngIf="flagProdH">
+            <p-header>
+              <p style="font-size: 12px;text-align: center;">Productos Seleccionados</p>
+            </p-header>
             <ng-template let-car pTemplate="item">
-              {{car.value.nombre}}
-              <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
-              <span class="badge">$ {{ car.value.precio_venta| number : '1.2-2'}}</span>
-              <span class="badge">{{car.value.contenido}} ml</span>
+              <span class="badge" style="margin-top: -3px;">{{car.cantidad}}u</span>&nbsp;{{car.label}}
             </ng-template>
           </p-listbox>
-          <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdH" readonly>
         </div>
+        <input type="text" class="form-control input-sm" placeholder="Sin producto asociado" *ngIf="!flagProdH" readonly>
       </div>
+
     </div>
   </div>
   <hr>
@@ -318,7 +321,7 @@
 </p-dialog>
 
 <!-- Update Cover -->
-<p-dialog [(visible)]="showDialogCU" modal="modal" width="800" [responsive]="true" positionTop="40">
+<!--<p-dialog [(visible)]="showDialogCU" modal="modal" width="800" [responsive]="true" positionTop="40">
   <p-header>
     Actualizar Cover
   </p-header>
@@ -466,4 +469,4 @@
     <button class="btn btn-primary" style="font-size: 11px" (click)="updateCover()">Actualizar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCU = false">Cancelar</button>
   </div>
-</p-dialog>
+</p-dialog>-->

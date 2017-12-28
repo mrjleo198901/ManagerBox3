@@ -69,6 +69,7 @@ import { PipeRenderComponent } from './components/pipe-render/pipe-render.compon
 import { SubprodRenderComponent } from './components/subprod-render/subprod-render.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
 import { AdministrarComponent } from './components/administrar/administrar.component';
+import { CoverprodRenderComponent } from './components/coverprod-render/coverprod-render.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -113,9 +114,10 @@ const appRoutes: Routes = [
     PipeRenderComponent,
     SubprodRenderComponent,
     ConfigurationComponent,
-    AdministrarComponent
+    AdministrarComponent,
+    CoverprodRenderComponent
   ],
-  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent],
+  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent,CoverprodRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

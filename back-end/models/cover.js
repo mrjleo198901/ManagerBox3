@@ -4,14 +4,13 @@ var mongoose = restful.mongoose;
 var coverSchema = new mongoose.Schema({
 
     nombre: String,
+
     numMujeres: String,
+    productoMujeres: Array,
     precioMujeres: String,
-    productoMujeres: Object,
-    cantProdMujeres: String,
     numHombres: String,
-    precioHombres: String,
-    productoHombres: Object,
-    cantProdHombres: String
+    productoHombres: Array,
+    precioHombres: String
 
 });
 

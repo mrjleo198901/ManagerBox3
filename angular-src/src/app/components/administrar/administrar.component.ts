@@ -11,6 +11,7 @@ import { ProductoService } from '../../services/producto.service';
 import { ValidateService } from '../../services/validate.service';
 import { SelectItem, Listbox } from 'primeng/primeng';
 import { DecimalPipe, DatePipe } from '@angular/common';
+import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.component';
 
 @Component({
   selector: 'app-administrar',
@@ -25,39 +26,37 @@ export class AdministrarComponent implements OnInit {
     columns: {
       nombre: {
         title: 'Nombre',
-        width: '24%'
+        width: '26%'
       },
       numMujeres: {
         title: 'Nro. Mujeres',
-        width: '8%'
+        width: '9%'
       },
       precioMujeres: {
         title: 'Precio Mujeres',
-        width: '8%'
+        width: '9%'
       },
       productoMujeres: {
         title: 'Producto Mujeres',
-        width: '14%'
-      },
-      cantProdMujeres: {
-        title: 'Cant. Prod. Mujeres',
-        width: '8%'
+        width: '19%',
+        type: 'custom',
+        renderComponent: CoverprodRenderComponent,
+        filter: false
       },
       numHombres: {
         title: 'Nro. Hombres',
-        width: '8%'
+        width: '9%'
       },
       precioHombres: {
         title: 'Precio Hombres',
-        width: '8%'
+        width: '9%'
       },
       productoHombres: {
         title: 'Producto Hombres',
-        width: '14%'
-      },
-      cantProdHombres: {
-        title: 'Cant. Prod. Hombres',
-        width: '8%'
+        width: '19%',
+        type: 'custom',
+        renderComponent: CoverprodRenderComponent,
+        filter: false
       }
     },
     actions: {
@@ -69,33 +68,29 @@ export class AdministrarComponent implements OnInit {
     attr: {
       class: 'table-bordered table-hover table-responsive'
     }
-  }
+  };
   sourceC: LocalDataSource = new LocalDataSource();
   showDialogCC = false;
   showDialogCU = false
   objCover = {
     nombre: '',
     numMujeres: 1,
+    productoMujeres: [],
     precioMujeres: 0,
-    productoMujeres: '',
-    cantProdMujeres: 1,
     numHombres: 1,
-    precioHombres: 0,
-    productoHombres: '',
-    cantProdHombres: 1
+    productoHombres: [],
+    precioHombres: 0
   };
   objCoverUpdate = {
     nombre: '',
     numMujeres: 1,
+    productoMujeres: [],
     precioMujeres: 0,
-    productoMujeres: '',
-    cantProdMujeres: 1,
     numHombres: 1,
-    precioHombres: 0,
-    productoHombres: '',
-    cantProdHombres: 1
+    productoHombres: [],
+    precioHombres: 0
   };
-  lstProductos: any = [];
+  lstProductos: any[];
   borderStyleProdExistente = '#DADAD2';
   flagProdM = false;
   flagProdH = false;
@@ -133,6 +128,7 @@ export class AdministrarComponent implements OnInit {
   selected_caja
   lstCajas: any = [];
   currentDateTime;
+  widthCover = 600;
 
   @ViewChild('listBoxMU') accessor: Listbox;
   @ViewChild('listBoxMU', { read: NgModel }) model: NgModel;
@@ -145,7 +141,8 @@ export class AdministrarComponent implements OnInit {
     private differs: KeyValueDiffers,
     private validateService: ValidateService,
     private personalService: PersonalService,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private decimalPipe: DecimalPipe) {
     this.differ = differs.find([]).create(null);
     this.calcVentas();
     this.calcMoney();
@@ -158,38 +155,19 @@ export class AdministrarComponent implements OnInit {
   ngOnInit() {
     this.coverService.getAll().subscribe(data => {
       this.productoService.getAll().subscribe(p => {
-        this.lstProductos = [];
-        for (let entry of p) {
-          let aux = {
-            label: entry.nombre,
-            value: entry
-          }
-          this.lstProductos.push(aux);
-        }
+        this.lstProductos = [...p];
         this.lstCover = [];
         for (let entry of data) {
           let aux = {
             _id: entry._id,
             nombre: entry.nombre,
             numMujeres: entry.numMujeres,
-            precioMujeres: parseFloat(entry.precioMujeres).toFixed(2),
+            precioMujeres: this.decimalPipe.transform(entry.precioMujeres, '1.2-2'),
             productoMujeres: entry.productoMujeres,
-            cantProdMujeres: entry.cantProdMujeres,
             numHombres: entry.numHombres,
-            precioHombres: parseFloat(entry.precioHombres).toFixed(2),
+            precioHombres: this.decimalPipe.transform(entry.precioHombres, '1.2-2'),
             productoHombres: entry.productoHombres,
-            cantProdHombres: entry.cantProdHombres
           };
-          if (aux.productoMujeres == undefined) {
-            aux.cantProdMujeres = '';
-          } else {
-            aux.productoMujeres = aux.productoMujeres.nombre;
-          }
-          if (aux.productoHombres == undefined) {
-            aux.cantProdHombres = '';
-          } else {
-            aux.productoHombres = aux.productoHombres.nombre;
-          }
           this.lstCover.push(aux);
         }
         this.sourceC = new LocalDataSource();
@@ -206,13 +184,15 @@ export class AdministrarComponent implements OnInit {
     this.personalService.getByTipo('59a054715c0bf80b7cab502d').subscribe(data => {
       if (data.length > 0) {
         this.lstCajas = data;
-        console.log(this.lstCajas);
+        //console.log(this.lstCajas);
         this.selected_caja = 'Todas';
       }
     }, err => {
       console.log(err);
-    })
+    });
 
+    this.lstSelectedProdM = [];
+    this.lstSelectedProdH = [];
   }
 
   setCursorAddC() {
@@ -227,18 +207,16 @@ export class AdministrarComponent implements OnInit {
       nombre: '',
       numMujeres: 1,
       precioMujeres: 0,
-      productoMujeres: undefined,
-      cantProdMujeres: 1,
+      productoMujeres: [],
       numHombres: 1,
       precioHombres: 0,
-      productoHombres: undefined,
-      cantProdHombres: 1
+      productoHombres: []
     };
     this.widthPanel = '98%';
   }
 
   onUpdateC(event: any) {
-    this.onUpdateFlag = true;
+    /*this.onUpdateFlag = true;
     this.setOriginalColorsCoverU();
     this.objCoverUpdate = event.data;
     if (this.objCoverUpdate.productoMujeres !== undefined) {
@@ -276,7 +254,7 @@ export class AdministrarComponent implements OnInit {
 
       this.checked = true;
       this.widthPanel = '48%';
-    }
+    }*/
   }
 
   setCursorUpdateC() {
@@ -323,47 +301,46 @@ export class AdministrarComponent implements OnInit {
     this.nombreProdH = this.objCover.productoHombres;
   }*/
 
+  //leftMargin = (window.innerWidth - 600) / 2;
+
   onChangeCheckBox($event) {
+
     if (this.checked) {
       this.widthPanel = '48%';
+      this.widthCover = 900;
+      /*this.leftMargin = (window.innerWidth - 850) / 2;
+      console.log(this.leftMargin);*/
     } else {
       this.widthPanel = '98%';
+      this.widthCover = 600;
+      /*this.leftMargin = (window.innerWidth - 600) / 2;
+      console.log(this.leftMargin);*/
     }
   }
 
   changeProdM($event) {
 
     if (!this.flagProdM) {
-      this.objCover.productoMujeres = '';
-      this.objCover.cantProdMujeres = 0;
-      this.objCoverUpdate.productoMujeres = '';
-      this.objCoverUpdate.cantProdMujeres = 0;
+      this.objCover.productoMujeres = [];
+      this.objCoverUpdate.productoMujeres = [];
     } else {
       if (this.onUpdateFlag == false) {
-        console.log("inside")
         if (this.lstProductos.length > 0) {
           this.objCover.productoMujeres = this.lstProductos[0].value;
-          this.objCover.cantProdMujeres = 1;
           this.objCoverUpdate.productoMujeres = this.lstProductos[1].value;
-          this.objCoverUpdate.cantProdMujeres = 1;
         }
       }
-
     }
   }
 
   changeProdH($event) {
     if (!this.flagProdH) {
-      this.objCover.productoHombres = '';
-      this.objCover.cantProdHombres = 0;
-      this.objCoverUpdate.productoHombres = '';
-      this.objCoverUpdate.cantProdHombres = 0;
+      this.objCover.productoHombres = [];
+      this.objCoverUpdate.productoHombres = [];
     } else {
       if (this.lstProductos.length > 0) {
         this.objCover.productoHombres = this.lstProductos[0].value;
-        this.objCover.cantProdHombres = 1;
         this.objCoverUpdate.productoHombres = this.lstProductos[0].value;
-        this.objCoverUpdate.cantProdHombres = 1;
       }
     }
   }
@@ -377,7 +354,6 @@ export class AdministrarComponent implements OnInit {
     if (!this.checked) {
       this.objCover.numHombres = this.objCover.numMujeres;
       this.objCover.precioHombres = this.objCover.precioMujeres;
-      this.objCover.cantProdHombres = this.objCover.cantProdMujeres;
       this.objCover.productoHombres = this.objCover.productoMujeres;
     }
     this.coverService.register(this.objCover).subscribe(data => {
@@ -415,23 +391,124 @@ export class AdministrarComponent implements OnInit {
   }
 
   plusCantProdM() {
-    if (this.objCover.cantProdMujeres < 100)
-      this.objCover.cantProdMujeres++;
+    if (this.cantProdMujeres < 100)
+      this.cantProdMujeres++;
   }
 
   lessCantProdM() {
-    if (this.objCover.cantProdMujeres > 1)
-      this.objCover.cantProdMujeres--;
+    if (this.cantProdMujeres > 1)
+      this.cantProdMujeres--;
   }
 
   plusCantProdH() {
-    if (this.objCover.cantProdHombres < 100)
-      this.objCover.cantProdHombres++;
+    if (this.cantProdHombres < 100)
+      this.cantProdHombres++;
   }
 
   lessCantProdH() {
-    if (this.objCover.cantProdHombres > 1)
-      this.objCover.cantProdHombres--;
+    if (this.cantProdHombres > 1)
+      this.cantProdHombres--;
+  }
+
+  cantProdMujeres = 1;
+  cantProdHombres = 1;
+
+  lstSelectedProdM: any[];
+  lstSelectedProdH: any[];
+
+  selected_ProductoM: any[];
+  selected_ProductoH: any[];
+
+  selected_selProductoM: any;
+  selected_selProductoH: any;
+
+  bcLstProdExisM = '';
+  bcLstProdExisH = '';
+  bcLstProdM = '';
+  bcLstProdH = '';
+
+  addItemM() {
+    this.bcLstProdM = '';
+    if (this.selected_ProductoM !== undefined) {
+      let a: any = this.selected_ProductoM;
+      let aux = {
+        cantidad: this.cantProdMujeres,
+        label: a.nombre,
+        value: a
+      }
+      const index = this.lstSelectedProdM.findIndex(x => x.value === this.selected_ProductoM);
+      if (index == -1) {
+        this.lstSelectedProdM = [...this.lstSelectedProdM, aux];
+      } else {
+        this.lstSelectedProdM[index].cantidad += this.cantProdMujeres;
+      }
+      this.cantProdMujeres = 1;
+      this.objCover.productoMujeres = this.lstSelectedProdM;
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+      this.bcLstProdExisM = '#FE2E2E';
+    }
+    this.selected_ProductoM = undefined;
+  }
+
+  deleteItemM() {
+    this.bcLstProdM = '';
+    if (this.selected_selProductoM !== undefined) {
+      let nombre = this.selected_selProductoM.nombre;
+      this.lstSelectedProdM = this.lstSelectedProdM.filter(function (obj) {
+        return obj.value.nombre.localeCompare(nombre);
+      });
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto de la lista de productos seleccionados Mujeres!');
+      this.bcLstProdM = '#FE2E2E';
+    }
+    this.selected_selProductoM = undefined;
+  }
+
+  selecProdM(event) {
+    this.selected_ProductoM = event.data;
+  }
+
+  addItemH() {
+    this.bcLstProdH = '';
+    if (this.selected_ProductoH !== undefined) {
+      let a: any = this.selected_ProductoH;
+      let aux = {
+        cantidad: this.cantProdHombres,
+        label: a.nombre,
+        value: a
+      }
+      const index = this.lstSelectedProdH.findIndex(x => x.value === this.selected_ProductoH);
+      if (index == -1) {
+        this.lstSelectedProdH = [...this.lstSelectedProdH, aux];
+      } else {
+        this.lstSelectedProdH[index].cantidad += this.cantProdHombres;
+      }
+      this.cantProdHombres = 1;
+      this.objCover.productoHombres = this.lstSelectedProdH;
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+      this.bcLstProdExisH = '#FE2E2E';
+    }
+    this.selected_ProductoH = undefined;
+  }
+
+  deleteItemH() {
+    this.bcLstProdH = '';
+    if (this.selected_selProductoH !== undefined) {
+      let nombre = this.selected_selProductoH.nombre;
+      this.lstSelectedProdH = this.lstSelectedProdH.filter(function (obj) {
+        return obj.value.nombre.localeCompare(nombre);
+      });
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto de la lista de productos seleccionados Hombres!');
+      this.bcLstProdH = '#FE2E2E';
+    }
+    this.selected_selProductoH = undefined;
+  }
+
+  selecProdH(event) {
+    this.selected_ProductoH = event.data;
   }
 
   setOriginalColorsCover() {
@@ -458,25 +535,25 @@ export class AdministrarComponent implements OnInit {
     console.log(this.selected_caja)
   }
 
-    //Width detection
-    textAlignTitle = 'left';
-    
-      onResize(event) {
-        let x = event.target.innerWidth;
-        //console.log(x)
-        if (x < 768) {
-          this.textAlignTitle = 'center';
-        } else {
-          this.textAlignTitle = 'left';
-        }
-      }
-    
-      onRzOnInit(x) {
-        if (x < 768) {
-          this.textAlignTitle = 'center';
-        } else {
-          this.textAlignTitle = 'left';
-        }
-      }
+  //Width detection
+  textAlignTitle = 'left';
+
+  onResize(event) {
+    let x = event.target.innerWidth;
+    //console.log(x)
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
+
+  onRzOnInit(x) {
+    if (x < 768) {
+      this.textAlignTitle = 'center';
+    } else {
+      this.textAlignTitle = 'left';
+    }
+  }
 
 }

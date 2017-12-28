@@ -1439,7 +1439,7 @@ export class CardComponent implements OnInit {
         cantidad: this.cantMujeres,
         genero: 'Mujer',
         producto: prod,
-        precio: this.selectedCoverM.precioMujeres
+        precio: this.decimalPipe.transform(this.selectedCoverM.precioMujeres, '1.2-2')
       }
       this.lstResumenOpen = [...this.lstResumenOpen, aux];
       document.getElementById('coverM').style.borderColor = '';
@@ -1461,7 +1461,7 @@ export class CardComponent implements OnInit {
         cantidad: this.cantMujeres,
         genero: 'Hombre',
         producto: prod,
-        precio: this.selectedCoverH.precioHombres
+        precio: this.decimalPipe.transform(this.selectedCoverH.precioHombres, '1.2-2')
       }
       this.lstResumenOpen = [...this.lstResumenOpen, aux];
       document.getElementById('coverH').style.borderColor = '';
