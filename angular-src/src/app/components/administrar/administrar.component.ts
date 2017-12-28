@@ -77,7 +77,7 @@ export class AdministrarComponent implements OnInit {
     numMujeres: 1,
     productoMujeres: [],
     precioMujeres: 0,
-    numHombres: 1,
+    numHombres: 0,
     productoHombres: [],
     precioHombres: 0
   };
@@ -208,11 +208,14 @@ export class AdministrarComponent implements OnInit {
       numMujeres: 1,
       precioMujeres: 0,
       productoMujeres: [],
-      numHombres: 1,
+      numHombres: 0,
       precioHombres: 0,
       productoHombres: []
     };
     this.widthPanel = '98%';
+    this.widthCover = 600;
+    this.lstSelectedProdM = [];
+    this.lstSelectedProdH = [];
   }
 
   onUpdateC(event: any) {
@@ -293,34 +296,34 @@ export class AdministrarComponent implements OnInit {
     this.objCoverUpdate.nombre = this.formatterService.toTitleCase(this.objCoverUpdate.nombre);
   }
 
-  /*onChangeProdM($event) {
-    this.nombreProdM = this.objCover.productoMujeres;
-  }
-
-  onChangeProdH($event) {
-    this.nombreProdH = this.objCover.productoHombres;
-  }*/
-
-  //leftMargin = (window.innerWidth - 600) / 2;
-
   onChangeCheckBox($event) {
-
     if (this.checked) {
       this.widthPanel = '48%';
       this.widthCover = 900;
-      /*this.leftMargin = (window.innerWidth - 850) / 2;
-      console.log(this.leftMargin);*/
+      setTimeout(function () {
+        document.getElementById('numMujeres').style.borderColor = '';
+        document.getElementById('numHombres').style.borderColor = '';
+      }, 0);
+      this.objCover.numMujeres = 1;
+      this.objCover.numHombres = 1;
     } else {
       this.widthPanel = '98%';
       this.widthCover = 600;
-      /*this.leftMargin = (window.innerWidth - 600) / 2;
-      console.log(this.leftMargin);*/
+      this.objCover.numMujeres = 1;
+      this.objCover.numHombres = 0;
+      setTimeout(function () {
+        document.getElementById('numMujeres').style.borderColor = '';
+      }, 0);
     }
   }
 
   changeProdM($event) {
+    this.objCover.productoMujeres = [];
+    this.objCoverUpdate.productoMujeres = [];
+    this.lstSelectedProdM = [];
+    this.lstSelectedProdH = [];
 
-    if (!this.flagProdM) {
+    /*if (!this.flagProdM) {
       this.objCover.productoMujeres = [];
       this.objCoverUpdate.productoMujeres = [];
     } else {
@@ -330,7 +333,7 @@ export class AdministrarComponent implements OnInit {
           this.objCoverUpdate.productoMujeres = this.lstProductos[1].value;
         }
       }
-    }
+    }*/
   }
 
   changeProdH($event) {
@@ -347,23 +350,33 @@ export class AdministrarComponent implements OnInit {
 
   saveCover() {
     console.log(this.objCover);
-    if (!this.validateService.customValidateCover(this.objCover)) {
-      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
-      return false;
+    if (this.objCover.numMujeres + this.objCover.numHombres > 0) {
+      if (!this.validateService.customValidateCover(this.objCover)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+      if (!this.checked) {
+        this.objCover.numHombres = this.objCover.numMujeres;
+        this.objCover.precioHombres = this.objCover.precioMujeres;
+        this.objCover.productoHombres = this.objCover.productoMujeres;
+      }
+      this.coverService.register(this.objCover).subscribe(data => {
+        this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+        this.ngOnInit();
+        this.showDialogCC = false;
+      }, err => {
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        console.log(err);
+      })
+    } else {
+      if (this.checked) {
+        this.messageGrowlService.notify('error', 'Error', 'La cantidad total de personas de ser mayor que 0!');
+        document.getElementById('numMujeres').style.borderColor = '#FE2E2E';
+        document.getElementById('numHombres').style.borderColor = '#FE2E2E';
+      } else {
+        document.getElementById('numMujeres').style.borderColor = '#FE2E2E';
+      }
     }
-    if (!this.checked) {
-      this.objCover.numHombres = this.objCover.numMujeres;
-      this.objCover.precioHombres = this.objCover.precioMujeres;
-      this.objCover.productoHombres = this.objCover.productoMujeres;
-    }
-    this.coverService.register(this.objCover).subscribe(data => {
-      this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
-      this.ngOnInit();
-      this.showDialogCC = false;
-    }, err => {
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-      console.log(err);
-    })
   }
 
   updateCover() {
@@ -376,7 +389,7 @@ export class AdministrarComponent implements OnInit {
   }
 
   lessMan() {
-    if (this.objCover.numHombres > 1)
+    if (this.objCover.numHombres > 0)
       this.objCover.numHombres--;
   }
 
@@ -386,7 +399,7 @@ export class AdministrarComponent implements OnInit {
   }
 
   lessWoman() {
-    if (this.objCover.numMujeres > 1)
+    if (this.objCover.numMujeres > 0)
       this.objCover.numMujeres--;
   }
 
@@ -426,6 +439,7 @@ export class AdministrarComponent implements OnInit {
   bcLstProdExisH = '';
   bcLstProdM = '';
   bcLstProdH = '';
+
 
   addItemM() {
     this.bcLstProdM = '';
@@ -512,7 +526,12 @@ export class AdministrarComponent implements OnInit {
   }
 
   setOriginalColorsCover() {
-    document.getElementById("nombre").style.borderColor = "#DADAD2";
+    document.getElementById("nombre").style.borderColor = '';
+    document.getElementById('numMujeres').style.borderColor = '';
+    this.bcLstProdExisM = '';
+    this.bcLstProdExisH = '';
+    this.bcLstProdM = '';
+    this.bcLstProdH = '';
   }
 
   setOriginalColorsCoverU() {
