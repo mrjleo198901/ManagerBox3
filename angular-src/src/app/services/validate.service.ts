@@ -746,13 +746,24 @@ export class ValidateService {
     let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
     return currentDateTime;
   }
+
   getDateEs() {
     let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy');
     return currentDateTime;
   }
+
   getTimeEs() {
     let currentDateTime = this.datePipe.transform(new Date(), 'hh:mm:ss');
     return currentDateTime;
+  }
+
+  validateCads(s) {
+    return s;
+  }
+
+  validateCads1(s) {
+    s = s.trim();
+    return s;
   }
 
 }

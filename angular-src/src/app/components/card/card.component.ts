@@ -28,6 +28,7 @@ import { Subject } from 'rxjs/Subject';
 import { CajaService } from '../../services/caja.service';
 import { Router } from '@angular/router';
 import { CoverService } from '../../services/cover.service';
+import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.component';
 
 @Component({
   selector: 'app-card',
@@ -199,7 +200,6 @@ export class CardComponent implements OnInit {
   validCI = false;
   flagCheckFP = false;
   flagFP2 = false;
-
   fpEfectivo = 0;
   fpTarjeta = 0;
   fpPorCobrar = 0;
@@ -245,8 +245,8 @@ export class CardComponent implements OnInit {
   maximoFP;
   limCons = 0;
   lstCovers: any = [];
-  selectedCoverM;
-  selectedCoverH;
+  selectedCoverM: any;
+  selectedCoverH: any;
   lstResumenOpen: any[];
 
   constructor(
@@ -295,7 +295,6 @@ export class CardComponent implements OnInit {
 
     //Verificar si acabo de loguearse
     CardComponent.updateDisplayCaja.subscribe(res => {
-      //console.log("insideeeeeeeeeee");
       this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
         if (data.length > 0) {
           this.displayOptions = true;
@@ -535,9 +534,9 @@ export class CardComponent implements OnInit {
     }
     console.log(caja);
     /*this.cajaService.register(caja).subscribe(data => {
-
+  
     }, err => {
-
+  
     })*/
   }
 
@@ -1018,7 +1017,7 @@ export class CardComponent implements OnInit {
     } else {*/
     if (this.cardNumber.length == 9) {
       this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
-        console.log(data)
+        //console.log(data)
         if (data.length > 0) {
           this.flagCardFound = true;
           this.limCons = data[0].limite;
@@ -1202,15 +1201,17 @@ export class CardComponent implements OnInit {
     let activeCard = {
       idFactura: '',
       ci: '',
-      cardNumber: '',
       nombre: '',
-      fechaHora: this.validateService.getDateTimeEs(),
+      cardNumber: '',
       cantMujeres: 0,
       cantHombres: 0,
       egresoMujeres: 0,
       egresoHombres: 0,
       ingresoMujeres: 0,
-      ingresoHombres: 0
+      ingresoHombres: 0,
+      abono: 0,
+      fechaHora: this.validateService.getDateTimeEs(),
+      productosV: this.loadProductosCover(this.lstResumenOpen)
     }
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
@@ -1229,30 +1230,12 @@ export class CardComponent implements OnInit {
     activeCard.cardNumber = newClient.tarjeta;
     activeCard.cantMujeres = this.cantMujeres;
     activeCard.cantHombres = this.cantHombres;
-    let total = this.cantMujeres + this.cantHombres;
-    if (total > 0) {
+    if (this.lstResumenOpen.length > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
         //set factura & detalle factura
-        let auxM = {
-          fecha: this.validateService.getDateTimeEs(),
-          cantidad: this.cantMujeres,
-          descripcion: 'cover mujer',
-          total: (this.cantMujeres * this.coverMujeres),
-          precio_venta: this.coverMujeres,
-          vendedor: this.us.id
-        }
-        let auxH = {
-          fecha: this.validateService.getDateTimeEs(),
-          cantidad: this.cantHombres,
-          descripcion: 'cover hombre',
-          total: (this.cantHombres * this.coverHombres),
-          precio_venta: this.coverHombres,
-          vendedor: this.us.id
-        }
         let detalle: any = [];
-        detalle.push(auxM);
-        detalle.push(auxH);
+        detalle = this.formatDetalleFactura(this.lstResumenOpen);
         let newFactura = {
           cedula: this.searchUser.cedula,
           num_factura: '',
@@ -1269,7 +1252,7 @@ export class CardComponent implements OnInit {
         this.setDvInsertCard();
         this.facturaService.register(newFactura).subscribe(data => {
           activeCard.idFactura = data._id;
-          this.insertIdFactCiCarNumber(activeCard);
+          this.insertActiveCard(activeCard);
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
@@ -1279,9 +1262,61 @@ export class CardComponent implements OnInit {
         this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
       })
     } else {
-      this.messageGrowlService.notify('error', 'Error', 'Ingresa un número de personas!');
+      this.messageGrowlService.notify('error', 'Error', 'No se han ingresado covers!');
     }
   }
+
+  formatDetalleFactura(lstResumen) {
+    let lst = [];
+    for (let entry of lstResumen) {
+      let aux = {
+        fecha: this.validateService.getDateTimeEs(),
+        cantidad: entry.cantidad,
+        descripcion: entry.nombre,
+        total: entry.precio,
+        precio_venta: entry.precio,
+        vendedor: this.us.id
+      }
+      lst.push(aux);
+    }
+    return lst;
+  }
+
+  loadProductosCover(lstResumen) {
+    let vec: any = [];
+    for (let entry of lstResumen) {
+      if (entry.producto.length > 0) {
+        let a = entry.cantidad;
+        if (entry.genero === 'Mujer') {
+          let index = this.lstCovers.findIndex(i => i.nombre === entry.nombre);
+          if (this.lstCovers[index].productoMujeres.length > 0) {
+            let b = this.lstCovers[index].numMujeres;
+            let cant = a / b;
+            for (let el of this.lstCovers[index].productoMujeres) {
+              let cantProd = el.cantidad * cant;
+              let prod = el.value;
+              let aux = { cantidad: cantProd, producto: prod };
+              vec.push(aux);
+            }
+          }
+        } else {
+          let index = this.lstCovers.findIndex(i => i.nombre === entry.nombre);
+          if (this.lstCovers[index].productoHombres.length > 0) {
+            let b = this.lstCovers[index].numHombres;
+            let cant = a / b;
+            for (let el of this.lstCovers[index].productoHombres) {
+              let cantProd = el.cantidad * cant;
+              let prod = el.value;
+              let aux = { cantidad: cantProd, producto: prod };
+              vec.push(aux);
+            }
+          }
+        }
+      }
+    }
+    return vec;
+  }
+
 
   setDvInsertCard() {
     this.flagUserFound = false;
@@ -1297,7 +1332,7 @@ export class CardComponent implements OnInit {
     document.getElementById("basic-addon4").style.backgroundColor = '';
   }
 
-  insertIdFactCiCarNumber(activeCard) {
+  insertActiveCard(activeCard) {
     this.activeCardsService.register(activeCard).subscribe(data => {
       console.log(data)
     }, err => {
@@ -1427,67 +1462,91 @@ export class CardComponent implements OnInit {
     }
   }
 
+  totalCovers = 0;
   addCoverM() {
-
     if (this.cantMujeres > 0) {
-      let prod = '-';
-      if (this.selectedCoverM.productoMujeres !== undefined) {
-        prod = this.selectedCoverM.cantProdMujeres + ' ' + this.selectedCoverM.productoMujeres.nombre;
-      }
       let aux = {
         nombre: this.selectedCoverM.nombre,
         cantidad: this.cantMujeres,
         genero: 'Mujer',
-        producto: prod,
-        precio: this.decimalPipe.transform(this.selectedCoverM.precioMujeres, '1.2-2')
+        producto: this.selectedCoverM.productoMujeres,
+        precio: parseFloat(this.selectedCoverM.precioMujeres)
       }
-      this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      this.totalCovers = 0;
+      var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+      let cant = this.selectedCoverM.productoMujeres[0].cantidad;
+      if (index == -1) {
+        this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      } else {
+        this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
+        this.lstResumenOpen[index].cantidad += aux.cantidad;
+        this.lstResumenOpen[index].precio += aux.precio;
+        /*let a = this.lstResumenOpen[index].cantidad / this.selectedCoverM.numMujeres;
+        let cant1 = cant * a;
+        this.lstResumenOpen[index].producto[0].cantidad = cant1 * 1.0
+        console.log(cant1)*/
+      }
       document.getElementById('coverM').style.borderColor = '';
+      this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
     } else {
       document.getElementById('coverM').style.borderColor = '#FF4B36';
       this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
     }
   }
 
-
   addCoverH() {
     if (this.cantHombres > 0) {
-      let prod = '-';
-      if (this.selectedCoverH.productoHombres !== undefined) {
-        prod = this.selectedCoverH.cantProdHombres + ' ' + this.selectedCoverH.productoHombres.nombre;
-      }
       let aux = {
         nombre: this.selectedCoverH.nombre,
-        cantidad: this.cantMujeres,
+        cantidad: this.cantHombres,
         genero: 'Hombre',
-        producto: prod,
-        precio: this.decimalPipe.transform(this.selectedCoverH.precioHombres, '1.2-2')
+        producto: this.selectedCoverH.productoHombres,
+        precio: parseFloat(this.selectedCoverH.precioHombres)
       }
-      this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      this.totalCovers = 0
+      var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+      if (index == -1) {
+        this.lstResumenOpen = [...this.lstResumenOpen, aux];
+      } else {
+        this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
+        this.lstResumenOpen[index].cantidad += aux.cantidad;
+        this.lstResumenOpen[index].precio += aux.precio;
+      }
       document.getElementById('coverH').style.borderColor = '';
+      this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
     } else {
       document.getElementById('coverH').style.borderColor = '#FF4B36';
       this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
     }
   }
 
+  calcTotalCovers(lstCovers) {
+    let total = 0;
+    for (let entry of lstCovers) {
+      total += parseFloat(entry.precio);
+    }
+    return total;
+  }
+
   onChangeSelectCoverM($event) {
-    console.log(this.selectedCoverM);
     this.stepMujeres = parseFloat(this.selectedCoverM.numMujeres);
     this.cantMujeres = parseFloat(this.selectedCoverM.numMujeres);
   }
 
   onChangeSelectCoverH($event) {
-    console.log(this.selectedCoverH);
     this.stepHombres = parseFloat(this.selectedCoverH.numHombres);
     this.cantHombres = parseFloat(this.selectedCoverH.numHombres);
   }
 
   deleteRowCover(index) {
+    this.totalCovers = 0;
     this.lstResumenOpen.splice(index, 1);
     this.lstResumenOpen = [...this.lstResumenOpen];
+    this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
   }
 
+  lstCoversM: any[];
+  lstCoversH: any[];
   public ngOnInitCards() {
     this.tipoClienteService.getAll().subscribe(tc => {
       this.tipo_clientes = tc;
@@ -1534,18 +1593,30 @@ export class CardComponent implements OnInit {
       });
     this.coverService.getAll().subscribe(data => {
       this.lstCovers = data;
-      this.selectedCoverM = this.lstCovers[0];
-      this.selectedCoverH = this.lstCovers[0];
-
+      this.lstCoversM = [];
+      this.lstCoversH = [];
+      //console.log(this.lstCovers)
+      for (let entry of this.lstCovers) {
+        if (entry.numMujeres > 0) {
+          this.lstCoversM = [...this.lstCoversM, entry];
+        }
+        if (entry.numHombres > 0) {
+          this.lstCoversH = [...this.lstCoversH, entry];
+        }
+      }
+      //console.log(this.lstCoversM)
+      //console.log(this.lstCoversH)
+      if (this.lstCovers.length > 0) {
+        this.selectedCoverM = this.lstCoversM[0];
+        this.selectedCoverH = this.lstCoversH[0];
+      }
       this.stepMujeres = parseFloat(this.selectedCoverM.numMujeres);
       this.cantMujeres = parseFloat(this.selectedCoverM.numMujeres);
       this.stepHombres = parseFloat(this.selectedCoverH.numHombres);
       this.cantHombres = parseFloat(this.selectedCoverH.numHombres);
-
     }, err => {
       console.log(err);
     })
-
   }
 
   ngOnInitClient() {
@@ -1558,6 +1629,13 @@ export class CardComponent implements OnInit {
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
     this.selected_tipo_cliente = '';
+  }
+
+  searchLstResumen(nombre) {
+    let a = this.lstResumenOpen.filter(function (obj) {
+      return obj.nombre.localeCompare(nombre) === 0;
+    });
+    return a[0];
   }
 
   /*TAB CLOSE*/

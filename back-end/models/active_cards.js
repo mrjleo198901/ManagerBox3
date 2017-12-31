@@ -14,7 +14,8 @@ var activeCardsSchema = new mongoose.Schema({
     ingresoMujeres: Number,
     ingresoHombres: Number,
     abono: String,
-    fechaHora: String
+    fechaHora: String,
+    productosV: Array
 
 });
 

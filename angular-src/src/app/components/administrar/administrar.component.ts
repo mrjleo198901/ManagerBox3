@@ -193,6 +193,11 @@ export class AdministrarComponent implements OnInit {
 
     this.lstSelectedProdM = [];
     this.lstSelectedProdH = [];
+
+    /*let resp = this.validateService.validateCads1('     testing ing      ')
+    let resp1 = this.validateService.validateCads('     testing ing      ')
+    console.log(resp);
+    console.log(resp1);*/
   }
 
   setCursorAddC() {
@@ -322,7 +327,6 @@ export class AdministrarComponent implements OnInit {
     this.objCoverUpdate.productoMujeres = [];
     this.lstSelectedProdM = [];
     this.lstSelectedProdH = [];
-
     /*if (!this.flagProdM) {
       this.objCover.productoMujeres = [];
       this.objCoverUpdate.productoMujeres = [];
@@ -349,6 +353,7 @@ export class AdministrarComponent implements OnInit {
   }
 
   saveCover() {
+    this.objCover.nombre = this.objCover.nombre.trim();
     console.log(this.objCover);
     if (this.objCover.numMujeres + this.objCover.numHombres > 0) {
       if (!this.validateService.customValidateCover(this.objCover)) {
