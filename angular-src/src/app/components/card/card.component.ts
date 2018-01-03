@@ -248,6 +248,7 @@ export class CardComponent implements OnInit {
   selectedCoverM: any;
   selectedCoverH: any;
   lstResumenOpen: any[];
+  blockCaja = false;
 
   constructor(
     private validateService: ValidateService,
@@ -309,9 +310,11 @@ export class CardComponent implements OnInit {
       if (data.length > 0) {
         this.btnLabel = 'Cerrar Turno';
         this.btnClass = '#EFAD4D';
+        this.blockCaja = false;
       } else {
         this.btnLabel = 'Abrir Turno';
         this.btnClass = '#2398E5';
+        this.blockCaja = true;
       }
     }, err => {
       console.log(err);
@@ -321,32 +324,6 @@ export class CardComponent implements OnInit {
     CardComponent.checkOpenCaja.subscribe(res => {
       this.displayCloseCajaL = true;
     })
-
-    /*this.displayOptions = true;
-    let caja1 = {
-      idUser: '5a2f07113d4776179c860762',
-      montoO: '50',
-      montoF: 'open',
-      fechaO: this.currentDateTime,
-      fechaF: ''
-    }
-    this.cajaService.register(caja1).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    });
-    let caja2 = {
-      idUser: '5a30a670747bd11f78a51331',
-      montoO: '35',
-      montoF: 'open',
-      fechaO: this.currentDateTime,
-      fechaF: ''
-    }
-    this.cajaService.register(caja2).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    });*/
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
@@ -402,6 +379,32 @@ export class CardComponent implements OnInit {
 
     var x = window.innerWidth;
     this.onRzOnInit(x);
+
+    /*this.displayOptions = true;
+    let caja1 = {
+      idUser: '5a2f07113d4776179c860762',
+      montoO: '50',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja1).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });
+    let caja2 = {
+      idUser: '5a30a670747bd11f78a51331',
+      montoO: '35',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja2).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });*/
   }
 
   ngOnInit() {
@@ -1005,43 +1008,43 @@ export class CardComponent implements OnInit {
   }
 
   checkCard() {
-    /*let searchCard = this.lstCards.find(x => x.cedula === this.cedula);
-    if (searchCard !== undefined) {
-      this.flagCardFound = true;
-      //this.cardNumber = searchCard.numero;
-      this.flagActivateInsertCard = false;
-      this.flagCaUsFound = true;
-      setTimeout(function () {
-        document.getElementById('cantMujeres').focus();
-      }, 0)
-    } else {*/
     if (this.cardNumber.length == 9) {
-      this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
-        //console.log(data)
+      this.activeCardsService.searchByCard(this.cardNumber).subscribe(data => {
         if (data.length > 0) {
-          this.flagCardFound = true;
-          this.limCons = data[0].limite;
-          document.getElementById('basic-addon1').style.backgroundColor = '#8FC941';//soft green
-          document.getElementById('basic-addon2').style.backgroundColor = '';//default color
-          setTimeout(function () {
-            document.getElementById('cantMujeres').focus();
-          }, 0)
-          if (this.flagCardFound && this.flagUserFound) {
-            this.flagCaUsFound = true;
-          } else {
-            this.flagCaUsFound = false;
-          }
-        } else {
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Esta tarjeta ya se ecuentra activa!');
           this.flagCaUsFound = false;
           this.flagCardFound = false;
           document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
           document.getElementById('basic-addon1').style.backgroundColor = '';//default color
+        } else {
+          this.tarjetaService.getByNumero(this.cardNumber).subscribe(data => {
+            if (data.length > 0) {
+              this.flagCardFound = true;
+              this.limCons = data[0].limite;
+              document.getElementById('basic-addon1').style.backgroundColor = '#8FC941';//soft green
+              document.getElementById('basic-addon2').style.backgroundColor = '';//default color
+              setTimeout(function () {
+                document.getElementById('cantMujeres').focus();
+              }, 0)
+              if (this.flagCardFound && this.flagUserFound) {
+                this.flagCaUsFound = true;
+              } else {
+                this.flagCaUsFound = false;
+              }
+            } else {
+              this.flagCaUsFound = false;
+              this.flagCardFound = false;
+              document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
+              document.getElementById('basic-addon1').style.backgroundColor = '';//default color
+            }
+          }, err => {
+            console.log(err);
+          })
         }
       }, err => {
         console.log(err);
-      })
+      });
     }
-    //}
   }
 
   onChangePassLength($event) {
@@ -1198,6 +1201,7 @@ export class CardComponent implements OnInit {
   }
 
   insertClientCard() {
+
     let activeCard = {
       idFactura: '',
       ci: '',
@@ -1212,7 +1216,8 @@ export class CardComponent implements OnInit {
       abono: 0,
       fechaHora: this.validateService.getDateTimeEs(),
       productosV: this.loadProductosCover(this.lstResumenOpen)
-    }
+    };
+
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     let newClient = {
       "apellido": this.searchUser.apellido,
@@ -1230,12 +1235,14 @@ export class CardComponent implements OnInit {
     activeCard.cardNumber = newClient.tarjeta;
     activeCard.cantMujeres = this.cantMujeres;
     activeCard.cantHombres = this.cantHombres;
+
     if (this.lstResumenOpen.length > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
         //set factura & detalle factura
         let detalle: any = [];
         detalle = this.formatDetalleFactura(this.lstResumenOpen);
+        this.updateStockProdcutos(detalle);
         let newFactura = {
           cedula: this.searchUser.cedula,
           num_factura: '',
@@ -1269,6 +1276,7 @@ export class CardComponent implements OnInit {
   formatDetalleFactura(lstResumen) {
     let lst = [];
     for (let entry of lstResumen) {
+
       let aux = {
         fecha: this.validateService.getDateTimeEs(),
         cantidad: entry.cantidad,
@@ -1277,7 +1285,21 @@ export class CardComponent implements OnInit {
         precio_venta: entry.precio,
         vendedor: this.us.id
       }
+      //Insert productos promos
       lst.push(aux);
+      if (entry.producto.length > 0) {
+        for (let prod of entry.producto) {
+          let aux = {
+            fecha: this.validateService.getDateTimeEs(),
+            cantidad: prod.cantidad,
+            descripcion: prod.label,
+            total: 0,
+            precio_venta: 0,
+            vendedor: this.us.id
+          }
+          lst.push(aux);
+        }
+      }
     }
     return lst;
   }
@@ -1295,7 +1317,7 @@ export class CardComponent implements OnInit {
             for (let el of this.lstCovers[index].productoMujeres) {
               let cantProd = el.cantidad * cant;
               let prod = el.value;
-              let aux = { cantidad: cantProd, producto: prod };
+              let aux = { cantidad: cantProd, producto: prod, despachado: 'No' };
               vec.push(aux);
             }
           }
@@ -1307,7 +1329,7 @@ export class CardComponent implements OnInit {
             for (let el of this.lstCovers[index].productoHombres) {
               let cantProd = el.cantidad * cant;
               let prod = el.value;
-              let aux = { cantidad: cantProd, producto: prod };
+              let aux = { cantidad: cantProd, producto: prod, despachado: 'No' };
               vec.push(aux);
             }
           }
@@ -1317,6 +1339,26 @@ export class CardComponent implements OnInit {
     return vec;
   }
 
+  updateStockProdcutos(lstResumen) {
+    let newList = this.validateService.formatSailsStock(lstResumen);
+    //console.log(newList);
+    if (newList.length > 0) {
+      for (let entry of newList) {
+        this.productoService.getByNombre(entry.descripcion).subscribe(data => {
+          data[0].cant_existente = parseFloat(data[0].cant_existente);
+          data[0].cant_existente -= entry.cantidad;
+          this.productoService.updateProducto(data[0]).subscribe(data => {
+            //console.log('success');
+          }, err => {
+            console.log(err);
+          });
+        }, err => {
+          console.log(err);
+        });
+      }
+
+    }
+  }
 
   setDvInsertCard() {
     this.flagUserFound = false;
@@ -1330,6 +1372,7 @@ export class CardComponent implements OnInit {
     document.getElementById("basic-addon1").style.backgroundColor = '';
     document.getElementById("basic-addon2").style.backgroundColor = '';
     document.getElementById("basic-addon4").style.backgroundColor = '';
+    this.lstResumenOpen = [];
   }
 
   insertActiveCard(activeCard) {
@@ -2001,12 +2044,36 @@ export class CardComponent implements OnInit {
     this.showDateHour = event.data.fecha;
   }
 
+  /*TAB EGRESO*/
+
+  plusWomanE() {
+    this.cantSalenM++;
+  }
+
+  lessWomanE() {
+    if (this.cantSalenM > 0)
+      this.cantSalenM--;
+  }
+
+  plusManE() {
+    this.cantSalenH++;
+  }
+
+  lessManE() {
+    if (this.cantSalenH > 0)
+      this.cantSalenH--;
+  }
+
+  onChangeAbono($event){
+    console.log(this.abono) 
+  }
+
   onChangeEgreso($event) {
     this.cardNumberE = this.cardNumberE.toLowerCase();
     let finalChar = this.cardNumberE.slice(-1)
     if (this.cardNumberE.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
-        this.checkActiveCardE(this.cardNumberE);
+        //this.checkActiveCardE(this.cardNumberE);
       }
     } else {
       document.getElementById('addonCnE2').style.backgroundColor = '#FF4B36';
@@ -2128,6 +2195,7 @@ export class CardComponent implements OnInit {
       } else {
         this.searchUserE.egresoHombres = this.cantSalenH
       }
+      //Update abono
 
       this.activeCardsService.update(this.searchUserE).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');

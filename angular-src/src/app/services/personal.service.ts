@@ -2,30 +2,32 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
-
-const url = 'http://localhost:3000/api/';
+import { GLOBAL } from '../components/globals';
 
 @Injectable()
 export class PersonalService {
-
-  constructor(private http: Http) { }
+  public url: string;
+  
+    constructor(private http: Http) {
+      this.url = GLOBAL.url;
+    }
 
   registerPersonal(personal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'personal', personal, { headers: headers })
+    return this.http.post(this.url + 'personal', personal, { headers: headers })
       .map(res => res.json())
   }
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal', { headers: headers })
+    return this.http.get(this.url + 'personal', { headers: headers })
       .map(res => res.json());
   }
   updatePersonal(personal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'personal/' + personal._id, personal, { headers: headers })
+    return this.http.put(this.url + 'personal/' + personal._id, personal, { headers: headers })
       .map(res => res.json())
   }
   getByTipo(idCargo) {
@@ -33,7 +35,7 @@ export class PersonalService {
     params.set('id_cargo', idCargo);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal/', { search: params })
+    return this.http.get(this.url + 'personal/', { search: params })
       .map(res => res.json())
   }
   getByCedula(cedula) {
@@ -41,7 +43,7 @@ export class PersonalService {
     params.set('cedula', cedula);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'personal/', { search: params })
+    return this.http.get(this.url + 'personal/', { search: params })
       .map(res => res.json())
   }
 }

@@ -26,3 +26,7 @@ export function sliceElement(newValue: any) {
         return obj.nombre !== newValue.nombre;
     });
 }
+
+export var GLOBAL = {
+    url: 'http://localhost:3000/api/'
+  }

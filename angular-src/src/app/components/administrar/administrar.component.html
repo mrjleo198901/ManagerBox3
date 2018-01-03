@@ -6,7 +6,7 @@
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
-      <tab heading="Cover" [active]="true">
+      <tab heading="Cover">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Gestión de Covers</h3>
@@ -21,10 +21,17 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Tarjetas">
+      <tab heading="Tarjetas" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Gestión de Tarjetas</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <ng2-smart-table id="dtT" [settings]="settingsT" [source]="sourceT" (edit)="showDialogTU = true;onUpdateT($event);">
+          </ng2-smart-table>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
         </div>
       </tab>
@@ -147,6 +154,9 @@
               <h3 style="padding-top: 20px" class="total">$&nbsp;{{ganancia}}</h3>
             </li>
           </ul>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
         </div>
       </tab>
     </tabset>
@@ -473,3 +483,50 @@
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCU = false">Cancelar</button>
   </div>
 </p-dialog>-->
+
+<!-- Update Tarjeta -->
+<p-dialog [(visible)]="showDialogTU" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Actualizar Tarjeta
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Numero de tarjeta:</label>
+      <input [(ngModel)]="objTarjeta.cardNumber" type="text" class="form-control input-sm" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Nombre Cliente:</label>
+      <input [(ngModel)]="objTarjeta.nombre" type="text" class="form-control input-sm" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Cédula Cliente:</label>
+      <input [(ngModel)]="objTarjeta.ci" type="text" class="form-control input-sm" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Consumo Actual:</label>
+      <input currencyMask type="text" [(ngModel)]="consumoActual" [options]="{ align : 'left' }" class="form-control input-sm"
+        placeholder="0.00" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Limite Consumo Actual*:</label>
+      <input currencyMask type="text" [(ngModel)]="objTarjeta.limite" [options]="{ align : 'left' }" id="limite" name="limite"
+        class="form-control input-sm" placeholder="0.00" [disabled]="true">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Nuevo Limite Consumo*:</label>
+      <div class="input-group">
+        <input [(ngModel)]="nuevoConsumo" type="text" class="form-control input-sm" id="limiteNuevo" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()" [disabled]="true">
+        <div class="input-group-btn-vertical">
+          <button (click)="plusLimite()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+          <button (click)="lessLimite()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onAddTSubmit()">Actualizar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogTU = false">Cancelar</button>
+  </div>
+</p-dialog>

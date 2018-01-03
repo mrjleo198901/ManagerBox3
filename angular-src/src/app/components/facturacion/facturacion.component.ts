@@ -25,6 +25,7 @@ export class FacturacionComponent implements OnInit {
   selectedProductosShow: { cantidad: number, nombre: string, path: string, precio_venta: number, tipoProducto: string, total: number };
   showDialogConfirmar = false;
   cardNumber: String;
+  cardNumberC: String;
   mapTP = new Map();
   public tabs: Array<any> = [];
   flagProdSeleccionados;
@@ -43,8 +44,12 @@ export class FacturacionComponent implements OnInit {
   selectedMesero: any;
   idFact;
   colorZeroStock = '';
-
+  showProdCover = false;
   public static updateUserStatus: Subject<boolean> = new Subject();
+  flagShowAlert = false;
+  productosV: any[];
+  selectedProdCover: any;
+
 
   constructor(
     private productoService: ProductoService,
@@ -114,6 +119,7 @@ export class FacturacionComponent implements OnInit {
     }, err => {
       console.log(err);
     });
+    this.productosV = [];
   }
 
   public ngOnInitPromos() {
@@ -234,8 +240,8 @@ export class FacturacionComponent implements OnInit {
       }
     } else {
       this.flagFindCard = false;
-      document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-      document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+      document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
+      document.getElementById('basic-addon1').style.backgroundColor = '';//default color
     }
   }
 
@@ -244,12 +250,12 @@ export class FacturacionComponent implements OnInit {
       //this.idFact = data[0].idFactura;
       if (data.length > 0) {
         this.flagFindCard = true;
-        document.getElementById('basic-addon1').style.backgroundColor = '#6ce600';//soft green
-        document.getElementById('basic-addon2').style.backgroundColor = '#f8f5f0';//default color
+        document.getElementById('basic-addon1').style.backgroundColor = '#8FC941';//soft green
+        document.getElementById('basic-addon2').style.backgroundColor = '';//default color
       } else {
         this.flagFindCard = false;
-        document.getElementById('basic-addon2').style.backgroundColor = '#FE2E2E';//soft red
-        document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';//default color
+        document.getElementById('basic-addon2').style.backgroundColor = '#FF4B36';//soft red
+        document.getElementById('basic-addon1').style.backgroundColor = '';//default color
         this.messageGrowlService.notify('error', 'Error', 'La tarjeta no ha sido activada!');
       }
     }, err => {
@@ -339,6 +345,58 @@ export class FacturacionComponent implements OnInit {
     setTimeout(function () {
       document.getElementById('cardNumber').focus();
     }, 0)
+  }
+
+  insertProdCover() {
+
+  }
+
+  setCursorProdCover() {
+    setTimeout(function () {
+      document.getElementById('cardNumber1').focus();
+    }, 0)
+  }
+
+  onChangeC(event) {
+    this.cardNumberC = this.cardNumberC.toLowerCase();
+    let finalChar = this.cardNumberC.slice(-1)
+    if (this.cardNumberC.length == 9) {
+      if (finalChar.localeCompare("_") == 0) {
+        this.checkCardC();
+      } else {
+        this.flagShowAlert = false;
+        this.messageGrowlService.notify('warn', 'Advertencia', 'La tarjeta no pertenece a este establecimiento!');
+      }
+    } else {
+      this.flagShowAlert = false;
+      document.getElementById('basic-addon22').style.backgroundColor = '#FF4B36';//soft red
+      document.getElementById('basic-addon11').style.backgroundColor = '';//default color
+    }
+  }
+
+
+  checkCardC() {
+    this.activeCardsService.searchByCard(this.cardNumberC).subscribe(data => {
+      if (data.length > 0) {
+        let lst: any = this.validateService.formatSails(data[0].productosV);
+        this.productosV = [...lst];
+        //this.productosV = [...data[0].productosV];
+        console.log(this.productosV);
+        if (this.productosV.length > 0) {
+          this.flagShowAlert = false;
+        } else {
+          this.flagShowAlert = true;
+        }
+        document.getElementById('basic-addon11').style.backgroundColor = '#8FC941';//soft green
+        document.getElementById('basic-addon22').style.backgroundColor = '';//default color
+      } else {
+        document.getElementById('basic-addon22').style.backgroundColor = '#FF4B36';//soft red
+        document.getElementById('basic-addon11').style.backgroundColor = '';//default color
+        this.messageGrowlService.notify('error', 'Error', 'La tarjeta no ha sido activada!');
+      }
+    }, err => {
+      console.log(err);
+    })
   }
 
   //Width detection

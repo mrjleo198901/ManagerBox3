@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
-
-const url = 'http://localhost:3000/api/';
+import { GLOBAL } from '../components/globals';
 
 @Injectable()
 export class ActiveCardsService {
+  public url: string;
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+    this.url = GLOBAL.url;
+  }
 
   register(active_cards) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'active_cards', active_cards, { headers: headers })
+    return this.http.post(this.url + 'active_cards', active_cards, { headers: headers })
       .map(res => res.json())
   }
 
@@ -24,7 +26,7 @@ export class ActiveCardsService {
     let params: URLSearchParams = new URLSearchParams();
     params.set('cardNumber', cardNumber);
     let options = new RequestOptions({ headers: headers, params: params });
-    return this.http.get(url + 'active_cards/', options)
+    return this.http.get(this.url + 'active_cards/', options)
       .map(res => res.json())
   }
 
@@ -35,14 +37,14 @@ export class ActiveCardsService {
     let params: URLSearchParams = new URLSearchParams();
     params.set('ci', ci);
     let options = new RequestOptions({ headers: headers, params: params });
-    return this.http.get(url + 'active_cards/', options)
+    return this.http.get(this.url + 'active_cards/', options)
       .map(res => res.json())
   }
 
   delete(active_cards) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.delete(url + 'active_cards/' + active_cards, { headers: headers })
+    return this.http.delete(this.url + 'active_cards/' + active_cards, { headers: headers })
       .map(res => res.json())
   }
 
@@ -50,9 +52,16 @@ export class ActiveCardsService {
     console.log(active_cards)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'active_cards/' + active_cards._id, active_cards, { headers: headers })
+    return this.http.put(this.url + 'active_cards/' + active_cards._id, active_cards, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  getAll() {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(this.url + 'active_cards', { headers: headers })
+      .map(res => res.json());
   }
 
 }

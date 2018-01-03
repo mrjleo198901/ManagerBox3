@@ -12,6 +12,9 @@ import { ValidateService } from '../../services/validate.service';
 import { SelectItem, Listbox } from 'primeng/primeng';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.component';
+import { ActiveCardsService } from '../../services/active-cards.service';
+import { TarjetaService } from '../../services/tarjeta.service';
+import { FacturaService } from '../../services/factura.service';
 
 @Component({
   selector: 'app-administrar',
@@ -71,7 +74,7 @@ export class AdministrarComponent implements OnInit {
   };
   sourceC: LocalDataSource = new LocalDataSource();
   showDialogCC = false;
-  showDialogCU = false
+  showDialogCU = false;
   objCover = {
     nombre: '',
     numMujeres: 1,
@@ -142,7 +145,11 @@ export class AdministrarComponent implements OnInit {
     private validateService: ValidateService,
     private personalService: PersonalService,
     private datePipe: DatePipe,
-    private decimalPipe: DecimalPipe) {
+    private decimalPipe: DecimalPipe,
+    private activeCardsService: ActiveCardsService,
+    private tarjetaService: TarjetaService,
+    private facturaService: FacturaService) {
+
     this.differ = differs.find([]).create(null);
     this.calcVentas();
     this.calcMoney();
@@ -194,6 +201,7 @@ export class AdministrarComponent implements OnInit {
     this.lstSelectedProdM = [];
     this.lstSelectedProdH = [];
 
+    this.ngOnInitTarjetas();
     /*let resp = this.validateService.validateCads1('     testing ing      ')
     let resp1 = this.validateService.validateCads('     testing ing      ')
     console.log(resp);
@@ -542,6 +550,152 @@ export class AdministrarComponent implements OnInit {
   setOriginalColorsCoverU() {
     document.getElementById("nombreU").style.borderColor = "#DADAD2";
   }
+
+  /*Tarjetas*/
+  settingsT = {
+    mode: 'external',
+    noDataMessage: 'No existen registros',
+    columns: {
+      cardNumber: {
+        title: 'Numero Tarjeta',
+        width: '12%',
+      },
+      ci: {
+        title: 'CI. Cliente',
+        width: '12%'
+      },
+      nombre: {
+        title: 'Nombre Cliente',
+        width: '15%'
+      },
+      cantMujeres: {
+        title: 'Cant. Mujeres',
+        width: '10%'
+      },
+      cantHombres: {
+        title: 'Cant. Hombres',
+        width: '10%'
+      },
+      abono: {
+        title: 'Abono',
+        width: '10%'
+      },
+      fechaHora: {
+        title: 'Fecha',
+        width: '15%'
+      },
+      limite: {
+        title: 'Limite',
+        width: '10%'
+      }
+    },
+    actions: {
+      // columnTitle: '',
+      add: false,
+      edit: true,
+      delete: false
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+    }
+  };
+  sourceT: LocalDataSource = new LocalDataSource();
+  showDialogTC = false;
+  showDialogTU = false;
+  objTarjeta = {
+    cardNumber: '',
+    ci: '',
+    nombre: '',
+    cantMujeres: 0,
+    cantHombres: 0,
+    abono: 0,
+    fechaHora: '',
+    limite: 0,
+    idFactura: ''
+  };
+  objTarjetaUpdate = {
+    cardNumber: '',
+    ci: '',
+    nombre: '',
+    cantMujeres: 0,
+    cantHombres: 0,
+    abono: 0,
+    fechaHora: '',
+    limite: 0
+  };
+  consumoActual = 0;
+  nuevoConsumo = 0;
+
+  ngOnInitTarjetas() {
+    this.sourceT = new LocalDataSource();
+    this.activeCardsService.getAll().subscribe(data => {
+      for (let entry of data) {
+        let aux = {
+          abono: entry.abono,
+          cantHombres: (entry.cantHombres + entry.ingresoHombres) - entry.egresoHombres,
+          cantMujeres: (entry.cantMujeres + entry.ingresoMujeres) - entry.egresoMujeres,
+          cardNumber: entry.cardNumber,
+          ci: entry.ci,
+          fechaHora: entry.fechaHora,
+          limite: 0,
+          nombre: entry.nombre,
+          idFactura: entry.idFactura
+        }
+        this.tarjetaService.getByNumero(aux.cardNumber).subscribe(data => {
+          aux.limite = data[0].limite;
+          this.sourceT.add(aux);
+          this.sourceT.refresh();
+        }, err => {
+          console.log(err);
+        });
+      };
+    }, err => {
+      console.log(err);
+    });
+
+  }
+
+  onUpdateT(event: any) {
+    this.consumoActual = 0;
+    this.objTarjeta = event.data;
+    this.facturaService.getById(this.objTarjeta.idFactura).subscribe(data => {
+      for (let entry of data[0].detalleFacturaV) {
+        this.consumoActual += entry.total;
+      }
+      this.nuevoConsumo = this.consumoActual;
+      setTimeout(function () {
+        document.getElementById('limiteNuevo').focus();
+      }, 0);
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  plusLimite() {
+    //if (this.nuevoConsumo < this.objTarjeta.limite)
+    this.nuevoConsumo++;
+  }
+
+  lessLimite() {
+    if (this.nuevoConsumo > this.consumoActual)
+      this.nuevoConsumo--;
+  }
+
+  onAddTSubmit() {
+    this.tarjetaService.getByNumero(this.objTarjeta.cardNumber).subscribe(data => {
+      data[0].limite = this.nuevoConsumo;
+      this.tarjetaService.update(data[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+        this.ngOnInitTarjetas();
+        this.showDialogTU = false;
+      }, err => {
+        console.log(err);
+      });
+    }, err => {
+      console.log(err);
+    });
+  }
+
   /*Corte Caja*/
   calcVentas() {
     this.ventasTotales = this.ventasEfectivo + this.ventasTarjeta + this.ventasCheque + this.ventasCredito;

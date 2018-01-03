@@ -2,30 +2,32 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
-
-const url = 'http://localhost:3000/api/';
+import { GLOBAL } from '../components/globals';
 
 @Injectable()
 export class CargoPersonalService {
+  public url: string;
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+    this.url = GLOBAL.url;
+  }
 
   registerCargoPersonal(cargoPersonal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'cargo_personal', cargoPersonal, { headers: headers })
+    return this.http.post(this.url + 'cargo_personal', cargoPersonal, { headers: headers })
       .map(res => res.json())
   }
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(url + 'cargo_personal', { headers: headers })
+    return this.http.get(this.url + 'cargo_personal', { headers: headers })
       .map(res => res.json());
   }
   updateCargoPersonal(cargoPersonal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(url + 'cargo_personal/' + cargoPersonal.id, cargoPersonal, { headers: headers })
+    return this.http.put(this.url + 'cargo_personal/' + cargoPersonal.id, cargoPersonal, { headers: headers })
       .map(res => res.json())
   }
 

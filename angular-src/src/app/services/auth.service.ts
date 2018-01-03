@@ -3,22 +3,23 @@ import { Http, Response, Headers, URLSearchParams, RequestOptions } from '@angul
 import 'rxjs/add/operator/map';
 import { tokenNotExpired } from 'angular2-jwt';
 import { Observable } from 'rxjs/Rx';
-
-const url = 'http://localhost:3000/api/';
+import { GLOBAL } from '../components/globals';
 
 @Injectable()
 export class AuthService {
   authToken: any;
   user: any;
-
+  public url: string;
   //isDev: boolean;
 
-  constructor(public http: Http) { }
+  constructor(private http: Http) {
+    this.url = GLOBAL.url;
+  }
 
   public registerUser(user) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'register', user, { headers: headers })
+    return this.http.post(this.url + 'register', user, { headers: headers })
       .map(res => res.json());
 
   }
@@ -26,7 +27,7 @@ export class AuthService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     //let ep = this.prepEndpoint('users/authenticate');
-    return this.http.post(url + 'authenticate', user, { headers: headers })
+    return this.http.post(this.url + 'authenticate', user, { headers: headers })
       .map(res => res.json());
   }
   public getProfile() {
@@ -35,7 +36,7 @@ export class AuthService {
     headers.append('Authorization', this.authToken);
     headers.append('Content-Type', 'application/json');
     //let ep = this.prepEndpoint('users/profile');
-    return this.http.get(url + 'profile', { headers: headers })
+    return this.http.get(this.url + 'profile', { headers: headers })
       .map(res => res.json());
   }
   public storeUserData(token, user) {
@@ -69,14 +70,14 @@ export class AuthService {
     console.log(user)
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'sendmail', user, { headers: headers })
+    return this.http.post(this.url + 'sendmail', user, { headers: headers })
       .map(res => res.json());
   }
 
   public updateUser(user) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(url + 'updateUser', user, { headers: headers })
+    return this.http.post(this.url + 'updateUser', user, { headers: headers })
       .map(res => res.json());
   }
 

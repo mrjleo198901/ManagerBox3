@@ -766,4 +766,47 @@ export class ValidateService {
     return s;
   }
 
+  formatSails(lstCompras) {
+    let newLst: any = [];
+    for (let entry of lstCompras) {
+      var index = newLst.findIndex(i => i.producto._id === entry.producto._id);
+      if (index == -1) {
+        newLst.push(entry);
+      } else {
+        newLst[index].cantidad += entry.cantidad
+      }
+    }
+    return newLst;
+  }
+
+  formatTotalVentas(lstCompras) {
+    let newLst: any = [];
+    for (let entry of lstCompras) {
+      var index = newLst.findIndex(i => i.descripcion === entry.descripcion);
+      if (index == -1) {
+        newLst.push(entry);
+      } else {
+        newLst[index].precio_venta += entry.precio_venta;
+        newLst[index].total += entry.total
+        newLst[index].cantidad += entry.cantidad;
+      }
+    }
+    return newLst;
+  }
+
+  formatSailsStock(lstCompras) {
+    let newLst: any = [];
+    for (let entry of lstCompras) {
+      if (entry.total == 0) {
+        var index = newLst.findIndex(i => i.descripcion=== entry.descripcion);
+        if (index == -1) {
+          newLst.push(entry);
+        } else {
+          newLst[index].cantidad += entry.cantidad
+        }
+      }
+    }
+    return newLst;
+  }
+
 }

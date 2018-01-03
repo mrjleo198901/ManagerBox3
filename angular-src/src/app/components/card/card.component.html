@@ -10,7 +10,7 @@
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
       <!-- TAB OPEN -->
-      <tab heading="Apertura de tarjeta" (select)="alertMe1(1)" [active]="true">
+      <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -18,7 +18,7 @@
         </div>
         <!--LEFT SIDE-->
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <p-panel header="Datos del Cliente" [style]="{'height':'510px','z-index':'1'}">
+          <p-panel #pnlCedula header="Datos del Cliente" [style]="{'height':'510px','z-index':'1'}">
             <div class="panel panel-default" style="border: transparent">
               <div class="panel-body">
                 <!-- Control Cliente-->
@@ -67,7 +67,8 @@
                       <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                       <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
                         name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cédula del cliente" style="z-index: 1;" maxlength="10"
-                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" [disabled]="blockCaja"
+                      />
                       <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                       <span (click)=" setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
                     </div>
@@ -75,9 +76,9 @@
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1"
                       *ngIf="!tipoDoc">
                       <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                      <input [(ngModel)]="cedula" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
-                        name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;"
-                        maxlength="15" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
+                      <input [(ngModel)]="passport" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        name="passNew" #passNew id="passNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;" maxlength="15"
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" />
                       <span class="input-group-addon" id="basic-addonPass1" (click)=" searchPass()"><i class="fa fa-search" aria-hidden="true"></i></span>
                       <span class="input-group-addon" id="basic-addonPass2" (click)=" setCursorAdd()"><i class="fa fa-plus" aria-hidden="true"></i></span>
                     </div>
@@ -94,9 +95,6 @@
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                       <div class="panel panel-default">
                         <div class="panel-body">
-                          <!--Nombre:&nbsp;{{searchUser.nombre}}&nbsp;{{searchUser.apellido}}<br>Cedula:&nbsp;{{searchUser.cedula}}<br>Email:&nbsp;{{searchUser.correo}}
-                    <br>Telefono:&nbsp;{{searchUser.telefono}}<br>Fecha de Nacimiento:&nbsp;{{searchUser.fecha_nacimiento}}<br>Sexo:&nbsp;{{searchUser.sexo}}
-                    <br>Tipo Cliente:&nbsp;{{searchUser.id_tipo_cliente}}-->
                           <ul class="list-group" id="limheight">
                             <li class="list-group-item">
                               <p>Nombre:</p>
@@ -318,7 +316,8 @@
                     <div class="input-group">
                       <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
                       <input [(ngModel)]="totalCovers" type="text" currencyMask type="text" [options]="{ prefix: ''}" id="limCons" name="limCons"
-                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="5" style="margin: 0px">
+                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="5" style="margin: 0px"
+                        disabled>
                     </div>
                   </div>
                 </div>
@@ -345,7 +344,7 @@
               <p-column field="producto" header="Productos" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'25%'}">
                 <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
                   <div *ngFor="let prod of car.producto;">
-                    <span style="margin-top: -2.5px" class="badge">{{prod.cantidad}}</span>&nbsp;{{prod.label}}
+                    <span class="badge" style="margin-top: -2.5px">{{prod.cantidad}}</span>&nbsp;{{prod.label}}
                   </div>
                 </ng-template>
               </p-column>
@@ -356,10 +355,13 @@
                 </ng-template>
               </p-column>
 
+              <ng-template pTemplate="emptymessage">
+                No existen registros
+              </ng-template>
+
             </p-dataTable>
           </p-panel>
         </div>
-
         <!-- Button -->
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
@@ -526,6 +528,10 @@
                         </ng-template>
                       </p-column>
 
+                      <ng-template pTemplate="emptymessage">
+                        No existen registros
+                      </ng-template>
+
                     </p-dataTable>
                   </div>
                 </div>
@@ -561,7 +567,7 @@
         </div>
       </tab>
       <!-- TAB EGRESOS -->
-      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Ingreso/Egreso</h3>
@@ -569,10 +575,10 @@
         </div>
         <!--LEFT SIDE-->
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <p-panel header="Datos de Cliente y Tarjeta" [style]="{'height':'510px','z-index':'1'}">
-            <!-- Verificacion de consumo -->
+          <p-panel #pnlCardE header="Datos de Cliente y Tarjeta" [style]="{'height':'510px','z-index':'1'}">
             <div class="panel panel-default" style="border: transparent">
               <div class="panel-body">
+                <!-- Verificacion de consumo -->
                 <div class="form-group">
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
@@ -583,13 +589,23 @@
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                       <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
                       <input [(ngModel)]="cardNumberE" (ngModelChange)="onChangeEgreso($event)" (click)="$event.target.select()" type="text" class="form-control"
-                        name="numeroT" id="numeroT" placeholder="Codigo único de tarjeta" style="z-index: 1;" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                        tabindex="1" name="numeroT" id="numeroT" placeholder="Codigo único de tarjeta" style="z-index: 1;"
+                        onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
+                      <span class="input-group-addon" id="addonCnE1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                      <span class="input-group-addon" id="addonCnE2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+                      <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                      <input [(ngModel)]="cardNumberE" (ngModelChange)="onChangeEgreso($event)" (click)="$event.target.select()" type="text" class="form-control"
+                        tabindex="1" name="numeroT" id="numeroT" placeholder="Codigo único de tarjeta" style="z-index: 1;"
+                        onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
                       <span class="input-group-addon" id="addonCnE1"><i class="fa fa-check" aria-hidden="true"></i></span>
                       <span class="input-group-addon" id="addonCnE2"><i class="fa fa-times" aria-hidden="true"></i></span>
                     </div>
                   </div>
                 </div>
-
                 <!-- Mostrar cliente -->
                 <div class="form-group">
                   <div class="row">
@@ -642,10 +658,7 @@
                             <li class="list-group-item">
                               <p>Detalle de Consumo:</p>
                               <div style="text-align: center">
-                                <ng-template #toolTipTemplate>
-                                  Ver detalle de compras
-                                </ng-template>
-                                <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="top" tooltipAnimation=false>
+                                <a mdTooltip="Ver detalle de compras" matTooltipPosition="above">
                                   <i (click)="showComprasDetail()" class="fa fa-shopping-cart fa-flag fa-lg" aria-hidden="true"></i>
                                 </a></div>
                             </li>
@@ -664,14 +677,13 @@
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </p-panel>
         </div>
         <!--RIGHT SIDE-->
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <p-panel #pnlCantPersonas header="Cantidad de Personas Entrantes/Salientes" [style]="{'height':'510px','z-index':'1'}">
+          <p-panel #pnlCantPersonas header="Numero de Personas Entrantes/Salientes" [style]="{'height':'510px','z-index':'1'}">
             <div class="panel panel-default" style="border: transparent">
               <div class="panel-body">
                 <!-- Cantidad de personas -->
@@ -690,7 +702,7 @@
                               <p>Total Mujeres</p>
                             </div>
                             <div class="ui-g-12">
-                              <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres" [style]="{'margin-top':'11px'}"></p-selectButton>
+                              <p-selectButton [options]="types" [(ngModel)]="selectedIeMujeres" [style]="{'margin-top':'11px'}" tabindex="2"></p-selectButton>
                             </div>
                           </div>
                           <div class="row" style="text-align: center">
@@ -699,7 +711,16 @@
                             </div>
                             <div class="ui-g-12">
                               <br>
-                              <p-spinner size="5" [(ngModel)]="cantSalenM" [min]="0" [max]="100"></p-spinner>
+                              <!--<p-spinner size="5" [(ngModel)]="cantSalenM" [min]="0" [max]="100"></p-spinner>-->
+                              <div class="input-group" style="padding-right: 20px; margin-top: -2.5px; padding-left: 20px;">
+                                <input [(ngModel)]="cantSalenM" type="text" class="form-control input-sm" name="cantSalenM" id="cantSalenM" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                                  maxlength="2" min="0" [disabled]="!flagUserFound" style="z-index: 1" tabindex="3" (click)="$event.target.select()"
+                                  readonly>
+                                <div class="input-group-btn-vertical">
+                                  <button (click)="plusWomanE()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+                                  <button (click)="lessWomanE()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
+                                </div>
+                              </div>
                             </div>
                             <br>
                           </div>
@@ -710,7 +731,7 @@
                               <p>Total Hombres</p>
                             </div>
                             <div class="ui-g-12" style="padding-top: 3%">
-                              <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres" [style]="{'margin-top':'11px'}"></p-selectButton>
+                              <p-selectButton [options]="types" [(ngModel)]="selectedIeHombres" [style]="{'margin-top':'11px'}" tabindex="4"></p-selectButton>
                             </div>
                           </div>
                           <div class="row" style="text-align: center">
@@ -719,7 +740,15 @@
                             </div>
                             <div class="ui-g-12" style="padding-top: 2.5%">
                               <br>
-                              <p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>
+                              <!--<p-spinner size="5" [(ngModel)]="cantSalenH" [min]="0" [max]="100"></p-spinner>-->
+                              <div class="input-group" style="padding-right: 20px; margin-top: -2.5px; padding-left: 20px;">
+                                <input [(ngModel)]="cantSalenH" type="text" class="form-control input-sm" name="cantSalenH" id="cantSalenH" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                                  maxlength="2" min="0" style="z-index: 1" tabindex="5" (click)="$event.target.select()">
+                                <div class="input-group-btn-vertical">
+                                  <button (click)="plusManE()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+                                  <button (click)="lessManE()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
+                                </div>
+                              </div>
                             </div>
                             <br>
                           </div>
@@ -728,7 +757,7 @@
                     </div>
                   </div>
                 </div>
-
+                <!-- Abono -->
                 <div class="panel-body" style="padding-left: 0; padding-right: 0;">
                   <div class="form-group" style="margin: 0px;">
                     <div class="row">
@@ -739,8 +768,9 @@
                     <div class="row">
                       <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                         <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                        <input type="text" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="abono" id="inputAbono" name="inputAbono"
-                          class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="8" style="margin: 0px">
+                        <input type="text" currencyMask [options]="{ prefix: ''}" [(ngModel)]="abono" (ngModelChange)="onChangeAbono($event)" id="inputAbono"
+                          name="inputAbono" class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="8"
+                          style="margin: 0px">
                       </div>
                     </div>
                   </div>
@@ -948,7 +978,7 @@
 <!-- Update T -->
 <p-dialog [(visible)]="showDialogTU" modal="modal" width="500" [responsive]="true">
   <p-header>
-    Actualizar Tipo Producto
+    Actualizar Tarjeta
   </p-header>
   <div class="ui-g ui-fluid">
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
@@ -1347,6 +1377,10 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
-<p-blockUI [target]="pnlCantPersonas" [blocked]="!flagCardEFound">
+<p-blockUI [target]="pnlCantPersonas" [blocked]="flagCardEFound">
+  <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
+</p-blockUI>
+
+<p-blockUI [target]="pnlCedula" [blocked]="blockCaja">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
