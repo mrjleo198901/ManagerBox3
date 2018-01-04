@@ -185,16 +185,20 @@ export class CardComponent implements OnInit {
   flagCardEFound = false;
   nfLaelE;
   searchUserE = {
+    abono: 0,
     ci: '',
     nombre: '',
     cantMujeres: 0,
     cantHombres: 0,
     egresoMujeres: 0,
     egresoHombres: 0,
+    fechaHora: '',
     idFactura: '',
     cardNumber: '',
     ingresoMujeres: 0,
     ingresoHombres: 0,
+    productosV: [],
+    estado: 1,
     _id: ''
   }
   validCI = false;
@@ -480,6 +484,7 @@ export class CardComponent implements OnInit {
     this.ngOnInitCards();
     this.rucFactura = '';
     this.lstResumenOpen = [];
+    this.lstResumenOpenE = [];
   }
 
   openCloseCaja() {
@@ -813,26 +818,6 @@ export class CardComponent implements OnInit {
   plusMan() {
     if (this.cantHombres < 100)
       this.cantHombres += this.stepHombres;
-  }
-
-  lessTotalM() {
-    if (this.cantSalenM > 0)
-      this.cantSalenM--;
-  }
-
-  plusTotalM() {
-    if (this.cantSalenM < this.cantMujeres)
-      this.cantSalenM++;
-  }
-
-  lessTotalH() {
-    if (this.cantSalenH > 0)
-      this.cantSalenH--;
-  }
-
-  plusTotalH() {
-    if (this.cantSalenH < this.cantHombres)
-      this.cantSalenH++;
   }
 
   public alertMe1(st) {
@@ -1215,7 +1200,8 @@ export class CardComponent implements OnInit {
       ingresoHombres: 0,
       abono: 0,
       fechaHora: this.validateService.getDateTimeEs(),
-      productosV: this.loadProductosCover(this.lstResumenOpen)
+      productosV: this.loadProductosCover(this.lstResumenOpen),
+      estado: 1
     };
 
     this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
@@ -1236,7 +1222,12 @@ export class CardComponent implements OnInit {
     activeCard.cantMujeres = this.cantMujeres;
     activeCard.cantHombres = this.cantHombres;
 
-    if (this.lstResumenOpen.length > 0) {
+
+    console.log(newClient);
+    this.clienteService.getByCedula(newClient.cedula).subscribe(data => {
+      console.log(data[0])
+    },err=>{});
+    /*if (this.lstResumenOpen.length > 0) {
       this.clienteService.updateCliente(newClient).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta ingresada!');
         //set factura & detalle factura
@@ -1270,7 +1261,7 @@ export class CardComponent implements OnInit {
       })
     } else {
       this.messageGrowlService.notify('error', 'Error', 'No se han ingresado covers!');
-    }
+    }*/
   }
 
   formatDetalleFactura(lstResumen) {
@@ -1590,6 +1581,8 @@ export class CardComponent implements OnInit {
 
   lstCoversM: any[];
   lstCoversH: any[];
+  selectedCoverME: any;
+  selectedCoverHE: any;
   public ngOnInitCards() {
     this.tipoClienteService.getAll().subscribe(tc => {
       this.tipo_clientes = tc;
@@ -1638,7 +1631,7 @@ export class CardComponent implements OnInit {
       this.lstCovers = data;
       this.lstCoversM = [];
       this.lstCoversH = [];
-      //console.log(this.lstCovers)
+
       for (let entry of this.lstCovers) {
         if (entry.numMujeres > 0) {
           this.lstCoversM = [...this.lstCoversM, entry];
@@ -1647,16 +1640,24 @@ export class CardComponent implements OnInit {
           this.lstCoversH = [...this.lstCoversH, entry];
         }
       }
-      //console.log(this.lstCoversM)
-      //console.log(this.lstCoversH)
+
       if (this.lstCovers.length > 0) {
         this.selectedCoverM = this.lstCoversM[0];
         this.selectedCoverH = this.lstCoversH[0];
+        //Tab Egresos
+        this.selectedCoverME = this.lstCoversM[0];
+        this.selectedCoverHE = this.lstCoversH[0];
       }
       this.stepMujeres = parseFloat(this.selectedCoverM.numMujeres);
       this.cantMujeres = parseFloat(this.selectedCoverM.numMujeres);
       this.stepHombres = parseFloat(this.selectedCoverH.numHombres);
       this.cantHombres = parseFloat(this.selectedCoverH.numHombres);
+
+      this.stepMujeresE = parseFloat(this.selectedCoverME.numMujeres);
+      this.cantSalenM = parseFloat(this.selectedCoverME.numMujeres);
+      this.stepHombresE = parseFloat(this.selectedCoverHE.numHombres);
+      this.cantSalenH = parseFloat(this.selectedCoverHE.numHombres);
+
     }, err => {
       console.log(err);
     })
@@ -1891,16 +1892,14 @@ export class CardComponent implements OnInit {
       for (let entry of data[0].detalleFacturaV) {
         let aux = {
           descripcion: entry.descripcion,
-          precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
-          total: this.decimalPipe.transform(entry.total, '1.2-2'),
-          cantidad: this.decimalPipe.transform(entry.cantidad, '1.2-2'),
+          precio_venta: entry.precio_venta,
+          total: entry.total,
+          cantidad: entry.cantidad,
           fecha: entry.fecha
         }
         this.totalPagar += parseFloat(aux.total);
         this.lstConsumo.push(aux);
       }
-      this.totalPagar = this.decimalPipe.transform(this.totalPagar, '1.2-2')
-      this.totalConsumo = parseFloat(this.totalPagar);
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
@@ -2046,34 +2045,160 @@ export class CardComponent implements OnInit {
 
   /*TAB EGRESO*/
 
+  stepMujeresE = 0;
   plusWomanE() {
-    this.cantSalenM++;
+    if (this.flagEM == true) {
+      if (this.cantSalenM < 100)
+        this.cantSalenM += this.stepMujeresE;
+    } else {
+      this.cantSalenM++;
+    }
   }
 
   lessWomanE() {
-    if (this.cantSalenM > 0)
-      this.cantSalenM--;
+    if (this.flagEM == true) {
+      if (this.cantSalenM > 0)
+        this.cantSalenM -= this.stepMujeresE;
+    } else {
+      if (this.cantSalenM > 0)
+        this.cantSalenM--;
+    }
   }
 
+  stepHombresE = 0;
   plusManE() {
-    this.cantSalenH++;
+    if (this.flagEH == true) {
+      if (this.cantSalenH < 100)
+        this.cantSalenH += this.stepHombresE;
+    } else {
+      this.cantSalenH++;
+    }
   }
 
   lessManE() {
-    if (this.cantSalenH > 0)
-      this.cantSalenH--;
+    if (this.flagEH == true) {
+      if (this.cantSalenH > 0)
+        this.cantSalenH -= this.stepHombresE;
+    } else {
+      if (this.cantSalenH > 0)
+        this.cantSalenH--;
+    }
   }
 
-  onChangeAbono($event){
-    console.log(this.abono) 
+  totalCoversE = 0;
+  addCoverME() {
+    if (this.cantSalenM > 0) {
+      let aux = {
+        nombre: this.selectedCoverME.nombre,
+        cantidad: this.cantSalenM,
+        genero: 'Mujer',
+        producto: this.selectedCoverME.productoMujeres,
+        precio: parseFloat(this.selectedCoverME.precioMujeres)
+      }
+      this.totalCoversE = 0;
+      var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+      let cant = this.selectedCoverME.productoMujeres[0].cantidad;
+      if (index == -1) {
+        this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
+      } else {
+        this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
+        this.lstResumenOpenE[index].cantidad += aux.cantidad;
+        this.lstResumenOpenE[index].precio += aux.precio;
+      }
+      document.getElementById('coverME').style.borderColor = '';
+      this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
+    } else {
+      document.getElementById('coverME').style.borderColor = '#FF4B36';
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
+    }
+  }
+
+  addCoverHE() {
+    if (this.cantSalenH > 0) {
+      let aux = {
+        nombre: this.selectedCoverHE.nombre,
+        cantidad: this.cantSalenH,
+        genero: 'Hombre',
+        producto: this.selectedCoverHE.productoHombres,
+        precio: parseFloat(this.selectedCoverHE.precioHombres)
+      }
+      this.totalCoversE = 0
+      var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+      if (index == -1) {
+        this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
+      } else {
+        this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
+        this.lstResumenOpenE[index].cantidad += aux.cantidad;
+        this.lstResumenOpenE[index].precio += aux.precio;
+      }
+      document.getElementById('coverHE').style.borderColor = '';
+      this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
+    } else {
+      document.getElementById('coverHE').style.borderColor = '#FF4B36';
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
+    }
+  }
+
+  onChangeSelectCoverME($event) {
+    this.stepMujeresE = parseFloat(this.selectedCoverME.numMujeres);
+    this.cantSalenM = parseFloat(this.selectedCoverME.numMujeres);
+  }
+
+  onChangeSelectCoverHE($event) {
+    this.stepHombresE = parseFloat(this.selectedCoverHE.numHombres);
+    this.cantSalenH = parseFloat(this.selectedCoverHE.numHombres);
+  }
+
+  lstResumenOpenE: any[];
+  deleteRowCoverE(index) {
+    this.totalCoversE = 0;
+    this.lstResumenOpenE.splice(index, 1);
+    this.lstResumenOpenE = [...this.lstResumenOpenE];
+    this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
+  }
+
+  onChangeAbono($event) {
+    if (this.abono > this.totalPagar) {
+      this.abono = 0;
+      setTimeout(function () {
+        let v = document.getElementById('inputAbono');
+        if (v != null) {
+          v.click();
+          this.abono = 0;
+        }
+      }, 0);
+    }
+  }
+
+  flagEM = false;
+  onChangeEM($event) {
+    if (this.selectedIeMujeres.localeCompare('Ingreso') === 0) {
+      this.flagEM = true;
+      this.stepMujeresE = parseFloat(this.selectedCoverME.numMujeres);
+      this.cantSalenM = parseFloat(this.selectedCoverME.numMujeres);
+    } else {
+      this.flagEM = false;
+    }
+  }
+
+  flagEH = false;
+  onChangeEH($event) {
+    if (this.selectedIeHombres.localeCompare('Ingreso') === 0) {
+      this.flagEH = true;
+      this.stepHombresE = parseFloat(this.selectedCoverHE.numHombres);
+      this.cantSalenH = parseFloat(this.selectedCoverHE.numHombres);
+    } else {
+      this.flagEH = false;
+    }
   }
 
   onChangeEgreso($event) {
+
     this.cardNumberE = this.cardNumberE.toLowerCase();
     let finalChar = this.cardNumberE.slice(-1)
     if (this.cardNumberE.length == 9) {
       if (finalChar.localeCompare("_") == 0) {
-        //this.checkActiveCardE(this.cardNumberE);
+        this.checkActiveCardE(this.cardNumberE);
       }
     } else {
       document.getElementById('addonCnE2').style.backgroundColor = '#FF4B36';
@@ -2086,24 +2211,10 @@ export class CardComponent implements OnInit {
   checkActiveCardE(card) {
     this.activeCardsService.searchByCard(card).subscribe(data => {
       if (data.length > 0) {
-        this.searchUserE = {
-          ci: data[0].ci,
-          nombre: data[0].nombre,
-          cantMujeres: data[0].cantMujeres,
-          cantHombres: data[0].cantHombres,
-          egresoMujeres: data[0].egresoMujeres,
-          egresoHombres: data[0].egresoHombres,
-          idFactura: data[0].idFactura,
-          cardNumber: data[0].cardNumber,
-          ingresoMujeres: data[0].ingresoMujeres,
-          ingresoHombres: data[0].ingresoHombres,
-          _id: data[0]._id
-        }
-        //fill partial consummation
+        this.searchUserE = data[0];
         this.fillPartialSales(data[0].idFactura);
         this.showDateApertura = data[0].fechaHora.split(' ')[0];
         this.showHourApertura = data[0].fechaHora.split(' ')[1];
-
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
         this.flagCardEFound = true;
         document.getElementById('addonCnE2').style.backgroundColor = '';
@@ -2196,8 +2307,9 @@ export class CardComponent implements OnInit {
         this.searchUserE.egresoHombres = this.cantSalenH
       }
       //Update abono
-
-      this.activeCardsService.update(this.searchUserE).subscribe(data => {
+      console.log(this.searchUserE);
+      console.log(this.searchUserE)
+      /*this.activeCardsService.update(this.searchUserE).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
       }, err => {
         console.log(err);
@@ -2205,7 +2317,92 @@ export class CardComponent implements OnInit {
       })
       if (detalle.length > 0) {
         this.updateConsumo(this.searchUserE.idFactura, detalle);
+      }*/
+
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');
+    }
+
+  }
+
+  confirmarEgreso() {
+
+    let activeCard = {
+      idFactura: '',
+      ci: '',
+      nombre: '',
+      cardNumber: '',
+      cantMujeres: 0,
+      cantHombres: 0,
+      egresoMujeres: 0,
+      egresoHombres: 0,
+      ingresoMujeres: 0,
+      ingresoHombres: 0,
+      abono: 0,
+      fechaHora: this.validateService.getDateTimeEs(),
+      productosV: this.loadProductosCover(this.lstResumenOpenE)
+    };
+    //set factura & detalle factura
+    let det: any = [];
+    det = this.formatDetalleFactura(this.lstResumenOpenE);
+
+
+
+    if ((this.cantSalenH + this.cantSalenM) > 0) {
+      let detalle: any = [];
+      let flagIngresoM = false;
+      let flagIngresoH = false;
+      if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
+        if (this.cantSalenM > 0) {
+          let aux = {
+            fecha: this.validateService.getDateTimeEs(),
+            cantidad: this.cantSalenM,
+            descripcion: 'cover mujer',
+            total: (this.cantSalenM * this.coverMujeres),
+            precio_venta: this.coverMujeres
+          }
+          detalle.push(aux);
+          flagIngresoM = true;
+        }
+      } else { }
+      if (this.selectedIeHombres.localeCompare('Ingreso') == 0) {
+        if (this.cantSalenH > 0) {
+          let aux = {
+            fecha: this.validateService.getDateTimeEs(),
+            cantidad: this.cantSalenH,
+            descripcion: 'cover hombre',
+            total: (this.cantSalenH * this.coverHombres),
+            precio_venta: this.coverHombres
+          }
+          detalle.push(aux);
+          flagIngresoH = true;
+        }
+      } else { }
+
+      //Update activeCards
+      if (flagIngresoM) {
+        this.searchUserE.ingresoMujeres = this.cantSalenM;
+      } else {
+        this.searchUserE.egresoMujeres = this.cantSalenM;
       }
+      if (flagIngresoH) {
+        this.searchUserE.ingresoHombres = this.cantSalenH;
+      } else {
+        this.searchUserE.egresoHombres = this.cantSalenH
+      }
+      //Update abono
+      console.log(this.searchUserE);
+      console.log(detalle);
+      console.log(det);
+      /*this.activeCardsService.update(this.searchUserE).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      })
+      if (detalle.length > 0) {
+        this.updateConsumo(this.searchUserE.idFactura, detalle);
+      }*/
 
     } else {
       this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');
@@ -2314,6 +2511,43 @@ export class CardComponent implements OnInit {
     }
   }
 
+
+  setDvInsertEgreso() {
+    this.cardNumberE = '';
+    document.getElementById("addonCnE1").style.backgroundColor = '';
+    document.getElementById("addonCnE2").style.backgroundColor = '';
+    this.searchUserE = {
+      abono: 0,
+      ci: '',
+      nombre: '',
+      cantMujeres: 0,
+      cantHombres: 0,
+      egresoMujeres: 0,
+      egresoHombres: 0,
+      fechaHora: '',
+      idFactura: '',
+      cardNumber: '',
+      ingresoMujeres: 0,
+      ingresoHombres: 0,
+      productosV: [],
+      estado: 1,
+      _id: ''
+    }
+    this.abono = 0;
+
+    this.totalCoversE = 0;
+    this.cantSalenM = 0;
+    this.cantSalenH = 0;
+    document.getElementById("coverME").style.backgroundColor = '';
+    document.getElementById("coverHE").style.backgroundColor = '';
+    this.flagEM = false;
+    this.flagEH = false;
+
+
+
+
+    this.lstResumenOpenE = [];
+  }
   /* TAB TARJETAS*/
   onChangeG($event) {
     this.cardNumberG = this.cardNumberG.toLowerCase();

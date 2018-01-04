@@ -15,8 +15,8 @@ var activeCardsSchema = new mongoose.Schema({
     ingresoHombres: Number,
     abono: String,
     fechaHora: String,
-    productosV: Array
-
+    productosV: Array,
+    estado: Number
 });
 
 module.exports = restful.model('active_cards', activeCardsSchema);

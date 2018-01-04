@@ -6,7 +6,6 @@ var clienteSchema = new mongoose.Schema({
     cedula: String,
     nombre: String,
     apellido: String,
-    tarjeta: String,
     telefono: String,
     correo: String,
     fecha_nacimiento: String,
