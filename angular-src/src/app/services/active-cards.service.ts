@@ -30,6 +30,18 @@ export class ActiveCardsService {
       .map(res => res.json())
   }
 
+  searchByCardActive(cardNumber) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('cardNumber', cardNumber);
+    params.set('estado', '1');
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(this.url + 'active_cards/', options)
+      .map(res => res.json())
+  }
+
   searchByCI(ci) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -49,7 +61,7 @@ export class ActiveCardsService {
   }
 
   update(active_cards) {
-    console.log(active_cards)
+
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(this.url + 'active_cards/' + active_cards._id, active_cards, { headers: headers })
@@ -62,6 +74,17 @@ export class ActiveCardsService {
     headers.append('Content-Type', 'application/json');
     return this.http.get(this.url + 'active_cards', { headers: headers })
       .map(res => res.json());
+  }
+
+  getAllActives() {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('estado', '1');
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(this.url + 'active_cards/', options)
+      .map(res => res.json())
   }
 
 }

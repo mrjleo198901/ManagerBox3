@@ -683,6 +683,7 @@ export class ValidateService {
   validateFormaPago(fp) {
     let res = true;
     let sum = fp.formaPago.efectivo + fp.formaPago.tarjeta + fp.formaPago.credito + fp.formaPago.cheque;
+    console.log(sum)
     if (sum !== fp.totalPagar) {
       document.getElementById("pnlFp").style.borderColor = "#FE2E2E";
       res = false;

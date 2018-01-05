@@ -628,7 +628,7 @@ export class AdministrarComponent implements OnInit {
 
   ngOnInitTarjetas() {
     this.sourceT = new LocalDataSource();
-    this.activeCardsService.getAll().subscribe(data => {
+    this.activeCardsService.getAllActives().subscribe(data => {
       for (let entry of data) {
         let aux = {
           abono: entry.abono,

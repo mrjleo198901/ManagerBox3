@@ -374,7 +374,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
+      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -549,7 +549,6 @@
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </p-panel>
@@ -567,7 +566,7 @@
         </div>
       </tab>
       <!-- TAB EGRESOS -->
-      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)" [active]="true">
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Ingreso/Egreso</h3>
@@ -685,8 +684,12 @@
                   <div class="row">
                     <div class="input-group col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                       <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
+                      <ng-template #toolTipTemplateAbono>
+                        Total Abonos: $ {{searchUserE.abono}}
+                      </ng-template>
                       <input type="text" currencyMask [options]="{ prefix: ''}" [(ngModel)]="abono" (ngModelChange)="onChangeAbono($event)" id="inputAbono"
-                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="25" style="margin: 0px">
+                        class="form-control" placeholder="0.00" (click)="$event.target.select()" tabindex="25" style="margin: 0px"
+                        [tooltipHtml]="toolTipTemplateAbono" tooltipPlacement="right" tooltipAnimation=false>
                     </div>
                   </div>
                 </div>
@@ -911,7 +914,7 @@
         </div>
       </tab>
       <!-- TAB TARJETAS -->
-      <tab heading="Tarjetas" (select)="alertMe4(4)">
+      <tab heading="Tarjetas" (select)="alertMe4(4)" >
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Gestión de tarjetas</h3>
@@ -923,6 +926,7 @@
               <div class="panel-body">
                 <div class="form-group">
                   <div class="row">
+                    <!-- Numero de Tarjeta -->
                     <div class="col-lg-5 col-lg-offset-1 col-md-6 col-sm-6 col-xs-6">
                       <label>Número de tarjeta</label>
                       <div class="panel-body" style="padding-left: 0;">
@@ -935,19 +939,18 @@
                           <span class="input-group-addon" id="addonCnT2"><i class="fa fa-times" aria-hidden="true"></i></span>
                         </div>
                       </div>
-
                     </div>
+                    <!-- Limite de Consumo  -->
                     <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                       <label>Límite de Consumo</label>
                       <div class="panel-body" style="padding-left: 0;">
                         <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                           <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
                           <input currencyMask type="text" class="form-control" [(ngModel)]="limiteConsumo" [options]="{ prefix: '$ '}" id="inputAbono"
-                            name="inputAbono" placeholder="0.00" style="z-index: 1;" tabindex="28">
+                            name="inputAbono" placeholder="0.00" style="z-index: 1;" tabindex="28" (click)="$event.target.select()">
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -1048,45 +1051,60 @@
   <p-header>
     Registrar Tarjeta
   </p-header>
+
   <div class="ui-g ui-fluid">
+
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label>Numero de tarjeta*:</label>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-        <input [(ngModel)]="cardNumberGT" (ngModelChange)="onChangeAddT($event)" (click)="$event.target.select()" type="text" class="form-control"
-          name="numeroGT" id="numeroGT" placeholder="Codigo único de tarjeta" tooltip="Desliza la tarjeta sobre el lector."
-          tooltipPlacement="bottom" maxlength="9">
-        <span class="input-group-addon" id="basic-addon7"><i class="fa fa-check" aria-hidden="true"></i></span>
-        <span class="input-group-addon" id="basic-addon8"><i class="fa fa-times" aria-hidden="true"></i></span>
+      <div class="panel-body" style="padding-left: 0;">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+          <input [(ngModel)]="cardNumberGT" (ngModelChange)="onChangeAddT($event)" (click)="$event.target.select()" type="text" class="form-control"
+            name="numeroGT" id="numeroGT" placeholder="Codigo único de tarjeta" tooltip="Desliza la tarjeta sobre el lector."
+            tooltipPlacement="bottom" maxlength="9">
+          <span class="input-group-addon" id="basic-addon7"><i class="fa fa-check" aria-hidden="true"></i></span>
+          <span class="input-group-addon" id="basic-addon8"><i class="fa fa-times" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Tipo*:</label>
+      <div class="panel-body" style="padding-left: 0;">
+        <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%','height':'100%'}" name="tipoTarjetas"
+          id="tipoTarjetas" [inputId]="tipoTarjetas" (onChange)="changeTC()">
+          <ng-template let-car pTemplate="item">
+            <p>{{car.label}}</p>
+          </ng-template>
+        </p-dropdown>
       </div>
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Cliente:</label>
-      <p-dropdown [options]="lstAddCardCI" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-        filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC">
-        <ng-template let-car pTemplate="item">
-          <p>{{car.label}}--{{car.value.cedula}}</p>
-        </ng-template>
-      </p-dropdown>
+      <div class="panel-body" style="padding-left: 0;">
+        <p-dropdown [options]="lstAddCardCI" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
+          filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC">
+          <ng-template let-car pTemplate="item">
+            <p>{{car.label}}--{{car.value.cedula}}</p>
+          </ng-template>
+        </p-dropdown>
+      </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Tipo*:</label>
-      <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%'}" name="tipoTarjetas" id="tipoTarjetas"
-        [inputId]="tipoTarjetas" (onChange)="changeTC()">
-        <ng-template let-car pTemplate="item">
-          <p>{{car.label}}</p>
-        </ng-template>
-      </p-dropdown>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+        <label>Limite Consumo*:</label>
+        <div class="panel-body" style="padding-left: 0;">
+          <input currencyMask type="text" [(ngModel)]="limiteConsumo" id="limite" name="limite" class="form-control input-sm" placeholder="0.00">
+        </div>
+      </div>
+      <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+        <label>Descripción:</label>
+        <div class="panel-body" style="padding-left: 0;">
+          <textarea [(ngModel)]="descTarjeta" (ngModelChange)="onChangeDescAdd($event)" style="width: 100%" placeholder="Dirección del cliente"
+            class="form-control input-sm" (click)="$event.target.select()"></textarea>
+        </div>
+      </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Limite Consumo*:</label>
-      <input currencyMask type="text" [(ngModel)]="limiteConsumo" id="limite" name="limite" class="form-control input-sm" placeholder="0.00">
-      <br>
-    </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Descripción:</label>
-      <textarea pInputTextarea [(ngModel)]="descTarjeta" (ngModelChange)="onChangeDescAdd($event)" style="width: 100%" [rows]="5"></textarea>
-    </div>
+
   </div>
   <hr>
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
@@ -1163,27 +1181,12 @@
   </p-header>
   <div class="ui-g ui-fluid">
 
-    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad" style="padding-top: 16px; padding-right: 10px; text-align: center">
-        <div [ngClass]="colorConsCero">
-          <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i>&nbsp;{{textoConsumo}}</p>
-        </div>
-      </div>
-      <div class="panel-body" style="width: 100%">
-        <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad" style="padding-left: 6px;">
-          <div class="input-group" style="width: 106%">
-            <span class="input-group-addon"><label class="control-label" style="font-size: 17px; text-align: center">Total a pagar:</label></span>
-            <input type="text" [(ngModel)]="totalPagar" currencyMask class="form-control" placeholder="9999" style="font-size: 18px; text-align: right; color: #1F5DD1"
-              [disabled]="true">
-          </div>
-        </div>
-      </div>
-
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-top: 0px">
       <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12 ui-g-nopad">
         <label>RUC/CI:</label>
       </div>
       <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad">
-        <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        <p-inputSwitch [(ngModel)]="selectedRucFactura" (onChange)="insertRuc($event)" onLabel="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           offLabel="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" [style]="{'margin-top':'12px'}"></p-inputSwitch>
       </div>
       <div class="panel-body">
@@ -1199,12 +1202,12 @@
       </div>
     </div>
 
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3">
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3" style="padding-top: 0px">
       <label>Teléfono:</label>
       <input type="text" [(ngModel)]="telefonoS" id="telefonoS" placeholder="Teléfono" class="form-control" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
         tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" (click)="$event.target.select()" [disabled]="!flagFP">
     </div>
-    <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9" style="padding-left: 11px">
+    <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9" style="padding-left: 11px; padding-top: 0px">
       <label>Nombre:</label><br>
       <input type="text" [(ngModel)]="nombreS" id="nombreS" placeholder="Nombre cliente" class="form-control" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
         tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" (click)="$event.target.select()" [disabled]="!flagFP">
@@ -1259,9 +1262,27 @@
       </div>
     </div>
 
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-3 ui-g-nopad" style="text-align: center">
+        <div [ngClass]="colorConsCero">
+          <p style="color: white; font-size: 12px; padding-top: 9px">
+            <i class="fa fa-exclamation-circle"></i>&nbsp;{{textoConsumo}}
+          </p>
+        </div>
+      </div>
+      <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad" style="padding-left: 6px; padding-right: 30px">
+        <div class="input-group" style="width: 106%">
+          <span class="input-group-addon"><label class="control-label" style="font-size: 17px; text-align: center">Total a pagar:</label></span>
+          <input type="text" [(ngModel)]="totalPagar" currencyMask class="form-control" placeholder="9999" style="font-size: 18px; text-align: right; color: #1F5DD1"
+            [disabled]="true">
+        </div>
+      </div>
+    </div>
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <hr>
+    </div>
   </div>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
-    <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12 ui-g-nopad" style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px" (click)="confirmarSalida()" [disabled]="!flagCheckVenta">Confirmar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogFP = false">Cancelar</button>
   </div>
