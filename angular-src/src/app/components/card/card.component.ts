@@ -1160,10 +1160,12 @@ export class CardComponent implements OnInit {
   }
 
   onChangeNombre($event) {
+    this.nombre = this.nombre.trim();
     this.nombre = this.formatterService.toTitleCase(this.nombre);
   }
 
   onChangeApellido($event) {
+    this.apellido = this.apellido.trim();
     this.apellido = this.formatterService.toTitleCase(this.apellido);
   }
 
@@ -1178,10 +1180,12 @@ export class CardComponent implements OnInit {
   }
 
   onChangeDescAdd($event) {
+    this.descTarjeta = this.descTarjeta.trim();
     this.descTarjeta = this.descTarjeta.toLowerCase();
   }
 
   onChangeDescUpdate($event) {
+    this.updateTarjeta.descripcion = this.updateTarjeta.descripcion.trim();
     this.updateTarjeta.descripcion = this.updateTarjeta.descripcion.toLowerCase();
   }
 
@@ -1397,6 +1401,7 @@ export class CardComponent implements OnInit {
   }
 
   changeTC() {
+    console.log(this.selectedTipoTarjeta)
     if (this.selectedTipoTarjeta.localeCompare('VIP')) {
       this.flagTC = true;
     } else {
@@ -1412,6 +1417,14 @@ export class CardComponent implements OnInit {
     }
   }
 
+  changeTC1() {
+    console.log(this.selectedClientGP)
+    /*if (this.selectedTipoTarjeta.localeCompare('VIP')) {
+      this.flagTC = true;
+    } else {
+      this.flagTC = false;
+    }*/
+  }
   setCursorAddT() {
     document.getElementById('basic-addon7').style.backgroundColor = '#f8f5f0';
     document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
@@ -1781,6 +1794,7 @@ export class CardComponent implements OnInit {
     document.getElementById("telefonoS").style.borderColor = "";
     document.getElementById("direccionS").style.borderColor = "";
   }
+
   setDefaultValues1() {
     document.getElementById('addonCnS2').style.backgroundColor = '';
     document.getElementById('addonCnS1').style.backgroundColor = '';
@@ -2037,7 +2051,8 @@ export class CardComponent implements OnInit {
       if (this.cantSalenM < 100)
         this.cantSalenM += this.stepMujeresE;
     } else {
-      this.cantSalenM++;
+      if (this.cantSalenM < (this.searchUserE.cantMujeres - this.searchUserE.egresoMujeres) + this.searchUserE.ingresoMujeres)
+        this.cantSalenM++;
     }
   }
 
@@ -2057,7 +2072,8 @@ export class CardComponent implements OnInit {
       if (this.cantSalenH < 100)
         this.cantSalenH += this.stepHombresE;
     } else {
-      this.cantSalenH++;
+      if (this.cantSalenH < (this.searchUserE.cantHombres - this.searchUserE.egresoHombres) + this.searchUserE.ingresoHombres)
+        this.cantSalenH++;
     }
   }
 
@@ -2164,6 +2180,7 @@ export class CardComponent implements OnInit {
       this.cantSalenM = parseFloat(this.selectedCoverME.numMujeres);
     } else {
       this.flagEM = false;
+      this.cantSalenM = 0;
     }
   }
 
@@ -2175,11 +2192,11 @@ export class CardComponent implements OnInit {
       this.cantSalenH = parseFloat(this.selectedCoverHE.numHombres);
     } else {
       this.flagEH = false;
+      this.cantSalenH = 0;
     }
   }
 
   onChangeEgreso($event) {
-
     this.cardNumberE = this.cardNumberE.toLowerCase();
     let finalChar = this.cardNumberE.slice(-1)
     if (this.cardNumberE.length == 9) {
@@ -2192,11 +2209,14 @@ export class CardComponent implements OnInit {
       this.flagCardEFound = false;
       this.nfLaelE = '';
       this.lstResumenOpenE = [];
+      this.cantSalenH = 0;
+      this.cantSalenM = 0;
     }
   }
 
   checkActiveCardE(card) {
     this.activeCardsService.searchByCardActive(card).subscribe(data => {
+
       if (data.length > 0) {
         this.searchUserE = data[0];
         this.fillPartialSales(data[0].idFactura);
@@ -2207,6 +2227,8 @@ export class CardComponent implements OnInit {
         document.getElementById('addonCnE2').style.backgroundColor = '';
         document.getElementById('addonCnE1').style.backgroundColor = '#8FC941';//green
         this.searchConsumo(this.searchUserE.idFactura);
+        this.cantSalenH = 0;
+        this.cantSalenM = 0;
       } else {
         this.lstResumenOpenE = [];
         this.flagCardEFound = false;
@@ -2214,6 +2236,8 @@ export class CardComponent implements OnInit {
         this.messageGrowlService.notify('warn', 'Advertencia', 'Tarjeta No Encontrada!');
         document.getElementById('addonCnE2').style.backgroundColor = '#FF4B36';//soft red
         document.getElementById('addonCnE1').style.backgroundColor = '';//default color
+        this.cantSalenH = 0;
+        this.cantSalenM = 0;
       }
     }, err => {
       console.log(err);
@@ -2251,69 +2275,7 @@ export class CardComponent implements OnInit {
     })
   }
 
-  ConfEgreso() {
-    if ((this.cantSalenH + this.cantSalenM) > 0) {
-      let detalle: any = [];
-      let flagIngresoM = false;
-      let flagIngresoH = false;
-      if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
-        if (this.cantSalenM > 0) {
-          let aux = {
-            fecha: this.validateService.getDateTimeEs(),
-            cantidad: this.cantSalenM,
-            descripcion: 'cover mujer',
-            total: (this.cantSalenM * this.coverMujeres),
-            precio_venta: this.coverMujeres
-          }
-          detalle.push(aux);
-          flagIngresoM = true;
-        }
-      } else { }
-      if (this.selectedIeHombres.localeCompare('Ingreso') == 0) {
-        if (this.cantSalenH > 0) {
-          let aux = {
-            fecha: this.validateService.getDateTimeEs(),
-            cantidad: this.cantSalenH,
-            descripcion: 'cover hombre',
-            total: (this.cantSalenH * this.coverHombres),
-            precio_venta: this.coverHombres
-          }
-          detalle.push(aux);
-          flagIngresoH = true;
-        }
-      } else { }
-
-      //Update activeCards
-      if (flagIngresoM) {
-        this.searchUserE.ingresoMujeres = this.cantSalenM;
-      } else {
-        this.searchUserE.egresoMujeres = this.cantSalenM;
-      }
-      if (flagIngresoH) {
-        this.searchUserE.ingresoHombres = this.cantSalenH;
-      } else {
-        this.searchUserE.egresoHombres = this.cantSalenH
-      }
-      //Update abono
-      console.log(this.searchUserE);
-      console.log(this.searchUserE)
-      /*this.activeCardsService.update(this.searchUserE).subscribe(data => {
-        this.messageGrowlService.notify('info', 'Información', 'Se ha actualizado la factura!');
-      }, err => {
-        console.log(err);
-        this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-      })
-      if (detalle.length > 0) {
-        this.updateConsumo(this.searchUserE.idFactura, detalle);
-      }*/
-
-    } else {
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');
-    }
-
-  }
-
-  confirmarEgreso() {
+  /*confirmarEgreso() {
     if ((this.cantSalenH + this.cantSalenM) > 0) {
       if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
         this.searchUserE.ingresoMujeres = this.cantSalenM;
@@ -2331,7 +2293,7 @@ export class CardComponent implements OnInit {
       }
       this.searchUserE.abono = parseFloat(this.searchUserE.abono.toString());
       this.searchUserE.abono += this.abono;
-
+      console.log(this.searchUserE)
       if (this.searchUserE.ingresoMujeres + this.searchUserE.ingresoHombres > 1) {
         let detalle: any = [];
         detalle = this.formatDetalleFactura(this.lstResumenOpenE);
@@ -2345,6 +2307,59 @@ export class CardComponent implements OnInit {
       } else {
         this.updateAC();
         this.setDvInsertEgreso();
+      }
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');
+    }
+  }*/
+
+  confirmarEgreso() {
+    if ((this.cantSalenH + this.cantSalenM) > 0) {
+      let newAC = {
+        ingresoM: 0,
+        egresoM: 0,
+        ingresoH: 0,
+        egresoH: 0
+      }
+      if (this.selectedIeMujeres.localeCompare('Ingreso') == 0) {
+        newAC.ingresoM = this.cantSalenM;
+      } else {
+        newAC.egresoM = this.cantSalenM;
+      }
+      if (this.selectedIeHombres.localeCompare('Ingreso') == 0) {
+        newAC.ingresoH = this.cantSalenH;
+      } else {
+        newAC.egresoH = this.cantSalenH;
+      }
+      this.searchUserE.abono = parseFloat(this.searchUserE.abono.toString());
+      this.searchUserE.abono += this.abono;
+      this.searchUserE.ingresoMujeres += newAC.ingresoM;
+      this.searchUserE.egresoMujeres += newAC.egresoM;
+      this.searchUserE.ingresoHombres += newAC.ingresoH;
+      this.searchUserE.egresoHombres += newAC.egresoH;
+      if (newAC.ingresoM + newAC.ingresoH > 1) {
+        if (this.lstResumenOpenE.length > 0) {
+          let lstNuevosProdsAC: any[] = this.loadProductosCover(this.lstResumenOpenE);
+          for (let entry of lstNuevosProdsAC) {
+            this.searchUserE.productosV.push(entry);
+          }
+          let detalle: any = [];
+          detalle = this.formatDetalleFactura(this.lstResumenOpenE);
+          this.updateAC();
+          this.updateConsumo(this.searchUserE.idFactura, detalle);
+          this.setDvInsertEgreso();
+        } else {
+          this.messageGrowlService.notify('error', 'Error', 'Agrega el tipo que cover que aplica para las personas que ingresan!');
+        }
+      } else {
+        let totalM = (this.searchUserE.cantMujeres - this.searchUserE.egresoMujeres) - this.searchUserE.ingresoMujeres;
+        let totalH = (this.searchUserE.cantHombres - this.searchUserE.egresoHombres) - this.searchUserE.ingresoHombres;
+        if (newAC.egresoM + newAC.egresoH < totalM + totalH) {
+          this.updateAC();
+          this.setDvInsertEgreso();
+        } else {
+          this.messageGrowlService.notify('error', 'Error', 'Cantidad personas salientes = numero total de personas');
+        }
       }
     } else {
       this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de personas que entran/salen!');

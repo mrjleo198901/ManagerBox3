@@ -13,3 +13,8 @@
   margin-top : 5px;
   margin-left : 18px;
 }
+
+#addIcon {
+  color: #2196F3;
+  cursor: pointer;
+}

@@ -374,7 +374,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
+      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -566,7 +566,7 @@
         </div>
       </tab>
       <!-- TAB EGRESOS -->
-      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Ingreso/Egreso</h3>
@@ -750,7 +750,7 @@
                           </div>
                           <div class="row" style="text-align: center">
                             <div class="ui-g-12">
-                              <span class="badge" style="font-size: 16px">{{searchUserE.cantMujeres}}</span>
+                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantMujeres - searchUserE.egresoMujeres) - searchUserE.ingresoMujeres}}</span>
                             </div>
                             <div class="ui-g-12">
                               <div class="input-group" style="padding-right: 30%; margin-top: 7px; padding-left: 30%;">
@@ -815,7 +815,7 @@
                           </div>
                           <div class="row" style="text-align: center">
                             <div class="ui-g-12">
-                              <span class="badge" style="font-size: 16px">{{searchUserE.cantHombres}}</span>
+                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantHombres - searchUserE.egresoHombres) - searchUserE.ingresoHombres}}</span>
                             </div>
                             <div class="ui-g-12">
                               <div class="input-group" style="padding-right: 30%; margin-top: 7px; padding-left: 30%;">
@@ -914,7 +914,7 @@
         </div>
       </tab>
       <!-- TAB TARJETAS -->
-      <tab heading="Tarjetas" (select)="alertMe4(4)" >
+      <tab heading="Tarjetas" (select)="alertMe4(4)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Gestión de tarjetas</h3>
@@ -1055,59 +1055,61 @@
   <div class="ui-g ui-fluid">
 
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-      <label>Numero de tarjeta*:</label>
-      <div class="panel-body" style="padding-left: 0;">
+      <div class="panel-body" style="padding-top: 0; padding-bottom: 0">
+        <label>Numero de tarjeta*:</label>
         <div class="input-group">
           <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
           <input [(ngModel)]="cardNumberGT" (ngModelChange)="onChangeAddT($event)" (click)="$event.target.select()" type="text" class="form-control"
-            name="numeroGT" id="numeroGT" placeholder="Codigo único de tarjeta" tooltip="Desliza la tarjeta sobre el lector."
-            tooltipPlacement="bottom" maxlength="9">
+            name="numeroGT" id="numeroGT" placeholder="Codigo único de tarjeta" maxlength="9">
           <span class="input-group-addon" id="basic-addon7"><i class="fa fa-check" aria-hidden="true"></i></span>
           <span class="input-group-addon" id="basic-addon8"><i class="fa fa-times" aria-hidden="true"></i></span>
         </div>
       </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Tipo*:</label>
-      <div class="panel-body" style="padding-left: 0;">
-        <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%','height':'100%'}" name="tipoTarjetas"
-          id="tipoTarjetas" [inputId]="tipoTarjetas" (onChange)="changeTC()">
+
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 0;">
+      <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
+        <label>Tipo*:</label>
+        <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%'}" name="tipoTarjetas" id="tipoTarjetas"
+          [inputId]="tipoTarjetas" (onChange)="changeTC()">
           <ng-template let-car pTemplate="item">
             <p>{{car.label}}</p>
           </ng-template>
         </p-dropdown>
       </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Cliente:</label>
-      <div class="panel-body" style="padding-left: 0;">
+
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 0;">
+      <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
+        <label>Cliente:</label>
         <p-dropdown [options]="lstAddCardCI" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-          filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC">
+          filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC" (onChange)="changeTC1()">
           <ng-template let-car pTemplate="item">
             <p>{{car.label}}--{{car.value.cedula}}</p>
           </ng-template>
         </p-dropdown>
       </div>
     </div>
+
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-        <label>Limite Consumo*:</label>
-        <div class="panel-body" style="padding-left: 0;">
+        <div class="panel-body" style="padding-top: 0; padding-left: 8px;">
+          <label>Limite Consumo*:</label>
           <input currencyMask type="text" [(ngModel)]="limiteConsumo" id="limite" name="limite" class="form-control input-sm" placeholder="0.00">
         </div>
       </div>
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-        <label>Descripción:</label>
-        <div class="panel-body" style="padding-left: 0;">
-          <textarea [(ngModel)]="descTarjeta" (ngModelChange)="onChangeDescAdd($event)" style="width: 100%" placeholder="Dirección del cliente"
+        <div class="panel-body" style="padding-top: 0; padding-right: 8px;">
+          <label>Descripción:</label>
+          <textarea [(ngModel)]="descTarjeta" (ngModelChange)="onChangeDescAdd($event)" style="width: 100%; height: 46px" placeholder="Descripción del cliente"
             class="form-control input-sm" (click)="$event.target.select()"></textarea>
         </div>
       </div>
     </div>
-
   </div>
+
   <hr>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12 ui-g-nopad" style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px" (click)="onAddTSubmit()" [disabled]="!flagCN">Registrar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogT = false">Cancelar</button>
   </div>
@@ -1118,49 +1120,66 @@
   <p-header>
     Actualizar Tarjeta
   </p-header>
+
   <div class="ui-g ui-fluid">
+
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-      <label>Numero de tarjeta*:</label>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-        <input [(ngModel)]="updateTarjeta.numero" (ngModelChange)="onChangeAddTU($event)" (click)="$event.target.select()" type="text"
-          class="form-control" name="numeroGTU" id="numeroGTU" placeholder="Codigo único de tarjeta" maxlength="9" readonly>
-        <span class="input-group-addon" id="basic-addon9"><i class="fa fa-check" aria-hidden="true"></i></span>
-        <span class="input-group-addon" id="basic-addon10"><i class="fa fa-times" aria-hidden="true"></i></span>
+      <div class="panel-body" style="padding-top: 0; padding-bottom: 0">
+        <label>Numero de tarjeta*:</label>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+          <input [(ngModel)]="updateTarjeta.numero" (ngModelChange)="onChangeAddTU($event)" (click)="$event.target.select()" type="text"
+            class="form-control" name="numeroGTU" id="numeroGTU" placeholder="Codigo único de tarjeta" maxlength="9" readonly>
+          <span class="input-group-addon" id="basic-addon9"><i class="fa fa-check" aria-hidden="true"></i></span>
+          <span class="input-group-addon" id="basic-addon10"><i class="fa fa-times" aria-hidden="true"></i></span>
+        </div>
       </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Cliente:</label>
-      <p-dropdown [options]="lstAddCardCI1" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-        filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [inputId]="lstClientes" [disabled]="flagTCU">
-        <ng-template let-car pTemplate="item">
-          <p>{{car.label}}--{{car.value.cedula}}</p>
-        </ng-template>
-      </p-dropdown>
+
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 0;">
+      <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
+        <label>Tipo*:</label>
+        <p-dropdown [options]="tipoTarjetas" [(ngModel)]="updateTarjeta.tipo" [style]="{'width':'100%'}" name="tipoTarjetasU" id="tipoTarjetasU"
+          [inputId]="tipoTarjetas" (onChange)="changeTCU()">
+          <ng-template let-car pTemplate="item">
+            <p>{{car.label}}</p>
+          </ng-template>
+        </p-dropdown>
+      </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Tipo*:</label>
-      <p-dropdown [options]="tipoTarjetas" [(ngModel)]="updateTarjeta.tipo" [style]="{'width':'100%'}" name="tipoTarjetasU" id="tipoTarjetasU"
-        [inputId]="tipoTarjetas" (onChange)="changeTCU()">
-        <ng-template let-car pTemplate="item">
-          <p>{{car.label}}</p>
-        </ng-template>
-      </p-dropdown>
+
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 0;">
+      <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
+        <label>Cliente:</label>
+        <p-dropdown [options]="lstAddCardCI1" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
+          filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [inputId]="lstClientes" [disabled]="flagTCU">
+          <ng-template let-car pTemplate="item">
+            <p>{{car.label}}--{{car.value.cedula}}</p>
+          </ng-template>
+        </p-dropdown>
+      </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Limite Consumo*:</label>
-      <input currencyMask type="text" [(ngModel)]="updateTarjeta.limite" id="limiteU" name="limiteU" class="form-control input-sm"
-        placeholder="0.00">
-      <br>
-    </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Descripción:</label>
-      <textarea pInputTextarea [(ngModel)]="updateTarjeta.descripcion" (ngModelChange)="onChangeDescUpdate($event)" style="width: 100%"
-        [rows]="5"></textarea>
+
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+        <div class="panel-body" style="padding-top: 0; padding-left: 8px;">
+          <label>Limite Consumo*:</label>
+          <input currencyMask type="text" [(ngModel)]="updateTarjeta.limite" id="limiteU" name="limiteU" class="form-control input-sm"
+            placeholder="0.00">
+        </div>
+      </div>
+      <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+        <div class="panel-body" style="padding-top: 0; padding-right: 8px;">
+          <label>Descripción:</label>
+          <textarea [(ngModel)]="updateTarjeta.descripcion" (ngModelChange)="onChangeDescUpdate($event)" style="width: 100%; height: 46px"
+            placeholder="Descripción del cliente" class="form-control input-sm" (click)="$event.target.select()"></textarea>
+        </div>
+      </div>
     </div>
   </div>
+
   <hr>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12 ui-g-nopad" style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdateTSubmit()">Actualizar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogTU = false">Cancelar</button>
   </div>

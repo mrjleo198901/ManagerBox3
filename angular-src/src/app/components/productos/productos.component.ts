@@ -127,11 +127,7 @@ export class ProductosComponent implements OnInit {
     mode: 'external',
     noDataMessage: 'No existen registros',
     columns: {
-      _id: {
-        title: 'ID',
-        width: '15%',
-        filter: false
-      },
+
       nombre: {
         title: 'Nombre Promocion',
         width: '27.5%'
@@ -730,6 +726,7 @@ export class ProductosComponent implements OnInit {
   onUpdatePro(event: any) {
     setOriginalColorsPromoU()
     this.objPromoUpdate = event.data;
+    console.log(event.data);
   }
 
   onAddTPSubmit() {

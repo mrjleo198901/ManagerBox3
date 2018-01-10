@@ -3,8 +3,10 @@ var mongoose = restful.mongoose;
 
 var tipoClienteSchema = new mongoose.Schema({
 
-    desc_tipo_cliente: String
-
+    nombre_producto: String,
+    precio_venta_normal: String,
+    tipoClienteV: Array
+    
 });
 
 module.exports = restful.model('tipo_cliente', tipoClienteSchema);

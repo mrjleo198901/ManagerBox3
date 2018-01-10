@@ -25,7 +25,7 @@ export class ClientesComponent implements OnInit {
   sourceC: LocalDataSource = new LocalDataSource();
   showDialog = false;
   showDialog1 = false;
-  showDialog2 = false;
+  showDialog2 = true;
   showDialog3 = false;
   cedula: string;
   nombre: string;
@@ -113,6 +113,7 @@ export class ClientesComponent implements OnInit {
   tipo_clientes: any = [];
   showDatepicker;
   color = 'primary';
+  checked = false;
   es: any;
   sexs = [
     { "name": 'Masculino', "pseudo": "M" },
@@ -125,6 +126,7 @@ export class ClientesComponent implements OnInit {
   }
   citiesDD: any[];
   private foo: CardComponent;
+  desc_tipo_cliente;
 
   constructor(
     private validateService: ValidateService,
@@ -206,6 +208,7 @@ export class ClientesComponent implements OnInit {
         console.log(err);
         return false;
       });
+    this.ngInitTipoCliente();
   }
 
   change($event) {
@@ -238,6 +241,7 @@ export class ClientesComponent implements OnInit {
 
   onUpdate(event: any) {
     this.flagUpdate = true;
+    console.log(event.data)
     //Save the current row
     this.oldUser = event.data;
     this.cedula = event.data.cedula;
@@ -439,10 +443,12 @@ export class ClientesComponent implements OnInit {
   }
 
   onChangeNombre($event) {
+    this.nombre = this.nombre.trim();
     this.nombre = this.formatterService.toTitleCase(this.nombre);
   }
 
   onChangeApellido($event) {
+    this.apellido = this.apellido.trim();
     this.apellido = this.formatterService.toTitleCase(this.apellido);
   }
 
@@ -466,6 +472,173 @@ export class ClientesComponent implements OnInit {
     }
   }
 
+  //Tipo Cliente
+  descPercent = 0;
+  descMoney = 0;
+  flagTipoDesc = false;
+  lstTipoProductos: any[];
+  selected_tp: any;
+  lstProductos: any[];
+  selected_producto: any;
+  lstProductosShow: any[];
+  flagUpdatePrize = true;
+
+  onChangeDescTC($event) {
+    this.desc_tipo_cliente = this.formatterService.toTitleCase(this.desc_tipo_cliente);
+  }
+
+  changeFlag($event) {
+    //console.log(this.flagTipoDesc);
+    if (this.flagTipoDesc) {
+      this.messageGrowlService.notify("info", "Información", "Selecciona un producto!");
+      this.flagUpdatePrize = false;
+      this.selected_producto = undefined;
+    } else {
+      //Grupal
+      this.selected_producto = undefined;
+      this.flagUpdatePrize = true;
+    }
+  }
+
+  valueChangeDescPercent($event) {
+
+    if (this.descPercent > 100) {
+      this.descPercent = 0;
+      setTimeout(function () {
+        let v = document.getElementById('descPercent');
+        if (v != null) {
+          v.click();
+          this.descPercent = 0;
+          this.descMoney = 0;
+        }
+      }, 0);
+
+    } else {
+      this.descMoney = (this.descPercent * this.selected_producto.precio_venta) / 100;
+    }
+
+  }
+
+  valueChangeDescMoney($event) {
+
+    if (this.flagTipoDesc) {
+      if (this.descMoney > this.selected_producto.precio_venta) {
+        this.descMoney = 0;
+        setTimeout(function () {
+          let v = document.getElementById('descMoney');
+          if (v != null) {
+            v.click();
+            this.descMoney = 0;
+            this.descPercent = 0;
+          }
+        }, 0);
+
+      } else {
+        this.descPercent = (this.descMoney * 100) / this.selected_producto.precio_venta;
+      }
+    }
+
+  }
+
+  onChangelbTP($event) {
+    this.lstProductosShow = [];
+    for (let entry of this.lstProductos) {
+      if (entry.id_tipo_producto === this.selected_tp._id) {
+        entry.precio_venta = parseFloat(entry.precio_venta);
+        entry.precio_costo = parseFloat(entry.precio_venta);
+        let aux = { label: entry.nombre, value: entry }
+        this.lstProductosShow.push(aux);
+      };
+    };
+    this.selected_producto = "";
+    /*if (this.lstProductosShow.length > 0) {
+      this.selected_producto = this.lstProductosShow[0].value;
+      this.descMoney = this.selected_producto.precio_venta;
+    }*/
+  }
+
+  onChangelbProd($event) {
+    this.flagUpdatePrize = true;
+    //console.log(this.selected_producto)
+    this.descMoney = this.selected_producto.precio_venta;
+  }
+
+  addNewPrice() {
+    let index = this.lstProductos.findIndex(i => i._id === this.selected_producto._id);
+    this.lstProductos[index].precio_costo = this.descMoney;
+    this.messageGrowlService.notify('info', 'Información', 'Nuevo precio ingresado!');
+  }
+
+  onAddTPSubmit() {
+    let i = 0;
+    for (let entry of this.lstProductos) {
+      let eleVec = {
+        nombre: this.desc_tipo_cliente,
+        precio_venta_nuevo: entry.precio_costo
+      };
+      this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
+        data[i].tipoClienteV.push(eleVec);
+        this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
+          this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+          i++;
+        }, err => {
+          console.log(err);
+        });
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
+
+  ngInitTipoCliente() {
+    this.lstTipoProductos = [];
+    this.lstProductos = [];
+    this.lstProductosShow = [];
+    this.tipoProductoService.getAll().subscribe(data => {
+      for (let entry of data) {
+        let aux = { label: entry.desc_tipo_producto, value: entry }
+        this.lstTipoProductos.push(aux);
+      }
+      this.selected_tp = this.lstTipoProductos[0].value;
+      this.productoService.getAll().subscribe(data => {
+        //this.lstProductos = data;
+        for (let entry of data) {
+          entry.precio_venta = parseFloat(entry.precio_venta);
+          entry.precio_costo = parseFloat(entry.precio_venta);
+          this.lstProductos.push(entry);
+          if (entry.id_tipo_producto === this.selected_tp._id) {
+
+            let aux = { label: entry.nombre, value: entry }
+            this.lstProductosShow.push(aux);
+          };
+        };
+
+        /*let eleVec = { nombre: '', precio_venta_nuevo: 0 };
+        for (let entry of this.lstProductos) {
+          let aux = {
+            nombre_producto: entry.nombre,
+            precio_venta_normal: entry.precio_venta,
+            tipoClienteV: []
+          };
+          aux.tipoClienteV.push(eleVec);
+          
+          this.tipoClienteService.registerTipoCliente(aux).subscribe(data => {
+            console.log(data)
+          }, err => {
+            console.log(err);
+          });
+
+        };*/
+
+      }, err => {
+        console.log(err);
+      });
+
+    }, err => {
+      console.log(err);
+    });
+  }
+
   //Width detection
   textAlignTitle = 'left';
 
@@ -486,5 +659,5 @@ export class ClientesComponent implements OnInit {
       this.textAlignTitle = 'left';
     }
   }
-  
+
 }

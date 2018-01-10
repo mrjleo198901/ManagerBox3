@@ -7,10 +7,10 @@ import { GLOBAL } from '../components/globals';
 @Injectable()
 export class TipoClienteService {
   public url: string;
-  
-    constructor(private http: Http) {
-      this.url = GLOBAL.url;
-    }
+
+  constructor(private http: Http) {
+    this.url = GLOBAL.url;
+  }
 
   registerTipoCliente(tipoCliente) {
     let headers = new Headers();
@@ -22,20 +22,30 @@ export class TipoClienteService {
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(this.url  + 'tipo_cliente', { headers: headers })
+    return this.http.get(this.url + 'tipo_cliente', { headers: headers })
       .map(res => res.json());
   }
   updateTipoCliente(tipoCliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.put(this.url  + 'tipo_cliente/' + tipoCliente.id, tipoCliente, { headers: headers })
+    return this.http.put(this.url + 'tipo_cliente/' + tipoCliente._id, tipoCliente, { headers: headers })
       .map(res => res.json())
-    /*.catch((error: any) => Observable.throw(error.json().error || 'Server error'));*/
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
   deleteTipoCliente(tipoCliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.delete(this.url  + 'tipo_cliente/' + tipoCliente, { headers: headers })
+    return this.http.delete(this.url + 'tipo_cliente/' + tipoCliente, { headers: headers })
+      .map(res => res.json())
+  }
+  getByNombreProducto(nombre_producto) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.set('Accept', 'text/plain');
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('nombre_producto', nombre_producto);
+    let options = new RequestOptions({ headers: headers, params: params });
+    return this.http.get(this.url + 'tipo_cliente/', options)
       .map(res => res.json())
   }
 }

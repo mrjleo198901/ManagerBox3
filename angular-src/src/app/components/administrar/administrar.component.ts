@@ -302,6 +302,7 @@ export class AdministrarComponent implements OnInit {
   }
 
   onChangeNombreCover($event) {
+    this.objCover.nombre = this.objCover.nombre.trim();
     this.objCover.nombre = this.formatterService.toTitleCase(this.objCover.nombre);
   }
 
@@ -362,7 +363,6 @@ export class AdministrarComponent implements OnInit {
 
   saveCover() {
     this.objCover.nombre = this.objCover.nombre.trim();
-    console.log(this.objCover);
     if (this.objCover.numMujeres + this.objCover.numHombres > 0) {
       if (!this.validateService.customValidateCover(this.objCover)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
@@ -380,7 +380,7 @@ export class AdministrarComponent implements OnInit {
       }, err => {
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
         console.log(err);
-      })
+      });
     } else {
       if (this.checked) {
         this.messageGrowlService.notify('error', 'Error', 'La cantidad total de personas de ser mayor que 0!');
