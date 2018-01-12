@@ -25,7 +25,7 @@ export class ClientesComponent implements OnInit {
   sourceC: LocalDataSource = new LocalDataSource();
   showDialog = false;
   showDialog1 = false;
-  showDialog2 = true;
+  showDialog2 = false;
   showDialog3 = false;
   cedula: string;
   nombre: string;
@@ -89,12 +89,8 @@ export class ClientesComponent implements OnInit {
     mode: 'external',
     noDataMessage: 'No existen registros',
     columns: {
-      _id: {
-        title: 'ID',
-        width: '70px',
-        filter: false
-      },
-      desc_tipo_cliente: {
+
+      nombre: {
         title: 'Nombre',
         width: '400px'
       }
@@ -152,17 +148,6 @@ export class ClientesComponent implements OnInit {
       clear: 'Borrar'
     }
 
-    /*this.foo = new CardComponent(
-      validateService,
-      el, renderer,
-      productoService,
-      tipoProductoService,
-      clienteService,
-      tipoClienteService,
-      messageGrowlService,
-      formatterService,
-      dialog
-    );*/
     var x = window.innerWidth;
     this.onRzOnInit(x);
   }
@@ -178,24 +163,29 @@ export class ClientesComponent implements OnInit {
     this.correo = "";
     /* Get Tipo Clientes*/
     this.tipoClienteService.getAll().subscribe(tc => {
-      this.tipo_clientes = tc;
+      if (tc[0].tipoClienteV.length > 0) {
+        for (let entry of tc[0].tipoClienteV) {
+          let aux = { nombre: entry.nombre };
+          this.tipo_clientes.push(aux);
+        }
+      }
       this.sourceTC = new LocalDataSource();
       this.sourceTC.load(this.tipo_clientes);
       this.citiesDD = [];
-      for (let x of tc) {
-        this.citiesDD.push({ label: x.desc_tipo_cliente, value: x.desc_tipo_cliente });
+      for (let x of this.tipo_clientes) {
+        this.citiesDD.push({ label: x.nombre, value: x.nombre });
       }
       this.selected_tipo_cliente = this.citiesDD[0].label;
       /* Get Clientes*/
       this.clienteService.getAll().subscribe(c => {
         myGlobals.setValue(c);
         this.clientes = c;
-        let i = 0;
+        /*let i = 0;
         for (let x of c) {
           let desc = this.searchById(x.id_tipo_cliente, this.tipo_clientes);
           this.clientes[i].id_tipo_cliente = desc;
           i++;
-        }
+        }*/
         //Load data to localDataSource
         this.sourceC = new LocalDataSource();
         this.sourceC.load(this.clientes);
@@ -252,10 +242,6 @@ export class ClientesComponent implements OnInit {
     this.fecha_nacimiento = event.data.fecha_nacimiento;
     this.sexo = event.data.sexo;
     this.selected_tipo_cliente = event.data.id_tipo_cliente;
-  }
-
-  onUpdateTC(event: any) {
-    console.log(event.data)
   }
 
   setCursorUpdateTC() {
@@ -358,7 +344,7 @@ export class ClientesComponent implements OnInit {
     }
     //Required fields
     if (!this.validateService.validateClient(newClient)) {
-      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacios!');
       return false;
     }
     //Validate Email
@@ -482,6 +468,16 @@ export class ClientesComponent implements OnInit {
   selected_producto: any;
   lstProductosShow: any[];
   flagUpdatePrize = true;
+  desc_tipo_clienteU;
+  lstProductosTC: any[];
+  lstProductosShowU: any[];
+  lstProductosU: any[];
+  setCursorAddTC() {
+    this.setDefaultsTipoCliente();
+    setTimeout(function () {
+      document.getElementById('descTC').focus();
+    }, 0)
+  }
 
   onChangeDescTC($event) {
     this.desc_tipo_cliente = this.formatterService.toTitleCase(this.desc_tipo_cliente);
@@ -501,7 +497,6 @@ export class ClientesComponent implements OnInit {
   }
 
   valueChangeDescPercent($event) {
-
     if (this.descPercent > 100) {
       this.descPercent = 0;
       setTimeout(function () {
@@ -514,13 +509,13 @@ export class ClientesComponent implements OnInit {
       }, 0);
 
     } else {
-      this.descMoney = (this.descPercent * this.selected_producto.precio_venta) / 100;
+      if (this.flagTipoDesc) {
+        this.descMoney = ((100 - this.descPercent) * this.selected_producto.precio_venta) / 100;
+      }
     }
-
   }
 
   valueChangeDescMoney($event) {
-
     if (this.flagTipoDesc) {
       if (this.descMoney > this.selected_producto.precio_venta) {
         this.descMoney = 0;
@@ -534,42 +529,154 @@ export class ClientesComponent implements OnInit {
         }, 0);
 
       } else {
-        this.descPercent = (this.descMoney * 100) / this.selected_producto.precio_venta;
+        if (this.flagTipoDesc) {
+          this.descPercent = 100 - ((this.descMoney * 100) / this.selected_producto.precio_venta);
+        }
       }
     }
-
   }
 
   onChangelbTP($event) {
     this.lstProductosShow = [];
     for (let entry of this.lstProductos) {
+      //console.log(entry);
       if (entry.id_tipo_producto === this.selected_tp._id) {
         entry.precio_venta = parseFloat(entry.precio_venta);
-        entry.precio_costo = parseFloat(entry.precio_venta);
         let aux = { label: entry.nombre, value: entry }
         this.lstProductosShow.push(aux);
       };
     };
     this.selected_producto = "";
-    /*if (this.lstProductosShow.length > 0) {
-      this.selected_producto = this.lstProductosShow[0].value;
-      this.descMoney = this.selected_producto.precio_venta;
-    }*/
   }
 
   onChangelbProd($event) {
     this.flagUpdatePrize = true;
-    //console.log(this.selected_producto)
     this.descMoney = this.selected_producto.precio_venta;
   }
 
   addNewPrice() {
-    let index = this.lstProductos.findIndex(i => i._id === this.selected_producto._id);
-    this.lstProductos[index].precio_costo = this.descMoney;
-    this.messageGrowlService.notify('info', 'Información', 'Nuevo precio ingresado!');
+    if (this.flagTipoDesc) {
+      if (this.selected_producto !== undefined) {
+        let index = this.lstProductos.findIndex(i => i._id === this.selected_producto._id);
+        this.lstProductos[index].precio_costo = this.descMoney;
+        this.messageGrowlService.notify('info', 'Información', 'Precio actualizado!');
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      }
+    } else {
+      let i = 0;
+      for (let entry of this.lstProductos) {
+        if (entry.id_tipo_producto === this.selected_tp._id) {
+          this.lstProductos[i].precio_costo = ((100 - this.descPercent) * this.lstProductos[i].precio_venta) / 100;
+        }
+        i++;
+      }
+      this.messageGrowlService.notify('info', 'Información', 'Precios actualizados!');
+    }
   }
 
   onAddTPSubmit() {
+    //Required fields
+    if (!this.validateService.validateTipoCliente(this.desc_tipo_cliente)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacios!');
+      return false;
+    }
+    //Verificar si ya existe el nombre
+    this.tipoClienteService.getByNombreProducto(this.lstProductos[0].nombre).subscribe(data => {
+      let index = data[0].tipoClienteV.findIndex(i => i.nombre === this.desc_tipo_cliente);
+      if (index === -1) {
+        let i = 0;
+        for (let entry of this.lstProductos) {
+          let eleVec = {
+            nombre: this.desc_tipo_cliente,
+            precio_venta_nuevo: entry.precio_costo
+          };
+          this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
+            data[i].tipoClienteV.push(eleVec);
+            this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
+              this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+              this.showDialog2 = false;
+              this.setDefaultsTipoCliente();
+              let aux = { nombre: this.desc_tipo_cliente };
+              this.sourceTC.add(aux);
+              this.sourceTC.refresh();
+              i++;
+            }, err => {
+              console.log(err);
+            });
+
+          }, err => {
+            console.log(err);
+          });
+        };
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'El nombre ingresado ya existe!');
+        document.getElementById("descTC").style.borderColor = "#FE2E2E";
+        return false;
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  setDefaultsTipoCliente() {
+    document.getElementById("descTC").style.borderColor = "";
+    this.desc_tipo_cliente = "";
+  }
+
+  setDefaultsTipoClienteU() {
+    document.getElementById("descTCU").style.borderColor = "";
+  }
+
+  ind;
+  onUpdateTC(event: any) {
+    //settear cursor
+    this.lstProductosU = [];
+    this.desc_tipo_cliente = event.data.nombre;
+    //console.log(this.lstProductosTC)
+    this.setDefaultsTipoClienteU();
+    setTimeout(function () {
+      document.getElementById('descTCU').focus();
+    }, 0);
+    //buscar indice de precio
+    this.ind = this.lstProductosTC[0].tipoClienteV.findIndex(i => i.nombre === event.data.nombre);
+    //recorrer productos y asignar precio
+    let i = 0;
+    for (let entry of this.lstProductos) {
+      entry.precio_costo = this.lstProductosTC[i].tipoClienteV[this.ind].precio_venta_nuevo;
+      i++;
+    }
+  }
+
+  updatePrice() {
+    if (this.flagTipoDesc) {
+      if (this.selected_producto !== undefined) {
+        let index = this.lstProductos.findIndex(i => i._id === this.selected_producto._id);
+        this.lstProductos[index].precio_costo = this.descMoney;
+        this.messageGrowlService.notify('info', 'Información', 'Precio actualizado!');
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      }
+    } else {
+      let i = 0;
+      for (let entry of this.lstProductos) {
+        if (entry.id_tipo_producto === this.selected_tp._id) {
+          this.lstProductos[i].precio_costo = ((100 - this.descPercent) * this.lstProductos[i].precio_venta) / 100;
+        }
+        i++;
+      }
+      this.messageGrowlService.notify('info', 'Información', 'Precios actualizados!');
+    }
+  }
+
+  onUpdateTPSubmit() {
+
+    //Required fields
+    if (!this.validateService.validateTipoClienteU(this.desc_tipo_cliente)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos Vacios!');
+      return false;
+    }
+    //Verificar si ya existe el nombre
     let i = 0;
     for (let entry of this.lstProductos) {
       let eleVec = {
@@ -577,9 +684,14 @@ export class ClientesComponent implements OnInit {
         precio_venta_nuevo: entry.precio_costo
       };
       this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
-        data[i].tipoClienteV.push(eleVec);
+        data[i].tipoClienteV[this.ind] = eleVec
         this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
           this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
+          this.showDialog2 = false;
+          this.setDefaultsTipoClienteU();
+          let aux = { nombre: this.desc_tipo_cliente };
+          this.sourceTC.add(aux);
+          this.sourceTC.refresh();
           i++;
         }, err => {
           console.log(err);
@@ -587,13 +699,19 @@ export class ClientesComponent implements OnInit {
       }, err => {
         console.log(err);
       });
-    }
+    };
+
+  }
+
+  onChangeDescTCU($event) {
+    this.desc_tipo_clienteU = this.formatterService.toTitleCase(this.desc_tipo_clienteU);
   }
 
   ngInitTipoCliente() {
     this.lstTipoProductos = [];
     this.lstProductos = [];
     this.lstProductosShow = [];
+    this.lstProductosTC = [];
     this.tipoProductoService.getAll().subscribe(data => {
       for (let entry of data) {
         let aux = { label: entry.desc_tipo_producto, value: entry }
@@ -601,41 +719,25 @@ export class ClientesComponent implements OnInit {
       }
       this.selected_tp = this.lstTipoProductos[0].value;
       this.productoService.getAll().subscribe(data => {
-        //this.lstProductos = data;
         for (let entry of data) {
           entry.precio_venta = parseFloat(entry.precio_venta);
           entry.precio_costo = parseFloat(entry.precio_venta);
           this.lstProductos.push(entry);
           if (entry.id_tipo_producto === this.selected_tp._id) {
-
             let aux = { label: entry.nombre, value: entry }
             this.lstProductosShow.push(aux);
           };
         };
-
-        /*let eleVec = { nombre: '', precio_venta_nuevo: 0 };
-        for (let entry of this.lstProductos) {
-          let aux = {
-            nombre_producto: entry.nombre,
-            precio_venta_normal: entry.precio_venta,
-            tipoClienteV: []
-          };
-          aux.tipoClienteV.push(eleVec);
-          
-          this.tipoClienteService.registerTipoCliente(aux).subscribe(data => {
-            console.log(data)
-          }, err => {
-            console.log(err);
-          });
-
-        };*/
-
       }, err => {
         console.log(err);
       });
-
     }, err => {
       console.log(err);
+    });
+    this.tipoClienteService.getAll().subscribe(data => {
+      this.lstProductosTC = data;
+    }, err => {
+      console.log(err)
     });
   }
 

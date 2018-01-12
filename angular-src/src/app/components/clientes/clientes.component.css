@@ -18,3 +18,10 @@
   color: #2196F3;
   cursor: pointer;
 }
+
+:host /deep/ .ui-state-disabled, .ui-widget:disabled {
+  opacity: 0.75;
+  filter: Alpha(Opacity=35);
+  background-image: none;
+  cursor: default !important;
+}

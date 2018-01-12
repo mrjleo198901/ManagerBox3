@@ -13,8 +13,8 @@
                     <hr>
                 </div>
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                    <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = true;" (edit)="showDialog3 = true;onUpdateTC($event);setCursorUpdateTC()"
-                        (delete)="onDeleteTC($event)"></ng2-smart-table>
+                    <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = true; setCursorAddTC()"
+                        (edit)="showDialog3 = true;onUpdateTC($event);setCursorUpdateTC()" (delete)="onDeleteTC($event)"></ng2-smart-table>
                 </div>
             </tab>
             <tab heading="Clientes">
@@ -24,7 +24,7 @@
                     <hr>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = !showDialog;onCreate($event);setCursorAdd()"
+                    <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = true;onCreate($event);setCursorAdd()"
                         (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)"></ng2-smart-table>
                 </div>
             </tab>
@@ -167,14 +167,14 @@
 </p-dialog>
 
 <!-- Add TIPO CLIENTE -->
-<p-dialog [(visible)]="showDialog2" modal="modal" width="650" positionTop="40" [responsive]="true">
+<p-dialog [(visible)]="showDialog2" modal="modal" width="650" [responsive]="true">
     <p-header>
         Registrar Tipo Cliente
     </p-header>
     <div class="row">
-        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="descTPC" style="display: inline-block">Nombre*:</label>
-            <input type="text" [(ngModel)]="desc_tipo_cliente" (ngModelChange)="onChangeDescTC($event)" id="descTC" name="descTC" placeholder="Descripcion de tipo cliente"
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <label>Nombre*:</label>
+            <input type="text" [(ngModel)]="desc_tipo_cliente" (ngModelChange)="onChangeDescTC($event)" id="descTC" placeholder="Descripcion de tipo cliente"
                 class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
                 event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
                 tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
@@ -182,13 +182,13 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
             <label>Tipo Descuento*:</label>
         </div>
-        <div class="col-lg-5 col-md-5" style="color: white">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="color: white">
             <label>Guardar*:</label>
         </div>
-        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
             <div class="ui-g-5" style="text-align: right;">
                 <p tooltip="Aplicar el descuento a TODO un tipo de producto." tooltipPlacement="bottom">
                     Grupal
@@ -202,17 +202,17 @@
                 <p tooltip="Aplicar el descuento a un SOLO producto." tooltipPlacement="bottom">Individual</p>
             </div>
         </div>
-        <div class="col-lg-5 col-md-5" style="text-align: center;">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="text-align: center;">
             <i id="addIcon" class="fa fa-pencil-square fa-2x" style="padding-top: 2px" (click)="addNewPrice()" aria-hidden="true" tooltip="Agregar nuevo precio producto."
                 tooltipPlacement="bottom"></i>
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
             <label for="descTPC" style="text-align: left">Beneficios*:</label>
         </div>
-        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
             <p-listbox [options]="lstTipoProductos" [(ngModel)]="selected_tp" filter="filter" [listStyle]="{'max-height':'130px'}" [style]="{'width':'100%','border-color': bcLstProdM }"
                 id="lbTP" name="lbTP" (onChange)="onChangelbTP($event)">
                 <p-header>
@@ -223,7 +223,7 @@
                 </ng-template>
             </p-listbox>
         </div>
-        <div class="col-lg-5 col-md-5">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
             <p-listbox [options]="lstProductosShow" [(ngModel)]="selected_producto" filter="filter" [listStyle]="{'max-height':'130px'}"
                 [style]="{'width':'100%','border-color': bcLstProdM }" id="lbProd" name="lbProd" (onChange)="onChangelbProd($event)"
                 [disabled]="!flagTipoDesc">
@@ -240,12 +240,12 @@
     </div>
     <br>
     <div class="row" *ngIf="flagUpdatePrize">
-        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
             <label style="text-align: left">Porcentaje*:</label>
             <input currencyMask type="text" [(ngModel)]="descPercent" id="descPercent" name="descPercent" placeholder="0.00" class="form-control input-sm"
                 (ngModelChange)="valueChangeDescPercent($event)" (click)="$event.target.select()" [options]="{ suffix :' %',prefix: ''}">
         </div>
-        <div class="col-lg-5 col-md-5" *ngIf="flagTipoDesc">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" *ngIf="flagTipoDesc">
             <label style="text-align: left">Valor*:</label>
             <input currencyMask type="text" [(ngModel)]="descMoney" id="descMoney" name="descMoney" placeholder="0.00" class="form-control input-sm"
                 (ngModelChange)="valueChangeDescMoney($event)" (click)="$event.target.select()">
@@ -259,13 +259,93 @@
 </p-dialog>
 
 <!-- Update TIPO CLIENTE -->
-<p-dialog [(visible)]="showDialog3" modal="modal" width="500" [responsive]="true">
+<p-dialog [(visible)]="showDialog3" modal="modal" width="650" [responsive]="true">
     <p-header>
         Actualizar Tipo Cliente
     </p-header>
-
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <label>Nombre*:</label>
+            <input type="text" [(ngModel)]="desc_tipo_cliente" (ngModelChange)="onChangeDescTC($event)" id="descTCU" placeholder="Descripcion de tipo cliente"
+                class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+                tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
+            <label>Tipo Descuento*:</label>
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="color: white">
+            <label>Guardar*:</label>
+        </div>
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
+            <div class="ui-g-5" style="text-align: right;">
+                <p tooltip="Aplicar el descuento a TODO un tipo de producto." tooltipPlacement="bottom">
+                    Grupal
+                </p>
+            </div>
+            <div class="ui-g-2" style="text-align: center;">
+                <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagTipoDesc" style="padding-top: 2px" (ngModelChange)="changeFlag($event)">
+                </md-slide-toggle>
+            </div>
+            <div class="ui-g-5" style="text-align: right;">
+                <p tooltip="Aplicar el descuento a un SOLO producto." tooltipPlacement="bottom">Individual</p>
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="text-align: center;">
+            <i id="addIcon" class="fa fa-pencil-square fa-2x" style="padding-top: 2px" (click)="updatePrice()" aria-hidden="true" tooltip="Agregar nuevo precio producto."
+                tooltipPlacement="bottom"></i>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+            <label for="descTPC" style="text-align: left">Beneficios*:</label>
+        </div>
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
+            <p-listbox [options]="lstTipoProductos" [(ngModel)]="selected_tp" filter="filter" [listStyle]="{'max-height':'130px'}" [style]="{'width':'100%','border-color': bcLstProdM }"
+                id="lbTP" name="lbTP" (onChange)="onChangelbTP($event)">
+                <p-header>
+                    Tipo Producto
+                </p-header>
+                <ng-template let-car pTemplate="item">
+                    {{car.label}}
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <p-listbox [options]="lstProductosShow" [(ngModel)]="selected_producto" filter="filter" [listStyle]="{'max-height':'130px'}"
+                [style]="{'width':'100%','border-color': bcLstProdM }" id="lbProd" name="lbProd" (onChange)="onChangelbProd($event)"
+                [disabled]="!flagTipoDesc">
+                <p-header>
+                    Productos
+                </p-header>
+                <ng-template let-car pTemplate="item">
+                    {{car.label}}
+                    <span class="badge">$ {{ car.value.precio_venta | number : '1.2-2'}}</span>
+                    <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+    <br>
+    <div class="row" *ngIf="flagUpdatePrize">
+        <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1 col-xs-5 col-xs-offset-1">
+            <label style="text-align: left">Porcentaje*:</label>
+            <input currencyMask type="text" [(ngModel)]="descPercent" id="descPercent" name="descPercent" placeholder="0.00" class="form-control input-sm"
+                (ngModelChange)="valueChangeDescPercent($event)" (click)="$event.target.select()" [options]="{ suffix :' %',prefix: ''}">
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5" *ngIf="flagTipoDesc">
+            <label style="text-align: left">Valor*:</label>
+            <input currencyMask type="text" [(ngModel)]="descMoney" id="descMoney" name="descMoney" placeholder="0.00" class="form-control input-sm"
+                (ngModelChange)="valueChangeDescMoney($event)" (click)="$event.target.select()">
+        </div>
+    </div>
+    <hr>
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
         <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onUpdateTPSubmit()">Actualizar</button>
-        <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogTPU = false">Cancelar</button>
+        <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialog3 = false">Cancelar</button>
     </div>
 </p-dialog>

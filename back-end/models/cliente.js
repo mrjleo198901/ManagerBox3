@@ -10,7 +10,7 @@ var clienteSchema = new mongoose.Schema({
     correo: String,
     fecha_nacimiento: String,
     sexo: String,
-    id_tipo_cliente: mongoose.Schema.Types.ObjectId
+    id_tipo_cliente: String
 
 });
 

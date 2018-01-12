@@ -717,6 +717,23 @@ export class ValidateService {
     return res;
   }
 
+  validateTipoCliente(nombre) {
+    let res = true;
+    if (nombre == undefined || nombre == '') {
+      document.getElementById("descTC").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateTipoClienteU(nombre) {
+    let res = true;
+    if (nombre == undefined || nombre == '') {
+      document.getElementById("descTCU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
   //SOLO LETRAS MAYUSCULAS O MINUSCULAS Y ESPACIOS 
   soloLetras(evt) {
     var key = evt.keyCode || evt.which;
@@ -799,7 +816,7 @@ export class ValidateService {
     let newLst: any = [];
     for (let entry of lstCompras) {
       if (entry.total == 0) {
-        var index = newLst.findIndex(i => i.descripcion=== entry.descripcion);
+        var index = newLst.findIndex(i => i.descripcion === entry.descripcion);
         if (index == -1) {
           newLst.push(entry);
         } else {
