@@ -34,7 +34,7 @@ export class ClientesComponent implements OnInit {
   correo: string;
   fecha_nacimiento: string;
   sexo: string;
-  selected_tipo_cliente: string;
+  selected_tipo_cliente: any;
   flagUpdate: boolean;
   flagCreate: boolean;
   oldUser;
@@ -47,11 +47,11 @@ export class ClientesComponent implements OnInit {
         width: '100px'
       },
       nombre: {
-        title: 'Nombre',
+        title: 'Nombres',
         width: '160px'
       },
       apellido: {
-        title: 'Apellido',
+        title: 'Apellidos',
         width: '160px'
       },
       telefono: {
@@ -153,40 +153,23 @@ export class ClientesComponent implements OnInit {
   }
 
   ngOnInit() {
-    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
-    this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
-    this.sexo = "M";
-    this.cedula = "";
-    this.nombre = "";
-    this.apellido = "";
-    this.telefono = "";
-    this.correo = "";
+    this.tipo_clientes = [];
     /* Get Tipo Clientes*/
     this.tipoClienteService.getAll().subscribe(tc => {
-      if (tc[0].tipoClienteV.length > 0) {
-        for (let entry of tc[0].tipoClienteV) {
-          let aux = { nombre: entry.nombre };
-          this.tipo_clientes.push(aux);
+      if (tc.length > 0) {
+        if (tc[0].tipoClienteV.length > 0) {
+          for (let entry of tc[0].tipoClienteV) {
+            let aux = { nombre: entry.nombre };
+            this.tipo_clientes.push(aux);
+          }
+          this.selected_tipo_cliente = this.tipo_clientes[0]
         }
       }
       this.sourceTC = new LocalDataSource();
       this.sourceTC.load(this.tipo_clientes);
-      this.citiesDD = [];
-      for (let x of this.tipo_clientes) {
-        this.citiesDD.push({ label: x.nombre, value: x.nombre });
-      }
-      this.selected_tipo_cliente = this.citiesDD[0].label;
       /* Get Clientes*/
       this.clienteService.getAll().subscribe(c => {
-        myGlobals.setValue(c);
         this.clientes = c;
-        /*let i = 0;
-        for (let x of c) {
-          let desc = this.searchById(x.id_tipo_cliente, this.tipo_clientes);
-          this.clientes[i].id_tipo_cliente = desc;
-          i++;
-        }*/
-        //Load data to localDataSource
         this.sourceC = new LocalDataSource();
         this.sourceC.load(this.clientes);
       }, err => {
@@ -223,10 +206,15 @@ export class ClientesComponent implements OnInit {
 
   onCreate(event: any) {
     this.flagCreate = true;
-    this.ngOnInit();
     this.dt = new Date();
-
-    //this.fechaNacimientoString = this.dt.toLocaleDateString();
+    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+    this.fecha_nacimiento = [initial[0], initial[1], initial[2]].join('/');
+    this.sexo = "M";
+    this.cedula = "";
+    this.nombre = "";
+    this.apellido = "";
+    this.telefono = "";
+    this.correo = "";;
   }
 
   onUpdate(event: any) {
@@ -242,33 +230,6 @@ export class ClientesComponent implements OnInit {
     this.fecha_nacimiento = event.data.fecha_nacimiento;
     this.sexo = event.data.sexo;
     this.selected_tipo_cliente = event.data.id_tipo_cliente;
-  }
-
-  setCursorUpdateTC() {
-    setTimeout(function () {
-      //document.getElementById('ciU').focus();
-    }, 500)
-  }
-
-  onDeleteTC(event): void {
-    this.openDialog(event.data);
-  }
-
-  openDialog(data) {
-    let dialogRef = this.dialog.open(ConfirmDialogComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined)
-        if (result.localeCompare("Aceptar") == 0) {
-          this.sourceTC.remove(data);
-          //remove from database
-          this.tipoClienteService.deleteTipoCliente(data._id).subscribe(data => {
-            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
-          }, err => {
-            console.log(err);
-            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-          })
-        }
-    });
   }
 
   onDeleteC(event): void {
@@ -302,7 +263,7 @@ export class ClientesComponent implements OnInit {
       correo: this.correo,
       fecha_nacimiento: this.fecha_nacimiento,
       sexo: this.sexo,
-      id_tipo_cliente: this.searchByName(this.selected_tipo_cliente, this.tipo_clientes),
+      id_tipo_cliente: this.selected_tipo_cliente.nombre,
       tarjeta: ""
     }
     //Required fields
@@ -318,7 +279,6 @@ export class ClientesComponent implements OnInit {
       }
     }
     this.clienteService.registerCliente(newClient).subscribe(data => {
-      data.id_tipo_cliente = this.searchById(data.id_tipo_cliente, this.tipo_clientes);
       this.clientes.push(data);
       this.sourceC.refresh();
       this.showDialog = false;
@@ -470,8 +430,9 @@ export class ClientesComponent implements OnInit {
   flagUpdatePrize = true;
   desc_tipo_clienteU;
   lstProductosTC: any[];
-  lstProductosShowU: any[];
-  lstProductosU: any[];
+  ind;
+  descUpdt;
+
   setCursorAddTC() {
     this.setDefaultsTipoCliente();
     setTimeout(function () {
@@ -484,7 +445,6 @@ export class ClientesComponent implements OnInit {
   }
 
   changeFlag($event) {
-    //console.log(this.flagTipoDesc);
     if (this.flagTipoDesc) {
       this.messageGrowlService.notify("info", "Información", "Selecciona un producto!");
       this.flagUpdatePrize = false;
@@ -594,13 +554,12 @@ export class ClientesComponent implements OnInit {
           this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
             data[i].tipoClienteV.push(eleVec);
             this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
-              this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
-              this.showDialog2 = false;
-              this.setDefaultsTipoCliente();
-              let aux = { nombre: this.desc_tipo_cliente };
-              this.sourceTC.add(aux);
-              this.sourceTC.refresh();
               i++;
+              if (i === this.lstProductos.length) {
+                this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
+                this.showDialog2 = false;
+                this.ngOnInit();
+              }
             }, err => {
               console.log(err);
             });
@@ -628,11 +587,10 @@ export class ClientesComponent implements OnInit {
     document.getElementById("descTCU").style.borderColor = "";
   }
 
-  ind;
   onUpdateTC(event: any) {
     //settear cursor
-    this.lstProductosU = [];
     this.desc_tipo_cliente = event.data.nombre;
+    this.descUpdt = event.data.nombre;
     //console.log(this.lstProductosTC)
     this.setDefaultsTipoClienteU();
     setTimeout(function () {
@@ -670,41 +628,105 @@ export class ClientesComponent implements OnInit {
   }
 
   onUpdateTPSubmit() {
-
     //Required fields
     if (!this.validateService.validateTipoClienteU(this.desc_tipo_cliente)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos Vacios!');
       return false;
     }
     //Verificar si ya existe el nombre
-    let i = 0;
-    for (let entry of this.lstProductos) {
-      let eleVec = {
-        nombre: this.desc_tipo_cliente,
-        precio_venta_nuevo: entry.precio_costo
-      };
-      this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
-        data[i].tipoClienteV[this.ind] = eleVec
-        this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
-          this.messageGrowlService.notify('success', 'Exito', 'Ingreso Existoso!');
-          this.showDialog2 = false;
-          this.setDefaultsTipoClienteU();
-          let aux = { nombre: this.desc_tipo_cliente };
-          this.sourceTC.add(aux);
-          this.sourceTC.refresh();
-          i++;
+    if (this.descUpdt === this.desc_tipo_cliente) {
+      let i = 0;
+      for (let entry of this.lstProductos) {
+        let eleVec = {
+          nombre: this.desc_tipo_cliente,
+          precio_venta_nuevo: entry.precio_costo
+        };
+        this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
+          data[i].tipoClienteV[this.ind] = eleVec
+          this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
+            i++;
+            if (i === this.lstProductos.length) {
+              this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
+              this.showDialog3 = false;
+              this.ngOnInit();
+            }
+          }, err => {
+            console.log(err);
+          });
         }, err => {
           console.log(err);
         });
+      };
+      this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
+      this.showDialog3 = false;
+      this.setDefaultsTipoCliente();
+    } else {
+      this.tipoClienteService.getByNombreProducto(this.lstProductos[0].nombre).subscribe(data => {
+        let index = data[0].tipoClienteV.findIndex(i => i.nombre === this.desc_tipo_cliente);
+        if (index === -1) {
+          let i = 0;
+          for (let entry of this.lstProductos) {
+            let eleVec = {
+              nombre: this.desc_tipo_cliente,
+              precio_venta_nuevo: entry.precio_costo
+            };
+            this.tipoClienteService.getByNombreProducto(entry.nombre).subscribe(data => {
+              data[i].tipoClienteV[this.ind] = eleVec
+              this.tipoClienteService.updateTipoCliente(data[i]).subscribe(data => {
+                i++;
+                if (i === this.lstProductos.length) {
+                  this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
+                  this.showDialog3 = false;
+                  this.ngOnInit();
+                }
+              }, err => {
+                console.log(err);
+              });
+            }, err => {
+              console.log(err);
+            });
+          };
+        } else {
+          this.messageGrowlService.notify('error', 'Error', 'El nombre ingresado ya existe!');
+          document.getElementById("descTC").style.borderColor = "#FE2E2E";
+          return false;
+        }
       }, err => {
         console.log(err);
       });
-    };
-
+    }
   }
 
   onChangeDescTCU($event) {
     this.desc_tipo_clienteU = this.formatterService.toTitleCase(this.desc_tipo_clienteU);
+  }
+
+  onDeleteTC(event): void {
+    this.openDialog(event.data);
+  }
+
+  openDialog(data) {
+    let dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined)
+        if (result.localeCompare("Aceptar") == 0) {
+          let i = 0;
+          for (let entry of this.lstProductosTC) {
+            entry.tipoClienteV = entry.tipoClienteV.filter(function (obj) {
+              return obj.nombre.localeCompare(data.nombre);
+            });
+            this.tipoClienteService.updateTipoCliente(entry).subscribe(data => {
+              i++;
+              if (i === this.lstProductosTC.length) {
+                this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+              }
+            }, err => {
+              console.log(err);
+            });
+          }
+          this.ngOnInit();
+        }
+    });
   }
 
   ngInitTipoCliente() {
@@ -726,8 +748,22 @@ export class ClientesComponent implements OnInit {
           if (entry.id_tipo_producto === this.selected_tp._id) {
             let aux = { label: entry.nombre, value: entry }
             this.lstProductosShow.push(aux);
+          }
+        }
+        //Llenar tabla tipo cliente prueba
+        /*for (let entry of this.lstProductos) {
+          let aux = {
+            nombre_producto: entry.nombre,
+            precio_venta_normal: entry.precio_venta,
+            tipoClienteV: []
           };
-        };
+          this.tipoClienteService.registerTipoCliente(aux).subscribe(data => {
+            console.log(data)
+          }, err => {
+            console.log(err);
+          });
+        };*/
+
       }, err => {
         console.log(err);
       });

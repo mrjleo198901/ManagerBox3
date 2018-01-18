@@ -204,16 +204,6 @@ export class ValidateService {
       this.messageGrowlService.notify('error', 'Error', 'Campos Vacíos!');
       res = false;
     }
-    if (promo.desde <= 0) {
-      document.getElementById("desdePromo").style.borderColor = "#FE2E2E";
-      this.messageGrowlService.notify('error', 'Error', 'Campo desde no puede ser 0!');
-      res = false;
-    }
-    if (promo.hasta <= 0) {
-      document.getElementById("hastaPromo").style.borderColor = "#FE2E2E";
-      this.messageGrowlService.notify('error', 'Error', 'Campo hasta no puede ser 0!');
-      res = false;
-    }
     return res;
   }
 

@@ -1573,12 +1573,15 @@ export class CardComponent implements OnInit {
   public ngOnInitCards() {
 
     this.tipoClienteService.getAll().subscribe(tc => {
-      this.tipo_clientes = tc;
-      this.citiesDD = [];
-      for (let x of tc) {
-        this.citiesDD.push({ label: x.desc_tipo_cliente, value: x.desc_tipo_cliente });
+      if (tc.length > 0) {
+        if (tc[0].tipoClienteV.length > 0) {
+          for (let entry of tc[0].tipoClienteV) {
+            let aux = { nombre: entry.nombre };
+            this.tipo_clientes.push(aux);
+          }
+          this.selected_tipo_cliente = this.tipo_clientes[0]
+        }
       }
-      this.selected_tipo_cliente = this.tipo_clientes[0];
       this.clienteService.getAll().subscribe(c => {
         this.clientes = c;
         let i = 0;

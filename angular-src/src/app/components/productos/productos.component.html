@@ -21,7 +21,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Productos" [active]="true">
+      <tab heading="Productos">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Productos</h3>
@@ -60,7 +60,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Promociones">
+      <tab heading="Promociones" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Promociones</h3>
@@ -68,8 +68,7 @@
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <ng2-smart-table id="dtPro" [settings]="settingsPro" [source]="sourcePro" (create)="showDialogPro = true;setCursorAddPro()"
-            (edit)="showDialogProU = true;onUpdatePro($event);setCursorUpdatePro()" (delete)="onDeletePro($event)">
-          </ng2-smart-table>
+            (delete)="onDeletePro($event)"></ng2-smart-table>
           <hr>
         </div>
       </tab>
@@ -405,28 +404,180 @@
 </p-dialog>
 
 <!-- Add Promo -->
-<p-dialog [(visible)]="showDialogPro" modal="modal" width="400" [responsive]="true">
+<p-dialog [(visible)]="showDialogPro" modal="modal" width="600" [responsive]="true">
   <p-header>
     Registrar Promoción
   </p-header>
   <div class="ui-g ui-fluid">
-    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
       <label>Nombre*:</label>
       <input type="text" [(ngModel)]="objPromo.nombre" (ngModelChange)="onChangeNombrePromo($event)" id="nombrePromo" name="nombrePromo"
-        placeholder="Nombre único de la promoción" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de la promoción" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Desde*:</label>
-      <input currencyMask type="text" [(ngModel)]="objPromo.desde" class="form-control input-sm" placeholder="0.00" tooltip="Cuando la cantidad vaya desde"
-        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="2" id="desdePromo" name="desdePromo">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="ui-g-12 ui-g-nopad">
+        <label>Tipo promoción*:</label>
+      </div>
+      <div class="ui-g-5">
+        <p style="padding-left: 20px" tooltip="Por la compra de uno o varios productos puedes asociar uno o varios productos de promocion."
+          tooltipPlacement="bottom">
+          Asociar productos
+        </p>
+      </div>
+      <div class="ui-g-2" style="margin-left: -10px">
+        <md-slide-toggle [color]="color" [checked]="chkTipoPromo" [(ngModel)]="flagTipoPromo" style="padding-top: 2px">
+        </md-slide-toggle>
+      </div>
+      <div class="ui-g-5">
+        <p style="padding-left: 15px" tooltip="Puedes descontar un porcentaje del precio de venta del producto." tooltipPlacement="bottom">
+          Descontar precio
+        </p>
+      </div>
     </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <label>Hasta*:</label>
-      <input currencyMask type="text" [(ngModel)]="objPromo.hasta" class="form-control input-sm" placeholder="0.00" tooltip="Hasta esta cantidad de producto"
-        tooltipPlacement="bottom" title=" " [options]="{ suffix :'',prefix: ''}" tabindex="3" id="hastaPromo" name="hastaPromo">
+    <!-- Asociar Producto-->
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="!flagTipoPromo">
+      <p-listbox [options]="productosShow" [(ngModel)]="selectProdPromo" filter="filter" [listStyle]="{'max-height':'300px'}" [style]="{'width':'100%','height':'300px','border-color': bcLstProductosPromo }">
+        <p-header>
+          Productos Disponibles
+        </p-header>
+        <ng-template let-car pTemplate="item">
+          {{car.label}}
+          <span class="badge" style="margin-top: -2.5px" tooltip="Precio de venta">$ {{ car.precio_venta | number : '1.2-2'}}</span>
+        </ng-template>
+      </p-listbox>
     </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="!flagTipoPromo">
+      <div class="ui-g-4 ui-md-4" style="padding-top: 8px; text-align: right;"><label>&nbsp;&nbsp;&nbsp;Por:</label></div>
+      <div class="input-group ui-g-4 ui-md-4" style="margin-top: -2px">
+        <input [(ngModel)]="cantPor" type="text" class="form-control input-sm" id="cantPor" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+        <div class="input-group-btn-vertical">
+          <button (click)="addCantPor()" class="btn btn-default" type="button" style="outline: 0;"><i class="fa fa-caret-up"></i></button>
+          <button (click)="lessCantPor()" class="btn btn-default" type="button" style="outline: 0;"><i class="fa fa-caret-down"></i></button>
+        </div>
+      </div>
+      <div class="ui-g-4 ui-md-4">
+        <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemP()" aria-hidden="true"></i>
+        <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItemP()" aria-hidden="true"></i>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <p-listbox [options]="lstProductosP" [(ngModel)]="selected_prodP" [listStyle]="{'max-height':'50px'}" [style]="{'width':'100%','border-color': bcLstProductosP }">
+          <p-header>
+            Productos Seleccionados
+          </p-header>
+          <ng-template let-car pTemplate="item">
+            {{car.value.label}}
+            <span class="badge" style="margin-top: -2.5px" tooltip="Unidades">{{car.cantidad}}u</span>
+            <span class="badge" style="margin-top: -2.5px" tooltip="Precio total">$ {{ car.value.precio_venta * car.cantidad | number : '1.2-2' }}</span>
+          </ng-template>
+        </p-listbox><br>
+      </div>
+      <div class="ui-g-4 ui-md-4" style="padding-top: 8px; text-align: right;"><label>&nbsp;&nbsp;&nbsp;Recibe:</label></div>
+      <div class="input-group ui-g-4 ui-md-4" style="margin-top: -2px">
+        <input [(ngModel)]="cantRecibe" type="text" class="form-control input-sm" id="cantRecibe" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          maxlength="2" min="0" style="z-index: 1" tabindex="6" (click)="$event.target.select()">
+        <div class="input-group-btn-vertical">
+          <button (click)="addCantRecibe()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-up"></i></button>
+          <button (click)="lessCantRecibe()" class="btn btn-default" type="button" style="outline: 0"><i class="fa fa-caret-down"></i></button>
+        </div>
+      </div>
+      <div class="ui-g-4 ui-md-4">
+        <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemR()" aria-hidden="true" style="vertical-align: middle"></i>
+        <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItemR()" aria-hidden="true" style="vertical-align: middle"></i>
+      </div>
+      <div class="ui-g-12 ui-md-12">
+        <p-listbox [options]="lstProductosR" [(ngModel)]="selected_prodR" [listStyle]="{'max-height':'50px'}" [style]="{'width':'100%','border-color': bcLstProductosR }">
+          <p-header>
+            Productos Seleccionados
+          </p-header>
+          <ng-template let-car pTemplate="item">
+            {{car.value.label}}
+            <span class="badge" style="margin-top: -2.5px" tooltip="Unidades">{{car.cantidad}}u</span>
+            <span class="badge" style="margin-top: -2.5px" tooltip="Precio total">$ {{ car.value.precio_venta * car.cantidad | number : '1.2-2' }}</span>
+          </ng-template>
+        </p-listbox>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="!flagTipoPromo">
+      <br>
+      <label>Precio normal:</label>
+      <input currencyMask type="text" [(ngModel)]="valorNormal" class="form-control input-sm" placeholder="0.00" tooltip="Valor de la promocion"
+        tooltipPlacement="bottom" title=" " tabindex="2" id="desdePromo" name="desdePromo" readonly>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="!flagTipoPromo">
+      <br>
+      <label>Precio promoción:</label>
+      <input currencyMask type="text" [(ngModel)]="valorPromo" class="form-control input-sm" placeholder="0.00" tooltip="Valor de la promocion"
+        tooltipPlacement="bottom" title=" " tabindex="2" id="desdePromo" name="desdePromo">
+    </div>
+    <!-- Decontar en precio-->
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagTipoPromo">
+      <label>Tipo Descuento*:</label>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="color: white" *ngIf="flagTipoPromo">
+      <label>Guardar*:</label>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagTipoPromo">
+      <div class="ui-g-5" style="text-align: right;">
+        <p tooltip="Aplicar el descuento a TODO un tipo de producto." tooltipPlacement="bottom">
+          Grupal
+        </p>
+      </div>
+      <div class="ui-g-2" style="text-align: center;">
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagTipoDesc" style="padding-top: 2px" (ngModelChange)="changeFlag($event)">
+        </md-slide-toggle>
+      </div>
+      <div class="ui-g-5" style="text-align: left; padding-left: 15px">
+        <p tooltip="Aplicar el descuento a un SOLO producto." tooltipPlacement="bottom">Individual</p>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="text-align: center;" *ngIf="flagTipoPromo">
+      <i id="addIcon" class="fa fa-pencil-square fa-2x" style="padding-top: 2px" (click)="addNewPrice()" aria-hidden="true" tooltip="Guardar nuevo/s precio/s."
+        tooltipPlacement="bottom"></i>
+    </div>
+    <br>
+
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagTipoPromo">
+      <p-listbox [options]="lstTipoProductos" [(ngModel)]="selected_tp" filter="filter" [listStyle]="{'max-height':'130px'}" [style]="{'width':'100%','border-color': bcLstProdM }"
+        id="lbTP" name="lbTP" (onChange)="onChangelbTP($event)">
+        <p-header>
+          Tipo Producto
+        </p-header>
+        <ng-template let-car pTemplate="item">
+          {{car.label}}
+        </ng-template>
+      </p-listbox>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagTipoPromo">
+      <p-listbox [options]="lstProductosShow" [(ngModel)]="selected_producto1" filter="filter" [listStyle]="{'max-height':'130px'}"
+        [style]="{'width':'100%','border-color': bcLstProdM }" (onChange)="onChangelbProd($event)" [disabled]="!flagTipoDesc">
+        <p-header>
+          Productos
+        </p-header>
+        <ng-template let-car pTemplate="item">
+          {{car.label}}
+          <span class="badge">$ {{ car.value.precio_venta | number : '1.2-2'}}</span>
+          <span class="badge">$ {{ car.value.precio_costo | number : '1.2-2'}}</span>
+        </ng-template>
+      </p-listbox>
+    </div>
+
+
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagTipoPromo">
+      <br>
+      <label style="text-align: left">Porcentaje*:</label>
+      <input currencyMask type="text" [(ngModel)]="descPercent" id="descPercent" name="descPercent" placeholder="0.00" class="form-control input-sm"
+        (ngModelChange)="valueChangeDescPercent($event)" (click)="$event.target.select()" [options]="{ suffix :' %',prefix: ''}">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf="flagUpdatePrize">
+      <br>
+      <label style="text-align: left">Valor*:</label>
+      <input currencyMask type="text" [(ngModel)]="descMoney" id="descMoney" name="descMoney" placeholder="0.00" class="form-control input-sm"
+        (ngModelChange)="valueChangeDescMoney($event)" (click)="$event.target.select()">
+    </div>
+
   </div>
   <hr>
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">

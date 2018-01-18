@@ -14,18 +14,22 @@
                 </div>
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                     <ng2-smart-table id="dtTipoClientes" [settings]="settingsTC" [source]="sourceTC" (create)="showDialog2 = true; setCursorAddTC()"
-                        (edit)="showDialog3 = true;onUpdateTC($event);setCursorUpdateTC()" (delete)="onDeleteTC($event)"></ng2-smart-table>
+                        (edit)="showDialog3 = true;onUpdateTC($event);" (delete)="onDeleteTC($event)">
+                    </ng2-smart-table>
+                    <hr>
                 </div>
             </tab>
-            <tab heading="Clientes">
+            <tab heading="Clientes" [active]="true">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <hr>
                     <h3 style="text-align:center">Clientes</h3>
                     <hr>
                 </div>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-x:auto;">
                     <ng2-smart-table id="dtClientes" [settings]="settingsC" [source]="sourceC" (create)="showDialog = true;onCreate($event);setCursorAdd()"
-                        (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)"></ng2-smart-table>
+                        (edit)="showDialog1 = !showDialog1;onUpdate($event);setCursorUpdate()" (delete)="onDeleteC($event)">
+                    </ng2-smart-table>
+                    <hr>
                 </div>
             </tab>
             <tab heading="Estado de Cuentas">
@@ -34,8 +38,10 @@
                     <h3 style="text-align:center">Estado de Cuentas</h3>
                     <hr>
                 </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <hr>
+                </div>
             </tab>
-
         </tabset>
     </div>
 </div>
@@ -74,16 +80,17 @@
                 tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
         </div>
         <div class="ui-g-6">
+            <label>Tipo Cliente*:</label>
+            <!--<p-dropdown [options]="tipo_clientes" [(ngModel)]="selected_tipo_cliente" 
+            laceholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>-->
+            <select [(ngModel)]="selected_tipo_cliente" class="form-control input-sm">
+                <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.nombre}}</option>
+            </select>
+        </div>
+        <div class="ui-g-6">
             <label>E-mail:</label>
             <input type="text" [(ngModel)]="correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo del cliente"
                 class="form-control  input-sm">
-        </div>
-        <div class="ui-g-6">
-            <label>Sexo*:</label><br>
-            <md-radio-group [(ngModel)]="sexo">
-                <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-                </md-radio-button>
-            </md-radio-group>
         </div>
         <div class="ui-g-6">
             <label>Fecha de nacimiento*:</label>
@@ -92,8 +99,11 @@
             </p-calendar>
         </div>
         <div class="ui-g-6">
-            <label>Tipo Cliente*:</label>
-            <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
+            <label>Sexo*:</label><br>
+            <md-radio-group [(ngModel)]="sexo">
+                <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+                </md-radio-button>
+            </md-radio-group>
         </div>
     </div>
     <hr>
@@ -156,7 +166,7 @@
         </div>
         <div class="ui-g-6">
             <label>Tipo Cliente*:</label>
-            <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
+            <p-dropdown [options]="tipo_clientes" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
         </div>
     </div>
     <hr>

@@ -21,6 +21,7 @@ import { SelectItem } from 'primeng/primeng';
 import { PromocionService } from '../../services/promocion.service';
 import { ProveedorService } from '../../services/proveedor.service';
 import { KardexService } from '../../services/kardex.service';
+import { DecimalPipe, DatePipe } from '@angular/common';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -123,48 +124,6 @@ export class ProductosComponent implements OnInit {
   myInputVariable2: any;
   @ViewChild('myInput3')
   myInputVariable3: any;
-  settingsPro = {
-    mode: 'external',
-    noDataMessage: 'No existen registros',
-    columns: {
-
-      nombre: {
-        title: 'Nombre Promocion',
-        width: '27.5%'
-      },
-      producto: {
-        title: 'Producto asociado',
-        width: '27.5%'
-      },
-      desde: {
-        title: 'Desde',
-        width: '10%'
-      },
-      hasta: {
-        title: 'Hasta',
-        width: '10%'
-      },
-      precio_promo: {
-        title: 'Precio Promo',
-        width: '10%'
-      }
-    },
-    actions: {
-      // columnTitle: '',
-      add: true,
-      edit: true,
-      delete: true
-    },
-    attr: {
-      class: 'table-bordered table-hover table-responsive'
-    }
-  }
-  showDialogPro = false;
-  sourcePro: LocalDataSource = new LocalDataSource();
-  objPromo: any;
-  objPromoUpdate: any;
-  promociones: any = [];
-  showDialogProU = false;
   costoCantSubProd;
   precio_costoSubProd;
   selected_prodSelec;
@@ -259,6 +218,7 @@ export class ProductosComponent implements OnInit {
     private formBuilder: FormBuilder,
     private promocionService: PromocionService,
     private proveedorService: ProveedorService,
+    private decimalPipe: DecimalPipe,
     private kardexService: KardexService) {
 
     this.pathLogo = undefined;
@@ -274,17 +234,11 @@ export class ProductosComponent implements OnInit {
     this.lstContenido.push({ label: 'oz', value: 2 });
     this.objPromo = {
       nombre: '',
-      producto: [],
-      desde: 0,
-      hasta: 0,
-      precio_promo: 0
+      productosV: []
     }
     this.objPromoUpdate = {
       nombre: '',
-      producto: [],
-      desde: 0,
-      hasta: 0,
-      precio_promo: 0
+      productosV: []
     }
     this.lstComprasProve = [
       { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
@@ -302,7 +256,6 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit() {
-
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.todayDate = [initial[0], initial[1], initial[2]].join('/');
     this.es = {
@@ -315,16 +268,13 @@ export class ProductosComponent implements OnInit {
       today: 'Hoy',
       clear: 'Borrar'
     }
-
     this.types = [];
     this.types.push({ label: 'Nuevo', value: 'Nuevo' });
     this.types.push({ label: 'Existente', value: 'Existente' });
-
     this.tipo_resumen_ventas = [];
     this.tipo_resumen_ventas.push({ label: 'Sin Rango de Fechas', value: 0 });
     this.tipo_resumen_ventas.push({ label: 'Con Rango de Fechas', value: 1 });
     this.selectedTR = this.tipo_resumen_ventas[0];
-
     this.lstFrecuencias = [];
     this.lstFrecuencias.push({ label: 'Ultimo Dia', value: 0 });
     this.lstFrecuencias.push({ label: 'Ultima Semana', value: 1 });
@@ -365,7 +315,6 @@ export class ProductosComponent implements OnInit {
       /* Get Productos*/
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
-
         this.productosShow = [];
         for (let entry of p) {
           if (entry.subproductoV.length < 1)
@@ -436,7 +385,6 @@ export class ProductosComponent implements OnInit {
                 class: 'table-bordered table-hover table-responsive'
               }
             }
-
           }, err => {
             console.log(err);
           })
@@ -555,20 +503,14 @@ export class ProductosComponent implements OnInit {
             class: 'table-bordered table-hover table-responsive'
           }
         };
+        this.ngOnInitPromo();
       }, err => {
         console.log(err);
         return false;
       });
-    },
-      err => {
-        console.log(err);
-        return false;
-      });
-    this.promocionService.getAll().subscribe(data => {
-      this.sourcePro = new LocalDataSource();
-      this.sourcePro.load(data);
     }, err => {
       console.log(err);
+      return false;
     });
 
     /*this.productoService.getById('5a16324902d5772a300e6511').subscribe(data => {
@@ -661,12 +603,6 @@ export class ProductosComponent implements OnInit {
     }, 0);
   }
 
-  setCursorAddPro() {
-    setTimeout(function () {
-      document.getElementById('nombrePromo').focus();
-    }, 0);
-  }
-
   setCursorUpdatePro() {
     setTimeout(function () {
       document.getElementById('nombrePromoU').focus();
@@ -721,12 +657,6 @@ export class ProductosComponent implements OnInit {
     } else {
       this.flagSubProdUpdate = false;
     }
-  }
-
-  onUpdatePro(event: any) {
-    setOriginalColorsPromoU()
-    this.objPromoUpdate = event.data;
-    console.log(event.data);
   }
 
   onAddTPSubmit() {
@@ -826,22 +756,6 @@ export class ProductosComponent implements OnInit {
         console.log(producto)
       }
     }
-  }
-
-  onAddPromoSubmit() {
-    if (!this.validateService.validatePromocion(this.objPromo)) {
-      return false;
-    }
-    this.promocionService.register(this.objPromo).subscribe(data => {
-      this.messageGrowlService.notify('success', 'Exito', 'Ingreso Exitoso!');
-      this.sourcePro.add(data);
-      this.sourcePro.refresh();
-      this.showDialogPro = false;
-      setOriginalColorsPromo();
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    })
   }
 
   onUpdateTPSubmit() {
@@ -970,21 +884,6 @@ export class ProductosComponent implements OnInit {
     }
   }
 
-  onUpdatePromoSubmit() {
-    if (!this.validateService.validatePromocionU(this.objPromoUpdate)) {
-      return false;
-    }
-    this.promocionService.update(this.objPromoUpdate).subscribe(data => {
-      this.messageGrowlService.notify('success', 'Exito', 'Modificación Exitosa!');
-      this.sourcePro.update(this.objPromoUpdate, this.objPromoUpdate);
-    }, err => {
-      console.log(err);
-      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
-    })
-    this.showDialogProU = false;
-    setOriginalColorsPromoU();
-  }
-
   onDeleteTP(event): void {
     this.openDialogTP(event.data);
   }
@@ -1019,29 +918,6 @@ export class ProductosComponent implements OnInit {
           this.sourceP.remove(data);
           // remove from database
           this.productoService.deleteProducto(data._id).subscribe(data => {
-            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
-          }, err => {
-            console.log(err);
-            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
-
-          });
-        }
-      }
-    });
-  }
-
-  onDeletePro(event): void {
-    this.openDialogPromo(event.data);
-  }
-
-  openDialogPromo(data) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined) {
-        if (result.localeCompare('Aceptar') === 0) {
-          this.sourceP.remove(data);
-          // remove from database
-          this.promocionService.delete(data._id).subscribe(data => {
             this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
           }, err => {
             console.log(err);
@@ -1286,10 +1162,6 @@ export class ProductosComponent implements OnInit {
 
   onChangeNombrePU($event) {
     this.productoUpdate.nombre = this.formatterService.toTitleCase(this.productoUpdate.nombre);
-  }
-
-  onChangeNombrePromo($event) {
-    this.objPromo.nombre = this.formatterService.toTitleCase(this.objPromo.nombre);
   }
 
   valueChangeGanancia($event) {
@@ -1641,6 +1513,457 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE PROMOCIONES */
+
+  cantPor = 1;
+  cantRecibe = 1;
+  selectProdPromo;
+  selected_prodP;
+  selected_prodR;
+  lstProductosP: any[];
+  lstProductosR: any[];
+  bcLstProductosP = '';
+  bcLstProductosR = '';
+  bcLstProductosPromo = '';
+  chkTipoPromo = false;
+  flagTipoPromo = false;
+  flagUpdatePrize = false;
+  flagTipoDesc = false;
+  lstTipoProductos: any[];
+  selected_tp: any;
+  lstProductosShow: any[];
+  lstProductos1: any[];
+  selected_producto1: any;
+  descPercent = 0;
+  descMoney = 0;
+  valorPromo = 0;
+  valorNormal = 0;
+  sourcePro: LocalDataSource = new LocalDataSource();
+  settingsPro = {
+    mode: 'external',
+    noDataMessage: 'No existen registros',
+    columns: {
+      nombre: {
+        title: 'Nombre Promoción',
+        width: '25%'
+      },
+      tipoPromo: {
+        title: 'Tipo Promoción',
+        width: '20%'
+      },
+      productosV: {
+        title: 'Productos',
+        width: '55%'
+      }
+    },
+    actions: {
+      // columnTitle: '',
+      add: true,
+      edit: false,
+      delete: true
+    },
+    attr: {
+      class: 'table-bordered table-hover table-responsive'
+    }
+  }
+  showDialogPro = true;
+  objPromo: any;
+  objPromoUpdate: any;
+  promociones: any = [];
+  showDialogProU = false;
+
+  setCursorAddPro() {
+    this.bcLstProductosP = '';
+    this.bcLstProductosR = '';
+    this.bcLstProductosPromo = '';
+    this.valorPromo = 0;
+    this.valorNormal = 0;
+    setTimeout(function () {
+      document.getElementById('nombrePromo').focus();
+    }, 0);
+  }
+
+  onUpdatePro(event: any) {
+    setOriginalColorsPromoU()
+    this.objPromoUpdate = event.data;
+    console.log(event.data);
+  }
+
+  onChangeNombrePromo($event) {
+    this.objPromo.nombre = this.formatterService.toTitleCase(this.objPromo.nombre);
+  }
+
+  addCantPor() {
+    this.cantPor++;
+  }
+
+  lessCantPor() {
+    if (this.cantPor > 1)
+      this.cantPor--;
+  }
+
+  addCantRecibe() {
+    this.cantRecibe++;
+  }
+
+  lessCantRecibe() {
+    if (this.cantRecibe > 1)
+      this.cantRecibe--;
+  }
+
+  addItemP() {
+    if (this.selectProdPromo !== undefined) {
+      const ind = this.lstProductosP.findIndex(x => x.value.nombre === this.selectProdPromo);
+      if (ind !== -1) {
+        this.lstProductosP[ind].cantidad += this.cantPor;
+      } else {
+        const index = this.productosShow.findIndex(x => x.value === this.selectProdPromo);
+        let aux = { cantidad: this.cantPor, value: this.productosShow[index] };
+        this.lstProductosP.push(aux);
+      }
+      this.calcTotalPor();
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+      this.bcLstProductosPromo = '#FE2E2E';
+    }
+  }
+
+  calcTotalPor() {
+    this.valorNormal = 0;
+    this.valorPromo = 0;
+    for (let entry of this.lstProductosP) {
+      this.valorNormal += entry.cantidad * entry.value.precio_venta;
+      this.valorPromo += entry.cantidad * entry.value.precio_venta;
+    }
+  }
+
+  deleteItemP() {
+    if (this.selected_prodP !== undefined) {
+      let nombre = this.selected_prodP.nombre
+      this.lstProductosP = this.lstProductosP.filter(function (obj) {
+        return obj.value.nombre !== nombre;
+      });
+      this.calcTotalPor();
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      this.bcLstProductosP = '#FE2E2E';
+    }
+  }
+
+  addItemR() {
+    if (this.selectProdPromo !== undefined) {
+      const ind = this.lstProductosR.findIndex(x => x.value.nombre === this.selectProdPromo);
+      if (ind !== -1) {
+        this.lstProductosR[ind].cantidad += this.cantRecibe;
+      } else {
+        const index = this.productosShow.findIndex(x => x.value === this.selectProdPromo);
+        let aux = { cantidad: this.cantRecibe, value: this.productosShow[index] };
+        this.lstProductosR.push(aux);
+      }
+
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
+      this.bcLstProductosPromo = '#FE2E2E';
+    }
+  }
+
+  deleteItemR() {
+    if (this.selected_prodR !== undefined) {
+      let nombre = this.selected_prodR.nombre
+      this.lstProductosR = this.lstProductosR.filter(function (obj) {
+        return obj.value.nombre !== nombre;
+      });
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      this.bcLstProductosR = '#FE2E2E';
+    }
+  }
+
+  valueChangeDescPercent($event) {
+    if (this.descPercent > 100) {
+      this.descPercent = 0;
+      setTimeout(function () {
+        let v = document.getElementById('descPercent');
+        if (v != null) {
+          v.click();
+          this.descPercent = 0;
+          this.descMoney = 0;
+        }
+      }, 0);
+    } else {
+      if (this.flagTipoDesc) {
+        this.descMoney = ((100 - this.descPercent) * this.selected_producto1.precio_venta) / 100;
+      }
+    }
+  }
+
+  valueChangeDescMoney($event) {
+    if (this.flagTipoDesc) {
+      if (this.descMoney > this.selected_producto1.precio_venta) {
+        this.descMoney = 0;
+        setTimeout(function () {
+          let v = document.getElementById('descMoney');
+          if (v != null) {
+            v.click();
+            this.descMoney = 0;
+            this.descPercent = 0;
+          }
+        }, 0);
+
+      } else {
+        if (this.flagTipoDesc) {
+          this.descPercent = 100 - ((this.descMoney * 100) / this.selected_producto1.precio_venta);
+        }
+      }
+    }
+  }
+
+  onChangelbTP($event) {
+    this.lstProductosShow = [];
+    for (let entry of this.lstProductos1) {
+      //console.log(entry);
+      if (entry.id_tipo_producto === this.selected_tp._id) {
+        entry.precio_venta = parseFloat(entry.precio_venta);
+        let aux = { label: entry.nombre, value: entry }
+        this.lstProductosShow.push(aux);
+      };
+    };
+    this.selected_producto1 = "";
+  }
+
+  onChangelbProd($event) {
+    this.flagUpdatePrize = true;
+    this.descMoney = this.selected_producto1.precio_venta;
+  }
+
+  changeFlag($event) {
+    if (this.flagTipoDesc) {
+      this.messageGrowlService.notify("info", "Información", "Selecciona un producto!");
+      this.selected_producto1 = undefined;
+    } else {
+      //Grupal
+      this.selected_producto1 = undefined;
+      this.flagUpdatePrize = false;
+    }
+  }
+
+  addNewPrice() {
+    if (this.flagTipoDesc) {
+      if (this.selected_producto1 !== undefined) {
+        let index = this.lstProductos1.findIndex(i => i._id === this.selected_producto1._id);
+        this.lstProductos1[index].precio_costo = this.descMoney;
+        this.messageGrowlService.notify('info', 'Información', 'Precio actualizado!');
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      }
+    } else {
+      let i = 0;
+      for (let entry of this.lstProductos1) {
+        if (entry.id_tipo_producto === this.selected_tp._id) {
+          this.lstProductos1[i].precio_costo = ((100 - this.descPercent) * this.lstProductos1[i].precio_venta) / 100;
+        }
+        i++;
+      }
+      this.messageGrowlService.notify('info', 'Información', 'Precios actualizados!');
+    }
+  }
+
+  updatePrice() {
+    if (this.flagTipoDesc) {
+      if (this.selected_producto1 !== undefined) {
+        let index = this.lstProductos1.findIndex(i => i._id === this.selected_producto1._id);
+        this.lstProductos1[index].precio_costo = this.descMoney;
+        this.messageGrowlService.notify('info', 'Información', 'Precio actualizado!');
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto!');
+      }
+    } else {
+      let i = 0;
+      for (let entry of this.lstProductos1) {
+        if (entry.id_tipo_producto === this.selected_tp._id) {
+          this.lstProductos1[i].precio_costo = ((100 - this.descPercent) * this.lstProductos1[i].precio_venta) / 100;
+        }
+        i++;
+      }
+      this.messageGrowlService.notify('info', 'Información', 'Precios actualizados!');
+    }
+  }
+
+  onAddPromoSubmit() {
+    if (!this.validateService.validatePromocion(this.objPromo)) {
+      return false;
+    }
+    if (this.flagTipoPromo) {
+      if (this.filterProdPromo().length > 0) {
+        this.objPromo.productosV = [];
+        for (let entry of this.filterProdPromo()) {
+          let aux = { id: entry._id, precio_venta: entry.precio_costo };
+          this.objPromo.productosV.push(aux);
+        }
+        console.log(this.objPromo);
+        this.promocionService.register(this.objPromo).subscribe(data => {
+          this.messageGrowlService.notify('success', 'Exito', 'Ingreso Exitoso!');
+          this.sourcePro.add(data);
+          this.sourcePro.refresh();
+          this.showDialogPro = false;
+          setOriginalColorsPromo();
+          this.ngOnInitPromo();
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'No se ha modificado el precio de ningun producto!');
+      }
+    } else {
+      if (this.lstProductosP.length > 0 && this.lstProductosR.length > 0) {
+        this.objPromo.productosV = [];
+        //Productos Por
+        let aux1 = { p: [] };
+        let lst1: any = [];
+        for (let entry of this.lstProductosP) {
+          let a = { cantidad: entry.cantidad, id: entry.value._id };
+          lst1.push(a);
+        }
+        aux1.p = lst1;
+        this.objPromo.productosV.push(aux1);
+        //Productos Recibe
+        let aux2 = { r: [] };
+        let lst2: any = [];
+        for (let entry of this.lstProductosR) {
+          let a = { cantidad: entry.cantidad, id: entry.value._id };
+          lst2.push(a);
+        }
+        aux2.r = lst2;
+        this.objPromo.productosV.push(aux2);
+        let aux3 = { v: this.valorPromo };
+        this.objPromo.productosV.push(aux3);
+        console.log(this.objPromo);
+        this.promocionService.register(this.objPromo).subscribe(data => {
+          this.messageGrowlService.notify('success', 'Exito', 'Ingreso Exitoso!');
+          this.sourcePro.add(data);
+          this.sourcePro.refresh();
+          this.showDialogPro = false;
+          setOriginalColorsPromo();
+          this.ngOnInitPromo();
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'No se ha modificado el precio de ningun productoss!');
+      }
+    }
+
+  }
+
+  onUpdatePromoSubmit() {
+    if (!this.validateService.validatePromocionU(this.objPromoUpdate)) {
+      return false;
+    }
+    this.promocionService.update(this.objPromoUpdate).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Exito', 'Modificación Exitosa!');
+      this.sourcePro.update(this.objPromoUpdate, this.objPromoUpdate);
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    })
+    this.showDialogProU = false;
+    setOriginalColorsPromoU();
+  }
+
+  filterProdPromo() {
+    let newLst: any = [];
+    for (let entry of this.lstProductos1) {
+      if (entry.precio_costo !== entry.precio_venta) {
+        newLst.push(entry)
+      }
+    }
+    return newLst;
+  }
+
+  onDeletePro(event): void {
+    this.openDialogPromo(event.data);
+  }
+
+  openDialogPromo(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          // remove from database
+          this.promocionService.delete(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+            this.ngOnInitPromo();
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+
+          });
+        }
+      }
+    });
+  }
+
+  ngOnInitPromo() {
+    this.lstProductosP = [];
+    this.lstProductosR = [];
+    this.lstTipoProductos = [];
+    this.lstProductos1 = [];
+    this.lstProductosShow = [];
+    this.tipoProductoService.getAll().subscribe(data => {
+      for (let entry of data) {
+        let aux = { label: entry.desc_tipo_producto, value: entry }
+        this.lstTipoProductos.push(aux);
+      }
+      this.selected_tp = this.lstTipoProductos[0].value;
+      this.productoService.getAll().subscribe(data => {
+        for (let entry of data) {
+          entry.precio_venta = parseFloat(entry.precio_venta);
+          entry.precio_costo = parseFloat(entry.precio_venta);
+          this.lstProductos1.push(entry);
+          if (entry.id_tipo_producto === this.selected_tp._id) {
+            let aux = { label: entry.nombre, value: entry }
+            this.lstProductosShow.push(aux);
+          }
+        }
+      }, err => {
+        console.log(err);
+      });
+    }, err => {
+      console.log(err);
+    });
+    //fill table promos
+    this.promocionService.getAll().subscribe(data => {
+      let lst: any = [];
+      for (let entry of data) {
+        let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: 'Asociar Producto', productosV: entry.productosV };
+        if (!entry.productosV[0].hasOwnProperty('id')) {
+          aux.tipoPromo = 'Descontar Precio';
+          let filaP = '';
+          for (let p of entry.productosV[0].p) {
+            filaP += '-' + p.cantidad + ' ' + this.searchDescProd(p.id, this.productos) + ' ';
+          }
+          let filaR = '';
+          for (let r of entry.productosV[1].r) {
+            filaR += '-' + r.cantidad + ' ' + this.searchDescProd(r.id, this.productos) + ' ';
+          }
+          aux.productosV = 'POR: ' + filaP + ' RECIBE: ' + filaR + 'PRECIO: $' + entry.productosV[2].v;
+        } else {
+          let fila = '';
+          for (let prod of entry.productosV) {
+            fila += '-' + this.searchDescProd(prod.id, this.productos) + ' $' + this.decimalPipe.transform(prod.precio_venta, '1.2-2') + ' ';
+          }
+          aux.productosV = fila;
+        }
+        lst.push(aux);
+
+      }
+      this.sourcePro = new LocalDataSource();
+      this.sourcePro.load(lst);
+    }, err => {
+      console.log(err);
+    });
+  }
 
   /* GESTION DE KARDEX */
   public getDate(): number {
@@ -2376,8 +2699,6 @@ function setOriginalColorsTPU() {
 
 function setOriginalColorsPromo() {
   document.getElementById("nombrePromo").style.borderColor = "#DADAD2";
-  document.getElementById("desdePromo").style.borderColor = "#DADAD2";
-  document.getElementById("hastaPromo").style.borderColor = "#DADAD2";
 }
 
 function setOriginalColorsPromoU() {

@@ -1005,16 +1005,15 @@
         tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
     </div>
     <div class="ui-g-6">
+      <label>Tipo Cliente*:</label>
+      <select [(ngModel)]="selected_tipo_cliente" class="form-control input-sm">
+        <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.nombre}}</option>
+    </select>
+    </div>
+    <div class="ui-g-6">
       <label>E-mail:</label>
       <input type="text" [(ngModel)]="correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo del cliente"
         class="form-control input-sm">
-    </div>
-    <div class="ui-g-6">
-      <label>Sexo*:</label><br>
-      <md-radio-group [(ngModel)]="sexo">
-        <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
-        </md-radio-button>
-      </md-radio-group>
     </div>
     <div class="ui-g-6">
       <label>Fecha de nacimiento*:</label>
@@ -1023,8 +1022,11 @@
       </p-calendar>
     </div>
     <div class="ui-g-6">
-      <label>Tipo Cliente*:</label>
-      <p-dropdown [options]="citiesDD" [(ngModel)]="selected_tipo_cliente" placeholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>
+      <label>Sexo*:</label><br>
+      <md-radio-group [(ngModel)]="sexo">
+        <md-radio-button class="example-radio-button" *ngFor="let sex of sexs" [value]="sex.pseudo" [color]="color">{{sex.name}}
+        </md-radio-button>
+      </md-radio-group>
     </div>
   </div>
   <hr>
