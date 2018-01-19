@@ -15,6 +15,7 @@ import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.c
 import { ActiveCardsService } from '../../services/active-cards.service';
 import { TarjetaService } from '../../services/tarjeta.service';
 import { FacturaService } from '../../services/factura.service';
+import { PromocionService } from '../../services/promocion.service';
 
 @Component({
   selector: 'app-administrar',
@@ -148,7 +149,8 @@ export class AdministrarComponent implements OnInit {
     private decimalPipe: DecimalPipe,
     private activeCardsService: ActiveCardsService,
     private tarjetaService: TarjetaService,
-    private facturaService: FacturaService) {
+    private facturaService: FacturaService,
+    private promocionService: PromocionService) {
 
     this.differ = differs.find([]).create(null);
     this.calcVentas();
@@ -202,10 +204,7 @@ export class AdministrarComponent implements OnInit {
     this.lstSelectedProdH = [];
 
     this.ngOnInitTarjetas();
-    /*let resp = this.validateService.validateCads1('     testing ing      ')
-    let resp1 = this.validateService.validateCads('     testing ing      ')
-    console.log(resp);
-    console.log(resp1);*/
+    this.ngOnInitPromo();
   }
 
   setCursorAddC() {
@@ -549,6 +548,86 @@ export class AdministrarComponent implements OnInit {
 
   setOriginalColorsCoverU() {
     document.getElementById("nombreU").style.borderColor = "#DADAD2";
+  }
+  /*Promos*/
+  lstPromos: any[];
+  selectedPromos: any;
+  productos: any[];
+
+  searchDescProd(id, myArray) {
+    for (const entry of myArray) {
+      if (entry._id === id) {
+        return entry.nombre;
+      }
+    }
+  }
+
+  onRowSelect(event) {
+    this.promocionService.getById(event.data._id).subscribe(data => {
+      data[0].estado = 1;
+      this.promocionService.update(data[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+    })
+  }
+
+  onRowUnselect(event){
+    this.promocionService.getById(event.data._id).subscribe(data => {
+      data[0].estado = 0;
+      this.promocionService.update(data[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+    })
+  }
+
+  ngOnInitPromo() {
+    this.lstPromos = [];
+    this.productos = [];
+    this.selectedPromos = [];
+    this.promocionService.getAll().subscribe(data => {
+      this.productoService.getAll().subscribe(p => {
+        this.productos = p;
+        for (let entry of data) {
+          let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: 'Asociar Producto', productosV: entry.productosV, estado: entry.estado };
+          if (!entry.productosV[0].hasOwnProperty('id')) {
+            aux.tipoPromo = 'Descontar Precio';
+            let filaP = '';
+            for (let p of entry.productosV[0].p) {
+              filaP += '-' + p.cantidad + ' ' + this.searchDescProd(p.id, this.productos) + ' ';
+            }
+            let filaR = '';
+            for (let r of entry.productosV[1].r) {
+              filaR += '-' + r.cantidad + ' ' + this.searchDescProd(r.id, this.productos) + ' ';
+            }
+            aux.productosV = 'POR: ' + filaP + ' RECIBE: ' + filaR + 'PRECIO: $' + entry.productosV[2].v;
+          } else {
+            let fila = '';
+            for (let prod of entry.productosV) {
+              fila += '-' + this.searchDescProd(prod.id, this.productos) + ' $' + this.decimalPipe.transform(prod.precio_venta, '1.2-2') + ' ';
+            }
+            aux.productosV = fila;
+          }
+          this.lstPromos = [...this.lstPromos, aux];
+        }
+        console.log(this.lstPromos)
+      }, err => {
+        console.log(err);
+      });
+    }, err => {
+      console.log(err);
+    });
   }
 
   /*Tarjetas*/

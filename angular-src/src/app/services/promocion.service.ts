@@ -37,7 +37,7 @@ export class PromocionService {
     return this.http.delete(this.url + 'promociones/' + promocion, { headers: headers })
       .map(res => res.json());
   }
-  getByCedula(_id) {
+  getById(_id) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.set('Accept', 'text/plain');

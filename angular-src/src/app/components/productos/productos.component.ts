@@ -234,7 +234,8 @@ export class ProductosComponent implements OnInit {
     this.lstContenido.push({ label: 'oz', value: 2 });
     this.objPromo = {
       nombre: '',
-      productosV: []
+      productosV: [],
+      estado: 0
     }
     this.objPromoUpdate = {
       nombre: '',
@@ -1513,7 +1514,6 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE PROMOCIONES */
-
   cantPor = 1;
   cantRecibe = 1;
   selectProdPromo;
@@ -1565,7 +1565,7 @@ export class ProductosComponent implements OnInit {
       class: 'table-bordered table-hover table-responsive'
     }
   }
-  showDialogPro = true;
+  showDialogPro = false;
   objPromo: any;
   objPromoUpdate: any;
   promociones: any = [];
