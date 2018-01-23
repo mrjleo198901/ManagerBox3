@@ -165,6 +165,7 @@ export class AdministrarComponent implements OnInit {
     this.coverService.getAll().subscribe(data => {
       this.productoService.getAll().subscribe(p => {
         this.lstProductos = [...p];
+        //this.fillLstProdsPromo();
         this.lstCover = [];
         for (let entry of data) {
           let aux = {
@@ -553,6 +554,7 @@ export class AdministrarComponent implements OnInit {
   lstPromos: any[];
   selectedPromos: any;
   productos: any[];
+  lstProdsPromo: any[];
 
   searchDescProd(id, myArray) {
     for (const entry of myArray) {
@@ -565,6 +567,9 @@ export class AdministrarComponent implements OnInit {
   onRowSelect(event) {
     this.promocionService.getById(event.data._id).subscribe(data => {
       data[0].estado = 1;
+      if (data[0].tipoPromo.localeCompare('DP') === 0) {
+        this.fillLstProdsPromo(data[0])
+      }
       this.promocionService.update(data[0]).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
       }, err => {
@@ -577,11 +582,11 @@ export class AdministrarComponent implements OnInit {
     })
   }
 
-  onRowUnselect(event){
+  onRowUnselect(event) {
     this.promocionService.getById(event.data._id).subscribe(data => {
       data[0].estado = 0;
       this.promocionService.update(data[0]).subscribe(data => {
-        this.messageGrowlService.notify('info', 'Información', "Se ha habilitado una promoción!");
+        this.messageGrowlService.notify('info', 'Información', "Se ha deshabilitado una promoción!");
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
@@ -590,19 +595,69 @@ export class AdministrarComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
     })
+  }
+
+  fillLstProdsPromo(data) {
+    for (let entry of data.productosV) {
+      let ind = this.lstProdsPromo.findIndex(x => x._id === entry.id);
+      if (ind === -1) {
+        let index = this.lstProductos.findIndex(x => x._id === entry.id);
+        let aux = {
+          _id: entry.id,
+          nombre: this.lstProductos[index].nombre,
+          precio_venta: this.lstProductos[index].precio_venta,
+          promocion: [],
+          selected: undefined
+        }
+        let promo = { nombre: data.nombre, precio_venta: entry.precio_venta }
+        aux.promocion.push(promo);
+        aux.selected = promo;
+        this.lstProdsPromo = [...this.lstProdsPromo, aux];
+      } else {
+        let promo = { nombre: data.nombre, precio_venta: entry.precio_venta }
+        this.lstProdsPromo[ind].promocion.push(promo);
+      }
+    }
+    // console.log(this.lstProdsPromo)
+  }
+
+  saveActivePrice() {
+
+    if (this.selectedPromos.length > 0) {
+      let i = 0;
+      for (let entry of this.lstProdsPromo) {
+        this.productoService.getById(entry._id).subscribe(data => {
+          data[0].promocion = [];
+          data[0].promocion.push(entry.selected);
+          this.productoService.updateProducto(data[0]).subscribe(data => {
+            i++;
+            if (i == this.lstProdsPromo.length) {
+              this.messageGrowlService.notify('info', 'Información', "Cambios Guardados!");
+            }
+          }, err => {
+            console.log(err);
+          });
+        }, err => {
+          console.log(err);
+        });
+      }
+    } else {
+      this.messageGrowlService.notify('warn', 'Advertencia', "No existen promociones activas!");
+    }
   }
 
   ngOnInitPromo() {
     this.lstPromos = [];
     this.productos = [];
     this.selectedPromos = [];
+    this.lstProdsPromo = [];
     this.promocionService.getAll().subscribe(data => {
       this.productoService.getAll().subscribe(p => {
         this.productos = p;
         for (let entry of data) {
-          let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: 'Asociar Producto', productosV: entry.productosV, estado: entry.estado };
+          let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: entry.tipoPromo, productosV: entry.productosV, estado: entry.estado };
           if (!entry.productosV[0].hasOwnProperty('id')) {
-            aux.tipoPromo = 'Descontar Precio';
+            aux.tipoPromo = 'Asociar Producto';
             let filaP = '';
             for (let p of entry.productosV[0].p) {
               filaP += '-' + p.cantidad + ' ' + this.searchDescProd(p.id, this.productos) + ' ';
@@ -613,6 +668,7 @@ export class AdministrarComponent implements OnInit {
             }
             aux.productosV = 'POR: ' + filaP + ' RECIBE: ' + filaR + 'PRECIO: $' + entry.productosV[2].v;
           } else {
+            aux.tipoPromo = 'Descontar Precio';
             let fila = '';
             for (let prod of entry.productosV) {
               fila += '-' + this.searchDescProd(prod.id, this.productos) + ' $' + this.decimalPipe.transform(prod.precio_venta, '1.2-2') + ' ';
@@ -621,7 +677,7 @@ export class AdministrarComponent implements OnInit {
           }
           this.lstPromos = [...this.lstPromos, aux];
         }
-        console.log(this.lstPromos)
+        //console.log(this.lstPromos)
       }, err => {
         console.log(err);
       });

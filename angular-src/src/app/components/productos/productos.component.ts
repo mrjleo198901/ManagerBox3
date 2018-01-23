@@ -235,11 +235,14 @@ export class ProductosComponent implements OnInit {
     this.objPromo = {
       nombre: '',
       productosV: [],
-      estado: 0
+      estado: 0,
+      tipoPromo: ''
     }
     this.objPromoUpdate = {
       nombre: '',
-      productosV: []
+      productosV: [],
+      estado: 0,
+      tipoPromo: ''
     }
     this.lstComprasProve = [
       { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
@@ -1795,6 +1798,7 @@ export class ProductosComponent implements OnInit {
     if (this.flagTipoPromo) {
       if (this.filterProdPromo().length > 0) {
         this.objPromo.productosV = [];
+        this.objPromo.tipoPromo = 'DP';
         for (let entry of this.filterProdPromo()) {
           let aux = { id: entry._id, precio_venta: entry.precio_costo };
           this.objPromo.productosV.push(aux);
@@ -1817,6 +1821,7 @@ export class ProductosComponent implements OnInit {
     } else {
       if (this.lstProductosP.length > 0 && this.lstProductosR.length > 0) {
         this.objPromo.productosV = [];
+        this.objPromo.tipoPromo = 'AP';
         //Productos Por
         let aux1 = { p: [] };
         let lst1: any = [];
@@ -1936,9 +1941,8 @@ export class ProductosComponent implements OnInit {
     this.promocionService.getAll().subscribe(data => {
       let lst: any = [];
       for (let entry of data) {
-        let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: 'Asociar Producto', productosV: entry.productosV };
-        if (!entry.productosV[0].hasOwnProperty('id')) {
-          aux.tipoPromo = 'Descontar Precio';
+        let aux = { _id: entry._id, nombre: entry.nombre, tipoPromo: entry.tipoPromo, productosV: entry.productosV };
+        if (entry.tipoPromo.localeCompare('AP') === 0) {
           let filaP = '';
           for (let p of entry.productosV[0].p) {
             filaP += '-' + p.cantidad + ' ' + this.searchDescProd(p.id, this.productos) + ' ';

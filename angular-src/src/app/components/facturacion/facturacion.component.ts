@@ -10,6 +10,7 @@ import { MessageGrowlService } from '../../services/message-growl.service';
 import { ActiveCardsService } from '../../services/active-cards.service';
 import { FacturaService } from '../../services/factura.service';
 import { ValidateService } from '../../services/validate.service';
+import { PromocionService } from '../../services/promocion.service';
 
 @Component({
   selector: 'app-facturacion',
@@ -18,11 +19,11 @@ import { ValidateService } from '../../services/validate.service';
 })
 
 export class FacturacionComponent implements OnInit {
-  paths: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
-  pathsType: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
-  pathsTypePromos: { path: string, tipoProducto: string, nombre: string, precio_venta: number, cant_existente: number, promocion: any }[] = [];
+  paths: any = [];
+  pathsType: any = [];
+  pathsTypePromos: any = [];
   selectedProductos = [];
-  selectedProductosShow: { cantidad: number, nombre: string, path: string, precio_venta: number, tipoProducto: string, total: number };
+  selectedProductosShow: any;
   showDialogConfirmar = false;
   cardNumber: String;
   cardNumberC: String;
@@ -59,8 +60,10 @@ export class FacturacionComponent implements OnInit {
     private messageGrowlService: MessageGrowlService,
     private activeCardsService: ActiveCardsService,
     private facturaService: FacturaService,
-    private validateService: ValidateService) {
+    private validateService: ValidateService,
+    private promocionService: PromocionService) {
 
+    this.lstProductos = [];
     this.tipoProductoService.getAll().subscribe(tp => {
       let index = 0;
       for (let entry of tp) {
@@ -71,24 +74,31 @@ export class FacturacionComponent implements OnInit {
       }
 
       this.productoService.getAll().subscribe(p => {
+        this.lstProductos = p;
+        this.paths = p;
+        /*let paths = p;
         let index = 0;
         for (let entry of p) {
-          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
+          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: false };
           this.paths[index] = aux;
           index++;
         }
-
+        console.log(this.paths)
+        console.log(paths)*/
         this.pathsType = [];
         let tipo = this.mapTP.get(0);
         let ind = 0;
         for (let entry of this.paths) {
           if (entry.tipoProducto === tipo) {
-            let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
-            this.pathsType[ind] = aux;
+            //let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
+            this.pathsType.push(entry);
             ind++;
           }
         }
         this.ngOnInitPromos();
+        /*console.log(this.pathsType);
+        console.log(this.pathsTypePromos);*/
+
       }, err => {
         console.log(err);
       });
@@ -120,15 +130,6 @@ export class FacturacionComponent implements OnInit {
       console.log(err);
     });
     this.productosV = [];
-  }
-
-  public ngOnInitPromos() {
-    this.pathsTypePromos = [];
-    for (let entry of this.paths) {
-      if (entry.promocion.length > 0) {
-        this.pathsTypePromos.push(entry);
-      }
-    }
   }
 
   addProd(i) {
@@ -164,7 +165,6 @@ export class FacturacionComponent implements OnInit {
   }
 
   eventEmitDoubleClick($event, i) {
-
     this.flagProdSeleccionados = true;
     let aux = {
       path: this.pathsType[i].path,
@@ -182,11 +182,9 @@ export class FacturacionComponent implements OnInit {
       this.addProd(indexOfInserted);
     }
     console.log(this.selectedProductos)
-
   }
 
   public loadLogos(i) {
-
     if (i == 100) {
       this.flagPrecioPromo = true;
     } else {
@@ -196,34 +194,34 @@ export class FacturacionComponent implements OnInit {
     let tipo = this.mapTP.get(i);
     let index = 0;
     for (let entry of this.paths) {
-      if (entry.tipoProducto === tipo) {
-        let aux = {
-          path: entry.path,
-          tipoProducto: entry.tipoProducto,
-          nombre: entry.nombre,
-          precio_venta: entry.precio_venta,
-          cant_existente: entry.cant_existente,
-          promocion: entry.promocion
-        }
-        aux.precio_venta = parseFloat(aux.precio_venta.toString());
-        aux.cant_existente = parseFloat(aux.cant_existente.toString());
-        if (aux.cant_existente === 0) {
+      if (entry.id_tipo_producto === tipo) {
+
+        entry.cant_existente = parseFloat(entry.cant_existente.toString());
+        entry.contenido = parseFloat(entry.contenido.toString());
+        entry.precio_costo = parseFloat(entry.precio_costo.toString());
+        entry.precio_venta = parseFloat(entry.precio_venta.toString());
+        entry.utilidad = parseFloat(entry.utilidad.toString());
+
+        if (entry.cant_existente === 0) {
           this.colorZeroStock = '#FE2E2E';
         } else {
-          if (aux.cant_existente > 15) {
+          if (entry.cant_existente > 15) {
             this.colorZeroStock = '#5ff442';
           } else {
             this.colorZeroStock = '#e5e500';
           }
         }
-        this.pathsType[index] = aux;
+        for (let p of this.pathsTypePromos) {
+          let precio = this.searchPrecioProdPromo(entry._id, p.productosV);
+          if (precio !== undefined) {
+            entry.precio_costo = precio;
+            this.colorPromo = 'yellow';
+          } else {
+            this.colorPromo = '';
+          }
+        }
+        this.pathsType[index] = entry;
         index++;
-      }
-    }
-    this.pathsTypePromos = [];
-    for (let entry of this.paths) {
-      if (entry.promocion.length > 0) {
-        this.pathsTypePromos.push(entry);
       }
     }
   }
@@ -397,6 +395,58 @@ export class FacturacionComponent implements OnInit {
     }, err => {
       console.log(err);
     })
+  }
+
+  /* PROMOS*/
+  showDialogPromo = false;
+  selectedProdPromo: any;
+  lstProductos: any[];
+  lstProdPromo: any[];
+  colorPromo = '';
+
+  selectProductPromo(prod) {
+    this.selectedProdPromo = prod;
+    console.log(prod)
+    this.showDialogPromo = true;
+  }
+
+  searchDescProd(id, myArray) {
+    for (const entry of myArray) {
+      if (entry._id === id) {
+        return entry.nombre;
+      }
+    }
+  }
+
+  searchPrecioProdPromo(id, myArray) {
+    for (const entry of myArray) {
+      if (entry.id === id) {
+        return entry.precio_venta;
+      }
+    }
+  }
+
+  public ngOnInitPromos() {
+    this.pathsTypePromos = [];
+    this.lstProdPromo = [];
+    this.promocionService.getAll().subscribe(data => {
+      for (let entry of data) {
+        if (entry.tipoPromo.localeCompare('AP') === 0) {
+          for (let p of entry.productosV[0].p) {
+            p.id = this.searchDescProd(p.id, this.lstProductos)
+          }
+          for (let r of entry.productosV[1].r) {
+            r.id = this.searchDescProd(r.id, this.lstProductos)
+          }
+          this.lstProdPromo = [...this.lstProdPromo, entry];
+        } else {
+          this.pathsTypePromos = [...this.pathsTypePromos, entry];
+        }
+      }
+    }, err => {
+      console.log(err);
+    });
+
   }
 
   //Width detection

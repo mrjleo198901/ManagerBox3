@@ -92,3 +92,7 @@
   color: #2196F3;
   cursor: pointer;
 }
+
+.ui-datatable-header {
+  display:none
+}
