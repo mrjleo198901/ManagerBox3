@@ -581,11 +581,30 @@ export class AdministrarComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
     })
   }
+  onRowSelectInit(_id) {
+    this.promocionService.getById(_id).subscribe(data => {
+      data[0].estado = 1;
+      if (data[0].tipoPromo.localeCompare('DP') === 0) {
+        this.fillLstProdsPromoInit(data[0])
+      }
+      this.promocionService.update(data[0]).subscribe(data => {
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+      })
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
+    })
+  }
 
   onRowUnselect(event) {
     this.promocionService.getById(event.data._id).subscribe(data => {
       data[0].estado = 0;
-      this.promocionService.update(data[0]).subscribe(data => {
+      if (data[0].tipoPromo.localeCompare('DP') === 0) {
+        this.removeLstProdsPromo(data[0]);
+      }
+      this.promocionService.update(data[0]).subscribe(data1 => {
         this.messageGrowlService.notify('info', 'Información', "Se ha deshabilitado una promoción!");
       }, err => {
         console.log(err);
@@ -618,11 +637,67 @@ export class AdministrarComponent implements OnInit {
         this.lstProdsPromo[ind].promocion.push(promo);
       }
     }
-    // console.log(this.lstProdsPromo)
+  }
+
+  removeLstProdsPromo(data) {
+    for (let entry of data.productosV) {
+      let ind = this.lstProdsPromo.findIndex(x => x._id === entry.id);
+      if (ind !== -1) {
+        let nombre = data.nombre;
+        this.lstProdsPromo[ind].promocion = this.lstProdsPromo[ind].promocion.filter(function (obj) {
+          return obj.nombre.localeCompare(nombre);
+        });
+
+        if (this.lstProdsPromo[ind].promocion.length > 0) {
+          this.lstProdsPromo[ind].selected = this.lstProdsPromo[ind].promocion[0];
+          this.updateActivePrice(entry.id, this.lstProdsPromo[ind].promocion);
+        } else {
+          this.lstProdsPromo = this.lstProdsPromo.filter(function (obj) {
+            return obj._id.localeCompare(entry.id);
+          });
+          this.updateActivePrice(entry.id, []);
+        }
+
+      }
+    }
+  }
+
+  fillLstProdsPromoInit(data) {
+    for (let entry of data.productosV) {
+      let ind = this.lstProdsPromo.findIndex(x => x._id === entry.id);
+      if (ind === -1) {
+        let index = this.lstProductos.findIndex(x => x._id === entry.id);
+        let aux = {
+          _id: entry.id,
+          nombre: this.lstProductos[index].nombre,
+          precio_venta: this.lstProductos[index].precio_venta,
+          promocion: [],
+          selected: undefined
+        }
+        let promo = { nombre: data.nombre, precio_venta: entry.precio_venta };
+        aux.promocion.push(promo);
+        aux.selected = promo;
+        this.lstProdsPromo = [...this.lstProdsPromo, aux];
+
+      } else {
+        let promo = { nombre: data.nombre, precio_venta: entry.precio_venta }
+        this.lstProdsPromo[ind].promocion.push(promo);
+
+        let index = this.lstProductos.findIndex(x => x._id === entry.id);
+        let promo1 = {
+          nombre: this.lstProductos[index].promocion[0].nombre,
+          precio_venta: this.lstProductos[index].promocion[0].precio_venta
+        }
+        let i = this.lstProdsPromo[ind].promocion.findIndex(x => x.nombre === promo1.nombre);
+        if (i !== -1) {
+          this.lstProdsPromo[ind].selected = this.lstProdsPromo[ind].promocion[i];
+        }
+      }
+    }
+    //console.log(this.lstProdsPromo);
   }
 
   saveActivePrice() {
-
     if (this.selectedPromos.length > 0) {
       let i = 0;
       for (let entry of this.lstProdsPromo) {
@@ -645,6 +720,21 @@ export class AdministrarComponent implements OnInit {
       this.messageGrowlService.notify('warn', 'Advertencia', "No existen promociones activas!");
     }
   }
+
+  updateActivePrice(id, vec) {
+    let i = 0;
+    this.productoService.getById(id).subscribe(data => {
+      data[0].promocion = vec;
+      this.productoService.updateProducto(data[0]).subscribe(data => {
+        this.messageGrowlService.notify('info', 'Información', "Cambios Guardados!");
+      }, err => {
+        console.log(err);
+      });
+    }, err => {
+      console.log(err);
+    });
+  }
+
 
   ngOnInitPromo() {
     this.lstPromos = [];
@@ -675,9 +765,12 @@ export class AdministrarComponent implements OnInit {
             }
             aux.productosV = fila;
           }
+          if (aux.estado === 1 && aux.tipoPromo.localeCompare('Descontar Precio') === 0) {
+            this.selectedPromos = [...this.selectedPromos, aux];
+            this.onRowSelectInit(aux._id)
+          }
           this.lstPromos = [...this.lstPromos, aux];
         }
-        //console.log(this.lstPromos)
       }, err => {
         console.log(err);
       });
