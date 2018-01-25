@@ -72,32 +72,17 @@ export class FacturacionComponent implements OnInit {
         this.mapTP.set(index, entry._id);
         index++;
       }
-
       this.productoService.getAll().subscribe(p => {
         this.lstProductos = p;
         this.paths = p;
-        /*let paths = p;
-        let index = 0;
-        for (let entry of p) {
-          let aux = { path: entry.path, tipoProducto: entry.id_tipo_producto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: false };
-          this.paths[index] = aux;
-          index++;
-        }
-        console.log(this.paths)
-        console.log(paths)*/
         this.pathsType = [];
         let tipo = this.mapTP.get(0);
-        let ind = 0;
         for (let entry of this.paths) {
           if (entry.tipoProducto === tipo) {
-            //let aux = { path: entry.path, tipoProducto: entry.tipoProducto, nombre: entry.nombre, precio_venta: entry.precio_venta, cant_existente: entry.cant_existente, promocion: entry.promocion };
             this.pathsType.push(entry);
-            ind++;
           }
         }
         this.ngOnInitPromos();
-        /*console.log(this.pathsType);
-        console.log(this.pathsTypePromos);*/
 
       }, err => {
         console.log(err);
@@ -133,8 +118,13 @@ export class FacturacionComponent implements OnInit {
   }
 
   addProd(i) {
+    //CALCULAR TOTAL CON PRECIO PROMO
     this.selectedProductos[i].cantidad = this.selectedProductos[i].cantidad + 1;
-    this.selectedProductos[i].total = parseFloat(this.selectedProductos[i].total) + parseFloat(this.pathsType[i].precio_venta.toString());
+    if (this.selectedProductos[i].promocion.length > 0) {
+      this.selectedProductos[i].total = parseFloat(this.selectedProductos[i].total) + this.pathsType[i].promocion[0].precio_venta;
+    } else {
+      this.selectedProductos[i].total = parseFloat(this.selectedProductos[i].total) + parseFloat(this.pathsType[i].precio_venta.toString());
+    }
   }
 
   lessProd(i) {
@@ -168,20 +158,24 @@ export class FacturacionComponent implements OnInit {
     this.flagProdSeleccionados = true;
     let aux = {
       path: this.pathsType[i].path,
-      tipoProducto: this.pathsType[i].tipoProducto,
+      tipoProducto: this.pathsType[i].id_tipo_producto,
       nombre: this.pathsType[i].nombre,
       cantidad: 1,
       precio_venta: this.pathsType[i].precio_venta,
-      total: this.pathsType[i].precio_venta
+      total: this.pathsType[i].precio_venta,
+      promocion: this.pathsType[i].promocion,
+      value: this.pathsType[i].nombre
     };
-
+    if (aux.promocion.length > 0) {
+      aux.total = this.pathsType[i].promocion[0].precio_venta;
+    }
     var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
     if (indexOfInserted == -1) {
       this.selectedProductos.push(aux);
     } else {
       this.addProd(indexOfInserted);
     }
-    console.log(this.selectedProductos)
+    console.log(this.selectedProductos);
   }
 
   public loadLogos(i) {
@@ -202,27 +196,33 @@ export class FacturacionComponent implements OnInit {
         entry.precio_venta = parseFloat(entry.precio_venta.toString());
         entry.utilidad = parseFloat(entry.utilidad.toString());
 
-        if (entry.cant_existente === 0) {
+        /*if (entry.cant_existente >= 0 && entry.cant_existente < 15) {
           this.colorZeroStock = '#FE2E2E';
-        } else {
-          if (entry.cant_existente > 15) {
-            this.colorZeroStock = '#5ff442';
-          } else {
-            this.colorZeroStock = '#e5e500';
-          }
         }
-        for (let p of this.pathsTypePromos) {
-          let precio = this.searchPrecioProdPromo(entry._id, p.productosV);
-          if (precio !== undefined) {
-            entry.precio_costo = precio;
-            this.colorPromo = 'yellow';
-          } else {
-            this.colorPromo = '';
-          }
+        if (entry.cant_existente >= 15 && entry.cant_existente < 50) {
+          this.colorZeroStock = '#e5e500';
+        }
+        if (entry.cant_existente >= 50) {
+          this.colorZeroStock = '#5ff442';
+        }else{
+          this.colorZeroStock = '';
+        }*/
+        if (index == 0) {
+          this.colorZeroStock = '#FE2E2E';
+        }
+        if (index == 1) {
+          this.colorZeroStock = '#e5e500';
+        }
+
+        if (entry.promocion.length > 0) {
+          this.colorPromo = 'yellow';
+        } else {
+          this.colorPromo = '';
         }
         this.pathsType[index] = entry;
         index++;
       }
+
     }
   }
 
@@ -284,35 +284,32 @@ export class FacturacionComponent implements OnInit {
         this.facturaService.getById(this.idFact).subscribe(data => {
           let updatedFact = data;
           let vecDF: any = [];
+          //cambiar formato del detalle de la factura
           for (let entry of data[0].detalleFacturaV) {
-            let aux = {
-              descripcion: entry.descripcion,
-              precio_venta: entry.precio_venta,
-              total: entry.total,
-              cantidad: entry.cantidad,
-              fecha: entry.fecha
-            }
-            vecDF.push(aux)
+            vecDF.push(entry);
           }
           for (let entry of this.selectedProductos) {
             let aux = {
-              descripcion: entry.nombre,
-              precio_venta: entry.precio_venta,
-              total: entry.total,
+              fecha: this.validateService.getDateTimeEs(),
               cantidad: entry.cantidad,
-              fecha: this.validateService.getDateTimeEs()
+              descripcion: entry.nombre,
+              total: entry.total,
+              precio_venta: entry.precio_venta,
+              vendedor: this.selectedMesero._id,
+              promocion: entry.promocion
             }
-            vecDF.push(aux)
+            vecDF.push(aux);
+            console.log(entry);
           }
           updatedFact[0].detalleFacturaV = vecDF;
           console.log(updatedFact)
-          /*this.facturaService.update(updatedFact[0]).subscribe(data => {
-              this.ngOnInitConfVenta();
-              this.selectedProductos = [];
+          this.facturaService.update(updatedFact[0]).subscribe(data => {
+            this.ngOnInitConfVenta();
+            this.selectedProductos = [];
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-          })*/
+          })
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');

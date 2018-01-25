@@ -25,7 +25,8 @@
         "../node_modules/primeng/resources/themes/omega/theme.css"
       ],
       "scripts": [
-        "../node_modules/big-js/big.js"
+        "../node_modules/big-js/big.js",
+        "../node_modules/jspdf/dist/jspdf.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

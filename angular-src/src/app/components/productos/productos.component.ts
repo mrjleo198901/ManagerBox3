@@ -710,9 +710,6 @@ export class ProductosComponent implements OnInit {
         return false;
       }
       this.productoService.registerProducto(producto).subscribe(data => {
-        /*data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
-        this.sourceP.add(data);
-        this.sourceP.refresh();*/
         this.ngOnInitProducto();
         this.ngOnInit();
         this.showDialogPC = false;
@@ -731,9 +728,6 @@ export class ProductosComponent implements OnInit {
         this.productoService.uploadImage(this.pathLogo).subscribe(tp => {
           producto.path = tp;
           this.productoService.registerProducto(producto).subscribe(data => {
-            /*data.id_tipo_producto = this.selected_tipo_producto.desc_tipo_producto;
-            this.sourceP.add(data);
-            this.sourceP.refresh();*/
             this.ngOnInitProducto();
             this.ngOnInit();
             this.showDialogPC = false;

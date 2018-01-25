@@ -581,6 +581,7 @@ export class AdministrarComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', "Algo salió mal!");
     })
   }
+
   onRowSelectInit(_id) {
     this.promocionService.getById(_id).subscribe(data => {
       data[0].estado = 1;
@@ -632,9 +633,11 @@ export class AdministrarComponent implements OnInit {
         aux.promocion.push(promo);
         aux.selected = promo;
         this.lstProdsPromo = [...this.lstProdsPromo, aux];
+        this.updateActivePrice(aux._id, aux.selected);
       } else {
         let promo = { nombre: data.nombre, precio_venta: entry.precio_venta }
         this.lstProdsPromo[ind].promocion.push(promo);
+        this.updateActivePrice(entry.id, this.lstProdsPromo[ind].promocion[0]);
       }
     }
   }
@@ -657,7 +660,6 @@ export class AdministrarComponent implements OnInit {
           });
           this.updateActivePrice(entry.id, []);
         }
-
       }
     }
   }
@@ -724,7 +726,8 @@ export class AdministrarComponent implements OnInit {
   updateActivePrice(id, vec) {
     let i = 0;
     this.productoService.getById(id).subscribe(data => {
-      data[0].promocion = vec;
+      data[0].promocion = [];
+      data[0].promocion.push(vec);
       this.productoService.updateProducto(data[0]).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', "Cambios Guardados!");
       }, err => {

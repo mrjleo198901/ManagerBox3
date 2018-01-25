@@ -33,8 +33,8 @@
                       <span class="input-group-addon"><i class="fa fa-id-card" aria-hidden="true"></i></span>
                       <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc($event)" id="tipoDoc" name="tipoDoc" class="form-control"
                         [disabled]="flagProductoGasto" style="z-index: 1;" tabindex="1">
-                      <option *ngFor="let c of tipo_documentos" [ngValue]="c">{{c.label}}</option>
-                    </select>
+                        <option *ngFor="let c of tipo_documentos" [ngValue]="c">{{c.label}}</option>
+                      </select>
                     </div>
                   </div>
                 </div>

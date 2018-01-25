@@ -1257,7 +1257,7 @@ export class CardComponent implements OnInit {
         precio_venta: entry.precio,
         vendedor: this.us.id
       }
-      //Insert productos promos
+      //Insert productos promo-cover
       lst.push(aux);
       if (entry.producto.length > 0) {
         for (let prod of entry.producto) {

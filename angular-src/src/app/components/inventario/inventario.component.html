@@ -4,106 +4,62 @@
     </div>
 </div>
 
-<button type="button" pButton (click)="showSuccess()" label="Success" class="ui-button-success"></button>
-<button type="button" pButton (click)="showInfo()" label="Info" class="ui-button-info"></button>
-<button type="button" pButton (click)="showWarn()" label="Warn" class="ui-button-warning"></button>
-<button type="button" pButton (click)="showError()" label="Error" class="ui-button-danger"></button>
-
-<p-growl [value]="msgs" sticky="sticky"></p-growl>
-
-<p-panel header="Validate">
-    <div class="input-group col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
-        <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-        <input [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()" type="text" class="form-control"
-            name="numero" id="numero" placeholder="Codigo unico de tarjeta" [disabled]="!flagActivateInsertCard" style="z-index: 1;">
-        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-        <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
-    </div>
-</p-panel>
-
-<form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
-    <p-panel header="Validate">
-        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2">
-                    First Name *:
+<div class="col-lg-6">
+    <label>Tipo de Reporte</label>
+    <select [(ngModel)]="selecTipoReporte" (ngModelChange)="fillParameters($event)" id="tipoRepo" class="form-control" style="z-index: 1;"
+        tabindex="1">
+        <option *ngFor="let c of tipo_reportes" [ngValue]="c">{{c.label}}</option>
+    </select><br>
+</div>
+<div class="col-lg-6">
+    <br>
+    <a class="btn btn-primary" (click)="generatePDF()" style="margin-top: 5px">Generar PDF</a><br>
+</div>
+<div class="col-lg-12">
+    <label>Parámetros</label>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div *ngFor="let c of lstLabels">
+                <div class="col-lg-2">
+                    <p-checkbox [(ngModel)]="c.active" (onChange)="changeLabel(c)" name="group1" binary="true" label={{c.name}} inputId="ny"
+                        [style]="{'margin-bottom':'5px'}"></p-checkbox>
                 </div>
-                <div class="ui-grid-col-6">
-                    <input pInputText type="text" [(ngModel)]="nombre" id="firstname" name="firstname" formControlName="firstname" placeholder="Required"
-                    />
-                </div>
-                <div class="ui-grid-col-4">
-                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['firstname'].valid&&userform.controls['firstname'].dirty">
-                        <i class="fa fa-close"></i> Firstname is required
-                    </div>
-                </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2">
-                    Last Name *:
-                </div>
-                <div class="ui-grid-col-6">
-                    <input pInputText type="text" formControlName="lastname" placeholder="Required" />
-                </div>
-                <div class="ui-grid-col-4">
-                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['lastname'].valid&&userform.controls['lastname'].dirty">
-                        <i class="fa fa-close"></i> Lastname is required
-                    </div>
-                </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2">
-                    Password *:
-                </div>
-                <div class="ui-grid-col-6">
-                    <input pInputText type="password" formControlName="password" placeholder="Required - Min(6)" />
-                </div>
-                <div class="ui-grid-col-4">
-                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['password'].valid&&userform.controls['password'].dirty">
-                        <i class="fa fa-close"></i>
-                        <span *ngIf="userform.controls['password'].errors['required']">Password is required</span>
-                        <span *ngIf="userform.controls['password'].errors['minlength']">Must be longer than 6 characters</span>
-                    </div>
-                </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2">
-                    Description:
-                </div>
-                <div class="ui-grid-col-6">
-                    <textarea pInputTextarea type="text" formControlName="description"></textarea>
-                </div>
-                <div class="ui-grid-col-4"></div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2">
-                    Gender *:
-                </div>
-                <div class="ui-grid-col-6">
-                    <p-dropdown [options]="genders" formControlName="gender" [autoWidth]="false"></p-dropdown>
-                </div>
-                <div class="ui-grid-col-4">
-                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['gender'].valid&&userform.controls['gender'].dirty">
-                        <i class="fa fa-close"></i> Gender is required
-                    </div>
-                </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-2"></div>
-                <div class="ui-grid-col-6">
-                    <button pButton type="submit" label="Submit" [disabled]="!userform.valid"></button>
-                </div>
-                <div class="ui-grid-col-4"></div>
-            </div>
-            <div style="text-align:center;margin-top:20px" *ngIf="submitted">
-                Form Submitted
-                <br> {{diagnostic}}
             </div>
         </div>
-    </p-panel>
-</form>
+    </div>
+</div>
 
+<div class="col-lg-12" [hidden]="true"><br>
+    <iframe id="iFramePDF" type="application/pdf" width="100%" height="650" style="position:relative;z-index:1; border: solid 2px; border-color: #CDC8CE">
+        Your Browser doesn´t support iframes
+    </iframe>
+</div>
 
-<h1>Default Stripe Form</h1>
-
-<button (click)="openCheckout()">Purchase</button>
+<div class="col-lg-12" style="text-align: center"><br>
+    <div id="tableToPDF">
+        <table>
+            <thead>
+                <tr>
+                    <th *ngFor="let tag of lstLabels">
+                        <p *ngIf="tag.active == true">&nbsp; {{tag.name}} &nbsp;</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let frequency of lstProds;">
+                    <td *ngIf="lstLabels[0].active == true">{{ frequency._id }}</td>
+                    <td *ngIf="lstLabels[1].active == true">{{ frequency.nombre }}</td>
+                    <td *ngIf="lstLabels[2].active == true">{{ frequency.precio_costo | number : '1.2-2'}}</td>
+                    <td *ngIf="lstLabels[3].active == true">{{ frequency.precio_venta | number : '1.2-2'}}</td>
+                    <td *ngIf="lstLabels[4].active == true">{{ frequency.utilidad | number : '1.2-2'}}</td>
+                    <td *ngIf="lstLabels[5].active == true">{{ frequency.cant_existente | number : '1.2-2'}}</td>
+                    <td *ngIf="lstLabels[6].active == true">{{ frequency.id_tipo_producto }}</td>
+                    <td *ngIf="lstLabels[7].active == true">{{ frequency.path }}</td>
+                    <td *ngIf="lstLabels[8].active == true">{{ frequency.contenido }}</td>
+                    <td *ngIf="lstLabels[9].active == true">{{ frequency.promocion }}</td>
+                    <td *ngIf="lstLabels[10].active == true">{{ frequency.subproductoV }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

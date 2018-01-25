@@ -12,29 +12,49 @@
                     <hr>
                     <h3 style="text-align: center">Promociones Disponibles</h3>
                     <hr>
-                    <p-dataGrid [value]="lstProdPromo" [paginator]="true" [rows]="16" emptyMessage="No existen registros">
-                        <ng-template let-prod let-i="index" pTemplate="item">
-                            <div class="ui-g-12 ui-md-3">
-                                <p-panel [header]="prod.nombre" [style]="{'text-align':'center'}">
-                                    <div (dblclick)="eventEmitDoubleClick($event,i)">
-                                        <p style="text-align: center" *ngFor="let p of prod.productosV[0].p">
-                                            -{{p.cantidad}} {{p.id}}
-                                        </p>
-                                        <p>---------------------------</p>
-                                        <p style="text-align: center" *ngFor="let r of prod.productosV[1].r">
-                                            -{{r.cantidad}} {{r.id}}
-                                        </p>
+                    <div class="col-lg-12" style="padding: 0px">
+                        <p-dataGrid [value]="lstProdPromo" [paginator]="true" [rows]="16" emptyMessage="No existen registros">
+                            <ng-template let-prod let-i="index" pTemplate="item">
+                                <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
+                                    <div class="panel panel-default" [ngStyle]="{'text-align':'center'}">
+                                        <div class="panel-body">
+                                            <p><b>{{prod.nombre}}</b></p>
+                                            <div (dblclick)="eventEmitDoubleClick($event,i)">
+                                                <p style="text-align: center" *ngFor="let p of prod.productosV[0].p">
+                                                    -{{p.cantidad}} {{p.id}}
+                                                </p>
+                                                <p>---------------------------</p>
+                                                <p style="text-align: center" *ngFor="let r of prod.productosV[1].r">
+                                                    -{{r.cantidad}} {{r.id}}
+                                                </p>
+                                            </div>
+                                            <i class="fa fa-search" (click)="selectProductPromo(prod)" style="cursor:pointer;padding-top: 10px"></i>
+                                        </div>
                                     </div>
-                                    <i class="fa fa-search" (click)="selectProductPromo(prod)" style="cursor:pointer;padding-top: 10px"></i>
-                                </p-panel>
-                            </div>
-                        </ng-template>
-                    </p-dataGrid>
+                                </div>
+                            </ng-template>
+                        </p-dataGrid>
+                    </div>
                 </tab>
                 <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                     <hr>
                     <h3 style="text-align: center;">{{tabz.title}}</h3>
                     <hr>
+                    <div class="col-lg-12" style="padding: 0px">
+                        <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false" emptyMessage="No existen registros">
+                            <ng-template let-prod let-i="index" pTemplate="item">
+                                <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
+                                    <div class="panel panel-default" [ngStyle]="{'text-align':'center','border-color':colorZeroStock}">
+                                        <div class="panel-body">
+                                            <p [ngStyle]="{'background-color':colorPromo}">{{prod.nombre}}</p>
+                                            <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
+                                            <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dataGrid><br>
+                    </div>
                     <div class="col-lg-6" style="text-align: left; padding: 0">
                         Numero de unidades en Stock:
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid #5ff442; background-color: #5ff442; margin-bottom: -2.5px"></canvas> Alta
@@ -44,21 +64,6 @@
                     <div class="col-lg-6" style="text-align: right; padding: 0">
                         Productos en Promoción:
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid yellow; background-color: yellow; margin-bottom: -2.5px"></canvas>
-                    </div>
-                    <div class="col-lg-12" style="padding: 0"><br>
-                        <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false" emptyMessage="No existen registros">
-                            <ng-template let-prod let-i="index" pTemplate="item">
-                                <div class="ui-g-12 ui-md-3">
-                                    <p-panel [style]="{'text-align':'center','border-color':colorZeroStock}">
-                                        <p-header>
-                                            <p [ngStyle]="{'background-color':colorPromo}">{{prod.nombre}}</p>
-                                        </p-header>
-                                        <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                        <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
-                                    </p-panel>
-                                </div>
-                            </ng-template>
-                        </p-dataGrid>
                     </div>
                 </tab>
             </tabset>
@@ -106,55 +111,61 @@
 </div>
 
 <!--Control venta(Cajero & tarjeta)-->
-<p-dialog header="Confirmación Venta" [(visible)]="showDialogConfirmar" [responsive]="true" [modal]="true" width="450">
-    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+<p-dialog header="Confirmación Venta" [(visible)]="showDialogConfirmar" [responsive]="true" [modal]="true" width="500">
+    <div class="form-group ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
         <label for="cardNumber" class="cols-sm-2 control-label">Numero de tarjeta</label>
         <div class="cols-sm-10">
             <div class="input-group">
-                <span class="input-group-addon input-sm"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
-                <input class="form-control input-sm" [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()"
+                <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></span>
+                <input class="form-control" [(ngModel)]="cardNumber" (ngModelChange)="onChange($event)" (click)="$event.target.select()"
                     type="text" name="cardNumber" id="cardNumber" placeholder="Numero de tarjeta de consumo" style="z-index: 1;"
                     tabindex="1" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
-                <span class="input-group-addon input-sm" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
-                <span class="input-group-addon input-sm" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
+                <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
+                <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
 
             </div>
         </div>
     </div>
-    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+    <div class="form-group ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
         <label>Control mesero</label>
         <div class="input-group">
-            <span class="input-group-addon input-sm"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <select class="form-control  input-sm" [(ngModel)]="selectedMesero" tabindex="2">
+            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+            <select class="form-control" [(ngModel)]="selectedMesero" tabindex="2">
                 <option *ngFor="let c of listMeseros" [ngValue]="c">{{c.cedula}}</option>
             </select>
         </div>
     </div>
-    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+    <div class="form-group ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
         <label>Password</label>
         <div class="input-group">
-            <span class="input-group-addon input-sm"><i class="fa fa-lock" aria-hidden="true"></i></span>
-            <input [(ngModel)]="password" (ngModelChange)="changePass($event)" type="password" class="form-control input-sm" name="password"
-                id="password" placeholder="Ingresa tu clave de usuario" tabindex="3">
+            <span class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+            <input [(ngModel)]="password" (ngModelChange)="changePass($event)" type="password" class="form-control" name="password" id="password"
+                placeholder="Ingresa tu clave de usuario" tabindex="3">
         </div>
     </div>
 
-    <div class="form-group col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
-        <p-listbox [options]="selectedProductos" [(ngModel)]="selected_producto" [style]="{'text-align':'left','max-height':'200px','height':'200px','width':'100%'}"
-            id="prodExistente" name="prodExistente" (onChange)="onChangeProdExistentes($event)">
-            <ng-template let-car pTemplate="item">
-                {{car.nombre}}
-                <span class="badge">{{car.cantidad}} u</span>
-                <span class="badge">$ {{ car.precio_venta | number : '1.2-2'}}</span>
-                <span class="badge">$ {{ car.total | number : '1.2-2'}}</span>
-            </ng-template>
-        </p-listbox>
+    <div class="form-group ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+        <div class="panel panel-default" style="border: transparent; margin-bottom: 0px; margin-left: -15px; margin-right: -15px; margin-top: 0px">
+            <div class="panel-body">
+                <p-listbox [options]="selectedProductos" [(ngModel)]="selected_producto" [listStyle]="{'max-height':'101px'}" [style]="{'text-align':'left','height':'110px','width':'100%'}"
+                    id="prodExistente" name="prodExistente">
+                    <ng-template let-car pTemplate="item">
+                        {{car.nombre}}
+                        <span class="badge" style="margin-top: -2.5px" tooltip="Cantidad">{{car.cantidad}} u</span>
+                        <span *ngIf="!car.promocion.length > 0" class="badge" style="margin-top: -2.5px" tooltip="Precio de venta">$ {{ car.precio_venta | number : '1.2-2'}}</span>
+                        <span *ngIf="car.promocion.length > 0" class="badge" style="margin-top: -2.5px" tooltip="Precio promoción">$ {{ car.promocion[0].precio_venta | number : '1.2-2'}}</span>
+                        <span class="badge" style="margin-top: -2.5px" tooltip="Total">$ {{ car.total | number : '1.2-2'}}</span>
+                    </ng-template>
+                </p-listbox>
+            </div>
+        </div>
+        <hr>
     </div>
 
 
     <!-- Button -->
     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <hr>
+
         <button class="btn btn-primary" (click)="send()" style="width: 25%;font-size: 11px" [disabled]="!flagMatchPass">Confirmar</button>
         <button class="btn btn-default" (click)="showDialogConfirmar = false" style="width: 25%;font-size: 11px">Cancelar</button>
     </div>
@@ -174,12 +185,12 @@
                         {{selectedProd.nombre}}
                     </li>
                     <li class="list-group-item list-group-item1">
-                        <p style="text-align: left">Precio <br>Producto:</p>
+                        <p style="text-align: left">Precio <br>Normal:</p>
                         ${{selectedProd.precio_venta | number : '1.2-2'}}
                     </li>
-                    <li class="list-group-item list-group-item1">
+                    <li class="list-group-item list-group-item1" *ngIf="selectedProd.promocion.length>0">
                         <p style="text-align: left">Precio <br>Promo:</p>
-                        ${{selectedProd.precio_costo | number : '1.2-2'}}
+                        ${{selectedProd.promocion[0].precio_venta | number : '1.2-2'}}
                     </li>
                     <li class="list-group-item list-group-item1">
                         <p style="text-align: left">Cantidad Existente:</p>

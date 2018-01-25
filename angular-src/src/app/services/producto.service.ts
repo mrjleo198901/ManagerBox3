@@ -77,6 +77,17 @@ export class ProductoService {
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
 
+  uploadPDF(files) {
+    const formData: FormData = new FormData();
+    formData.append('uploadFile', files, files.name);
+    const headers = new Headers();
+    headers.append('Accept', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(this.url + 'pdf', formData, options)
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
   deleteProducto(producto) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');

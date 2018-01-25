@@ -5,6 +5,8 @@ import { ValidateService } from '../../services/validate.service';
 import { Message, SelectItem } from 'primeng/primeng';
 import { AuthService } from '../../services/auth.service';
 import { Subject } from 'rxjs/Subject';
+import * as jsPDF from 'jspdf';
+import { ProductoService } from '../../services/producto.service';
 
 @Component({
   selector: 'app-inventario',
@@ -21,9 +23,11 @@ export class InventarioComponent implements OnInit {
   nombre;
   public static updateUserStatus: Subject<boolean> = new Subject();
 
-  constructor(private messageGrowlService: MessageGrowlService,
+  constructor(
+    private messageGrowlService: MessageGrowlService,
     private formBuilder: FormBuilder,
-    private validateService: ValidateService) {
+    private validateService: ValidateService,
+    private productoService: ProductoService) {
     InventarioComponent.updateUserStatus.subscribe(res => {
       console.log("entrooooooo")
     });
@@ -36,7 +40,6 @@ export class InventarioComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.userform = this.formBuilder.group({
       'firstname': new FormControl('', Validators.required),
       'lastname': new FormControl('', Validators.required),
@@ -50,6 +53,7 @@ export class InventarioComponent implements OnInit {
     this.genders.push({ label: 'Male', value: 'Male' });
     this.genders.push({ label: 'Female', value: 'Female' });
 
+    this.ngOnInitProds();
   }
 
   onSubmit(value: string) {
@@ -95,7 +99,6 @@ export class InventarioComponent implements OnInit {
     console.log('Remove Tab handler' + tab);
   };
 
-
   openCheckout() {
     var handler = (<any>window).StripeCheckout.configure({
       key: 'pk_test_oi0sKPJYLGjdvOXOM8tE8cMa',
@@ -113,7 +116,166 @@ export class InventarioComponent implements OnInit {
     });
 
   }
+  /* REPORTE DE PRODUCTOS*/
+  tipo_reportes: any
+  lstProds: any[];
+  keyNames: any[];
+  selecTipoReporte: any;
+  lstLabels: any[];
+  lstProdsActive: any[];
 
+  download() {
+    let name = "Prueba";
+    var doc = new jsPDF({
+      unit: "mm",
+      format: "letter"
+    });
+    let margins = {
+      top: 20,
+      bottom: 60,
+      left: 20,
+      width: 522
+    };
+    doc.setFontSize(20);
+    doc.setTextColor(12, 86, 245);
+    doc.text(20, 20, 'Reporte de Productos');
+    //doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    let source = '<table>' +
+      '<tr>' +
+      '<th>' + name + '</th>' +
+      '<th>Last name</th>' +
+      '</tr>' +
+      '<tr>' +
+      '<td>John</td>' +
+      '<td>Doe</td>' +
+      '</tr>' +
+      '<tr>' +
+      '<td>Jane</td>' +
+      '<td>Doe</td>' +
+      '</tr>' +
+      '</table>'
+
+
+    doc.fromHTML(
+      source,
+      margins.left,
+      margins.top, {
+        'width': margins.width
+      },
+      function (dispose) {
+        //doc.save('Test.pdf');
+      }, margins);
+    var data = doc.output('datauristring')
+    document.getElementById('iFramePDF').setAttribute('src', data);
+  }
+
+  generatePDF() {
+    this.productoService.getAll().subscribe(data => {
+      this.designTable(data);
+    }, err => {
+      console.log(err)
+    });
+    console.log(this.lstLabels)
+  }
+
+  designTable(data) {
+    this.lstProds = [];
+    console.log(data);
+    this.lstProds = data;
+    var doc = new jsPDF();
+    var x = 10;
+    var y = 20;
+    doc.setFontSize(20);
+    doc.setTextColor(12, 86, 245);
+    doc.text(20, 20, 'Reporte de Productos');
+
+    this.keyNames = Object.keys(data[0]);
+    console.log(this.keyNames);
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.rect(20, 30, 170, 10, 'S')
+    let spc = 10;
+    for (let entry of this.keyNames) {
+      doc.text(entry, x + spc, 35);
+      spc += 20;
+    }
+
+    /*doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.rect(x + 10, y + 47.5, 88, 60, 'S')
+    doc.line(x + 10, y + 52.5, x + 98, y + 52.5)
+    doc.line(x + 10, y + 57.5, x + 98, y + 57.5)
+    doc.line(x + 10, y + 62.5, x + 98, y + 62.5)
+    doc.line(x + 10, y + 67.5, x + 98, y + 67.5)
+    doc.line(x + 10, y + 72.5, x + 98, y + 72.5)
+    doc.line(x + 10, y + 77.5, x + 98, y + 77.5)
+    doc.line(x + 10, y + 82.5, x + 98, y + 82.5)
+    doc.line(x + 10, y + 87.5, x + 98, y + 87.5)
+    doc.line(x + 10, y + 92.5, x + 98, y + 92.5)
+    doc.line(x + 10, y + 97.5, x + 98, y + 97.5)
+    doc.line(x + 10, y + 102.5, x + 98, y + 102.5)
+    //verticales
+    doc.line(x + 20, y + 47.5, x + 20, y + 107.5)
+    doc.line(x + 68, y + 47.5, x + 68, y + 133)
+    doc.line(x + 83, y + 47.5, x + 83, y + 133)
+    doc.setFontSize(8);
+    doc.setFontType("bold");
+    doc.text("Nombre", x + 11, y + 51.5);
+    doc.text("Apellido", x + 36, y + 51.5);
+    doc.text("Ciudad", x + 69, y + 51.5);
+    doc.text("Telefono", x + 84, y + 51.5);*/
+
+
+    var data = doc.output('datauristring')
+
+    document.getElementById('iFramePDF').setAttribute('src', data);
+  }
+
+  fillParameters($event) {
+    this.lstLabels = [];
+    this.lstProdsActive = [];
+    if (this.selecTipoReporte.value === 1) {
+
+      this.productoService.getAll().subscribe(data => {
+        this.keyNames = [];
+        this.lstProds = [];
+        this.keyNames = Object.keys(data[0]);
+        this.lstProds = data;
+        let index = this.keyNames.findIndex(x => x === '__v');
+        if (index > -1) {
+          this.keyNames.splice(index, 1);
+        }
+        for (let entry of this.keyNames) {
+          let aux = { label: entry, active: false, name: entry }
+          aux.name = aux.name.replace(/[_-]/g, " ");
+          aux.name = aux.name.trim();
+          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+          if (aux.label.localeCompare('id_tipo_producto') === 0) {
+            aux.name = 'Tipo producto';
+          }
+          this.lstLabels.push(aux);
+        }
+      }, err => {
+        console.log(err)
+      })
+
+    }
+  }
+
+  changeLabel(c){
+//console.log(c)
+  }
+
+  ngOnInitProds() {
+    this.tipo_reportes = [];
+    this.tipo_reportes = [
+      { label: 'Selecciona un tipo...', value: 0 },
+      { label: 'Productos', value: 1 },
+      { label: 'Clientes', value: 2 },
+      { label: 'Personal', value: 3 }];
+    this.selecTipoReporte = this.tipo_reportes[0];
+  }
   //Width detection
   textAlignTitle = 'left';
 
