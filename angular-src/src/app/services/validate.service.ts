@@ -724,6 +724,31 @@ export class ValidateService {
     }
     return res;
   }
+
+  validateTipoReport(tipo) {
+    let res = true;
+    if (tipo == 0) {
+      document.getElementById("tipoReport").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
+  validateParameters(lstHeaders) {
+    let res = true;
+    let i = 0;
+    for (let entry of lstHeaders) {
+      if (entry.active === true) {
+        i++;
+      }
+    }
+    if (i == 0) {
+      document.getElementById("pnlParameters").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
   //SOLO LETRAS MAYUSCULAS O MINUSCULAS Y ESPACIOS 
   soloLetras(evt) {
     var key = evt.keyCode || evt.which;

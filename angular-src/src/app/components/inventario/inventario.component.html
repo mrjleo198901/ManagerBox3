@@ -4,24 +4,24 @@
     </div>
 </div>
 
-<div class="col-lg-6">
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <label>Tipo de Reporte</label>
-    <select [(ngModel)]="selecTipoReporte" (ngModelChange)="fillParameters($event)" id="tipoRepo" class="form-control" style="z-index: 1;"
+    <select [(ngModel)]="selecTipoReporte" (ngModelChange)="fillParameters($event)" id="tipoReport" class="form-control" style="z-index: 1;"
         tabindex="1">
         <option *ngFor="let c of tipo_reportes" [ngValue]="c">{{c.label}}</option>
     </select><br>
 </div>
-<div class="col-lg-6">
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <br>
-    <a class="btn btn-primary" (click)="generatePDF()" style="margin-top: 5px">Generar PDF</a><br>
+    <a class="btn btn-primary" (click)="generateNew()" style="margin-top: 5px">Generar PDF</a><br>
 </div>
-<div class="col-lg-12">
+<div class="col-lg-12 col-md-12">
     <label>Parámetros</label>
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="pnlParameters">
         <div class="panel-body">
             <div *ngFor="let c of lstLabels">
-                <div class="col-lg-2">
-                    <p-checkbox [(ngModel)]="c.active" (onChange)="changeLabel(c)" name="group1" binary="true" label={{c.name}} inputId="ny"
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
+                    <p-checkbox [(ngModel)]="c.active" name="group1" binary="true" label={{c.name}} inputId="ny"
                         [style]="{'margin-bottom':'5px'}"></p-checkbox>
                 </div>
             </div>
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-<div class="col-lg-12" [hidden]="true"><br>
+<div class="col-lg-12" [hidden]="false"><br>
     <iframe id="iFramePDF" type="application/pdf" width="100%" height="650" style="position:relative;z-index:1; border: solid 2px; border-color: #CDC8CE">
         Your Browser doesn´t support iframes
     </iframe>
@@ -41,11 +41,11 @@
             <thead>
                 <tr>
                     <th *ngFor="let tag of lstLabels">
-                        <p *ngIf="tag.active == true">&nbsp; {{tag.name}} &nbsp;</p>
+                        <p *ngIf="tag.active == true">{{tag.name}}</p>
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <!--<tbody>
                 <tr *ngFor="let frequency of lstProds;">
                     <td *ngIf="lstLabels[0].active == true">{{ frequency._id }}</td>
                     <td *ngIf="lstLabels[1].active == true">{{ frequency.nombre }}</td>
@@ -55,11 +55,21 @@
                     <td *ngIf="lstLabels[5].active == true">{{ frequency.cant_existente | number : '1.2-2'}}</td>
                     <td *ngIf="lstLabels[6].active == true">{{ frequency.id_tipo_producto }}</td>
                     <td *ngIf="lstLabels[7].active == true">{{ frequency.path }}</td>
-                    <td *ngIf="lstLabels[8].active == true">{{ frequency.contenido }}</td>
-                    <td *ngIf="lstLabels[9].active == true">{{ frequency.promocion }}</td>
-                    <td *ngIf="lstLabels[10].active == true">{{ frequency.subproductoV }}</td>
+                    <td *ngIf="lstLabels[8].active == true">{{ frequency.contenido }}ml</td>
+                    <td *ngIf="lstLabels[9].active == true">
+                        <p *ngIf="frequency.promocion.length>0; else other1">{{ frequency.promocion[0].precio_venta | number : '1.2-2'}}</p>
+                        <ng-template #other1>-</ng-template>
+                    </td>
+                    <td *ngIf="lstLabels[10].active == true">
+                        <div *ngIf="frequency.subproductoV.length>0; else other2">
+                            <p *ngFor="let prod of frequency.subproductoV;">
+                                -{{ prod.cantidad}} {{ prod.label}}
+                            </p>
+                        </div>
+                        <ng-template #other2>-</ng-template>
+                    </td>
                 </tr>
-            </tbody>
+            </tbody>-->
         </table>
     </div>
 </div>

@@ -5,8 +5,12 @@ import { ValidateService } from '../../services/validate.service';
 import { Message, SelectItem } from 'primeng/primeng';
 import { AuthService } from '../../services/auth.service';
 import { Subject } from 'rxjs/Subject';
-import * as jsPDF from 'jspdf';
 import { ProductoService } from '../../services/producto.service';
+import { ClienteService } from '../../services/cliente.service';
+import { DecimalPipe } from '@angular/common';
+import { TipoProductoService } from '../../services/tipo-producto.service';
+import 'jspdf-autotable';
+declare let jsPDF;
 
 @Component({
   selector: 'app-inventario',
@@ -27,7 +31,10 @@ export class InventarioComponent implements OnInit {
     private messageGrowlService: MessageGrowlService,
     private formBuilder: FormBuilder,
     private validateService: ValidateService,
-    private productoService: ProductoService) {
+    private productoService: ProductoService,
+    private clienteService: ClienteService,
+    private decimalPipe: DecimalPipe,
+    private tipoProductoService: TipoProductoService) {
     InventarioComponent.updateUserStatus.subscribe(res => {
       console.log("entrooooooo")
     });
@@ -122,149 +129,256 @@ export class InventarioComponent implements OnInit {
   keyNames: any[];
   selecTipoReporte: any;
   lstLabels: any[];
-  lstProdsActive: any[];
+  lstTipoProductos: any[];
+  lstLabels1: any[];
+  lstClientes: any[];
 
-  download() {
-    let name = "Prueba";
-    var doc = new jsPDF({
-      unit: "mm",
-      format: "letter"
-    });
-    let margins = {
-      top: 20,
-      bottom: 60,
-      left: 20,
-      width: 522
+  generate() {
+    var item = {
+      "Name": "XYZ",
+      "Age": "22",
+      "Gender": "Male"
     };
+    var doc = new jsPDF();
+    var col = ["Details", "Values"];
+    var rows = [];
+
+    for (var key in item) {
+      var temp = [key, item[key]];
+      rows.push(temp);
+    }
+
+    doc.autoTable(col, rows);
+    var data = doc.output('datauristring')
+    document.getElementById('iFramePDF').setAttribute('src', data);
+
+  }
+
+  generateNew() {
+    if (!this.validateService.validateTipoReport(this.selecTipoReporte.value)) {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona un tipo de reporte!');
+      return false;
+    }
+    document.getElementById("tipoReport").style.borderColor = "";
+    if (!this.validateService.validateParameters(this.lstLabels)) {
+      this.messageGrowlService.notify('error', 'Error', 'Selecciona los parámetros del reporte!');
+      return false;
+    }
+    document.getElementById("pnlParameters").style.borderColor = "";
+    if (this.selecTipoReporte.value === 1) {
+      this.fillPDF1();
+    }
+    if (this.selecTipoReporte.value === 2) {
+      this.fillPDF2();
+    }
+
+  }
+
+  fillPDF1() {
+    var doc = new jsPDF('p', 'mm', [297, 210]);
     doc.setFontSize(20);
     doc.setTextColor(12, 86, 245);
     doc.text(20, 20, 'Reporte de Productos');
-    //doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    let source = '<table>' +
-      '<tr>' +
-      '<th>' + name + '</th>' +
-      '<th>Last name</th>' +
-      '</tr>' +
-      '<tr>' +
-      '<td>John</td>' +
-      '<td>Doe</td>' +
-      '</tr>' +
-      '<tr>' +
-      '<td>Jane</td>' +
-      '<td>Doe</td>' +
-      '</tr>' +
-      '</table>'
-
-
-    doc.fromHTML(
-      source,
-      margins.left,
-      margins.top, {
-        'width': margins.width
-      },
-      function (dispose) {
-        //doc.save('Test.pdf');
-      }, margins);
+    var cols: any[] = [];
+    for (let entry of this.lstLabels) {
+      if (entry.active == true)
+        cols.push(entry.name)
+    }
+    if (cols.length > 6) {
+      doc = new jsPDF('l', 'mm', [297, 210]);
+    }
+    var rows = [];
+    let i = 0;
+    for (let entry of this.lstProds) {
+      let ele = [];
+      if (this.lstLabels[0].active === true) {
+        ele.push(++i);
+      }
+      if (this.lstLabels[1].active === true) {
+        ele.push(entry.nombre);
+      }
+      if (this.lstLabels[2].active === true) {
+        entry.precio_costo = this.decimalPipe.transform(entry.precio_costo, '1.2-2');
+        ele.push('$' + entry.precio_costo);
+      }
+      if (this.lstLabels[3].active === true) {
+        entry.precio_venta = this.decimalPipe.transform(entry.precio_venta, '1.2-2');
+        ele.push('$' + entry.precio_venta);
+      }
+      if (this.lstLabels[4].active === true) {
+        entry.utilidad = this.decimalPipe.transform(entry.utilidad, '1.2-2');
+        ele.push(entry.utilidad + '%');
+      }
+      if (this.lstLabels[5].active === true) {
+        ele.push(entry.cant_existente);
+      }
+      if (this.lstLabels[6].active === true) {
+        ele.push(entry.id_tipo_producto);
+      }
+      if (this.lstLabels[7].active === true) {
+        ele.push(entry.path);
+      }
+      if (this.lstLabels[8].active === true) {
+        entry.contenido = entry.contenido + ' ml';
+        ele.push(entry.contenido);
+      }
+      if (this.lstLabels[9].active === true) {
+        ele.push(entry.promocion);
+      }
+      if (this.lstLabels[10].active === true) {
+        ele.push(entry.subproductoV);
+      }
+      rows.push(ele)
+    }
+    doc.autoTable(cols, rows);
     var data = doc.output('datauristring')
     document.getElementById('iFramePDF').setAttribute('src', data);
   }
 
-  generatePDF() {
-    this.productoService.getAll().subscribe(data => {
-      this.designTable(data);
-    }, err => {
-      console.log(err)
-    });
-    console.log(this.lstLabels)
-  }
-
-  designTable(data) {
-    this.lstProds = [];
-    console.log(data);
-    this.lstProds = data;
-    var doc = new jsPDF();
-    var x = 10;
-    var y = 20;
+  fillPDF2() {
+    console.log(this.lstClientes)
+    var doc = new jsPDF('p', 'mm', [297, 210]);
     doc.setFontSize(20);
     doc.setTextColor(12, 86, 245);
-    doc.text(20, 20, 'Reporte de Productos');
-
-    this.keyNames = Object.keys(data[0]);
-    console.log(this.keyNames);
+    doc.text(20, 20, 'Reporte de Clientes');
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.rect(20, 30, 170, 10, 'S')
-    let spc = 10;
-    for (let entry of this.keyNames) {
-      doc.text(entry, x + spc, 35);
-      spc += 20;
+    var cols: any[] = [];
+    for (let entry of this.lstLabels) {
+      if (entry.active == true)
+        cols.push(entry.name)
     }
-
-    /*doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.rect(x + 10, y + 47.5, 88, 60, 'S')
-    doc.line(x + 10, y + 52.5, x + 98, y + 52.5)
-    doc.line(x + 10, y + 57.5, x + 98, y + 57.5)
-    doc.line(x + 10, y + 62.5, x + 98, y + 62.5)
-    doc.line(x + 10, y + 67.5, x + 98, y + 67.5)
-    doc.line(x + 10, y + 72.5, x + 98, y + 72.5)
-    doc.line(x + 10, y + 77.5, x + 98, y + 77.5)
-    doc.line(x + 10, y + 82.5, x + 98, y + 82.5)
-    doc.line(x + 10, y + 87.5, x + 98, y + 87.5)
-    doc.line(x + 10, y + 92.5, x + 98, y + 92.5)
-    doc.line(x + 10, y + 97.5, x + 98, y + 97.5)
-    doc.line(x + 10, y + 102.5, x + 98, y + 102.5)
-    //verticales
-    doc.line(x + 20, y + 47.5, x + 20, y + 107.5)
-    doc.line(x + 68, y + 47.5, x + 68, y + 133)
-    doc.line(x + 83, y + 47.5, x + 83, y + 133)
-    doc.setFontSize(8);
-    doc.setFontType("bold");
-    doc.text("Nombre", x + 11, y + 51.5);
-    doc.text("Apellido", x + 36, y + 51.5);
-    doc.text("Ciudad", x + 69, y + 51.5);
-    doc.text("Telefono", x + 84, y + 51.5);*/
-
-
+    if (cols.length > 6) {
+      doc = new jsPDF('l', 'mm', [297, 210]);
+    }
+    var rows = [];
+    let i = 0;
+    for (let entry of this.lstClientes) {
+      let ele = [];
+      if (this.lstLabels[0].active === true) {
+        ele.push(++i);
+      }
+      if (this.lstLabels[1].active === true) {
+        ele.push(entry.cedula);
+      }
+      if (this.lstLabels[2].active === true) {
+        ele.push(entry.nombre);
+      }
+      if (this.lstLabels[3].active === true) {
+        ele.push(entry.apellido);
+      }
+      if (this.lstLabels[4].active === true) {
+        ele.push(entry.telefono);
+      }
+      if (this.lstLabels[5].active === true) {
+        ele.push(entry.correo);
+      }
+      if (this.lstLabels[6].active === true) {
+        ele.push(entry.fecha_nacimiento);
+      }
+      if (this.lstLabels[7].active === true) {
+        ele.push(entry.sexo);
+      }
+      if (this.lstLabels[8].active === true) {
+        entry.contenido = entry.contenido + ' ml';
+        ele.push(entry.id_tipo_cliente);
+      }
+      if (this.lstLabels[9].active === true) {
+        ele.push(entry.tarjeta);
+      }
+      rows.push(ele)
+    }
+    doc.autoTable(cols, rows);
     var data = doc.output('datauristring')
-
     document.getElementById('iFramePDF').setAttribute('src', data);
   }
 
   fillParameters($event) {
-    this.lstLabels = [];
-    this.lstProdsActive = [];
     if (this.selecTipoReporte.value === 1) {
-
-      this.productoService.getAll().subscribe(data => {
-        this.keyNames = [];
-        this.lstProds = [];
-        this.keyNames = Object.keys(data[0]);
-        this.lstProds = data;
-        let index = this.keyNames.findIndex(x => x === '__v');
-        if (index > -1) {
-          this.keyNames.splice(index, 1);
-        }
-        for (let entry of this.keyNames) {
-          let aux = { label: entry, active: false, name: entry }
-          aux.name = aux.name.replace(/[_-]/g, " ");
-          aux.name = aux.name.trim();
-          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
-          if (aux.label.localeCompare('id_tipo_producto') === 0) {
-            aux.name = 'Tipo producto';
-          }
-          this.lstLabels.push(aux);
-        }
-      }, err => {
-        console.log(err)
-      })
-
+      this.fillLstProductos();
+    }
+    if (this.selecTipoReporte.value === 2) {
+      this.fillLstClientes();
     }
   }
 
-  changeLabel(c){
-//console.log(c)
+  fillLstProductos() {
+    this.lstLabels = [];
+    this.productoService.getAll().subscribe(data => {
+      this.keyNames = [];
+      this.lstProds = [];
+      this.keyNames = Object.keys(data[0]);
+      for (let entry of data) {
+        entry.id_tipo_producto = this.searchTipoProdById(entry.id_tipo_producto, this.lstTipoProductos)
+        this.lstProds.push(entry);
+        if (entry.promocion.length > 0) {
+          entry.promocion = this.decimalPipe.transform(entry.promocion[0].precio_venta, '1.2-2');
+        } else {
+          entry.promocion = '-';
+        }
+        if (entry.subproductoV.length > 0) {
+          let cad = "";
+          for (let sub of entry.subproductoV) {
+            cad += sub.cantidad + " " + sub.label;
+            entry.subproductoV = cad;
+          }
+        } else {
+          entry.subproductoV = '-';
+        }
+      }
+      let index = this.keyNames.findIndex(x => x === '__v');
+      if (index > -1) {
+        this.keyNames.splice(index, 1);
+      }
+      for (let entry of this.keyNames) {
+        let aux = { label: entry, active: false, name: entry }
+        aux.name = aux.name.replace(/[_-]/g, " ");
+        aux.name = aux.name.trim();
+        aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+        if (aux.label.localeCompare('id_tipo_producto') === 0) {
+          aux.name = 'Tipo producto';
+        }
+        this.lstLabels.push(aux);
+      }
+    }, err => {
+      console.log(err)
+    })
+  }
+
+  fillLstClientes() {
+    this.lstLabels = [];
+    this.clienteService.getAll().subscribe(data => {
+      this.keyNames = [];
+      this.lstClientes = data;
+      this.keyNames = Object.keys(data[0]);
+
+      let index = this.keyNames.findIndex(x => x === '__v');
+      if (index > -1) {
+        this.keyNames.splice(index, 1);
+      }
+      for (let entry of this.keyNames) {
+        let aux = { label: entry, active: false, name: entry }
+        aux.name = aux.name.replace(/[_-]/g, " ");
+        aux.name = aux.name.trim();
+        aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+        if (aux.label.localeCompare('id_tipo_cliente') === 0) {
+          aux.name = 'Tipo Cliente';
+        }
+        this.lstLabels.push(aux);
+      }
+
+      console.log(this.lstLabels)
+    }, err => {
+      console.log(err)
+    });
+  }
+
+  searchTipoProdById(id, myArray) {
+    for (let entry of myArray) {
+      if (entry._id === id) {
+        return entry.desc_tipo_producto;
+      }
+    }
   }
 
   ngOnInitProds() {
@@ -273,8 +387,14 @@ export class InventarioComponent implements OnInit {
       { label: 'Selecciona un tipo...', value: 0 },
       { label: 'Productos', value: 1 },
       { label: 'Clientes', value: 2 },
-      { label: 'Personal', value: 3 }];
+      { label: 'Ventas', value: 3 },
+      { label: 'Personal', value: 4 }];
     this.selecTipoReporte = this.tipo_reportes[0];
+    this.tipoProductoService.getAll().subscribe(tp => {
+      this.lstTipoProductos = tp;
+    }, err => {
+      console.log(err);
+    });
   }
   //Width detection
   textAlignTitle = 'left';
