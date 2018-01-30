@@ -19,16 +19,17 @@
                                     <div class="panel panel-default" [ngStyle]="{'text-align':'center'}">
                                         <div class="panel-body">
                                             <p><b>{{prod.nombre}}</b></p>
-                                            <div (dblclick)="eventEmitDoubleClick($event,i)">
-                                                <p style="text-align: center" *ngFor="let p of prod.productosV[0].p">
+                                            <div class="brand-pointer" (dblclick)="eventEmitDoubleClick($event,i)" style="background-color: #F5F5F7">
+                                                <p style="text-align: center;padding-top: 15px" *ngFor="let p of prod.productosV[0].p">
                                                     -{{p.cantidad}} {{p.id}}
                                                 </p>
                                                 <p>---------------------------</p>
-                                                <p style="text-align: center" *ngFor="let r of prod.productosV[1].r">
+                                                <p style="text-align: center;padding-bottom: 15px" *ngFor="let r of prod.productosV[1].r">
                                                     -{{r.cantidad}} {{r.id}}
                                                 </p>
                                             </div>
-                                            <i class="fa fa-search" (click)="selectProductPromo(prod)" style="cursor:pointer;padding-top: 10px"></i>
+
+                                            <i class="fa fa-search" (click)="selectProductPromo(prod)" style="cursor:pointer;padding-top: 5px"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -39,8 +40,8 @@
                 <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                     <hr>
                     <h3 style="text-align: center;">{{tabz.title}}</h3>
-                    <hr>
-                    <div class="col-lg-12" style="padding: 0px">
+
+                    <!--<div class="col-lg-12" style="padding: 0px">
                         <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false" emptyMessage="No existen registros">
                             <ng-template let-prod let-i="index" pTemplate="item">
                                 <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
@@ -54,13 +55,37 @@
                                 </div>
                             </ng-template>
                         </p-dataGrid><br>
+                    </div>-->
+
+                    <div class="col-lg-12" style="padding: 0px">
+                        <div class="panel panel-default" style="border: transparent; margin: 0px; margin-right: 0px">
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    <input type="text" class="form-control" style="width:100%" placeholder="Comienza a escribir...">
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngFor="let prod of pathsType;">
+                            <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
+                                <div class="panel panel-default" [ngStyle]="{'text-align':'center','border-color': prod.cant_existente >= 50 ? '#5ff442' :  prod.cant_existente < 15 ? '#FE2E2E' : '#e5e500'}">
+                                    <div class="panel-body">
+                                        <p [ngStyle]="{'background-color': prod.promocion.length > 0  ? 'yellow' : ''}">{{prod.nombre}}</p>
+                                        <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
+                                        <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="col-lg-6" style="text-align: left; padding: 0">
                         Numero de unidades en Stock:
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid #5ff442; background-color: #5ff442; margin-bottom: -2.5px"></canvas> Alta
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid #e5e500; background-color: #e5e500; margin-bottom: -2.5px"></canvas> Media
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid #FE2E2E; background-color: #FE2E2E; margin-bottom: -2.5px"></canvas> Baja
                     </div>
+
                     <div class="col-lg-6" style="text-align: right; padding: 0">
                         Productos en Promoción:
                         <canvas id="myCanvas" width="15" height="15" style="border:1px solid yellow; background-color: yellow; margin-bottom: -2.5px"></canvas>

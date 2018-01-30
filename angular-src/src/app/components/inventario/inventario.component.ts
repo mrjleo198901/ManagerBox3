@@ -178,7 +178,7 @@ export class InventarioComponent implements OnInit {
     var doc = new jsPDF('p', 'mm', [297, 210]);
     doc.setFontSize(20);
     doc.setTextColor(12, 86, 245);
-    doc.text(20, 20, 'Reporte de Productos');
+    doc.text(14, 20, 'Reporte de Productos');
     var cols: any[] = [];
     for (let entry of this.lstLabels) {
       if (entry.active == true)
@@ -230,7 +230,13 @@ export class InventarioComponent implements OnInit {
       }
       rows.push(ele)
     }
-    doc.autoTable(cols, rows);
+    doc.autoTable(cols, rows,
+      {
+        startY: 25,
+        showHeader: 'firstPage',
+        columnStyles: { Path: { columnWidth: 'auto' } }
+      });
+
     var data = doc.output('datauristring')
     document.getElementById('iFramePDF').setAttribute('src', data);
   }
@@ -331,7 +337,7 @@ export class InventarioComponent implements OnInit {
         this.keyNames.splice(index, 1);
       }
       for (let entry of this.keyNames) {
-        let aux = { label: entry, active: false, name: entry }
+        let aux = { label: entry, active: false, name: entry, dataKey: entry }
         aux.name = aux.name.replace(/[_-]/g, " ");
         aux.name = aux.name.trim();
         aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);

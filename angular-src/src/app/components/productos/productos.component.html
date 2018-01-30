@@ -215,7 +215,8 @@
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6" *ngIf="!flagProductoGasto">
       <div style="text-align: center">
         <label>Receta (Subproductos):</label><br>
-        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px" (ngModelChange)="controlarPrecioCosto($event)">
+        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px" (ngModelChange)="controlarPrecioCosto($event)"
+          tooltip="Un producto compuesto contiene uno o más productos estándar." tooltipPlacement="bottom">
         </md-slide-toggle>
       </div>
     </div>

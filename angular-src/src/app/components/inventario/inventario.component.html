@@ -15,7 +15,7 @@
     <br>
     <a class="btn btn-primary" (click)="generateNew()" style="margin-top: 5px">Generar PDF</a><br>
 </div>
-<div class="col-lg-12 col-md-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <label>Parámetros</label>
     <div class="panel panel-default" id="pnlParameters">
         <div class="panel-body">
@@ -29,47 +29,8 @@
     </div>
 </div>
 
-<div class="col-lg-12" [hidden]="false"><br>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" [hidden]="false"><br>
     <iframe id="iFramePDF" type="application/pdf" width="100%" height="650" style="position:relative;z-index:1; border: solid 2px; border-color: #CDC8CE">
         Your Browser doesn´t support iframes
     </iframe>
-</div>
-
-<div class="col-lg-12" style="text-align: center"><br>
-    <div id="tableToPDF">
-        <table>
-            <thead>
-                <tr>
-                    <th *ngFor="let tag of lstLabels">
-                        <p *ngIf="tag.active == true">{{tag.name}}</p>
-                    </th>
-                </tr>
-            </thead>
-            <!--<tbody>
-                <tr *ngFor="let frequency of lstProds;">
-                    <td *ngIf="lstLabels[0].active == true">{{ frequency._id }}</td>
-                    <td *ngIf="lstLabels[1].active == true">{{ frequency.nombre }}</td>
-                    <td *ngIf="lstLabels[2].active == true">{{ frequency.precio_costo | number : '1.2-2'}}</td>
-                    <td *ngIf="lstLabels[3].active == true">{{ frequency.precio_venta | number : '1.2-2'}}</td>
-                    <td *ngIf="lstLabels[4].active == true">{{ frequency.utilidad | number : '1.2-2'}}</td>
-                    <td *ngIf="lstLabels[5].active == true">{{ frequency.cant_existente | number : '1.2-2'}}</td>
-                    <td *ngIf="lstLabels[6].active == true">{{ frequency.id_tipo_producto }}</td>
-                    <td *ngIf="lstLabels[7].active == true">{{ frequency.path }}</td>
-                    <td *ngIf="lstLabels[8].active == true">{{ frequency.contenido }}ml</td>
-                    <td *ngIf="lstLabels[9].active == true">
-                        <p *ngIf="frequency.promocion.length>0; else other1">{{ frequency.promocion[0].precio_venta | number : '1.2-2'}}</p>
-                        <ng-template #other1>-</ng-template>
-                    </td>
-                    <td *ngIf="lstLabels[10].active == true">
-                        <div *ngIf="frequency.subproductoV.length>0; else other2">
-                            <p *ngFor="let prod of frequency.subproductoV;">
-                                -{{ prod.cantidad}} {{ prod.label}}
-                            </p>
-                        </div>
-                        <ng-template #other2>-</ng-template>
-                    </td>
-                </tr>
-            </tbody>-->
-        </table>
-    </div>
 </div>

@@ -127,3 +127,7 @@ nav ul{overflow:hidden; overflow-y:auto;}
     color: #ff0000;
     cursor: pointer;
   }
+
+  .brand-pointer{
+      cursor: pointer;
+  }

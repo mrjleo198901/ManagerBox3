@@ -204,15 +204,9 @@ export class FacturacionComponent implements OnInit {
         }
         if (entry.cant_existente >= 50) {
           this.colorZeroStock = '#5ff442';
-        }else{
+        } else {
           this.colorZeroStock = '';
         }*/
-        if (index == 0) {
-          this.colorZeroStock = '#FE2E2E';
-        }
-        if (index == 1) {
-          this.colorZeroStock = '#e5e500';
-        }
 
         if (entry.promocion.length > 0) {
           this.colorPromo = 'yellow';
