@@ -13,7 +13,7 @@ export class FormatterService {
     return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toLowerCase() + txt.substr(1).toLowerCase(); });
   }
 
-  toDescriptions(str){
+  toDescriptions(str) {
     return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.slice(1); });
   }
 
@@ -25,4 +25,11 @@ export class FormatterService {
     return text;
   }
 
+  add(x, y) {
+    return +(x + y).toFixed(12);
+  }
+
+  sub(x, y) {
+    return +(x - y).toFixed(12);
+  }
 }

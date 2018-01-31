@@ -40,14 +40,14 @@
                 <tab *ngFor="let tabz of tabs; let i = index" [heading]="tabz.title" (select)="loadLogos(i)">
                     <hr>
                     <h3 style="text-align: center;">{{tabz.title}}</h3>
-
-                    <!--<div class="col-lg-12" style="padding: 0px">
+                    <br>
+                    <div class="col-lg-12" style="padding: 0px">
                         <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false" emptyMessage="No existen registros">
                             <ng-template let-prod let-i="index" pTemplate="item">
                                 <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
-                                    <div class="panel panel-default" [ngStyle]="{'text-align':'center','border-color':colorZeroStock}">
-                                        <div class="panel-body">
-                                            <p [ngStyle]="{'background-color':colorPromo}">{{prod.nombre}}</p>
+                                    <div class="panel panel-default" style="border-top: 10px solid" [ngStyle]="{'text-align':'center','border-top-color': prod.cant_existente >= 50 ? '#99c140' :  prod.cant_existente < 15 ? '#cc3232' : '#e7b416'}">
+                                        <div class="panel-body box-shadow">
+                                            <p [ngStyle]="{'background-color': prod.promocion.length > 0  ? '#d3d3d3' : ''}">{{prod.nombre}}</p>
                                             <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
                                             <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
                                         </div>
@@ -55,40 +55,14 @@
                                 </div>
                             </ng-template>
                         </p-dataGrid><br>
-                    </div>-->
-
-                    <div class="col-lg-12" style="padding: 0px">
-                        <div class="panel panel-default" style="border: transparent; margin: 0px; margin-right: 0px">
-                            <div class="panel-body">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                                    <input type="text" class="form-control" style="width:100%" placeholder="Comienza a escribir...">
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngFor="let prod of pathsType;">
-                            <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
-                                <div class="panel panel-default" [ngStyle]="{'text-align':'center','border-color': prod.cant_existente >= 50 ? '#5ff442' :  prod.cant_existente < 15 ? '#FE2E2E' : '#e5e500'}">
-                                    <div class="panel-body">
-                                        <p [ngStyle]="{'background-color': prod.promocion.length > 0  ? 'yellow' : ''}">{{prod.nombre}}</p>
-                                        <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" />
-                                        <br><i class="fa fa-search" (click)="selectProduct(prod)" style="cursor:pointer;padding-top: 10px"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="col-lg-6" style="text-align: left; padding: 0">
+                    <div class="col-lg-12" style="text-align: left; padding: 0">
                         Numero de unidades en Stock:
-                        <canvas id="myCanvas" width="15" height="15" style="border:1px solid #5ff442; background-color: #5ff442; margin-bottom: -2.5px"></canvas> Alta
-                        <canvas id="myCanvas" width="15" height="15" style="border:1px solid #e5e500; background-color: #e5e500; margin-bottom: -2.5px"></canvas> Media
-                        <canvas id="myCanvas" width="15" height="15" style="border:1px solid #FE2E2E; background-color: #FE2E2E; margin-bottom: -2.5px"></canvas> Baja
-                    </div>
-
-                    <div class="col-lg-6" style="text-align: right; padding: 0">
-                        Productos en Promoción:
-                        <canvas id="myCanvas" width="15" height="15" style="border:1px solid yellow; background-color: yellow; margin-bottom: -2.5px"></canvas>
+                        <canvas width="15" height="15" style="border:1px solid #99c140; background-color: #99c140; margin-bottom: -2.5px"></canvas> Alta
+                        <canvas width="15" height="15" style="border:1px solid #e7b416; background-color: #e7b416; margin-bottom: -2.5px"></canvas> Media
+                        <canvas width="15" height="15" style="border:1px solid #cc3232; background-color: #cc3232; margin-bottom: -2.5px"></canvas> Baja
+                        <canvas width="15" height="15" style="border:1px solid #d3d3d3; background-color: #d3d3d3; margin-bottom: -2.5px"></canvas> Promoción
                     </div>
                 </tab>
             </tabset>
@@ -96,9 +70,8 @@
     </div>
     <!--right DIV-->
     <div class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12">
-        <button type="button" pButton (click)="showProdCover=true;setCursorProdCover()" label="Productos Cover" [ngStyle]='{"margin-top": "10px", "margin-bottom": "20px", "font-size": "14px", "width": "100%"}'></button>
+        <button class="ui-button-warning" pButton (click)="showProdCover=true;setCursorProdCover()" label="Productos Cover" [ngStyle]='{"margin-top": "10px", "margin-bottom": "20px", "font-size": "14px", "width": "100%"}'></button>
         <div class="panel panel-default" style="width: 100%">
-
             <form class="form-inline">
                 <h4 style="text-align: center">Productos Seleccionados</h4>
             </form>
@@ -116,20 +89,31 @@
                             {{item.nombre}} <i id="iconTimes" (click)="removeProd(i)" class="fa fa-times" aria-hidden="true"
                                 mdTooltip="Eliminar producto"></i>
                         </h4>
-                        <div class="input-group col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2"
-                            style="padding-bottom: 10px">
-                            <span style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                        <i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
-                            <span style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm" style="width: 20px">
-                        <i class="fa fa-minus fa-lg" aria-hidden="true"></i></span>
+                        <div class="input-group col-lg-6 col-lg-offset-3 col-md-4 col-sm-6 col-xs-8 col-xs-offset-2" style="padding-bottom: 10px">
+                            <span *ngIf="selectedProductos[i].tipoProducto != 'pr0m0'" style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm"
+                                style="width: 20px">
+                                <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
+                            </span>
+                            <span *ngIf="selectedProductos[i].tipoProducto == 'pr0m0'" style="display: inline-block" (click)="addProdPromo(i)" class="input-group-addon input-sm"
+                                style="width: 20px">
+                                <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
+                            </span>
+                            <span *ngIf="selectedProductos[i].tipoProducto != 'pr0m0'" style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm"
+                                style="width: 20px">
+                                <i class="fa fa-minus fa-lg" aria-hidden="true"></i>
+                            </span>
+                            <span *ngIf="selectedProductos[i].tipoProducto == 'pr0m0'" style="display: inline-block" (click)="lessProdPromo(i)" class="input-group-addon input-sm"
+                                style="width: 20px">
+                                <i class="fa fa-minus fa-lg" aria-hidden="true"></i>
+                            </span>
                             <span style="display: inline-block" class="input-group-addon input-sm" style="width: 20px">
-                        <font size="5">{{item.cantidad}}</font></span>
+                            <font size="5">{{item.cantidad}}</font></span>
                         </div>
                     </li>
                 </ul>
             </nav>
             <div style="text-align: center; padding-bottom: 15px">
-                <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = true;setCursor();" class="btn btn-primary" style="width: 90%;">Confirmar</button>
+                <button *ngIf="flagProdSeleccionados" (click)="showDialogConfirmar = true;setCursor();" pButton style="width: 90%;" label="Confirmar"></button>
             </div>
         </div>
     </div>
@@ -147,7 +131,6 @@
                     tabindex="1" maxlength="9" onkeypress='return event.charCode === 241 || event.charCode >= 48 && event.charCode <= 57 || event.charCode === 95 || event.charCode === 209'>
                 <span class="input-group-addon" id="basic-addon1"><i class="fa fa-check" aria-hidden="true"></i></span>
                 <span class="input-group-addon" id="basic-addon2"><i class="fa fa-times" aria-hidden="true"></i></span>
-
             </div>
         </div>
     </div>
@@ -168,7 +151,6 @@
                 placeholder="Ingresa tu clave de usuario" tabindex="3">
         </div>
     </div>
-
     <div class="form-group ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
         <div class="panel panel-default" style="border: transparent; margin-bottom: 0px; margin-left: -15px; margin-right: -15px; margin-top: 0px">
             <div class="panel-body">
@@ -186,11 +168,8 @@
         </div>
         <hr>
     </div>
-
-
     <!-- Button -->
     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-
         <button class="btn btn-primary" (click)="send()" style="width: 25%;font-size: 11px" [disabled]="!flagMatchPass">Confirmar</button>
         <button class="btn btn-default" (click)="showDialogConfirmar = false" style="width: 25%;font-size: 11px">Cancelar</button>
     </div>
