@@ -32,4 +32,12 @@ export class FormatterService {
   sub(x, y) {
     return +(x - y).toFixed(12);
   }
+
+  times(x, y) {
+    return +(x * y).toFixed(12);
+  }
+
+  div(x, y) {
+    return +(x / y).toFixed(12);
+  }
 }

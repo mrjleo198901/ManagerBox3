@@ -214,7 +214,7 @@ export class ProductosComponent implements OnInit {
     private authService: AuthService,
     private http: Http, public dialog: MdDialog,
     private messageGrowlService: MessageGrowlService,
-    private formatterService: FormatterService,
+    private fs: FormatterService,
     private formBuilder: FormBuilder,
     private promocionService: PromocionService,
     private proveedorService: ProveedorService,
@@ -1151,20 +1151,22 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeDescTPC($event) {
-    this.desc_tipo_producto = this.formatterService.toTitleCase(this.desc_tipo_producto);
+    this.desc_tipo_producto = this.fs.toTitleCase(this.desc_tipo_producto);
   }
 
   onChangeNombrePC($event) {
-    this.nombre = this.formatterService.toTitleCase(this.nombre);
+    this.nombre = this.fs.toTitleCase(this.nombre);
   }
 
   onChangeNombrePU($event) {
-    this.productoUpdate.nombre = this.formatterService.toTitleCase(this.productoUpdate.nombre);
+    this.productoUpdate.nombre = this.fs.toTitleCase(this.productoUpdate.nombre);
   }
 
   valueChangeGanancia($event) {
-    const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = this.precio_costo * gain;
+    /*const gain = (this.utilidad / 100) + 1;
+    this.precio_venta = this.precio_costo * gain;*/
+    const gain = this.fs.add(this.fs.div(this.utilidad, 100), 1);
+    this.precio_venta = this.fs.times(this.precio_costo, gain);
     if (this.utilidad == 0) {
       this.flagProductoGasto = true;
       this.messageGrowlService.notify('info', 'Información', 'El producto NO se visualizará en el módulo de VENTAS');
@@ -1179,19 +1181,25 @@ export class ProductosComponent implements OnInit {
   }
 
   valueChangePrecioCompra($event) {
-    //this.precio_costo = (this.precio_costo * 100) / 100;
-    const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = (this.precio_costo * gain);
+    /*const gain = (this.utilidad / 100) + 1;
+    this.precio_venta = (this.precio_costo * gain);*/
+    const gain = this.fs.add((this.fs.div(this.utilidad, 100)), 1);
+    this.precio_venta = this.fs.times(this.precio_costo, gain);
+    console.log(this.precio_venta);
   }
 
   valueChangePrecioVenta($event) {
-    let dif = this.precio_venta - this.precio_costo;
-    this.utilidad = (dif * 100) / this.precio_costo;
+    /*let dif = this.precio_venta - this.precio_costo;
+    this.utilidad = (dif * 100) / this.precio_costo;*/
+    const dif = this.fs.sub(this.precio_venta, this.precio_costo);
+    this.utilidad = (this.fs.div(this.fs.times(dif, 100), this.precio_costo));
   }
 
   valueChangeGananciaU($event) {
-    const gain = (this.productoUpdate.utilidad / 100) + 1;
-    this.productoUpdate.precio_venta = this.productoUpdate.precio_costo * gain;
+    /*const gain = (this.productoUpdate.utilidad / 100) + 1;
+    this.productoUpdate.precio_venta = this.productoUpdate.precio_costo * gain;*/
+    const gain = this.fs.add(this.fs.div(this.productoUpdate.utilidad, 100), 1);
+    this.productoUpdate.precio_venta = this.fs.times(this.productoUpdate.precio_costo, gain);
     if (this.productoUpdate.utilidad == 0) {
       this.flagProductoGasto = true;
       this.messageGrowlService.notify('info', 'Información', 'El producto NO se visualizará en el módulo de VENTAS');
@@ -1206,14 +1214,17 @@ export class ProductosComponent implements OnInit {
   }
 
   valueChangePrecioCompraU($event) {
-    //this.productoUpdate.precio_costo = (this.productoUpdate.precio_costo * 100) / 100;
-    const gain = (this.productoUpdate.utilidad / 100) + 1;
-    this.productoUpdate.precio_venta = (this.productoUpdate.precio_costo * gain);
+    /*const gain = (this.productoUpdate.utilidad / 100) + 1;
+    this.productoUpdate.precio_venta = (this.productoUpdate.precio_costo * gain);*/
+    const gain = this.fs.add((this.fs.div(this.productoUpdate.utilidad, 100)), 1);
+    this.productoUpdate.precio_venta = this.fs.times(this.productoUpdate.precio_costo, gain);
   }
 
   valueChangePrecioVentaU($event) {
-    let dif = this.productoUpdate.precio_venta - this.productoUpdate.precio_costo;
-    this.productoUpdate.utilidad = (dif * 100) / this.productoUpdate.precio_costo;
+    /*let dif = this.productoUpdate.precio_venta - this.productoUpdate.precio_costo;
+    this.productoUpdate.utilidad = (dif * 100) / this.productoUpdate.precio_costo;*/
+    const dif = this.fs.sub(this.productoUpdate.precio_venta, this.productoUpdate.precio_costo);
+    this.productoUpdate.utilidad = (this.fs.div(this.fs.times(dif, 100), this.productoUpdate.precio_costo));
   }
 
   reCalcPrevioVenta() {
@@ -1586,7 +1597,7 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeNombrePromo($event) {
-    this.objPromo.nombre = this.formatterService.toTitleCase(this.objPromo.nombre);
+    this.objPromo.nombre = this.fs.toTitleCase(this.objPromo.nombre);
   }
 
   addCantPor() {
@@ -2468,16 +2479,16 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeNombrePK($event) {
-    this.kardex.desc_producto = this.formatterService.toTitleCase(this.kardex.desc_producto);
+    this.kardex.desc_producto = this.fs.toTitleCase(this.kardex.desc_producto);
   }
 
   onChangeNombrePKU($event) {
-    this.kardexU.desc_producto = this.formatterService.toTitleCase(this.kardexU.desc_producto);
+    this.kardexU.desc_producto = this.fs.toTitleCase(this.kardexU.desc_producto);
   }
 
   /* GESTION DE PROVEEDORES*/
   onChangeNombreProve($event) {
-    this.objProve.nombre_proveedor = this.formatterService.toTitleCase(this.objProve.nombre_proveedor);
+    this.objProve.nombre_proveedor = this.fs.toTitleCase(this.objProve.nombre_proveedor);
   }
 
   onChangeEmail($event) {
@@ -2533,7 +2544,7 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeCiudad($event) {
-    this.objProve.ciudad = this.formatterService.toTitleCase(this.objProve.ciudad);
+    this.objProve.ciudad = this.fs.toTitleCase(this.objProve.ciudad);
   }
 
   setCursorAddProve() {
