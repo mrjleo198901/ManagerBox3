@@ -90,19 +90,19 @@
                                 mdTooltip="Eliminar producto"></i>
                         </h4>
                         <div class="input-group col-lg-6 col-lg-offset-3 col-md-4 col-sm-6 col-xs-8 col-xs-offset-2" style="padding-bottom: 10px">
-                            <span *ngIf="selectedProductos[i].tipoProducto != 'pr0m0'" style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm"
+                            <span *ngIf="selectedProductos[i].promocion.length !== 3" style="display: inline-block" (click)="addProd(i)" class="input-group-addon input-sm"
                                 style="width: 20px">
                                 <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
                             </span>
-                            <span *ngIf="selectedProductos[i].tipoProducto == 'pr0m0'" style="display: inline-block" (click)="addProdPromo(i)" class="input-group-addon input-sm"
+                            <span *ngIf="selectedProductos[i].promocion.length === 3" style="display: inline-block" (click)="addProdPromo(i)" class="input-group-addon input-sm"
                                 style="width: 20px">
                                 <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
                             </span>
-                            <span *ngIf="selectedProductos[i].tipoProducto != 'pr0m0'" style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm"
+                            <span *ngIf="selectedProductos[i].promocion.length !== 3" style="display: inline-block" (click)="lessProd(i)" class="input-group-addon input-sm"
                                 style="width: 20px">
                                 <i class="fa fa-minus fa-lg" aria-hidden="true"></i>
                             </span>
-                            <span *ngIf="selectedProductos[i].tipoProducto == 'pr0m0'" style="display: inline-block" (click)="lessProdPromo(i)" class="input-group-addon input-sm"
+                            <span *ngIf="selectedProductos[i].promocion.length === 3" style="display: inline-block" (click)="lessProdPromo(i)" class="input-group-addon input-sm"
                                 style="width: 20px">
                                 <i class="fa fa-minus fa-lg" aria-hidden="true"></i>
                             </span>
@@ -159,8 +159,9 @@
                     <ng-template let-car pTemplate="item">
                         {{car.nombre}}
                         <span class="badge" style="margin-top: -2.5px" tooltip="Cantidad">{{car.cantidad}} u</span>
-                        <span *ngIf="!car.promocion.length > 0" class="badge" style="margin-top: -2.5px" tooltip="Precio de venta">$ {{ car.precio_venta | number : '1.2-2'}}</span>
-                        <span *ngIf="car.promocion.length > 0" class="badge" style="margin-top: -2.5px" tooltip="Precio promoción">$ {{ car.promocion[0].precio_venta | number : '1.2-2'}}</span>
+                        <span *ngIf="car.promocion.length === 0" class="badge" style="margin-top: -2.5px" tooltip="Precio de venta">$ {{ car.precio_venta | number : '1.2-2'}}</span>
+                        <span *ngIf="car.promocion.length === 1" class="badge" style="margin-top: -2.5px" tooltip="Precio promoción">$ {{ car.promocion[0].precio_venta | number : '1.2-2'}}</span>
+                        <span *ngIf="car.promocion.length === 3" class="badge" style="margin-top: -2.5px" tooltip="Precio promoción">$ {{ car.promocion[2].v | number : '1.2-2'}}</span>
                         <span class="badge" style="margin-top: -2.5px" tooltip="Total">$ {{ car.total | number : '1.2-2'}}</span>
                     </ng-template>
                 </p-listbox>

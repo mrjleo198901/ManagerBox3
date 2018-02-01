@@ -116,8 +116,9 @@ export class FacturacionComponent implements OnInit {
       console.log(err);
     });
     this.productosV = [];
-    /*console.log(this.fs.add(4.275, 4.275));
-    console.log(this.fs.sub(0.3, 0.1));*/
+
+    console.log(this.fs.add(0.01, 0.06));
+    console.log(0.01 + 0.06)
   }
 
   addProd(i) {
@@ -198,12 +199,12 @@ export class FacturacionComponent implements OnInit {
       this.flagProdSeleccionados = true;
       let aux = {
         path: '',
-        tipoProducto: 'pr0m0',
+        tipoProducto: '',
         nombre: this.lstProdPromo[i].nombre,
         cantidad: 1,
         precio_venta: this.lstProdPromo[i].productosV[2].v,
         total: this.lstProdPromo[i].productosV[2].v,
-        promocion: [],
+        promocion: this.lstProdPromo[i].productosV,
         value: this.lstProdPromo[i].nombre
       };
       var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
@@ -285,6 +286,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   send() {
+    console.log(this.selectedProductos)
     const user = {
       username: this.selectedMesero.cedula,
       password: this.password
@@ -312,13 +314,13 @@ export class FacturacionComponent implements OnInit {
           }
           updatedFact[0].detalleFacturaV = vecDF;
           console.log(updatedFact)
-          /*this.facturaService.update(updatedFact[0]).subscribe(data => {
+          this.facturaService.update(updatedFact[0]).subscribe(data => {
             this.ngOnInitConfVenta();
             this.selectedProductos = [];
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-          });*/
+          });
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
