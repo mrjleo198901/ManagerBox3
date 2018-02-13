@@ -1004,7 +1004,8 @@ export class ProductosComponent implements OnInit {
         this.precio_costo = 0;
         this.contenido = 0;
         for (let entry of this.subproductoV) {
-          this.precio_costo += entry.precio_costo;
+          //this.precio_costo += entry.precio_costo;
+          this.precio_costo = this.fs.add(this.precio_costo, this.precio_costo)
           let str = (entry.cantidad).match(/[a-z]+|\d+/ig);
           //this.contenido += parseFloat(str[0]);
           this.reCalcContenido(str[0], str[1], entry.value.contenido);
@@ -1304,16 +1305,20 @@ export class ProductosComponent implements OnInit {
   reCalcContenido(cantSubprod, um, contenido) {
     cantSubprod = parseFloat(cantSubprod);
     if (um.localeCompare('Lts') === 0) {
-      this.contenido += (cantSubprod * 1000);
+      //this.contenido += (cantSubprod * 1000);
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, 1000));
     }
     if (um.localeCompare('ml') === 0) {
-      this.contenido += cantSubprod;
+      //this.contenido += cantSubprod;
+      this.contenido = this.fs.add(this.contenido, cantSubprod);
     }
     if (um.localeCompare('oz') === 0) {
-      this.contenido += (cantSubprod * 29.5735);
+      ///this.contenido += (cantSubprod * 29.5735);
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, 29.5735));
     }
     if (um.localeCompare('u') === 0) {
-      this.contenido += contenido;
+      //this.contenido += contenido;
+      this.contenido = this.fs.add(contenido, contenido);
     }
   }
 

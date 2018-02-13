@@ -15,18 +15,27 @@
     <br>
     <a class="btn btn-primary" (click)="generateNew()" style="margin-top: 5px">Generar PDF</a><br>
 </div>
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <label>Parámetros</label>
     <div class="panel panel-default" id="pnlParameters">
         <div class="panel-body">
             <div *ngFor="let c of lstLabels">
                 <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-                    <p-checkbox [(ngModel)]="c.active" name="group1" binary="true" label={{c.name}} inputId="ny"
-                        [style]="{'margin-bottom':'5px'}"></p-checkbox>
+                    <p-checkbox [(ngModel)]="c.active" name="group1" binary="true" label={{c.name}} inputId="ny" [style]="{'margin-bottom':'5px'}"></p-checkbox>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: right">
+    <a (click)="downloadAsPDF()" style="margin-top: 5px" class="pointerPDF" tooltip="Descargar como .pdf" tooltipPlacement="bottom">
+        <i class="fa fa-file-pdf-o fa-2x" style="color: red" aria-hidden="true"></i>
+    </a>
+    <a (click)="downloadAsExcel()" style="margin-top: 5px" class="pointerPDF" tooltip="Descargar como .xls" tooltipPlacement="bottom">
+        <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>
+    </a>
 </div>
 
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" [hidden]="false"><br>
