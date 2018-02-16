@@ -137,6 +137,7 @@ export class AdministrarComponent implements OnInit {
   @ViewChild('listBoxMU') accessor: Listbox;
   @ViewChild('listBoxMU', { read: NgModel }) model: NgModel;
   differ: any;
+  fechaApertura;
 
   constructor(private messageGrowlService: MessageGrowlService,
     private dialog: MdDialog, private coverService: CoverService,

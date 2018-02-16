@@ -113,6 +113,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  onChangeNombres(){
+    
+  }
+
   sendEmail() {
     const user = {
       name: this.nombres,

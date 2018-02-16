@@ -123,7 +123,8 @@ export class ClientesComponent implements OnInit {
   citiesDD: any[];
   private foo: CardComponent;
   desc_tipo_cliente;
-
+  bcLstProdM;
+  
   constructor(
     private validateService: ValidateService,
     private tipoClienteService: TipoClienteService,

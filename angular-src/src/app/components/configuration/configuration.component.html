@@ -11,7 +11,7 @@
         <label>Nro. Personas por Tarjeta</label>
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres($event)" id="nombres"
+          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres()" id="nombres"
             name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
             onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
                         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
@@ -23,7 +23,7 @@
         <label>Limite de Consumo por Defecto</label>
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres($event)" id="nombres"
+          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres()" id="nombres"
             name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
             onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
                         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'

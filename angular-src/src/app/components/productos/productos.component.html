@@ -313,7 +313,7 @@
       <label style="color: white">.</label>
       <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="productoUpdate.contenido" id="contPU"
         name="contPU" placeholder="0.00" class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml."
-        (ngModelChange)="valueChangeContenidoU($event)" tooltipPlacement="bottom" [disabled]="flagSubProdUpdate" (click)="$event.target.select()">
+        tooltipPlacement="bottom" [disabled]="flagSubProdUpdate" (click)="$event.target.select()">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="cantPU">Cantidad Existente*:</label>
@@ -669,7 +669,7 @@
         <label>Contenido Unidad*:</label>
       </div>
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding: 2px">
-        <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" (onChange)="onChangeLstContenido($event)"></p-selectButton>
+        <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido"></p-selectButton>
       </div>
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding: 0; padding-left: 7px">
         <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="kardex.contenido" id="contK" name="contK"
@@ -752,7 +752,7 @@
         <label>Contenido Unidad*:</label>
       </div>
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding: 2px">
-        <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" (onChange)="onChangeLstContenido($event)"></p-selectButton>
+        <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido"></p-selectButton>
       </div>
       <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding: 0; padding-left: 7px">
         <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="kardexU.contenido" id="contKU" name="contKU"
@@ -896,7 +896,7 @@
     <div class="ui-g-12">
       <p><strong>Nota:</strong> Las compras que se muestran a continuación, corresponden a los ultimos 24 meses al proveedor:
         <strong>{{showProveDialog}}</strong>.</p>
-      <p-dataTable [value]="lstComprasProve" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5" (onRowClick)="onRowSelectTC($event)">
+      <p-dataTable [value]="lstComprasProve" [responsive]="true" [paginator]="true" [rows]="5">
         <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'25%'}"></p-column>
         <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'35%'}"></p-column>
         <p-column field="unidades" header="Unidades" [style]="{'overflow':'visible','width':'20%'}"></p-column>

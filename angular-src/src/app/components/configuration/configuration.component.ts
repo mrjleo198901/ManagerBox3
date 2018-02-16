@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConfigurationComponent implements OnInit {
 
+  nombres;
+  flagShowSuccess;
+  
   constructor() {
     var x = window.innerWidth;
     this.onRzOnInit(x);
@@ -34,6 +37,13 @@ export class ConfigurationComponent implements OnInit {
     } else {
       this.textAlignTitle = 'left';
     }
+  }
+
+  onChangeNombres(){
+
+  }
+  onLoginSubmit(){
+
   }
 
 }

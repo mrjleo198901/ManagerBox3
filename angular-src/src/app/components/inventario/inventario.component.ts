@@ -26,6 +26,7 @@ export class InventarioComponent implements OnInit {
   description: string;
   nombre;
   public static updateUserStatus: Subject<boolean> = new Subject();
+  flagDownload = false;
 
   constructor(
     private messageGrowlService: MessageGrowlService,
@@ -123,7 +124,7 @@ export class InventarioComponent implements OnInit {
     });
 
   }
-  /* REPORTE DE PRODUCTOS*/
+  /* REPORTES*/
   tipo_reportes: any
   lstProds: any[];
   keyNames: any[];
@@ -165,6 +166,7 @@ export class InventarioComponent implements OnInit {
       return false;
     }
     document.getElementById("pnlParameters").style.borderColor = "";
+    this.flagDownload = true;
     if (this.selecTipoReporte.value === 1) {
       this.fillPDF1();
     }
@@ -173,6 +175,8 @@ export class InventarioComponent implements OnInit {
     }
 
   }
+
+  data: any;
 
   fillPDF1() {
     var doc = new jsPDF('p', 'mm', [297, 210]);
@@ -237,8 +241,8 @@ export class InventarioComponent implements OnInit {
         columnStyles: { Path: { columnWidth: 'auto' } }
       });
 
-    var data = doc.output('datauristring')
-    document.getElementById('iFramePDF').setAttribute('src', data);
+    this.data = doc.output('datauristring')
+    document.getElementById('iFramePDF').setAttribute('src', this.data);
   }
 
   fillPDF2() {
@@ -295,11 +299,12 @@ export class InventarioComponent implements OnInit {
       rows.push(ele)
     }
     doc.autoTable(cols, rows);
-    var data = doc.output('datauristring')
-    document.getElementById('iFramePDF').setAttribute('src', data);
+    this.data = doc.output('datauristring')
+    document.getElementById('iFramePDF').setAttribute('src', this.data);
   }
 
   fillParameters($event) {
+    this.flagDownload = false;
     if (this.selecTipoReporte.value === 1) {
       this.fillLstProductos();
     }
@@ -385,6 +390,11 @@ export class InventarioComponent implements OnInit {
         return entry.desc_tipo_producto;
       }
     }
+  }
+
+  downloadAsPDF() {
+    //this.doc.save('a4.pdf');
+    console.log(this.data)
   }
 
   ngOnInitProds() {

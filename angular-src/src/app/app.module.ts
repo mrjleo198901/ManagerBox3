@@ -117,7 +117,7 @@ const appRoutes: Routes = [
     AdministrarComponent,
     CoverprodRenderComponent
   ],
-  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent,CoverprodRenderComponent],
+  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent, CoverprodRenderComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

@@ -84,7 +84,7 @@ export class FacturacionComponent implements OnInit {
           }
         }
         this.ngOnInitPromos();
-        console.log(this.paths)
+
       }, err => {
         console.log(err);
       });
@@ -117,8 +117,8 @@ export class FacturacionComponent implements OnInit {
     });
     this.productosV = [];
 
-    console.log(this.fs.add(0.01, 0.06));
-    console.log(0.01 + 0.06)
+    /*console.log(this.fs.add(0.01, 0.06));
+    console.log(0.01 + 0.06)*/
   }
 
   addProd(i) {
@@ -174,45 +174,69 @@ export class FacturacionComponent implements OnInit {
   }
 
   eventEmitDoubleClick($event, i) {
+    //No vender si el stock es cero
     if (!this.flagPrecioPromo) {
-      this.flagProdSeleccionados = true;
-      let aux = {
-        path: this.pathsType[i].path,
-        tipoProducto: this.pathsType[i].id_tipo_producto,
-        nombre: this.pathsType[i].nombre,
-        cantidad: 1,
-        precio_venta: this.pathsType[i].precio_venta,
-        total: this.pathsType[i].precio_venta,
-        promocion: this.pathsType[i].promocion,
-        value: this.pathsType[i].nombre
-      };
-      if (aux.promocion.length > 0) {
-        aux.total = this.pathsType[i].promocion[0].precio_venta;
-      }
-      var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
-      if (indexOfInserted == -1) {
-        this.selectedProductos.push(aux);
+      if (this.pathsType[i].cant_existente > 0) {
+        console.log(this.pathsType[i]);
+        this.flagProdSeleccionados = true;
+        let aux = {
+          path: this.pathsType[i].path,
+          tipoProducto: this.pathsType[i].id_tipo_producto,
+          nombre: this.pathsType[i].nombre,
+          cantidad: 1,
+          precio_venta: this.pathsType[i].precio_venta,
+          total: this.pathsType[i].precio_venta,
+          promocion: this.pathsType[i].promocion,
+          value: this.pathsType[i].nombre
+        };
+        if (aux.promocion.length > 0) {
+          aux.total = this.pathsType[i].promocion[0].precio_venta;
+        }
+        var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
+        if (indexOfInserted == -1) {
+          this.selectedProductos.push(aux);
+        } else {
+          this.addProd(indexOfInserted);
+        }
       } else {
-        this.addProd(indexOfInserted);
+        this.messageGrowlService.notify('error', 'Error', 'No existen unidades del producto seleccionado!');
       }
     } else {
-      this.flagProdSeleccionados = true;
-      let aux = {
-        path: '',
-        tipoProducto: '',
-        nombre: this.lstProdPromo[i].nombre,
-        cantidad: 1,
-        precio_venta: this.lstProdPromo[i].productosV[2].v,
-        total: this.lstProdPromo[i].productosV[2].v,
-        promocion: this.lstProdPromo[i].productosV,
-        value: this.lstProdPromo[i].nombre
-      };
-      var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
-      if (indexOfInserted == -1) {
-        this.selectedProductos.push(aux);
-      } else {
-        this.addProdPromo(indexOfInserted);
+      let flag = false;
+      for (let p of this.lstProdPromo[i].productosV[0].p) {
+        if (p.cant_existente <= 0) {
+          flag = true;
+        }
       }
+      for (let p of this.lstProdPromo[i].productosV[1].r) {
+        if (p.cant_existente <= 0) {
+          flag = true;
+        }
+      }
+
+      if (!flag) {
+        console.log(this.lstProdPromo[i])
+        this.flagProdSeleccionados = true;
+        let aux = {
+          path: '',
+          tipoProducto: '',
+          nombre: this.lstProdPromo[i].nombre,
+          cantidad: 1,
+          precio_venta: this.lstProdPromo[i].productosV[2].v,
+          total: this.lstProdPromo[i].productosV[2].v,
+          promocion: this.lstProdPromo[i].productosV,
+          value: this.lstProdPromo[i].nombre
+        };
+        var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
+        if (indexOfInserted == -1) {
+          this.selectedProductos.push(aux);
+        } else {
+          this.addProdPromo(indexOfInserted);
+        }
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'No existen unidades del producto seleccionado!');
+      }
+
     }
   }
 
@@ -412,17 +436,25 @@ export class FacturacionComponent implements OnInit {
   lstProductos: any[];
   lstProdPromo: any[];
   colorPromo = '';
+  colorPromoDisp;
 
   selectProductPromo(prod) {
-    this.selectedProdPromo = prod;
-    console.log(prod)
     this.showDialogPromo = true;
+    this.selectedProdPromo = prod;
   }
 
   searchDescProd(id, myArray) {
     for (const entry of myArray) {
       if (entry._id === id) {
         return entry.nombre;
+      }
+    }
+  }
+
+  searchIdProd(nombre, myArray) {
+    for (const entry of myArray) {
+      if (entry.nombre === nombre) {
+        return entry;
       }
     }
   }
@@ -435,27 +467,74 @@ export class FacturacionComponent implements OnInit {
     }
   }
 
+  colorDetection(lst1, lst2) {
+    let lstCants = [];
+    for (let entry of lst1) {
+      lstCants.push(entry.cant_existente);
+    }
+    for (let entry of lst2) {
+      lstCants.push(entry.cant_existente);
+    }
+    let minValue = Math.min(...lstCants);
+    if (minValue >= 50) {
+      this.colorPromoDisp = '#99c140';
+    } else {
+      if (minValue < 15) {
+        this.colorPromoDisp = '#cc3232';
+      } else {
+        this.colorPromoDisp = '#e7b416';
+      }
+    }
+    console.log(this.colorPromoDisp)
+  }
+
   public ngOnInitPromos() {
+    //promo tipo DP
     this.pathsTypePromos = [];
+    //promo tipo AP
     this.lstProdPromo = [];
+    let promo: any;
     this.promocionService.getAll().subscribe(data => {
       for (let entry of data) {
         if (entry.tipoPromo.localeCompare('AP') === 0 && entry.estado === 1) {
+          promo = { estado: entry.estado, nombre: entry.nombre, productosV: [], tipoPromo: entry.tipoPromo, _id: entry._id };
+          //Productos Por
+          let aux1 = { p: [] };
+          let lst1: any = [];
           for (let p of entry.productosV[0].p) {
-            p.id = this.searchDescProd(p.id, this.lstProductos)
+            p.id = this.searchDescProd(p.id, this.lstProductos);
+            let cant_existente = parseFloat(this.searchIdProd(p.id, this.paths).cant_existente);
+            let a = { cantidad: p.cantidad, id: p.id, cant_existente: cant_existente };
+            lst1.push(a);
           }
+
+          aux1.p = lst1;
+          promo.productosV.push(aux1);
+          //Productos Recibe
+          let aux2 = { r: [] };
+          let lst2: any = [];
           for (let r of entry.productosV[1].r) {
-            r.id = this.searchDescProd(r.id, this.lstProductos)
+            r.id = this.searchDescProd(r.id, this.lstProductos);
+            let cant_existente = parseFloat(this.searchIdProd(r.id, this.paths).cant_existente);
+            let a = { cantidad: r.cantidad, id: r.id, cant_existente: cant_existente };
+            lst2.push(a);
           }
-          this.lstProdPromo = [...this.lstProdPromo, entry];
+          this.colorDetection(lst1, lst2);
+          aux2.r = lst2;
+          promo.productosV.push(aux2);
+          let aux3 = { v: entry.productosV[2].v };
+          promo.productosV.push(aux3);
+          this.lstProdPromo = [...this.lstProdPromo, promo];
         } else {
-          this.pathsTypePromos = [...this.pathsTypePromos, entry];
+          if (entry.estado === 1) {
+            this.pathsTypePromos = [...this.pathsTypePromos, entry];
+          }
         }
       }
+      console.log(this.lstProdPromo)
     }, err => {
       console.log(err);
     });
-
   }
 
   //Width detection

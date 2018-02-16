@@ -31,8 +31,8 @@
                   <div class="row">
                     <div class="input-group col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
                       <span class="input-group-addon"><i class="fa fa-id-card" aria-hidden="true"></i></span>
-                      <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc($event)" id="tipoDoc" name="tipoDoc" class="form-control"
-                        [disabled]="flagProductoGasto" style="z-index: 1;" tabindex="1">
+                      <select [(ngModel)]="selected_tipo_doc" (ngModelChange)="onChangeTipoDoc()" id="tipoDoc" name="tipoDoc" class="form-control"
+                        style="z-index: 1;" tabindex="1">
                         <option *ngFor="let c of tipo_documentos" [ngValue]="c">{{c.label}}</option>
                       </select>
                     </div>
@@ -1084,7 +1084,7 @@
       <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
         <label>Cliente:</label>
         <p-dropdown [options]="lstAddCardCI" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-          filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [inputId]="lstClientes" [disabled]="flagTC" (onChange)="changeTC1()">
+          filterBy="label,value.cedula" id="lstClientes" name="lstClientes" [disabled]="flagTC" (onChange)="changeTC1()">
           <ng-template let-car pTemplate="item">
             <p>{{car.label}}--{{car.value.cedula}}</p>
           </ng-template>
@@ -1153,7 +1153,7 @@
       <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
         <label>Cliente:</label>
         <p-dropdown [options]="lstAddCardCI1" [(ngModel)]="selectedClientGP" [style]="{'width':'100%'}" scrollHeight="200px" filter="filter"
-          filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [inputId]="lstClientes" [disabled]="flagTCU">
+          filterBy="label,value.cedula" id="lstClientesU" name="lstClientesU" [disabled]="flagTCU">
           <ng-template let-car pTemplate="item">
             <p>{{car.label}}--{{car.value.cedula}}</p>
           </ng-template>
@@ -1319,7 +1319,7 @@
       <p><strong>Fecha activación de tarjeta:</strong>&nbsp;&nbsp;{{showDateApertura}}</p>
       <p><strong>Hora activación de tarjeta:</strong>&nbsp;&nbsp;&nbsp;&nbsp;{{showHourApertura}}</p>
       <p-dataTable [value]="lstComprasCliente" [responsive]="true" [(selection)]="selectedPromos" [paginator]="true" [rows]="5"
-        (onRowClick)="onRowSelectTC($event)" [selectionMode]="multiple">
+        (onRowClick)="onRowSelectTC($event)">
         <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'15%'}"></p-column>
         <p-column field="hora" header="Hora" [style]="{'overflow':'visible','width':'15%'}"></p-column>
         <p-column field="cantidad" header="Unidades" [style]="{'overflcolorow':'visible','width':'15%'}">
