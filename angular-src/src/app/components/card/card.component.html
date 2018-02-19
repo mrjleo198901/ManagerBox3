@@ -291,10 +291,6 @@
                       <i id="addIcon" class="fa fa-plus-square fa-2x" tabindex="14" (click)="addCoverH()" aria-hidden="true" style="padding-top: 2px"></i>
                     </div>
                   </div>
-
-                </div>
-                <!-- Imprimir Factura -->
-                <div id="print-section">
                 </div>
                 <br><br>
               </div>
@@ -373,7 +369,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)">
+      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -565,7 +561,7 @@
         </div>
       </tab>
       <!-- TAB EGRESOS -->
-      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)" [active]="true">
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Ingreso/Egreso</h3>
@@ -1545,3 +1541,57 @@
 <p-blockUI [target]="pnlCedula" [blocked]="blockCaja">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
+
+<form>
+  <input type="button" value="Print Page" (click)="printOrdenSalida()">
+</form>
+
+
+<!-- Imprimir Factura -->
+<div id="print-section">
+</div>
+
+<script language="VBScript">
+  // THIS VB SCRIP REMOVES THE PRINT DIALOG BOX AND PRINTS TO YOUR DEFAULT PRINTER
+  Sub window_onunload()
+  On Error Resume Next
+  Set WB = nothing
+  On Error Goto 0
+  End Sub
+  
+  Sub Print()
+  OLECMDID_PRINT = 6
+  OLECMDEXECOPT_DONTPROMPTUSER = 2
+  OLECMDEXECOPT_PROMPTUSER = 1
+
+
+  On Error Resume Next
+  
+  If DA Then
+  call WB.ExecWB(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, 1)
+
+  Else
+  call WB.IOleCommandTarget.Exec(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, "", "", "")
+
+  End If
+  
+  If Err.Number <> 0 Then
+  If DA Then 
+  Alert("Nothing Printed :" & err.number & " : " & err.description)
+  Else
+  HandleError()
+  End if
+  End If
+  On Error Goto 0
+  End Sub
+  
+  If DA Then
+  wbvers = "8856F961-340A-11D0-A96B-00C04FD705A2"
+  Else
+  wbvers = "EAB22AC3-30C1-11CF-A7EB-0000C05BAE0B"
+  End If
+  
+  document.write "<object ID=""WB"" WIDTH=0 HEIGHT=0 CLASSID=""CLSID:"
+  document.write wbvers & """> </object>"
+
+</script>

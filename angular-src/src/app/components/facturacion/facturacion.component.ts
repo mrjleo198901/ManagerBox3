@@ -485,7 +485,6 @@ export class FacturacionComponent implements OnInit {
         this.colorPromoDisp = '#e7b416';
       }
     }
-    console.log(this.colorPromoDisp)
   }
 
   public ngOnInitPromos() {
@@ -507,7 +506,6 @@ export class FacturacionComponent implements OnInit {
             let a = { cantidad: p.cantidad, id: p.id, cant_existente: cant_existente };
             lst1.push(a);
           }
-
           aux1.p = lst1;
           promo.productosV.push(aux1);
           //Productos Recibe
@@ -531,7 +529,6 @@ export class FacturacionComponent implements OnInit {
           }
         }
       }
-      console.log(this.lstProdPromo)
     }, err => {
       console.log(err);
     });

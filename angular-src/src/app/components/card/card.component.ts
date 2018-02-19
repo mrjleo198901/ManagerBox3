@@ -18,7 +18,7 @@ import * as myGlobals from '../../components/globals';
 import { FacturaService } from '../../services/factura.service';
 import { DetalleFacturaService } from '../../services/detalle-factura.service';
 import { PromocionService } from '../../services/promocion.service';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DecimalPipe, DatePipe, SlicePipe } from '@angular/common';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { FacturacionComponent } from '../../components/facturacion/facturacion.component';
 import { PersonalService } from '../../services/personal.service';
@@ -270,6 +270,7 @@ export class CardComponent implements OnInit {
     private promocionService: PromocionService,
     private decimalPipe: DecimalPipe,
     private datePipe: DatePipe,
+    private slicePipe: SlicePipe,
     private localStorageService: LocalStorageService,
     private personalService: PersonalService,
     private activeCardsService: ActiveCardsService,
@@ -1907,6 +1908,7 @@ export class CardComponent implements OnInit {
     })
   }
 
+
   confirmarSalida() {
     const newFP = {
       ruc: this.rucFactura,
@@ -1922,6 +1924,7 @@ export class CardComponent implements OnInit {
       },
       totalPagar: parseFloat(this.totalPagar)
     }
+    this.fillFP();
     //Required fields
     if (!this.selectedRucFactura) {
       if (!this.validateService.validateFormaPago(newFP)) {
@@ -1953,6 +1956,8 @@ export class CardComponent implements OnInit {
             this.showDialogFP = false;
             this.setDefaultValues();
             this.setDefaultValues1();
+            //impresion
+            //this.printOrdenSalida()
             this.messageGrowlService.notify('success', 'Éxito', 'Se ha relizado la venta exitosamente!');
           }, err => {
             console.log(err);
@@ -1974,70 +1979,224 @@ export class CardComponent implements OnInit {
   }
 
   printFactura() {
+    console.log(this.lstConsumo);
     let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     popupWin.document.open();
-    popupWin.document.write(`
-      <html>
-        <head>
-          <title>Print tabs</title>
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th style="text-align: center">Tipo de Promocion</th>
-                <th style="text-align: center">Descripcion</th>
-              </tr>
-              </thead>
-              <tbody style="text-align: center">
-                <tr>
-                <td>1</td>
-                  <td>Tipo 1</td>
-                </tr>
-                <tr>
-                <td>2</td>
-                  <td>Tipo 2</td>
-                </tr>
-              </tbody>
-            </table>
-          </head>
-          <body onload="window.print();window.close()">${printContents}</body>
-      </html>`
-    );
+    let html = `
+    <html>
+    <head>
+      <style>
+        @page { size: auto;  margin: 0mm;};
+      </style>
+    </head>
+    <body onload="window.print();window.close()">${printContents}
+    <br><br><br>
+    <p style="font-family: Calibri; text-align:center">Documento sin valor tributario</p>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr><td style="padding-left: 20px">&nbsp;Cliente:</td><td>`+ this.nombreS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;CI/RUC:</td><td>`+ this.rucFactura + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Teléfono:</td><td>`+ this.telefonoS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Dirección:</td><td>`+ this.direccionS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>JFlores</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Fecha:</td><td>`+ this.validateService.getDateEs() + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Hora:</td><td>`+ this.validateService.getTimeEs() + `</td></tr>
+    </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr colspan="4">====================================</tr>
+      <thead>
+            <th style="text-align:center;padding-left: 7px; font-weight: normal;">Cant.</th>
+            <th style="text-align:left; font-weight: normal;">Detalle</th>
+            <th style="text-align:left; font-weight: normal;">Pu.</th>
+            <th style="text-align:left; font-weight: normal;">Total</th>
+      </thead> 
+      <td colspan="4">=========================================</td>
+      <tbody>
+        <tr>
+          <td style="padding-left: 10px; text-align:center;">1</td>
+          <td style="margin-right: -10px">Ron Bellows</td>
+          <td style="margin-right: -10px">15.00</td>
+          <td style="margin-right: -10px">15.00</td>
+        </tr>
+        for (let c of this.tipo_documentos){
+          <tr>
+          <td style="padding-left: 10px; text-align:center;">c.cantidad</td>
+          <td>c.descripcion</td>
+          <td>c.precio_venta</td>
+          <td>c.total</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr colspan="4">====================================</tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="padding-right: 120px">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>0.00</td></tr>
+    </table>
+    <td colspan="4">====================================</td>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr><td style="padding-left: 20px">&nbsp;Forma de pago:</td>
+        <td>Efectivo</td><td style="text-align: right; padding-right: 20px">20.00</td>
+      </tr>
+      <tr><td style="padding-left: 20px">&nbsp;</td>
+        <td>Tarjeta</td><td style="text-align: right; padding-right: 20px">10.00</td>
+      </tr>
+    </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr><td style="padding-left: 20px">&nbsp;Total items:</td><td style="padding-right: 120px">2</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Caja Nro.:</td><td>2</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Id. Transacción:</td><td style="font-size: 13px">5a8786bf49dd4d323c28d26a</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Impresor:</td><td>Epson TM-U220D</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Serie Nro.:</td><td>P3QF303046</td></tr>
+      
+    </table>
+    <td colspan="4">====================================</td>
+    <p style="font-family: Calibri; text-align:center; padding-left: 20px; padding-right: 20px">
+      Revisa tu factura electrónica ingresando
+      a la siguiente dirección:
+      www.riobytes.com/managerbox<br>
+      User: 0502926819<br>
+      Pass: 0502926819<br>
+      Gracias por tu compra
+    </p>
+    <td colspan="4">====================================</td>
+
+    </body>
+
+    </html>`;
+    popupWin.document.write(html);
     popupWin.document.close();
   }
 
+  formasPagoFact: any[];
+  fillFP() {
+    this.formasPagoFact = [];
+    if (this.fpEfectivo > 0) {
+      let aux = { desc: 'Efectivo', valor: this.fpEfectivo };
+      this.formasPagoFact.push(aux);
+    }
+    if (this.fpTarjeta > 0) {
+      let aux = { desc: 'Tarjeta', valor: this.fpTarjeta };
+      this.formasPagoFact.push(aux);
+    }
+    if (this.fpPorCobrar > 0) {
+      let aux = { desc: 'Crédito', valor: this.fpPorCobrar };
+      this.formasPagoFact.push(aux);
+    }
+    if (this.fpCheque > 0) {
+      let aux = { desc: 'Cheque', valor: this.fpCheque };
+      this.formasPagoFact.push(aux);
+    }
+  }
+
   printOrdenSalida() {
+    this.fillFP();
     let printContents, popupWin;
     printContents = document.getElementById('print-section').innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     popupWin.document.open();
-    popupWin.document.write(`
-      <html>
-        <head>
-          <title>Print tabs</title>
-          <table class="table table-striped">
-              <thead>
-              <tr>
-                <th style="text-align: center">Tipo de Promocion</th>
-                <th style="text-align: center">Descripcion</th>
-              </tr>
-              </thead>
-              <tbody style="text-align: center">
-                <tr>
-                <td>1</td>
-                  <td>Tipo 1</td>
-                </tr>
-                <tr>
-                <td>2</td>
-                  <td>Tipo 2</td>
-                </tr>
-              </tbody>
-            </table>
-          </head>
-          <body onload="window.print();window.close()">${printContents}</body>
-      </html>`
-    );
+    let html = `
+    <html>
+    <head>
+      <style>
+        @page { size: auto;  margin: 0mm;};
+      </style>
+    </head>
+    <body onload="window.print();window.close()">${printContents}
+    <br><br><br>
+    <p style="font-family: Calibri; text-align:center">Documento sin valor tributario</p>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr><td style="padding-left: 20px">&nbsp;Cliente:</td><td>`+ this.nombreS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;CI/RUC:</td><td>`+ this.rucFactura + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Teléfono:</td><td>`+ this.telefonoS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Dirección:</td><td>`+ this.direccionS + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>JFlores</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Fecha:</td><td>`+ this.validateService.getDateEs() + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Hora:</td><td>`+ this.validateService.getTimeEs() + `</td></tr>
+    </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr colspan="4">====================================</tr>
+      <thead>
+            <th style="text-align:center;padding-left: 7px; font-weight: normal;">Cant.</th>
+            <th style="text-align:left; font-weight: normal;">Detalle</th>
+            <th style="text-align:left; font-weight: normal;">Pu.</th>
+            <th style="text-align:left; font-weight: normal;">Total</th>
+      </thead> 
+      <td colspan="4">=========================================</td>
+      <tbody>
+        `;
+
+    for (let c of this.lstConsumo) {
+      html += `<tr><td style="padding-left: 10px; text-align:center;">` + c.cantidad + `</td>
+          <td style="margin-right: -10px">`+ this.slicePipe.transform(c.descripcion, 0, 13) + `</td>
+          <td style="margin-right: -10px">`+ this.decimalPipe.transform(c.precio_venta, '1.2-2') + `</td>
+          <td style="margin-right: -10px">`+ this.decimalPipe.transform(c.total, '1.2-2') + `</td></tr>`
+    }
+
+    html += ` 
+      </tbody>
+    </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr colspan="4">====================================</tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="padding-right: 120px">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
+    </table>
+    <td colspan="4">====================================</td>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">`;
+    let i = 0;
+    for (let c of this.formasPagoFact) {
+      html += `<tr>`;
+      if (i == 0) {
+        html += `<td style="padding-left: 20px">Forma de pago:</td>`;
+      }else{
+        html += `<td style="padding-left: 20px">&nbsp;</td>`;
+      }
+      html += `<td>` + c.desc + `</td>
+                <td style="text-align: right; padding-right: 20px">` + this.decimalPipe.transform(c.valor, '1.2-2') + `</td>
+              </tr>`
+      i++;
+    }
+
+    html += ` </table>
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr><td style="padding-left: 20px">&nbsp;Total items:</td><td>`+ this.lstConsumo.length + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Caja Nro.:</td><td>2</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Id. Transacción:</td><td style="font-size: 13px">5a8786bf49dd4d323c28d26a</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Impresor:</td><td>Epson TM-U220D</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Serie Nro.:</td><td>P3QF303046</td></tr>
+      
+    </table>
+    <td colspan="4">====================================</td>
+    <p style="font-family: Calibri; text-align:center; padding-left: 20px; padding-right: 20px">
+      Revisa tu factura electrónica ingresando
+      a la siguiente dirección:
+      www.riobytes.com/managerbox<br>
+      User: 0502926819<br>
+      Pass: 0502926819<br>
+      Gracias por tu compra
+    </p>
+    <td colspan="4">====================================</td>
+
+    </body>
+
+    </html>`;
+    popupWin.document.write(html);
     popupWin.document.close();
   }
 
