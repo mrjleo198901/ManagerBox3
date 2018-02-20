@@ -4,7 +4,7 @@ var mongoose = restful.mongoose;
 var configuracionSchema = new mongoose.Schema({
 
     descripcion: String,
-    valor: Number
+    valor: String
 
 });
 

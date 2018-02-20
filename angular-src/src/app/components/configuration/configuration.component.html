@@ -4,37 +4,153 @@
   </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
-  <div class="panel panel-default">
-    <div class="panel-body">
-
-      <div class="col-lg-4 col-md-6 col-sm-6"><br>
-        <label>Nro. Personas por Tarjeta</label>
-        <div class="input-group">
-          <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres()" id="nombres"
-            name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
-            onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
-                        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
+  <div (click)="$event.preventDefault()">
+    <tabset [justified]="true">
+      <!-- DATOS TRIBUTARIOS -->
+      <tab heading="Información" (select)="alertMe1(1)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Datos Tributarios</h3>
+          <hr>
         </div>
-      </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Nombre Comercial (si consta en el RUC)</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="nombreComercial" (ngModelChange)="onChangeNombreComercial()"
+                    id="nombreComercial" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres Comercial"
+                    (click)="$event.target.select()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                    event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+                    tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Razón Social</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="razonSocial" (ngModelChange)="onChangeRazonSocial()" id="razonSocial"
+                    aria-describedby="basic-addon4" style="z-index: 1" placeholder="Razón Social" (click)="$event.target.select()"
+                    onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+                    tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>RUC</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="ruc" id="ruc" (ngModelChange)="onChangeRuc()" aria-describedby="basic-addon4"
+                    maxlength="13" style="z-index: 1" placeholder="Nro. RUC" (click)="$event.target.select()" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                    tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" (focus)="focusFunction()" (focusout)="focusOutFunction()">
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Contribuyente Especial</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="nroCont" id="nroCont" (ngModelChange)="onChangeNroCont()"
+                    aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nro. Contribuyente Especial" (click)="$event.target.select()"
+                    onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom">
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Obligado a llevar contabilidad</label><br>
+                <md-slide-toggle [color]="color" [(ngModel)]="flagCont" [ngModelOptions]="{standalone: true}" style="padding-top: 15px">
+                </md-slide-toggle>
+              </div>
 
-      <div class="col-lg-4 col-md-6 col-sm-6"><br>
-        <label>Limite de Consumo por Defecto</label>
-        <div class="input-group">
-          <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-          <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres()" id="nombres"
-            name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
-            onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
-                        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+                <button (click)="updateInfo()" class="btn btn-primary btn-block" *ngIf="flagNombreComercial && flagRazonSocial && flagRuc">Actualizar</button>
+              </div>
+              
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
-        <button (click)="onLoginSubmit()" class="btn btn-primary btn-block" [disabled]="!flagShowSuccess"> Actualizar</button>
-      </div>
+      </tab>
+      <!-- TAB TARJETAS -->
+      <tab heading="Tarjetas" (select)="alertMe2(2)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Tarjetas de Consumo</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Nro. Máximo de Personas por Tarjeta</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="numMax" (ngModelChange)="onChangeNumMax()" id="numMax" aria-describedby="basic-addon4"
+                    style="z-index: 1" placeholder="Número máximo de personas por tarjera" (click)="$event.target.select()"
+                    onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom">
+                </div>
+              </div>
 
-    </div>
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Límite de Consumo por Defecto</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" currencyMask [options]="{ prefix: '$ '}" [(ngModel)]="limite" (ngModelChange)="onChangeLimite()" class="form-control"
+                    id="limite" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Límite de consumo por tarjeta"
+                    (click)="$event.target.select()" tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom">
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+                <button (click)="updateTarjeta()" class="btn btn-primary btn-block" *ngIf="flagNumMax && flagLimite">Actualizar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </tab>
+      <!-- TAB IMPRESION -->
+      <tab heading="Impresión" (select)="alertMe3(3)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Impresión de Tickets</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <div class="panel panel-default">
+            <div class="panel-body">
+
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Nombre Impresora</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="printerName" (ngModelChange)="onChangePrinterName()" id="printerName" aria-describedby="basic-addon4"
+                    style="z-index: 1" placeholder="Nombres Impresor" (click)="$event.target.select()">
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Nro. Modelo</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" pInputText class="form-control" [(ngModel)]="numModelo" (ngModelChange)="onChangePrinterName()" id="numModelo" aria-describedby="basic-addon4"
+                    style="z-index: 1" placeholder="Nro. Modelo" (click)="$event.target.select()">
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+                <button (click)="updateImpresion()" class="btn btn-primary btn-block" *ngIf="flagPrinterName && flagNumModelo"> Actualizar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
   </div>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
 </div>

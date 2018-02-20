@@ -42,12 +42,13 @@ export class ActiveCardsService {
       .map(res => res.json())
   }
 
-  searchByCI(ci) {
+  searchByCIActive(ci) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.set('Accept', 'text/plain');
     let params: URLSearchParams = new URLSearchParams();
     params.set('ci', ci);
+    params.set('estado', '1');
     let options = new RequestOptions({ headers: headers, params: params });
     return this.http.get(this.url + 'active_cards/', options)
       .map(res => res.json())

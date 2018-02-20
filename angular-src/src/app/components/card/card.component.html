@@ -10,7 +10,7 @@
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
       <!-- TAB OPEN -->
-      <tab heading="Apertura de tarjeta" (select)="alertMe1(1)">
+      <tab heading="Apertura" (select)="alertMe1(1)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -78,7 +78,8 @@
                       <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                       <input [(ngModel)]="passport" (ngModelChange)="onChangePassLength($event)" (click)="$event.target.select()" type="text" class="form-control"
                         name="passNew" #passNew id="passNew" placeholder="Nro. pasaporte del cliente" style="z-index: 1;" maxlength="15"
-                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="4" />
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="4" [disabled]="blockCaja"
+                      />
                       <span class="input-group-addon" id="basic-addonPass1" (click)=" searchPass()"><i class="fa fa-search" aria-hidden="true"></i></span>
                       <span class="input-group-addon" id="basic-addonPass2" (click)=" setCursorAdd()"><i class="fa fa-plus" aria-hidden="true"></i></span>
                     </div>
@@ -369,7 +370,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre de tarjeta" (select)="alertMe2(2)" [active]="true">
+      <tab heading="Cierre" (select)="alertMe2(2)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -553,7 +554,6 @@
           <hr>
         </div>
         <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center">
-          <!--<button (click)="openFP();setDefaultValues();" class="btn btn-primary btn-block" id="basic-addonPrint">Aceptar</button>-->
           <button (click)="openFP();setDefaultValues();" class="btn btn-primary btn-block" id="basic-addonPrint" tabindex="17" [disabled]="flagConfirmFP">Aceptar</button>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -960,6 +960,20 @@
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
+        </div>
+      </tab>
+      <!-- REIMPRESION -->
+      <tab heading="Reimpresión" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Reimpresión de Tickets</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <ng2-smart-table id="dtR" [settings]="settingsR" [source]="sourceR" (edit)="showDialogR = !showDialogR;onUpdateR($event);setCursorUpdateR()"
+            (delete)="onDeleteR($event)">
+          </ng2-smart-table>
         </div>
       </tab>
     </tabset>
@@ -1545,7 +1559,6 @@
 <form>
   <input type="button" value="Print Page" (click)="printOrdenSalida()">
 </form>
-
 
 <!-- Imprimir Factura -->
 <div id="print-section">
