@@ -418,6 +418,7 @@ export class ProductosComponent implements OnInit {
         localStorage.setItem('lstProductos', JSON.stringify(this.productos));
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
+        console.log(this.productos)
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',

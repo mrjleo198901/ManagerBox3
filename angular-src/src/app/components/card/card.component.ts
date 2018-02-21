@@ -29,6 +29,7 @@ import { CajaService } from '../../services/caja.service';
 import { Router } from '@angular/router';
 import { CoverService } from '../../services/cover.service';
 import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.component';
+import { PrintRenderComponent } from '../image-render/print-render.component';
 
 @Component({
   selector: 'app-card',
@@ -442,8 +443,6 @@ export class CardComponent implements OnInit {
           this.lstPromociones = data;
           this.mapProdShow = [];
           let firstElement = this.mapTP[0]._id;
-          //localStorage.removeItem("promosActivas");
-          //this.localStorageService.removeItem();
           for (let entry of p) {
             if (entry.promocion.length > 0) {
 
@@ -2718,44 +2717,52 @@ export class CardComponent implements OnInit {
 
   }
   /* TAB REIMPRESION */
+  lstFacturas: any[];
   settingsR = {
     mode: 'external',
     noDataMessage: 'No existen registros',
     columns: {
-      numero: {
-        title: 'Numero Tarjeta',
-        width: '12%',
+      _id: {
+        title: 'Id. Transacción',
+        width: '17.5%',
       },
       cedula: {
-        title: 'CI. Cliente',
-        width: '12%'
+        title: 'CI.',
+        width: '12.5%'
+      },
+      ruc: {
+        title: 'Ruc',
+        width: '12.5%'
       },
       nombre: {
-        title: 'Nombre Cliente',
-        width: '15%'
+        title: 'Cliente',
+        width: '17.5%'
       },
-      apellido: {
-        title: 'Apellido Cliente',
-        width: '15%'
-      },
-      limite: {
-        title: 'Limite Consumo',
+      cajero: {
+        title: 'Cajero',
         width: '10%'
       },
-      tipo: {
-        title: 'Tipo',
+      fecha_emision: {
+        title: 'Fecha',
         width: '10%'
       },
-      descripcion: {
-        title: 'Descripcion',
-        width: '26%'
+      monto: {
+        title: 'Monto',
+        width: '10%'
+      },
+      print: {
+        title: 'Impresión',
+        width: '10%',
+        filter: false,
+        type: 'custom',
+        renderComponent: PrintRenderComponent
       }
     },
     actions: {
-      // columnTitle: '',
-      add: true,
-      edit: true,
-      delete: true
+      //columnTitle: '',
+      add: false,
+      edit: false,
+      delete: false
     },
     attr: {
       class: 'table-bordered table-hover table-responsive'
@@ -2867,8 +2874,31 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInitReimpresion() {
+    this.lstFacturas = [];
     this.facturaService.getAll().subscribe(data => {
-      console.log(data);
+      for (let entry of data) {
+        let factura = {
+          _id: entry._id,
+          cedula: entry.cedula,
+          ruc: entry.ruc,
+          nombre: entry.nombre,
+          telefono: entry.telefono,
+          direccion: entry.direccion,
+          cajero: entry.cajero,
+          fecha_emision: entry.fecha_emision,
+          monto: entry.detalleFacturaV,
+          print: entry
+        }
+        let sum = 0;
+        for (let s of factura.monto) {
+          sum += s.total;
+        }
+        factura.cajero = this.us.name;
+        factura.monto = sum;
+        this.lstFacturas.push(factura);
+      }
+      this.sourceR.load(this.lstFacturas);
+      console.log(this.lstFacturas)
     }, err => {
       console.log(err);
     });
