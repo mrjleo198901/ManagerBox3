@@ -1315,22 +1315,22 @@ export class CardComponent implements OnInit {
 
   updateStockProdcutos(lstResumen) {
     let newList = this.validateService.formatSailsStock(lstResumen);
-    //console.log(newList);
     if (newList.length > 0) {
       for (let entry of newList) {
         this.productoService.getByNombre(entry.descripcion).subscribe(data => {
-          data[0].cant_existente = parseFloat(data[0].cant_existente);
-          data[0].cant_existente -= entry.cantidad;
-          this.productoService.updateProducto(data[0]).subscribe(data => {
-            //console.log('success');
-          }, err => {
-            console.log(err);
-          });
+          if (data.length > 0) {
+            data[0].cant_existente = parseFloat(data[0].cant_existente);
+            data[0].cant_existente -= entry.cantidad;
+            this.productoService.updateProducto(data[0]).subscribe(data => {
+              //console.log('success');
+            }, err => {
+              console.log(err);
+            });
+          }
         }, err => {
           console.log(err);
         });
       }
-
     }
   }
 
@@ -1427,6 +1427,7 @@ export class CardComponent implements OnInit {
       this.flagTC = false;
     }*/
   }
+
   setCursorAddT() {
     document.getElementById('basic-addon7').style.backgroundColor = '#f8f5f0';
     document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
@@ -1864,6 +1865,8 @@ export class CardComponent implements OnInit {
           cantHombres: data[0].cantHombres,
           egresoMujeres: data[0].egresoMujeres,
           egresoHombres: data[0].egresoHombres,
+          ingresoMujeres: data[0].ingresoMujeres,
+          ingresoHombres: data[0].ingresoHombres,
           idFactura: data[0].idFactura
         }
         this.messageGrowlService.notify('info', 'Información', 'Tarjeta Encontrada!');
@@ -1958,7 +1961,12 @@ export class CardComponent implements OnInit {
             this.setDefaultValues();
             this.setDefaultValues1();
             //impresion
-            //this.printOrdenSalida()
+            if (this.totalPagar > 0) {
+              this.printOrdenSalida();
+            } else {
+              this.printOrdenSalidaCero();
+            }
+
             this.messageGrowlService.notify('success', 'Éxito', 'Se ha relizado la venta exitosamente!');
           }, err => {
             console.log(err);
@@ -2201,6 +2209,28 @@ export class CardComponent implements OnInit {
     popupWin.document.close();
   }
 
+  printOrdenSalidaCero() {
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open(' ', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    let html = `
+    <html>
+      <head>
+        <style>
+          @page { size: auto;  margin: 0mm;};
+        </style>
+      </head>
+      <body onload="window.print();window.close()">${printContents}
+        <br><br><br>
+
+      </body>
+    </html>`;
+    popupWin.document.write(html);
+    popupWin.document.close();
+
+  }
+
   onRowSelectTC(event) {
     console.log(event.data)
     this.showDateHour = event.data.fecha;
@@ -2262,7 +2292,6 @@ export class CardComponent implements OnInit {
       }
       this.totalCoversE = 0;
       var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
-      let cant = this.selectedCoverME.productoMujeres[0].cantidad;
       if (index == -1) {
         this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
       } else {

@@ -442,12 +442,12 @@
                             <li class="list-group-item">
                               <p>Ing. Mujeres:</p>
                               <div style="text-align: center">
-                                {{searchUserS.egresoHombres}}</div>
+                                {{searchUserS.ingresoMujeres}}</div>
                             </li>
                             <li class="list-group-item">
                               <p>Ing. Hombres:</p>
                               <div style="text-align: center">
-                                {{searchUserS.egresoHombres}}</div>
+                                {{searchUserS.ingresoHombres}}</div>
                             </li>
                           </ul>
                         </div>
@@ -631,12 +631,12 @@
                             <li class="list-group-item">
                               <p>Ing. Mujeres:</p>
                               <div style="text-align: center">
-                                {{searchUserE.egresoHombres}}</div>
+                                {{searchUserE.ingresoMujeres}}</div>
                             </li>
                             <li class="list-group-item">
                               <p>Ing. Hombres:</p>
                               <div style="text-align: center">
-                                {{searchUserE.egresoHombres}}</div>
+                                {{searchUserE.ingresoHombres}}</div>
                             </li>
                             <li class="list-group-item">
                               <p>Detalle de Consumo:</p>
@@ -745,7 +745,7 @@
                           </div>
                           <div class="row" style="text-align: center">
                             <div class="ui-g-12">
-                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantMujeres - searchUserE.egresoMujeres) - searchUserE.ingresoMujeres}}</span>
+                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantMujeres - searchUserE.egresoMujeres) + searchUserE.ingresoMujeres}}</span>
                             </div>
                             <div class="ui-g-12">
                               <div class="input-group" style="padding-right: 30%; margin-top: 7px; padding-left: 30%;">
@@ -810,7 +810,7 @@
                           </div>
                           <div class="row" style="text-align: center">
                             <div class="ui-g-12">
-                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantHombres - searchUserE.egresoHombres) - searchUserE.ingresoHombres}}</span>
+                              <span class="badge" style="font-size: 16px">{{(searchUserE.cantHombres - searchUserE.egresoHombres) + searchUserE.ingresoHombres}}</span>
                             </div>
                             <div class="ui-g-12">
                               <div class="input-group" style="padding-right: 30%; margin-top: 7px; padding-left: 30%;">
@@ -1556,9 +1556,9 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
-<form>
+<!--<form>
   <input type="button" value="Print Page" (click)="printOrdenSalida()">
-</form>
+</form>-->
 
 <!-- Imprimir Factura -->
 <div id="print-section">
