@@ -2164,7 +2164,7 @@ export class CardComponent implements OnInit {
       <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
+      <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
     </table>
     <td colspan="4">====================================</td>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">`;
@@ -2189,9 +2189,24 @@ export class CardComponent implements OnInit {
       <tr><td style="padding-left: 20px">&nbsp;Id. Transacción:</td><td style="font-size: 13px">5a8786bf49dd4d323c28d26a</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Impresor:</td><td>Epson TM-U220D</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Serie Nro.:</td><td>P3QF303046</td></tr>
-      
     </table>
     <td colspan="4">====================================</td>
+
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+        <tr><td style="padding-left: 20px">&nbsp;&nbsp;Total:</td><td style="padding-right: 50px;"> M:`
+      + ((this.searchUserS.cantMujeres + this.searchUserS.ingresoMujeres) - this.searchUserS.egresoMujeres) + `</td>
+        <td style="padding-right: 50px"> H:`
+      + ((this.searchUserS.cantHombres + this.searchUserS.ingresoHombres) - this.searchUserS.egresoHombres) + `</td></tr>
+        <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egresos:</td><td> M:`+ this.searchUserS.egresoMujeres + `</td>
+        <td> H:`+ this.searchUserS.egresoHombres + `</td></tr>
+        <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingresos:</td><td> M:`+ this.searchUserS.ingresoMujeres + `</td>
+        <td> H:`+ this.searchUserS.ingresoHombres + `</td></tr>
+        <tr><td style="padding-left: 20px">&nbsp;&nbsp;Cant. Ini.:</td><td> M:`+ this.searchUserS.cantMujeres + `</td>
+        <td> H:`+ this.searchUserS.cantHombres + `</td></tr>
+    </table>
+    <td colspan="4">====================================</td>
+
+
     <p style="font-family: Calibri; text-align:center; padding-left: 20px; padding-right: 20px">
       Revisa tu factura electrónica ingresando
       a la siguiente dirección:
@@ -2201,6 +2216,42 @@ export class CardComponent implements OnInit {
       Gracias por tu compra
     </p>
     <td colspan="4">====================================</td>
+
+    </body>
+
+    </html>`;
+    popupWin.document.write(html);
+    popupWin.document.close();
+  }
+
+  printOrdenSalida1() {
+    this.fillFP();
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open(' ', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    let html = `
+    <html>
+    <head>
+      <style>
+        @page { size: auto;  margin: 0mm;};
+      </style>
+    </head>
+    <body onload="window.print();window.close()">${printContents}
+
+    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+      <tr colspan="4">====================================</tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="padding-right: 50px">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
+    </table>
 
     </body>
 
@@ -2222,7 +2273,28 @@ export class CardComponent implements OnInit {
         </style>
       </head>
       <body onload="window.print();window.close()">${printContents}
-        <br><br><br>
+        <p style="font-family: Calibri; text-align:center">Orden de Salida (Consumo Cero)</p>
+        <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+          <tr><td style="padding-left: 20px">&nbsp;CI:</td><td>`+ this.searchUserS.ci + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Cliente:</td><td>`+ this.searchUserS.nombre + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>`+ this.us.name + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Fecha:</td><td>`+ this.validateService.getDateEs() + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Hora:</td><td>`+ this.validateService.getTimeEs() + `</td></tr>
+        </table>
+
+        <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+          <tr colspan="4">====================================</tr>
+          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px;">`
+      + ((this.searchUserS.cantMujeres + this.searchUserS.ingresoMujeres) - this.searchUserS.egresoMujeres) + `</td></tr>
+          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px">`
+      + ((this.searchUserS.cantHombres + this.searchUserS.ingresoHombres) - this.searchUserS.egresoHombres) + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Mujeres:</td><td>`+ this.searchUserS.egresoMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Hombres:</td><td>`+ this.searchUserS.egresoHombres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingreso Mujeres:</td><td>`+ this.searchUserS.ingresoMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingreso Hombres:</td><td>`+ this.searchUserS.ingresoHombres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Cant. Mujeres:</td><td>`+ this.searchUserS.cantMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Cant. Hombres:</td><td>`+ this.searchUserS.cantHombres + `</td></tr>
+        </table>
 
       </body>
     </html>`;

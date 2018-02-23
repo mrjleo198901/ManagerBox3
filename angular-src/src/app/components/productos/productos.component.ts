@@ -979,7 +979,7 @@ export class ProductosComponent implements OnInit {
           value: this.selected_producto,
           precio_costo: this.costoCantSubProd
         };
-        // search wheter subProd already exists
+        // search whether subProd already exists
         const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
         if (index1 === -1) {
           this.cantSubprod = 0;
@@ -1005,8 +1005,8 @@ export class ProductosComponent implements OnInit {
         this.precio_costo = 0;
         this.contenido = 0;
         for (let entry of this.subproductoV) {
-          //this.precio_costo += entry.precio_costo;
-          this.precio_costo = this.fs.add(this.precio_costo, this.precio_costo)
+          this.precio_costo += entry.precio_costo;
+          //this.precio_costo += this.fs.add(entry.precio_costo, entry.precio_costo)
           let str = (entry.cantidad).match(/[a-z]+|\d+/ig);
           //this.contenido += parseFloat(str[0]);
           this.reCalcContenido(str[0], str[1], entry.value.contenido);

@@ -370,7 +370,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre" (select)="alertMe2(2)">
+      <tab heading="Cierre" (select)="alertMe2(2)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
@@ -963,7 +963,7 @@
         </div>
       </tab>
       <!-- REIMPRESION -->
-      <tab heading="Reimpresión" [active]="true">
+      <tab heading="Reimpresión">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Reimpresión de Tickets</h3>
@@ -1556,9 +1556,9 @@
   <i class="fa fa-lock fa-5x" style="position:absolute;top:40%;left:46%"></i>
 </p-blockUI>
 
-<!--<form>
+<form>
   <input type="button" value="Print Page" (click)="printOrdenSalida()">
-</form>-->
+</form>
 
 <!-- Imprimir Factura -->
 <div id="print-section">
