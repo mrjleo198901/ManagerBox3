@@ -83,6 +83,7 @@ export class FacturacionComponent implements OnInit {
             this.pathsType.push(entry);
           }
         }
+
         this.ngOnInitPromos();
 
       }, err => {
@@ -488,6 +489,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   public ngOnInitPromos() {
+    console.log(this.lstProductos) 
     //promo tipo DP
     this.pathsTypePromos = [];
     //promo tipo AP

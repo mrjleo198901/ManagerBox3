@@ -65,7 +65,7 @@
               <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
                 <button (click)="updateInfo()" class="btn btn-primary btn-block" *ngIf="flagNombreComercial && flagRazonSocial && flagRuc">Actualizar</button>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -126,8 +126,8 @@
                 <label>Nombre Impresora</label>
                 <div class="input-group">
                   <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-                  <input type="text" pInputText class="form-control" [(ngModel)]="printerName" (ngModelChange)="onChangePrinterName()" id="printerName" aria-describedby="basic-addon4"
-                    style="z-index: 1" placeholder="Nombres Impresor" (click)="$event.target.select()">
+                  <input type="text" pInputText class="form-control" [(ngModel)]="printerName" (ngModelChange)="onChangePrinterName()" id="printerName"
+                    aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres Impresor" (click)="$event.target.select()">
                 </div>
               </div>
 
@@ -135,13 +135,57 @@
                 <label>Nro. Modelo</label>
                 <div class="input-group">
                   <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
-                  <input type="text" pInputText class="form-control" [(ngModel)]="numModelo" (ngModelChange)="onChangePrinterName()" id="numModelo" aria-describedby="basic-addon4"
-                    style="z-index: 1" placeholder="Nro. Modelo" (click)="$event.target.select()">
+                  <input type="text" pInputText class="form-control" [(ngModel)]="numModelo" (ngModelChange)="onChangePrinterName()" id="numModelo"
+                    aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nro. Modelo" (click)="$event.target.select()">
                 </div>
               </div>
 
               <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
                 <button (click)="updateImpresion()" class="btn btn-primary btn-block" *ngIf="flagPrinterName && flagNumModelo"> Actualizar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </tab>
+      <!-- TAB VENTAS -->
+      <tab heading="Ventas" (select)="alertMe4(4)" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Gestión de Ventas</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <br>
+          <div class="panel panel-default">
+            <div class="panel-body">
+
+              <div class="col-lg-6 col-md-6 col-sm-6"><br>
+                <label>Cantidad Colchón</label>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon4"><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i></span>
+                  <input type="text" currencyMask [options]="{ prefix: ''}" [(ngModel)]="nuevaCantidad" (ngModelChange)="onChangeNuevaCant()"
+                    class="form-control" id="limite" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Límite de consumo por tarjeta"
+                    (click)="$event.target.select()" tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom">
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><br>
+                <h4>
+                  <canvas width="15" height="15" style="border:1px solid #99c140; background-color: #99c140; margin-bottom: -2.5px"></canvas>
+                  Cantidad Existente >= Cantidad Mínima + Cantidad Colchón </h4>
+                <h4>
+                  <canvas width="15" height="15" style="border:1px solid #e7b416; background-color: #e7b416; margin-bottom: -2.5px"></canvas>
+                  Cantidad Mínima + Cantidad Colchón
+                  < Cantidad Existente >= Cantidad Mínima </h4>
+                <h4>
+                  <canvas width="15" height="15" style="border:1px solid #cc3232; background-color: #cc3232; margin-bottom: -2.5px"></canvas>
+                  Cantidad Existente
+                  < Cantidad Mínima </h4>
+              </div>
+
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-12 col-xs-12" style="text-align: center"><br><br>
+                <button (click)="updateVentas()" class="btn btn-primary btn-block" *ngIf="flagNuevaCant"> Actualizar</button>
               </div>
 
             </div>

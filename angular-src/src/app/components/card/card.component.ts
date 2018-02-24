@@ -463,9 +463,12 @@ export class CardComponent implements OnInit {
                 cant_existente: this.decimalPipe.transform(entry.cant_existente, '1.2-2'),
                 precio_costo: this.decimalPipe.transform(entry.precio_costo, '1.2-2'),
                 precio_venta: this.decimalPipe.transform(entry.precio_venta, '1.2-2'),
-                selectedPromo: this.lstPromociones[0].nombre,
+                selectedPromo: '',
                 precio_promo: this.decimalPipe.transform(entry.precio_venta, '1.2-2')
               };
+              if (this.lstPromociones.length > 0) {
+                aux.selectedPromo = this.lstPromociones[0].nombre;
+              }
               this.mapProdShow.push(aux);
             }
           }

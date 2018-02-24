@@ -42,7 +42,7 @@
                         <p-dataGrid [value]="pathsType" [paginator]="true" [rows]="16" [immutable]="false" emptyMessage="No existen registros">
                             <ng-template let-prod let-i="index" pTemplate="item">
                                 <div class="ui-g-12 ui-sm-12 ui-md-6 ui-lg-4 ui-xl-3">
-                                    <div class="panel panel-default" style="border-top: 10px solid" [ngStyle]="{'text-align':'center','border-top-color': prod.cant_existente >= 50 ? '#99c140' :  prod.cant_existente < 15 ? '#cc3232' : '#e7b416'}">
+                                    <div class="panel panel-default" style="border-top: 10px solid" [ngStyle]="{'text-align':'center','border-top-color': prod.cant_existente >= prod.cant_minima ? '#99c140' :  prod.cant_existente  < prod.cant_minima && prod.cant_existente > 0 ? '#e7b416' :  '#cc3232'}">
                                         <div class="panel-body box-shadow">
                                             <p [ngStyle]="{'background-color': prod.promocion.length > 0  ? '#d3d3d3' : ''}">{{prod.nombre}}</p>
                                             <img src={{prod.path}} (dblclick)="eventEmitDoubleClick($event,i)" width="80" style="cursor:pointer;" />
@@ -198,6 +198,11 @@
                         <p style="text-align: left">Cantidad Existente:</p>
                         {{selectedProd.cant_existente | number : '1.2-2'}}
                     </li>
+                    <li class="list-group-item list-group-item1">
+                        <p style="text-align: left">Cantidad Minima:</p>
+                        {{selectedProd.cant_minima | number : '1.2-2'}}
+                    </li>
+
                 </ul>
             </div>
         </div>

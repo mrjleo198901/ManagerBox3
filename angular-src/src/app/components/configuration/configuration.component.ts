@@ -32,6 +32,8 @@ export class ConfigurationComponent implements OnInit {
   numModelo: string = '';
   flagNumModelo = false;
   flagValidateRUC = false;
+  nuevaCantidad: number = 0;
+  flagNuevaCant = false;
 
   constructor(private validateService: ValidateService,
     private messageGrowlService: MessageGrowlService,
@@ -41,14 +43,15 @@ export class ConfigurationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedTab = 1;
-    /*let obj = { descripcion: 'numModelo', valor: 'P3QF303046' };
+
+    /*let obj = { descripcion: 'nuevaCantidad', valor: '10' };
     this.configurationService.register(obj).subscribe(data => {
       console.log(data)
     }, err => {
       console.log(err)
     });*/
 
+    this.selectedTab = 1;
     this.configurationService.getAll().subscribe(data => {
       console.log(data);
       this.nombreComercial = data[0].valor;
@@ -62,6 +65,7 @@ export class ConfigurationComponent implements OnInit {
       this.limite = data[6].valor;
       this.printerName = data[7].valor;
       this.numModelo = data[8].valor;
+      this.nuevaCantidad = data[9].valor;
     }, err => {
       console.log(err);
     });
@@ -100,6 +104,17 @@ export class ConfigurationComponent implements OnInit {
     }
     this.selectedTab = 3;
   };
+
+  public alertMe4(st) {
+    if (this.selectedTab != st && this.selectedTab > 0) {
+      setTimeout(function () {
+        let v = document.getElementById('nuevaCantidad');
+        if (v != null)
+          v.click();
+      }, 50);
+    }
+    this.selectedTab = 4;
+  }
 
   focusFunction() {
     this.flagValidateRUC = true;
@@ -352,7 +367,28 @@ export class ConfigurationComponent implements OnInit {
     this.configurationService.getByDesc('printerName').subscribe(data => {
       data[0].valor = this.printerName;
       this.configurationService.update(data[0]).subscribe(data1 => {
-        this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!')
+        this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
+      }, err => {
+        console.log(err)
+      });
+    }, err => {
+      console.log(err)
+    });
+  }
+
+  onChangeNuevaCant() {
+    if (this.nuevaCantidad > 0) {
+      this.flagNuevaCant = true;
+    } else {
+      this.flagNuevaCant = false;
+    }
+  }
+
+  updateVentas() {
+    this.configurationService.getByDesc('nuevaCantidad').subscribe(data => {
+      data[0].valor = this.nuevaCantidad;
+      this.configurationService.update(data[0]).subscribe(data1 => {
+        this.messageGrowlService.notify('info', 'Información', 'Modificación Exitosa!');
       }, err => {
         console.log(err)
       });
