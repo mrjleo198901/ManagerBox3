@@ -2155,16 +2155,16 @@ export class CardComponent implements OnInit {
     </table>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
       <tr colspan="4">====================================</tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="padding-right: 120px">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
-      <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td style="text-align:center;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td style="text-align:center;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td style="text-align:center;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td style="text-align:center;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td style="text-align:center;">0.00</td></tr>
+      <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Valor Total:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `&nbsp;&nbsp;</td></tr>
     </table>
     <td colspan="4">====================================</td>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">`;

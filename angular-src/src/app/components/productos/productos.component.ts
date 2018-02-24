@@ -697,6 +697,7 @@ export class ProductosComponent implements OnInit {
       precio_venta: this.precio_venta,
       utilidad: this.utilidad,
       cant_existente: this.cant_existente,
+      cant_minima: this.cant_minima,
       subproductoV: this.subproductoV,
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo,
