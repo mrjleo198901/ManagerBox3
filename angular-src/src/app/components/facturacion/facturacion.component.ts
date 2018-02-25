@@ -12,6 +12,7 @@ import { FacturaService } from '../../services/factura.service';
 import { ValidateService } from '../../services/validate.service';
 import { PromocionService } from '../../services/promocion.service';
 import { FormatterService } from '../../services/formatter.service';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
   selector: 'app-facturacion',
@@ -51,6 +52,7 @@ export class FacturacionComponent implements OnInit {
   flagShowAlert = false;
   productosV: any[];
   selectedProdCover: any;
+  nuevaCantidad;
 
   constructor(
     private productoService: ProductoService,
@@ -62,7 +64,8 @@ export class FacturacionComponent implements OnInit {
     private facturaService: FacturaService,
     private validateService: ValidateService,
     private promocionService: PromocionService,
-    private fs: FormatterService) {
+    private fs: FormatterService,
+    private configurationService: ConfigurationService) {
 
     this.lstProductos = [];
     this.tipoProductoService.getAll().subscribe(tp => {
@@ -75,6 +78,11 @@ export class FacturacionComponent implements OnInit {
       }
       this.productoService.getAll().subscribe(p => {
         this.lstProductos = p;
+        for (let i = 0; i < this.lstProductos.length; i++) {
+          this.lstProductos[i].cant_minima = parseFloat(this.lstProductos[i].cant_minima);
+          this.lstProductos[i].cant_existente = parseFloat(this.lstProductos[i].cant_existente)
+        }
+
         this.paths = p;
         this.pathsType = [];
         let tipo = this.mapTP.get(0);
@@ -83,9 +91,7 @@ export class FacturacionComponent implements OnInit {
             this.pathsType.push(entry);
           }
         }
-
         this.ngOnInitPromos();
-
       }, err => {
         console.log(err);
       });
@@ -98,6 +104,13 @@ export class FacturacionComponent implements OnInit {
     FacturacionComponent.updateUserStatus.subscribe(res => {
       console.log("entro");
       this.ngOnInitPromos();
+    });
+
+    this.configurationService.getByDesc('nuevaCantidad').subscribe(data => {
+      this.nuevaCantidad = parseFloat(data[0].valor);
+      console.log(this.nuevaCantidad)
+    }, err => {
+      console.log(err);
     });
 
     var x = window.innerWidth;
@@ -120,6 +133,21 @@ export class FacturacionComponent implements OnInit {
 
     /*console.log(this.fs.add(0.01, 0.06));
     console.log(0.01 + 0.06)*/
+  }
+
+  doClick(cant_existente, cant_minima, nuevaCantidad) {
+    if (cant_existente >= cant_minima + nuevaCantidad) {
+      '#99c140';
+      console.log('verde');
+    } else {
+      if (cant_existente < (cant_minima + nuevaCantidad) && cant_existente >= cant_minima) {
+        '#e7b416';
+        console.log('amarillo');
+      } else {
+        '#cc3232';
+        console.log('rojo');
+      }
+    }
   }
 
   addProd(i) {
@@ -406,7 +434,6 @@ export class FacturacionComponent implements OnInit {
     }
   }
 
-
   checkCardC() {
     this.activeCardsService.searchByCard(this.cardNumberC).subscribe(data => {
       if (data.length > 0) {
@@ -489,7 +516,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   public ngOnInitPromos() {
-    console.log(this.lstProductos) 
+    console.log(this.lstProductos)
     //promo tipo DP
     this.pathsTypePromos = [];
     //promo tipo AP
