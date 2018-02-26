@@ -1215,8 +1215,9 @@ export class CardComponent implements OnInit {
     activeCard.cardNumber = this.cardNumber;
     activeCard.cantMujeres = this.cantMujeres;
     activeCard.cantHombres = this.cantHombres;
-
-    if (this.lstResumenOpen.length > 0) {
+    //Se deberia recorrer lista de covers, no directamente del spinner
+    console.log(this.lstResumenOpen)
+    /*if (this.lstResumenOpen.length > 0) {
       //set factura & detalle factura
       let detalle: any = [];
       detalle = this.formatDetalleFactura(this.lstResumenOpen);
@@ -1247,7 +1248,7 @@ export class CardComponent implements OnInit {
 
     } else {
       this.messageGrowlService.notify('error', 'Error', 'No se han ingresado covers!');
-    }
+    }*/
   }
 
   formatDetalleFactura(lstResumen) {
@@ -1495,6 +1496,7 @@ export class CardComponent implements OnInit {
   }
 
   totalCovers = 0;
+  factorMult = 0;
   addCoverM() {
     if (this.cantMujeres > 0) {
       let aux = {
@@ -1502,8 +1504,12 @@ export class CardComponent implements OnInit {
         cantidad: this.cantMujeres,
         genero: 'Mujer',
         producto: this.selectedCoverM.productoMujeres,
-        precio: parseFloat(this.selectedCoverM.precioMujeres)
+        precio: 0
       }
+
+      this.factorMult = this.cantMujeres / parseFloat(this.selectedCoverM.numMujeres);
+      aux.precio = this.factorMult * parseFloat(this.selectedCoverM.precioMujeres);
+
       this.totalCovers = 0;
       var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
       if (index == -1) {
@@ -1528,8 +1534,12 @@ export class CardComponent implements OnInit {
         cantidad: this.cantHombres,
         genero: 'Hombre',
         producto: this.selectedCoverH.productoHombres,
-        precio: parseFloat(this.selectedCoverH.precioHombres)
+        precio: 0
       }
+
+      this.factorMult = this.cantHombres / parseFloat(this.selectedCoverH.numHombres);
+      aux.precio = this.factorMult * parseFloat(this.selectedCoverH.precioHombres);
+
       this.totalCovers = 0
       var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
       if (index == -1) {
@@ -2624,6 +2634,8 @@ export class CardComponent implements OnInit {
         if (newAC.egresoM + newAC.egresoH < totalM + totalH) {
           this.updateAC();
           this.setDvInsertEgreso();
+          //print 
+          this.printOrdenSalidaEgreso();
         } else {
           this.messageGrowlService.notify('error', 'Error', 'Cantidad personas salientes = numero total de personas');
         }
@@ -2657,6 +2669,50 @@ export class CardComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
+  }
+
+  printOrdenSalidaEgreso() {
+
+    let printContents, popupWin;
+    printContents = document.getElementById('print-section').innerHTML;
+    popupWin = window.open(' ', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    let html = `    
+      <html>
+      <head>
+        <style>
+          @page { size: auto;  margin: 0mm;};
+        </style>
+      </head>
+      <body onload="window.print();window.close()">${printContents}
+        <p style="font-family: Calibri; text-align:center">Orden de Salida</p>
+        <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+          <tr><td style="padding-left: 20px">&nbsp;CI:</td><td>`+ this.searchUserE.ci + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Cliente:</td><td>`+ this.searchUserE.nombre + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>`+ this.us.name + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Fecha:</td><td>`+ this.validateService.getDateEs() + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;Hora:</td><td>`+ this.validateService.getTimeEs() + `</td></tr>
+        </table>
+
+        <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
+          <tr colspan="4">====================================</tr>
+          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px;">`
+      + ((this.searchUserE.cantMujeres + this.searchUserE.ingresoMujeres) - this.searchUserE.egresoMujeres) + `</td></tr>
+          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px">`
+      + ((this.searchUserE.cantHombres + this.searchUserE.ingresoHombres) - this.searchUserE.egresoHombres) + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Mujeres:</td><td>`+ this.searchUserE.egresoMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Hombres:</td><td>`+ this.searchUserE.egresoHombres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingreso Mujeres:</td><td>`+ this.searchUserE.ingresoMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingreso Hombres:</td><td>`+ this.searchUserE.ingresoHombres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Cant. Mujeres:</td><td>`+ this.searchUserE.cantMujeres + `</td></tr>
+          <tr><td style="padding-left: 20px">&nbsp;&nbsp;Cant. Hombres:</td><td>`+ this.searchUserE.cantHombres + `</td></tr>
+        </table>
+
+      </body>
+      </html>`;
+    popupWin.document.write(html);
+    popupWin.document.close();
+
   }
 
   openCheckout(searchUserE) {
@@ -3002,7 +3058,7 @@ export class CardComponent implements OnInit {
         this.lstFacturas.push(factura);
       }
       this.sourceR.load(this.lstFacturas);
-      console.log(this.lstFacturas)
+      //console.log(this.lstFacturas)
     }, err => {
       console.log(err);
     });

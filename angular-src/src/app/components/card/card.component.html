@@ -10,7 +10,7 @@
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
       <!-- TAB OPEN -->
-      <tab heading="Apertura" (select)="alertMe1(1)">
+      <tab heading="Apertura" (select)="alertMe1(1)" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -340,7 +340,7 @@
               <p-column field="producto" header="Productos" [editable]="false" [sortable]="true" [filter]="true" [style]="{'width':'25%'}">
                 <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
                   <div *ngFor="let prod of car.producto;">
-                    <span class="badge" style="margin-top: -2.5px">{{prod.cantidad}}</span>&nbsp;{{prod.label}}
+                    <span class="badge" style="margin-top: -2.5px">{{factorMult * prod.cantidad}}</span>&nbsp;{{prod.label}}
                   </div>
                 </ng-template>
               </p-column>
@@ -370,7 +370,7 @@
         </div>
       </tab>
       <!--TAB CLOSE-->
-      <tab heading="Cierre" (select)="alertMe2(2)" [active]="true">
+      <tab heading="Cierre" (select)="alertMe2(2)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Cierre de tarjeta de consumo</h3>
