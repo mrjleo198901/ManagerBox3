@@ -108,7 +108,6 @@ export class FacturacionComponent implements OnInit {
 
     this.configurationService.getByDesc('nuevaCantidad').subscribe(data => {
       this.nuevaCantidad = parseFloat(data[0].valor);
-      console.log(this.nuevaCantidad)
     }, err => {
       console.log(err);
     });
@@ -496,27 +495,38 @@ export class FacturacionComponent implements OnInit {
   }
 
   colorDetection(lst1, lst2) {
-    let lstCants = [];
+    let lstCants: any = [];
     for (let entry of lst1) {
-      lstCants.push(entry.cant_existente);
+      let aux = { ce: entry.cant_existente, cm: entry.cant_minima };
+      lstCants.push(aux);
     }
     for (let entry of lst2) {
-      lstCants.push(entry.cant_existente);
+      let aux = { ce: entry.cant_existente, cm: entry.cant_minima };
+      lstCants.push(aux);
     }
-    let minValue = Math.min(...lstCants);
-    if (minValue >= 50) {
+
+    let minValue: any = Math.min.apply(null, lstCants.map(function (a) {
+      return a.ce;
+    }));
+
+    let objMin: any = lstCants.filter(function (obj) {
+      return obj.ce === minValue;
+    });
+
+    if (objMin[0].ce >= (objMin[0].cm + this.nuevaCantidad)) {
       this.colorPromoDisp = '#99c140';
     } else {
-      if (minValue < 15) {
-        this.colorPromoDisp = '#cc3232';
-      } else {
+      if (objMin[0].ce < (objMin[0].cm + this.nuevaCantidad) && objMin[0].ce >= objMin[0].cm) {
         this.colorPromoDisp = '#e7b416';
+      } else {
+        this.colorPromoDisp = '#cc3232';
       }
     }
+
   }
 
   public ngOnInitPromos() {
-    console.log(this.lstProductos)
+
     //promo tipo DP
     this.pathsTypePromos = [];
     //promo tipo AP
@@ -532,7 +542,8 @@ export class FacturacionComponent implements OnInit {
           for (let p of entry.productosV[0].p) {
             p.id = this.searchDescProd(p.id, this.lstProductos);
             let cant_existente = parseFloat(this.searchIdProd(p.id, this.paths).cant_existente);
-            let a = { cantidad: p.cantidad, id: p.id, cant_existente: cant_existente };
+            let cant_minima = parseFloat(this.searchIdProd(p.id, this.paths).cant_minima);
+            let a = { cantidad: p.cantidad, id: p.id, cant_existente: cant_existente, cant_minima: cant_minima };
             lst1.push(a);
           }
           aux1.p = lst1;
@@ -543,7 +554,8 @@ export class FacturacionComponent implements OnInit {
           for (let r of entry.productosV[1].r) {
             r.id = this.searchDescProd(r.id, this.lstProductos);
             let cant_existente = parseFloat(this.searchIdProd(r.id, this.paths).cant_existente);
-            let a = { cantidad: r.cantidad, id: r.id, cant_existente: cant_existente };
+            let cant_minima = parseFloat(this.searchIdProd(r.id, this.paths).cant_minima);
+            let a = { cantidad: r.cantidad, id: r.id, cant_existente: cant_existente, cant_minima: cant_minima };
             lst2.push(a);
           }
           this.colorDetection(lst1, lst2);
