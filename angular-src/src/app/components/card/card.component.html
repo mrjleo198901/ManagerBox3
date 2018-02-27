@@ -10,7 +10,7 @@
   <div (click)="$event.preventDefault()">
     <tabset [justified]="true">
       <!-- TAB OPEN -->
-      <tab heading="Apertura" (select)="alertMe1(1)" [active]="true">
+      <tab heading="Apertura" (select)="alertMe1(1)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Apertura de tarjeta de consumo</h3>
@@ -561,7 +561,7 @@
         </div>
       </tab>
       <!-- TAB EGRESOS -->
-      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)">
+      <tab heading="Ingreso/Egreso" (select)="alertMe3(3)"  [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Ingreso/Egreso</h3>

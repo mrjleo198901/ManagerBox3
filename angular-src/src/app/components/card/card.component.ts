@@ -1213,11 +1213,18 @@ export class CardComponent implements OnInit {
     //this.searchUser.id_tipo_cliente = this.searchByName(this.searchUser.id_tipo_cliente, this.tipo_clientes);
     activeCard.ci = this.searchUser.cedula;
     activeCard.cardNumber = this.cardNumber;
-    activeCard.cantMujeres = this.cantMujeres;
-    activeCard.cantHombres = this.cantHombres;
     //Se deberia recorrer lista de covers, no directamente del spinner
-    console.log(this.lstResumenOpen)
-    /*if (this.lstResumenOpen.length > 0) {
+    console.log(this.lstResumenOpen);
+    let a
+    for (let entry of this.lstResumenOpen) {
+      if (entry.genero.localeCompare('Mujer') === 0) {
+        activeCard.cantMujeres += entry.cantidad;
+      } else {
+        activeCard.cantHombres += entry.cantidad;
+      }
+
+    }
+    if (this.lstResumenOpen.length > 0) {
       //set factura & detalle factura
       let detalle: any = [];
       detalle = this.formatDetalleFactura(this.lstResumenOpen);
@@ -1248,7 +1255,7 @@ export class CardComponent implements OnInit {
 
     } else {
       this.messageGrowlService.notify('error', 'Error', 'No se han ingresado covers!');
-    }*/
+    }
   }
 
   formatDetalleFactura(lstResumen) {
@@ -2373,8 +2380,12 @@ export class CardComponent implements OnInit {
         cantidad: this.cantSalenM,
         genero: 'Mujer',
         producto: this.selectedCoverME.productoMujeres,
-        precio: parseFloat(this.selectedCoverME.precioMujeres)
+        precio: 0
       }
+
+      this.factorMult = this.cantSalenM / parseFloat(this.selectedCoverME.numMujeres);
+      aux.precio = this.factorMult * parseFloat(this.selectedCoverME.precioMujeres);
+
       this.totalCoversE = 0;
       var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
       if (index == -1) {
@@ -2401,7 +2412,11 @@ export class CardComponent implements OnInit {
         producto: this.selectedCoverHE.productoHombres,
         precio: parseFloat(this.selectedCoverHE.precioHombres)
       }
-      this.totalCoversE = 0
+
+      this.factorMult = this.cantSalenH / parseFloat(this.selectedCoverHE.numHombres);
+      aux.precio = this.factorMult * parseFloat(this.selectedCoverHE.precioHombres);
+
+      this.totalCoversE = 0;
       var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
       if (index == -1) {
         this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
@@ -2608,14 +2623,22 @@ export class CardComponent implements OnInit {
       } else {
         newAC.egresoH = this.cantSalenH;
       }
+
       this.searchUserE.abono = parseFloat(this.searchUserE.abono.toString());
       this.searchUserE.abono += this.abono;
-      this.searchUserE.ingresoMujeres += newAC.ingresoM;
-      this.searchUserE.egresoMujeres += newAC.egresoM;
-      this.searchUserE.ingresoHombres += newAC.ingresoH;
-      this.searchUserE.egresoHombres += newAC.egresoH;
+
+
+
       if (newAC.ingresoM + newAC.ingresoH > 1) {
         if (this.lstResumenOpenE.length > 0) {
+
+
+          this.searchUserE.ingresoMujeres += newAC.ingresoM;
+          this.searchUserE.egresoMujeres += newAC.egresoM;
+          this.searchUserE.ingresoHombres += newAC.ingresoH;
+          this.searchUserE.egresoHombres += newAC.egresoH;
+
+
           let lstNuevosProdsAC: any[] = this.loadProductosCover(this.lstResumenOpenE);
           for (let entry of lstNuevosProdsAC) {
             this.searchUserE.productosV.push(entry);
@@ -2629,13 +2652,22 @@ export class CardComponent implements OnInit {
           this.messageGrowlService.notify('error', 'Error', 'Agrega el tipo que cover que aplica para las personas que ingresan!');
         }
       } else {
-        let totalM = (this.searchUserE.cantMujeres - this.searchUserE.egresoMujeres) - this.searchUserE.ingresoMujeres;
-        let totalH = (this.searchUserE.cantHombres - this.searchUserE.egresoHombres) - this.searchUserE.ingresoHombres;
+        let totalM = (this.searchUserE.cantMujeres - this.searchUserE.egresoMujeres) + this.searchUserE.ingresoMujeres;
+        let totalH = (this.searchUserE.cantHombres - this.searchUserE.egresoHombres) + this.searchUserE.ingresoHombres;
+
         if (newAC.egresoM + newAC.egresoH < totalM + totalH) {
+
+
+          this.searchUserE.ingresoMujeres += newAC.ingresoM;
+          this.searchUserE.egresoMujeres += newAC.egresoM;
+          this.searchUserE.ingresoHombres += newAC.ingresoH;
+          this.searchUserE.egresoHombres += newAC.egresoH;
+
+
           this.updateAC();
-          this.setDvInsertEgreso();
           //print 
           this.printOrdenSalidaEgreso();
+          this.setDvInsertEgreso();
         } else {
           this.messageGrowlService.notify('error', 'Error', 'Cantidad personas salientes = numero total de personas');
         }
@@ -2697,9 +2729,9 @@ export class CardComponent implements OnInit {
         <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
           <tr colspan="4">====================================</tr>
           <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px;">`
-      + ((this.searchUserE.cantMujeres + this.searchUserE.ingresoMujeres) - this.searchUserE.egresoMujeres) + `</td></tr>
-          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Mujeres:</td><td style="padding-right: 50px">`
-      + ((this.searchUserE.cantHombres + this.searchUserE.ingresoHombres) - this.searchUserE.egresoHombres) + `</td></tr>
+      + this.cantSalenM + `</td></tr>
+          <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Total Hombres:</td><td style="padding-right: 50px">`
+      + this.cantSalenH + `</td></tr>
           <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Mujeres:</td><td>`+ this.searchUserE.egresoMujeres + `</td></tr>
           <tr><td style="padding-left: 20px">&nbsp;&nbsp;Egreso Hombres:</td><td>`+ this.searchUserE.egresoHombres + `</td></tr>
           <tr><td style="padding-left: 20px">&nbsp;&nbsp;Ingreso Mujeres:</td><td>`+ this.searchUserE.ingresoMujeres + `</td></tr>
