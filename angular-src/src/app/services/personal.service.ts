@@ -7,10 +7,10 @@ import { GLOBAL } from '../components/globals';
 @Injectable()
 export class PersonalService {
   public url: string;
-  
-    constructor(private http: Http) {
-      this.url = GLOBAL.url;
-    }
+
+  constructor(private http: Http) {
+    this.url = GLOBAL.url;
+  }
 
   registerPersonal(personal) {
     let headers = new Headers();
@@ -18,18 +18,21 @@ export class PersonalService {
     return this.http.post(this.url + 'personal', personal, { headers: headers })
       .map(res => res.json())
   }
+
   getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get(this.url + 'personal', { headers: headers })
       .map(res => res.json());
   }
+
   updatePersonal(personal) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(this.url + 'personal/' + personal._id, personal, { headers: headers })
       .map(res => res.json())
   }
+
   getByTipo(idCargo) {
     let params: URLSearchParams = new URLSearchParams();
     params.set('id_cargo', idCargo);
@@ -38,6 +41,7 @@ export class PersonalService {
     return this.http.get(this.url + 'personal/', { search: params })
       .map(res => res.json())
   }
+
   getByCedula(cedula) {
     let params: URLSearchParams = new URLSearchParams();
     params.set('cedula', cedula);
@@ -46,4 +50,13 @@ export class PersonalService {
     return this.http.get(this.url + 'personal/', { search: params })
       .map(res => res.json())
   }
+
+  deletePersonal(personal) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(this.url + 'personal/' + personal, { headers: headers })
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
 }

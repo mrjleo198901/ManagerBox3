@@ -46,6 +46,7 @@ app.use('/api', require('./routes/comprasApi'));
 app.use('/api', require('./routes/configuracionApi'));
 app.use('/api', require('./routes/detalleFacturaApi'));
 app.use('/api', require('./routes/facturaApi'));
+app.use('/api', require('./routes/logApi'));
 app.use('/api', require('./routes/personalApi'));
 app.use('/api', require('./routes/productoApi'));
 app.use('/api', require('./routes/promocionesApi'));
@@ -57,6 +58,7 @@ app.use('/api', require('./routes/tarjetaApi'));
 app.use('/api', require('./routes/activeCardsApi'));
 app.use('/api', require('./routes/coverApi'));
 app.use('/api', require('./routes/cajaApi'));
+app.use('/api', require('./routes/userApi'));
 
 var profileController = require('./routes/uploadFiles');
 

@@ -1,6 +1,6 @@
 const express = require('express');
-const router = express.Router();
 const passport = require('passport');
+const router = express.Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 const User = require('../models/user');
@@ -278,5 +278,18 @@ router.post('/updateUser', (req, res, next) => {
         });
     })
 })
+
+//getAll
+router.get('/usersList', function (req, res) {
+    User.find({}, function (err, users) {
+        var userMap = {};
+
+        users.forEach(function (user) {
+            userMap[user._id] = user;
+        });
+
+        res.send(users);
+    });
+});
 
 module.exports = router;

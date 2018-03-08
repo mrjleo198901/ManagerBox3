@@ -64,10 +64,10 @@ export class NavbarComponent implements OnInit {
       if (data.length > 0) {
         CardComponent.checkOpenCaja.next(true);
       }
-      //this.authService.logout();
-      //this.messageGrowlService.notify('info', 'Información', 'Saliste!');
-      //this.router.navigate(['/login']);
-      //return false;
+      this.authService.logout();
+      this.messageGrowlService.notify('info', 'Información', 'Saliste!');
+      this.router.navigate(['/login']);
+      return false;
     }, err => {
       console.log(err)
     })

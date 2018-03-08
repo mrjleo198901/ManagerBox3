@@ -10,7 +10,7 @@ var facturaSchema = new mongoose.Schema({
     nombre: String,
     telefono: String,
     direccion: String,
-    fecha_emision: String,
+    fecha_emision: Date,
     detalleFacturaV: Array,
     formaPago: Array,
     cajero: mongoose.Schema.Types.ObjectId

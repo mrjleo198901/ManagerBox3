@@ -24,6 +24,21 @@ export class FacturaService {
     return this.http.get(this.url + 'factura', { headers: headers })
       .map(res => res.json());
   }
+
+  getByDateTime(factura) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(this.url + 'getVentasByDate', factura, { headers: headers })
+      .map(res => res.json());
+  }
+
+  getLastOne() {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(this.url + 'getLastOne', { headers: headers })
+      .map(res => res.json());
+  }
+
   update(factura) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -45,7 +60,7 @@ export class FacturaService {
     params.set('cedula', cedula);
     let options = new RequestOptions({ headers: headers, params: params });
     return this.http.get(this.url + 'factura/', options)
-      .map(res => res.json())
+      .map(res => res.json());
   }
   getById(idFactura) {
     let headers = new Headers();

@@ -4,7 +4,8 @@ var mongoose = restful.mongoose;
 var cargoPersonalSchema = new mongoose.Schema({
 
     descripcion_cargo_personal: String,
-    id_estado: String
+    id_estado: String,
+    descripcion: String
 
 });
 

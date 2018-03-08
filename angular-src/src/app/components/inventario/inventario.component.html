@@ -4,16 +4,33 @@
     </div>
 </div>
 
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
     <label>Tipo de Reporte</label>
-    <select [(ngModel)]="selecTipoReporte" (ngModelChange)="fillParameters($event)" id="tipoReport" class="form-control" style="z-index: 1;"
-        tabindex="1">
+    <select [(ngModel)]="selecTipoReporte" (ngModelChange)="fillParameters($event)" id="tipoReport" class="form-control input-sm"
+        style="z-index: 1;" tabindex="1">
         <option *ngFor="let c of tipo_reportes" [ngValue]="c">{{c.label}}</option>
     </select><br>
+
+    <button type="button" (click)="doDate()">viewDate</button>
+
 </div>
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+<!-- Rango de Fechas-->
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+    <label>Desde: </label><br>
+    <p-calendar [(ngModel)]="fecha_desde" [locale]="es" dateFormat="mm/dd/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
+        yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true" [style]="{'width':'200px'}">
+    </p-calendar>
+</div>
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+    <label>Hasta: </label><br>
+    <p-calendar [(ngModel)]="fecha_hasta" [locale]="es" dateFormat="mm/dd/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
+        yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
+    </p-calendar>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" style="padding-top: 4px">
     <br>
-    <a class="btn btn-primary" (click)="generateNew()" style="margin-top: 5px">Generar PDF</a><br>
+    <a class="btn btn-primary btn-sm" (click)="generateNew()" style="width:100%;">Generar</a><br>
 </div>
 
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -29,7 +46,7 @@
     </div>
 </div>
 
-<div  *ngIf="data" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: right">
+<div *ngIf="data" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: right">
     <a (click)="downloadAsPDF()" style="margin-top: 5px" class="pointerPDF" tooltip="Descargar como .pdf" tooltipPlacement="bottom">
         <i class="fa fa-file-pdf-o fa-2x" style="color: #D81F01" aria-hidden="true"></i>
     </a>

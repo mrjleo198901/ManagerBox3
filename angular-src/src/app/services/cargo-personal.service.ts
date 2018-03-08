@@ -31,4 +31,12 @@ export class CargoPersonalService {
       .map(res => res.json())
   }
 
+  deleteCargoPersonal(personal) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.delete(this.url + 'cargo_personal/' + personal, { headers: headers })
+      .map(res => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
 }

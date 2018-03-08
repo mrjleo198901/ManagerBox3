@@ -8,59 +8,111 @@
     <div class="row" style="margin-left: 0px; margin-right: 0px">
         <div (click)="$event.preventDefault()">
             <tabset [justified]="true">
-                <tab heading="Personal">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <hr>
-                        <h3 style="text-align:center">Personal</h3>
-                        <hr>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = !showDialogPerAdd;onCreatePer($event);
-                setCursorPerAdd()" (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()" (userRowSelect)="showPersonal($event)">
-                        </ng2-smart-table>
-                    </div>
-                </tab>
+
                 <tab heading="Cargo Personal" (select)="hideDetails()">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <hr>
                         <h3 style="text-align:center">Cargo Personal</h3>
                         <hr>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <ng2-smart-table id="dtCargoPersonal" [settings]="settingsCargPer" [source]="sourceCargoPer" (create)="showDialogCargoPerAdd = !showDialogCargoPerAdd;
-                onCreateCargoPer($event);setCursorCargoPerAdd()" (edit)="showDialogCargoPerUp = !showDialogCargoPerUp;onCargoPerUpdate($event);setCursorCargoPerUp()">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+                        <ng2-smart-table id="dtCargoPersonal" [settings]="settingsCargPer" [source]="sourceCargoPer" (create)="showDialogCargoPerAdd = true;onCreateCargoPer($event);setCursorCargoPerAdd()"
+                            (edit)="showDialogCargoPerUp = true;onCargoPerUpdate($event);setCursorCargoPerUp()" (delete)="onDeleteCP($event)">
                         </ng2-smart-table>
+                        <hr>
                     </div>
                 </tab>
+
+                <tab heading="Personal" [active]="true">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <hr>
+                        <h3 style="text-align:center">Personal</h3>
+                        <hr>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = false;onCreatePer($event);setCursorPerAdd()"
+                            (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()" (delete)="onDeleteP($event)"
+                            (userRowSelect)="showPersonal($event)">
+                        </ng2-smart-table>
+                        <hr>
+                    </div>
+                </tab>
+
+                <tab heading="Log de Eventos" (select)="hideDetails()">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <hr>
+                        <h3 style="text-align:center">Detalle de Actividad de Usuarios</h3>
+                        <hr>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                        <h4>Usuario:</h4>
+                        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <span class="input-group-addon input-sm"><i class="fa fa-user" aria-hidden="true"></i></span>
+                            <select [(ngModel)]="selected_user" class="form-control input-sm" style="z-index: 1;" tabindex="1">
+                            <option value="Todas" selected="selected">Todos</option>
+                            <option *ngFor="let c of listaPersonal" [ngValue]="c">{{c.nombres}}&nbsp;{{c.apellidos}}&nbsp;--&nbsp;{{c.cedula}}</option>
+                          </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                        <h4>Período: </h4>
+                        <p-calendar [(ngModel)]="fecha_desde" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
+                            yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                        <h4 style="color: white">Período: </h4>
+                        <p-calendar [(ngModel)]="fecha_hasta" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
+                            yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                        <h4 style="color: white">Período: </h4>
+                        <a class="btn btn-primary btn-sm" (click)="generateLog()" style="width:100%">Generar LOG</a><br>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><br>
+                        <iframe id="iFramePDF" type="application/pdf" width="100%" height="650" style="position:relative;z-index:1; border: solid 2px; border-color: #CDC8CE">
+                            Your Browser doesn´t support iframes
+                        </iframe>
+                        <hr>
+                    </div>
+                </tab>
+
             </tabset>
         </div>
     </div>
 
-    <div class="row" style="margin-left: 0px; margin-right: 0px">
+    <div class="row" style="margin-left: 15px; margin-right: 15px">
         <br>
         <!-- Mostrar cliente -->
-        <p-panel header="Datos de persona" *ngIf="flagUserFound">
+        <p-panel header="Datos Personal" *ngIf="flagUserFound">
             <div class="row">
-                <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2">
+                <div class="col-lg-6 col-md-6 col-sm-6">
                     <br>
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <label for="datosCliente">Datos del empleado</label>
-                            <br>Nombre:&nbsp;{{showPersona.nombres}}&nbsp;{{showPersona.apellidos}}
-                            <br>Cedula:&nbsp;{{showPersona.cedula}}
-                            <br>Email:&nbsp;{{showPersona.email}}
-                            <br>Telefono:&nbsp;{{showPersona.telefono}}
-                            <br>Fecha de Nacimiento:&nbsp;{{showPersona.fecha_nacimiento}}
-                            <br>Sexo:&nbsp;{{showPersona.sexo}}
-                            <br>Cargo:&nbsp;{{showPersona.id_cargo}}
+                            <div style="text-align: center">
+                                <label>Datos del empleado</label>
+                            </div>
+                            <br><label>Nombre:</label>&nbsp;{{showPersona.nombres}}&nbsp;{{showPersona.apellidos}}
+                            <br><label>Cedula:</label>&nbsp;{{showPersona.cedula}}
+                            <br><label>Email:</label>&nbsp;{{showPersona.email}}
+                            <br><label>Telefono:</label>&nbsp;{{showPersona.telefono}}
+                            <br><label>Fecha de Nacimiento:</label>&nbsp;{{showPersona.fecha_nacimiento}}
+                            <br><label>Sexo:</label>&nbsp;{{showPersona.sexo}}
+                            <br><label>Cargo:</label>&nbsp;{{showPersona.id_cargo}}
                         </div>
+                        <br>
                     </div>
+
                 </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-6 col-md-6 col-sm-6">
                     <br>
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" style="min-height: 261px">
                         <div class="panel-body">
-                            <label for="datosCliente">Modulos Disponibles</label><br>
+                            <div style="text-align: center">
+                                <label style="text-align: center">Módulos Disponibles</label><br>
+                            </div>
                             <div class="form-check" *ngFor="let tag of tags; let i = index;">
                                 <md-checkbox [(ngModel)]="tag.checked" [color]="color">{{tag.name}}</md-checkbox>
                             </div>
@@ -69,72 +121,85 @@
                 </div>
             </div>
         </p-panel>
+        <hr>
     </div>
 </div>
 
-<!-- ADD CARGO PERSONAL -->
-<app-dialog [(visible)]="showDialogCargoPerAdd" (visibleChange)="changeCargoPerAdd($event)" #dialog="dialog">
-    <h3 style="text-align: center">
+<!-- Add cargo personal -->
+<p-dialog [(visible)]="showDialogCargoPerAdd" modal="modal" width="500" [responsive]="true">
+    <p-header>
         Registro Cargo Personal
-    </h3>
-    <hr>
-    <!--Descripción-->
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-        <label for="desCP" style="display: inline-block">Descripción:</label>
-        <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" id="descCargoPerAdd" name="descCargoPerAdd"
-            placeholder="Descripción cargo" class="form-control">
-        <br>
-    </div>
-    <!-- Estado  -->
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-        <label for="est" style="display: inline-block">Estado</label>
-        <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
-                <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
+    </p-header>
+    <div class="ui-g ui-fluid">
+        <!-- Nombre  -->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="desCP" style="display: inline-block">Nombre:</label>
+            <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" id="descCargoPerAdd" name="descCargoPerAdd"
+                placeholder="Nombre cargo" class="form-control">
+            <br>
+        </div>
+        <!-- Estado  -->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="est" style="display: inline-block">Estado</label>
+            <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
+                    <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
             </select>
-        <br>
+            <br>
+        </div>
+        <!--Descripción-->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="est" style="display: inline-block">Descripción</label>
+            <input type="text" [(ngModel)]="descripcion" (ngModelChange)="onChangeDesc()" id="desc" placeholder="Descripción cargo" class="form-control">
+            <br>
+        </div>
+        <!-- Buttons -->
+        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+            <hr>
+            <button class="btn btn-primary" style="font-size: 11px" (click)="onAddCargoPersonalSubmit()">Registrar</button>
+            <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCargoPerAdd = false">Cancelar</button>
+        </div>
     </div>
-    <!-- Buttons -->
-    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary" (click)="onAddCargoPersonalSubmit()" style="width: 25%">Registrar</button>
-        <button class="btn btn-default" (click)="showDialogCargoPerAdd = !showDialogCargoPerAdd" style="width: 25%">Cancelar</button>
-    </div>
-</app-dialog>
-<!-- UPDATE CARGO PERSONAL CLIENT -->
-<app-dialog [(visible)]="showDialogCargoPerUp" (visibleChange)="changeCargoPerUp($event)" #dialog1="dialog">
-    <h3 style="text-align: center">
-        Actualizar Tipo Producto
-    </h3>
-    <hr>
-    <!-- ID -->
-    <div class="col-lg-6 col-lg-offset-1 col-md-6 col-md-offset-1">
-        <label for="idCarg" style="display: inline-block">ID</label>
-        <input type="text" [(ngModel)]="idCargoPersona" id="idCargo" name="idCargo" class="form-control" readonly>
-        <br>
-    </div>
-    <!-- Descripción -->
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-        <label for="descTPC" style="display: inline-block">Descripción</label>
-        <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
-            event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            id="descCargoPerAdd" name="descCargoPerAdd" placeholder="Descripción cargo" class="form-control">
-        <br>
-    </div>
-    <!-- Estado  -->
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-        <label for="est" style="display: inline-block">Estado</label>
-        <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
-                <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
-            </select>
-        <br>
-    </div>
-    <!-- Buttons -->
-    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
-        <button class="btn btn-primary" (click)="onUpdateTPSubmit()" style="width: 25%">Actualizar</button>
-        <button class="btn btn-default" (click)="showDialogCargoPerUp = !showDialogCargoPerUp" style="width: 25%">Cancelar</button>
-    </div>
+</p-dialog>
 
-</app-dialog>
-<!-- ADD PERSONAL -->
+
+<!-- Update cargo personal -->
+<p-dialog [(visible)]="showDialogCargoPerUp" modal="modal" width="500" [responsive]="true">
+    <p-header>
+        Actualizar Cargo Personal
+    </p-header>
+    <div class="ui-g ui-fluid">
+        <!-- Nombre -->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="descTPC" style="display: inline-block">Descripción</label>
+            <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+                id="descCargoPerAdd" name="descCargoPerAdd" placeholder="Descripción cargo" class="form-control">
+            <br>
+        </div>
+        <!-- Estado  -->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="est" style="display: inline-block">Estado</label>
+            <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
+                    <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
+                </select>
+            <br>
+        </div>
+        <!--Descripción-->
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+            <label for="est" style="display: inline-block">Descripción</label>
+            <input type="text" [(ngModel)]="descripcion" (ngModelChange)="onChangeDesc()" id="desc" placeholder="Descripción cargo" class="form-control">
+            <br>
+        </div>
+        <!-- Buttons -->
+        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center">
+            <hr>
+            <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdateTPSubmit()">Actualizar</button>
+            <button class="btn btn-default" style="font-size: 11px" (click)="showDialogCargoPerUp = false">Cancelar</button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Add personal -->
 <app-dialog [(visible)]="showDialogPerAdd" (visibleChange)="changePerAdd($event)" #dialog2="dialog">
     <h3 style="text-align: center">
         Agregar Personal

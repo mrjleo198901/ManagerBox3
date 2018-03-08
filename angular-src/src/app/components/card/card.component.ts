@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
 import { CoverService } from '../../services/cover.service';
 import { CoverprodRenderComponent } from '../coverprod-render/coverprod-render.component';
 import { PrintRenderComponent } from '../image-render/print-render.component';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
   selector: 'app-card',
@@ -139,7 +140,7 @@ export class CardComponent implements OnInit {
   showDialogT = false;
   selectedClientGP: any;
   tipoTarjetas: any = [];
-  limiteConsumo = 100;
+  limiteConsumo;
   descTarjeta;
   cardNumberGT;
   selectedTipoTarjeta: any;
@@ -278,7 +279,8 @@ export class CardComponent implements OnInit {
     private cajaService: CajaService,
     public authService: AuthService,
     private router: Router,
-    private coverService: CoverService) {
+    private coverService: CoverService,
+    private configurationService: ConfigurationService) {
 
     this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
     this.showDateApertura = this.currentDateTime.split(' ')[0];
@@ -414,6 +416,15 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    /*let obj = { fecha_ini: '2018-03-06', fecha_fin: '2018-03-07' }
+    this.facturaService.getByDateTime(obj).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    })*/
+    this.validateService.getDateTimeStamp();
+
     setTimeout(function () {
       document.getElementById('cedulaNew').focus();
     }, 50)
@@ -489,6 +500,7 @@ export class CardComponent implements OnInit {
     this.lstResumenOpen = [];
     this.lstResumenOpenE = [];
     this.ngOnInitReimpresion();
+    this.ngOnInitCloseTab();
   }
 
   openCloseCaja() {
@@ -1444,7 +1456,7 @@ export class CardComponent implements OnInit {
     document.getElementById('basic-addon8').style.backgroundColor = '#f8f5f0';
     this.cardNumberGT = "";
     this.descTarjeta = "";
-    this.limiteConsumo = 100;
+    this.limiteConsumo = this.limite;
     this.flagTC = true;
     setTimeout(function () {
       document.getElementById('numeroGT').focus();
@@ -1505,63 +1517,82 @@ export class CardComponent implements OnInit {
   totalCovers = 0;
   factorMult = 0;
   addCoverM() {
-    if (this.cantMujeres > 0) {
-      let aux = {
-        nombre: this.selectedCoverM.nombre,
-        cantidad: this.cantMujeres,
-        genero: 'Mujer',
-        producto: this.selectedCoverM.productoMujeres,
-        precio: 0
-      }
 
-      this.factorMult = this.cantMujeres / parseFloat(this.selectedCoverM.numMujeres);
-      aux.precio = this.factorMult * parseFloat(this.selectedCoverM.precioMujeres);
+    let cantTotalPersonas = this.cantMujeres;
+    for (let entry of this.lstResumenOpen) {
+      cantTotalPersonas += entry.cantidad;
+    }
 
-      this.totalCovers = 0;
-      var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
-      if (index == -1) {
-        this.lstResumenOpen = [...this.lstResumenOpen, aux];
+    if (cantTotalPersonas <= this.numMax) {
+      if (this.cantMujeres > 0) {
+        let aux = {
+          nombre: this.selectedCoverM.nombre,
+          cantidad: this.cantMujeres,
+          genero: 'Mujer',
+          producto: this.selectedCoverM.productoMujeres,
+          precio: 0
+        }
+        this.factorMult = this.cantMujeres / parseFloat(this.selectedCoverM.numMujeres);
+        aux.precio = this.factorMult * parseFloat(this.selectedCoverM.precioMujeres);
+        this.totalCovers = 0;
+        var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+        if (index == -1) {
+          this.lstResumenOpen = [...this.lstResumenOpen, aux];
+        } else {
+          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
+          this.lstResumenOpen[index].cantidad += aux.cantidad;
+          this.lstResumenOpen[index].precio += aux.precio;
+        }
+        document.getElementById('coverM').style.borderColor = '';
+        this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
       } else {
-        this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
-        this.lstResumenOpen[index].cantidad += aux.cantidad;
-        this.lstResumenOpen[index].precio += aux.precio;
+        document.getElementById('coverM').style.borderColor = '#FF4B36';
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
       }
-      document.getElementById('coverM').style.borderColor = '';
-      this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
     } else {
-      document.getElementById('coverM').style.borderColor = '#FF4B36';
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
+      this.messageGrowlService.notify('error', 'Error', 'La cantidad máxima de personas por tarjeta es de: ' + this.numMax);
     }
   }
 
   addCoverH() {
-    if (this.cantHombres > 0) {
-      let aux = {
-        nombre: this.selectedCoverH.nombre,
-        cantidad: this.cantHombres,
-        genero: 'Hombre',
-        producto: this.selectedCoverH.productoHombres,
-        precio: 0
-      }
 
-      this.factorMult = this.cantHombres / parseFloat(this.selectedCoverH.numHombres);
-      aux.precio = this.factorMult * parseFloat(this.selectedCoverH.precioHombres);
-
-      this.totalCovers = 0
-      var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
-      if (index == -1) {
-        this.lstResumenOpen = [...this.lstResumenOpen, aux];
-      } else {
-        this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
-        this.lstResumenOpen[index].cantidad += aux.cantidad;
-        this.lstResumenOpen[index].precio += aux.precio;
-      }
-      document.getElementById('coverH').style.borderColor = '';
-      this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
-    } else {
-      document.getElementById('coverH').style.borderColor = '#FF4B36';
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
+    let cantTotalPersonas = this.cantHombres;
+    for (let entry of this.lstResumenOpen) {
+      cantTotalPersonas += entry.cantidad;
     }
+
+    if (cantTotalPersonas <= this.numMax) {
+      if (this.cantHombres > 0) {
+        let aux = {
+          nombre: this.selectedCoverH.nombre,
+          cantidad: this.cantHombres,
+          genero: 'Hombre',
+          producto: this.selectedCoverH.productoHombres,
+          precio: 0
+        }
+
+        this.factorMult = this.cantHombres / parseFloat(this.selectedCoverH.numHombres);
+        aux.precio = this.factorMult * parseFloat(this.selectedCoverH.precioHombres);
+
+        this.totalCovers = 0
+        var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+        if (index == -1) {
+          this.lstResumenOpen = [...this.lstResumenOpen, aux];
+        } else {
+          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
+          this.lstResumenOpen[index].cantidad += aux.cantidad;
+          this.lstResumenOpen[index].precio += aux.precio;
+        }
+        document.getElementById('coverH').style.borderColor = '';
+        this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
+      } else {
+        document.getElementById('coverH').style.borderColor = '#FF4B36';
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
+      }
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'La cantidad máxima de personas por tarjeta es de: ' + this.numMax);
+    }
+
   }
 
   calcTotalCovers(lstCovers) {
@@ -1932,13 +1963,14 @@ export class CardComponent implements OnInit {
     })
   }
 
+  idTransaction;
   confirmarSalida() {
     const newFP = {
       ruc: this.rucFactura,
       nombre: this.nombreS,
       telefono: this.telefonoS,
       direccion: this.direccionS,
-      fecha_emision: this.validateService.getDateEs() + ' ' + this.validateService.getDateTimeEs(),
+      fecha_emision: this.validateService.getDateTimeEsPrimeNG(),
       cajero: this.us.id,
       formaPago: {
         efectivo: this.fpEfectivo,
@@ -1949,6 +1981,8 @@ export class CardComponent implements OnInit {
       totalPagar: parseFloat(this.totalPagar)
     }
     this.fillFP();
+
+    console.log(this.totalPagar)
     //Required fields
     if (!this.selectedRucFactura) {
       if (!this.validateService.validateFormaPago(newFP)) {
@@ -1965,12 +1999,14 @@ export class CardComponent implements OnInit {
     this.activeCardsService.searchByCardActive(this.cardNumberS).subscribe(data => {
       //update tabla factura
       this.facturaService.getById(data[0].idFactura).subscribe(data1 => {
+        this.idTransaction = data1[0]._id;
         let vecFP: any = [];
         vecFP.push(newFP.formaPago);
         data1[0].ruc = newFP.ruc;
         data1[0].nombre = newFP.nombre;
         data1[0].telefono = newFP.telefono;
         data1[0].direccion = newFP.direccion;
+        data1[0].fecha_emision = newFP.fecha_emision;
         data1[0].cajero = newFP.cajero;
         data1[0].formaPago = vecFP;
         this.facturaService.update(data1[0]).subscribe(data2 => {
@@ -1978,14 +2014,14 @@ export class CardComponent implements OnInit {
           data[0].estado = 0;
           this.activeCardsService.update(data[0]).subscribe(data => {
             this.showDialogFP = false;
-            this.setDefaultValues();
-            this.setDefaultValues1();
             //impresion
-            if (this.totalPagar > 0) {
+            if (newFP.totalPagar > 0) {
               this.printOrdenSalida();
             } else {
               this.printOrdenSalidaCero();
             }
+            this.setDefaultValues();
+            this.setDefaultValues1();
 
             this.messageGrowlService.notify('success', 'Éxito', 'Se ha relizado la venta exitosamente!');
           }, err => {
@@ -2147,44 +2183,40 @@ export class CardComponent implements OnInit {
       <tr><td style="padding-left: 20px">&nbsp;CI/RUC:</td><td>`+ this.rucFactura + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Teléfono:</td><td>`+ this.telefonoS + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Dirección:</td><td>`+ this.direccionS + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>JFlores</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Cajero:</td><td>`+ this.us.name + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Fecha:</td><td>`+ this.validateService.getDateEs() + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Hora:</td><td>`+ this.validateService.getTimeEs() + `</td></tr>
     </table>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
       <tr colspan="4">====================================</tr>
       <thead>
-            <th style="text-align:center;padding-left: 7px; font-weight: normal;">Cant.</th>
-            <th style="text-align:left; font-weight: normal;">Detalle</th>
-            <th style="text-align:left; font-weight: normal;">Pu.</th>
-            <th style="text-align:left; font-weight: normal;">Total</th>
+            <th width="10%" style="text-align:left; font-weight: normal; padding-left: 24px;">Cant.</th>
+            <th width="50%" style="text-align:left; font-weight: normal; padding-left: 5px;">Detalle</th>
+            <th width="20%" style="text-align:left; font-weight: normal;">Pu.</th>
+            <th width="20%" style="text-align:left; font-weight: normal;">Total</th>
       </thead> 
       <td colspan="4">=========================================</td>
-      <tbody>
-        `;
-
+      <tbody>`;
     for (let c of this.lstConsumo) {
-      html += `<tr><td style="padding-left: 10px; text-align:center;">` + c.cantidad + `</td>
-          <td style="margin-right: -10px">`+ this.slicePipe.transform(c.descripcion, 0, 13) + `</td>
-          <td style="margin-right: -10px">`+ this.decimalPipe.transform(c.precio_venta, '1.2-2') + `</td>
-          <td style="margin-right: -10px">`+ this.decimalPipe.transform(c.total, '1.2-2') + `</td></tr>`
+      html += `<tr><td style="text-align:left; padding-left: 26px;">` + c.cantidad + `</td>
+          <td style="text-align:left; padding-left: 5px;">`+ this.slicePipe.transform(c.descripcion, 0, 13) + `</td>
+          <td style="text-align:left;">`+ this.decimalPipe.transform(c.precio_venta, '1.2-2') + `</td>
+          <td style="text-align:left;">`+ this.decimalPipe.transform(c.total, '1.2-2') + `</td></tr>`
     }
-
-    html += ` 
-      </tbody>
+    html += ` </tbody>
     </table>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
       <tr colspan="4">====================================</tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td style="text-align:center;">0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td style="text-align:center;">0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td style="text-align:center;">0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td style="text-align:center;">0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td style="text-align:center;">0.00</td></tr>
-      <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Valor Total:</td><td style="text-align:center;">`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `&nbsp;&nbsp;</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="text-align:right; padding-right: 20px;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td style="text-align:right; padding-right: 20px;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td style="text-align:right; padding-right: 20px;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td style="text-align:right; padding-right: 20px;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td style="text-align:right; padding-right: 20px;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td style="text-align:right; padding-right: 20px;">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td style="text-align:right; padding-right: 20px;">0.00</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td style="text-align:right; padding-right: 20px;">`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td style="text-align:right; padding-right: 20px;">0.00</td></tr>
+      <tr style="font-size:24px"><td style="padding-left: 20px">&nbsp;Valor Total:</td><td style="text-align:right; padding-right: 10px;">`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `&nbsp;&nbsp;</td></tr>
     </table>
     <td colspan="4">====================================</td>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">`;
@@ -2201,14 +2233,14 @@ export class CardComponent implements OnInit {
               </tr>`
       i++;
     }
-
-    html += ` </table>
+    html += ` 
+    </table>
     <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
       <tr><td style="padding-left: 20px">&nbsp;Total items:</td><td>`+ this.lstConsumo.length + `</td></tr>
       <tr><td style="padding-left: 20px">&nbsp;Caja Nro.:</td><td>2</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Id. Transacción:</td><td style="font-size: 13px">5a8786bf49dd4d323c28d26a</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Impresor:</td><td>Epson TM-U220D</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Serie Nro.:</td><td>P3QF303046</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Id. Transacción:</td><td style="font-size: 13px">`+ this.idTransaction + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Impresor:</td><td>`+ this.printerName + `</td></tr>
+      <tr><td style="padding-left: 20px">&nbsp;Serie Nro.:</td><td>`+ this.numModelo + `</td></tr>
     </table>
     <td colspan="4">====================================</td>
 
@@ -2236,42 +2268,6 @@ export class CardComponent implements OnInit {
       Gracias por tu compra
     </p>
     <td colspan="4">====================================</td>
-
-    </body>
-
-    </html>`;
-    popupWin.document.write(html);
-    popupWin.document.close();
-  }
-
-  printOrdenSalida1() {
-    this.fillFP();
-    let printContents, popupWin;
-    printContents = document.getElementById('print-section').innerHTML;
-    popupWin = window.open(' ', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
-    let html = `
-    <html>
-    <head>
-      <style>
-        @page { size: auto;  margin: 0mm;};
-      </style>
-    </head>
-    <body onload="window.print();window.close()">${printContents}
-
-    <table cellpadding="0" class="table table-striped" style="width:100%;font-family: Calibri;">
-      <tr colspan="4">====================================</tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 12% IVA:</td><td style="padding-right: 50px">`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal 0% IVA:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal Excento IVA:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal No Obj. IVA:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Descuento:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Subtotal:</td><td>`+ this.decimalPipe.transform(this.totalPagar / 1.12, '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;ICE:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;IVA 12%:</td><td>`+ this.decimalPipe.transform(this.totalPagar - (this.totalPagar / 1.12), '1.2-2') + `</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Propina:</td><td>0.00</td></tr>
-      <tr><td style="padding-left: 20px">&nbsp;Valor Total:</td><td>`+ this.decimalPipe.transform(this.totalPagar, '1.2-2') + `</td></tr>
-    </table>
 
     </body>
 
@@ -2328,6 +2324,39 @@ export class CardComponent implements OnInit {
     this.showDateHour = event.data.fecha;
   }
 
+  nombreComercial;
+  razonSocial;
+  ruc;
+  nroCont;
+  flagCont;
+  numMax;
+  limite;
+  nuevaCantidad;
+  printerName;
+  numModelo;
+  ngOnInitCloseTab() {
+    this.configurationService.getAll().subscribe(data => {
+      //console.log(data);
+      this.nombreComercial = data[0].valor;
+      this.nombreComercial = this.nombreComercial.toUpperCase();
+      this.razonSocial = data[1].valor;
+      this.razonSocial = this.razonSocial.toUpperCase();
+      this.ruc = data[2].valor;
+      this.nroCont = data[3].valor;
+      this.flagCont = data[4].valor;
+      this.numMax = data[5].valor;
+      this.limite = data[6].valor;
+      this.printerName = data[7].valor;
+      this.numModelo = data[8].valor;
+      this.nuevaCantidad = data[9].valor;
+
+      this.limiteConsumo = this.limite;
+
+    }, err => {
+      console.log(err);
+    });
+  }
+
   /*TAB EGRESO*/
 
   stepMujeresE = 0;
@@ -2374,63 +2403,87 @@ export class CardComponent implements OnInit {
 
   totalCoversE = 0;
   addCoverME() {
-    if (this.cantSalenM > 0) {
-      let aux = {
-        nombre: this.selectedCoverME.nombre,
-        cantidad: this.cantSalenM,
-        genero: 'Mujer',
-        producto: this.selectedCoverME.productoMujeres,
-        precio: 0
-      }
 
-      this.factorMult = this.cantSalenM / parseFloat(this.selectedCoverME.numMujeres);
-      aux.precio = this.factorMult * parseFloat(this.selectedCoverME.precioMujeres);
-
-      this.totalCoversE = 0;
-      var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
-      if (index == -1) {
-        this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
-      } else {
-        this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
-        this.lstResumenOpenE[index].cantidad += aux.cantidad;
-        this.lstResumenOpenE[index].precio += aux.precio;
-      }
-      document.getElementById('coverME').style.borderColor = '';
-      this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
-    } else {
-      document.getElementById('coverME').style.borderColor = '#FF4B36';
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
+    let cantTotalPersonas = this.cantSalenM;
+    for (let entry of this.lstResumenOpen) {
+      cantTotalPersonas += entry.cantidad;
     }
+
+    if (cantTotalPersonas <= this.numMax) {
+
+      if (this.cantSalenM > 0) {
+        let aux = {
+          nombre: this.selectedCoverME.nombre,
+          cantidad: this.cantSalenM,
+          genero: 'Mujer',
+          producto: this.selectedCoverME.productoMujeres,
+          precio: 0
+        }
+
+        this.factorMult = this.cantSalenM / parseFloat(this.selectedCoverME.numMujeres);
+        aux.precio = this.factorMult * parseFloat(this.selectedCoverME.precioMujeres);
+
+        this.totalCoversE = 0;
+        var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+        if (index == -1) {
+          this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
+        } else {
+          this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
+          this.lstResumenOpenE[index].cantidad += aux.cantidad;
+          this.lstResumenOpenE[index].precio += aux.precio;
+        }
+        document.getElementById('coverME').style.borderColor = '';
+        this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
+      } else {
+        document.getElementById('coverME').style.borderColor = '#FF4B36';
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de mujeres!');
+      }
+
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'La cantidad máxima de personas por tarjeta es de: ' + this.numMax);
+    }
+
   }
 
   addCoverHE() {
-    if (this.cantSalenH > 0) {
-      let aux = {
-        nombre: this.selectedCoverHE.nombre,
-        cantidad: this.cantSalenH,
-        genero: 'Hombre',
-        producto: this.selectedCoverHE.productoHombres,
-        precio: parseFloat(this.selectedCoverHE.precioHombres)
-      }
 
-      this.factorMult = this.cantSalenH / parseFloat(this.selectedCoverHE.numHombres);
-      aux.precio = this.factorMult * parseFloat(this.selectedCoverHE.precioHombres);
-
-      this.totalCoversE = 0;
-      var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
-      if (index == -1) {
-        this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
-      } else {
-        this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
-        this.lstResumenOpenE[index].cantidad += aux.cantidad;
-        this.lstResumenOpenE[index].precio += aux.precio;
-      }
-      document.getElementById('coverHE').style.borderColor = '';
-      this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
-    } else {
-      document.getElementById('coverHE').style.borderColor = '#FF4B36';
-      this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
+    let cantTotalPersonas = this.cantSalenH;
+    for (let entry of this.lstResumenOpen) {
+      cantTotalPersonas += entry.cantidad;
     }
+
+    if (cantTotalPersonas <= this.numMax) {
+      if (this.cantSalenH > 0) {
+        let aux = {
+          nombre: this.selectedCoverHE.nombre,
+          cantidad: this.cantSalenH,
+          genero: 'Hombre',
+          producto: this.selectedCoverHE.productoHombres,
+          precio: parseFloat(this.selectedCoverHE.precioHombres)
+        }
+
+        this.factorMult = this.cantSalenH / parseFloat(this.selectedCoverHE.numHombres);
+        aux.precio = this.factorMult * parseFloat(this.selectedCoverHE.precioHombres);
+
+        this.totalCoversE = 0;
+        var index = this.lstResumenOpenE.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
+        if (index == -1) {
+          this.lstResumenOpenE = [...this.lstResumenOpenE, aux];
+        } else {
+          this.lstResumenOpenE[index].precio = parseFloat(this.lstResumenOpenE[index].precio)
+          this.lstResumenOpenE[index].cantidad += aux.cantidad;
+          this.lstResumenOpenE[index].precio += aux.precio;
+        }
+        document.getElementById('coverHE').style.borderColor = '';
+        this.totalCoversE = this.calcTotalCovers(this.lstResumenOpenE);
+      } else {
+        document.getElementById('coverHE').style.borderColor = '#FF4B36';
+        this.messageGrowlService.notify('error', 'Error', 'Selecciona la cantidad de hombres!');
+      }
+    } else {
+      this.messageGrowlService.notify('error', 'Error', 'La cantidad máxima de personas por tarjeta es de: ' + this.numMax);
+    }
+
   }
 
   onChangeSelectCoverME($event) {

@@ -673,7 +673,6 @@ export class ValidateService {
   validateFormaPago(fp) {
     let res = true;
     let sum = fp.formaPago.efectivo + fp.formaPago.tarjeta + fp.formaPago.credito + fp.formaPago.cheque;
-    console.log(sum)
     if (sum !== fp.totalPagar) {
       document.getElementById("pnlFp").style.borderColor = "#FE2E2E";
       res = false;
@@ -776,18 +775,52 @@ export class ValidateService {
   }*/
 
   getDateTimeEs() {
-    let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    let currentDateTime = this.datePipe.transform(new Date(), 'dd/MM/yyyy HH:mm:ss');
+    return currentDateTime;
+  }
+
+  getDateTimeEsPrimeNG1() {
+    var date = new Date();
+    date.setHours(date.getHours() - 8);
+    let currentDateTime = this.datePipe.transform(date, 'MM/dd/yyyy HH:mm');
+    return currentDateTime;
+  }
+
+  getDateTimeEsPrimeNG() {
+    let currentDateTime = this.datePipe.transform(new Date(), 'MM/dd/yyyy HH:mm');
     return currentDateTime;
   }
 
   getDateEs() {
-    let currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy');
+    let currentDateTime = this.datePipe.transform(new Date(), 'dd/MM/yyyy');
     return currentDateTime;
   }
 
   getTimeEs() {
-    let currentDateTime = this.datePipe.transform(new Date(), 'hh:mm:ss');
+    let currentDateTime = this.datePipe.transform(new Date(), 'HH:mm:ss');
     return currentDateTime;
+  }
+
+  getDateTimeStamp() {
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+    var newCad = localISOTime.substr(0, (localISOTime.length) - 4);
+    return newCad
+  }
+
+  getDateTimeStamp1() {
+    var tzoffset = 780 * 60000; //offset in milliseconds
+    var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+    var newCad = localISOTime.substr(0, (localISOTime.length) - 4);
+    return newCad
+  }
+
+  getTimeStampFromDate(fecha) {
+    
+    var date1 = new Date(fecha);
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(date1.getTime() - tzoffset)).toISOString();
+    return localISOTime
   }
 
   validateCads(s) {

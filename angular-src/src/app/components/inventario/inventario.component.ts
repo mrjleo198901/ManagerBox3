@@ -9,6 +9,7 @@ import { ProductoService } from '../../services/producto.service';
 import { ClienteService } from '../../services/cliente.service';
 import { DecimalPipe } from '@angular/common';
 import { TipoProductoService } from '../../services/tipo-producto.service';
+import { FacturaService } from '../../services/factura.service';
 import 'jspdf-autotable';
 declare let jsPDF;
 
@@ -27,6 +28,11 @@ export class InventarioComponent implements OnInit {
   nombre;
   public static updateUserStatus: Subject<boolean> = new Subject();
   flagDownload = false;
+  es: any;
+  fecha_desde: any;
+  fecha_hasta: any;
+  flagRangoFechas = false;
+  mapUsers: any[] = [];
 
   constructor(
     private messageGrowlService: MessageGrowlService,
@@ -35,10 +41,31 @@ export class InventarioComponent implements OnInit {
     private productoService: ProductoService,
     private clienteService: ClienteService,
     private decimalPipe: DecimalPipe,
-    private tipoProductoService: TipoProductoService) {
+    private tipoProductoService: TipoProductoService,
+    private facturaService: FacturaService,
+    private authService: AuthService) {
     InventarioComponent.updateUserStatus.subscribe(res => {
       console.log("entrooooooo")
     });
+
+    this.es = {
+      firstDayOfWeek: 1,
+      dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+      dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+      dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+      monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+      monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+      today: 'Hoy',
+      clear: 'Borrar'
+    }
+    this.fecha_desde = this.validateService.getDateTimeEsPrimeNG1();
+    this.fecha_hasta = this.validateService.getDateTimeEsPrimeNG();
+
+    this.authService.getAll().subscribe(data => {
+      this.mapUsers = data;
+    }, err => {
+      console.log(err);
+    })
 
     var x = window.innerWidth;
     this.onRzOnInit(x);
@@ -62,7 +89,32 @@ export class InventarioComponent implements OnInit {
     this.genders.push({ label: 'Female', value: 'Female' });
 
     this.ngOnInitProds();
+
+
   }
+
+
+  doDate() {
+
+    /*let cad1 = this.validateService.getTimeStampFromDate(this.fecha_desde);
+    let cad2 = this.validateService.getTimeStampFromDate(this.fecha_hasta);
+
+    let obj = { fecha_ini: cad1, fecha_fin: cad2 }
+    this.facturaService.getByDateTime(obj).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });*/
+
+    this.facturaService.getLastOne().subscribe(data => {
+      console.log("in")
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });
+
+  }
+
 
   onSubmit(value: string) {
     console.log(value)
@@ -126,13 +178,13 @@ export class InventarioComponent implements OnInit {
   }
   /* REPORTES*/
   tipo_reportes: any
-  lstProds: any[];
   keyNames: any[];
   selecTipoReporte: any;
   lstLabels: any[];
+  lstProds: any[];
   lstTipoProductos: any[];
-  lstLabels1: any[];
   lstClientes: any[];
+  lstVentas: any[];
 
   generate() {
     var item = {
@@ -172,6 +224,10 @@ export class InventarioComponent implements OnInit {
     }
     if (this.selecTipoReporte.value === 2) {
       this.fillPDF2();
+    }
+    if (this.selecTipoReporte.value === 3) {
+      this.fillPDF3();
+      //console.log(this.mapUsers);
     }
 
   }
@@ -303,13 +359,115 @@ export class InventarioComponent implements OnInit {
     document.getElementById('iFramePDF').setAttribute('src', this.data);
   }
 
+  fillPDF3() {
+    this.fillLstVentas();
+    /*console.log(this.lstLabels);*/
+    var doc = new jsPDF('p', 'mm', [297, 210]);
+    doc.setFontSize(20);
+    doc.setTextColor(12, 86, 245);
+    doc.text(14, 20, 'Reporte de Ventas');
+    var cols: any[] = [];
+    for (let entry of this.lstLabels) {
+      if (entry.active == true)
+        cols.push(entry.name)
+    }
+    if (cols.length > 6) {
+      doc = new jsPDF('l', 'mm', [297, 210]);
+    }
+    var rows = [];
+    let i = 0;
+    for (let entry of this.lstVentas) {
+      let ele = [];
+      if (this.lstLabels[0].active === true) {
+        ele.push(++i);
+      }
+      if (this.lstLabels[1].active === true) {
+        ele.push(entry.cedula);
+      }
+      if (this.lstLabels[2].active === true) {
+        ele.push(entry.nombre);
+      }
+      if (this.lstLabels[3].active === true) {
+        ele.push(entry.telefono);
+      }
+      if (this.lstLabels[4].active === true) {
+        ele.push(entry.direccion);
+      }
+      if (this.lstLabels[5].active === true) {
+        ele.push(entry.fecha_emision);
+      }
+      if (this.lstLabels[6].active === true) {
+        let us: any = this.mapUsers.filter(function (obj) {
+          return obj._id.localeCompare(entry.cajero) === 0;
+        });
+        ele.push(us[0].name);
+
+      }
+      if (this.lstLabels[7].active === true) {
+        if (entry.formaPago.length > 0) {
+          ele.push(this.formatFP(entry.formaPago[0]));
+        } else {
+          ele.push('-')
+        }
+      }
+      if (this.lstLabels[8].active === true) {
+        if (entry.detalleFacturaV.length > 0) {
+          ele.push(this.decimalPipe.transform(this.formatDetalle(entry.detalleFacturaV), '1.2-2'));
+        } else {
+          ele.push(this.decimalPipe.transform(0, '1.2-2'));
+        }
+      }
+      rows.push(ele)
+    }
+    doc.autoTable(cols, rows,
+      {
+        startY: 25,
+        showHeader: 'firstPage',
+        columnStyles: { Path: { columnWidth: 'auto' } }
+      });
+
+    this.data = doc.output('datauristring')
+    document.getElementById('iFramePDF').setAttribute('src', this.data);
+  }
+
+  formatFP(fp) {
+    let cad = '';
+    if (fp.cheque > 0) {
+      cad += 'Cheque:' + fp.cheque;
+    }
+    if (fp.credito > 0) {
+      cad += ' Crédito:' + fp.credito;
+    }
+    if (fp.tarjeta > 0) {
+      cad += ' Tarjeta:' + fp.tarjeta;
+    }
+    if (fp.efectivo > 0) {
+      cad += ' Efectivo:' + fp.efectivo;
+    }
+    return cad;
+  }
+
+  formatDetalle(detalle) {
+    let monto = 0;
+    for (let entry of detalle) {
+      monto += entry.total;
+    }
+    return monto;
+  }
+
   fillParameters($event) {
     this.flagDownload = false;
     if (this.selecTipoReporte.value === 1) {
+      this.flagRangoFechas = false;
       this.fillLstProductos();
     }
     if (this.selecTipoReporte.value === 2) {
+      this.flagRangoFechas = false;
       this.fillLstClientes();
+    }
+    if (this.selecTipoReporte.value === 3) {
+      //this.fillLstVentas();
+      this.flagRangoFechas = true;
     }
   }
 
@@ -381,6 +539,35 @@ export class InventarioComponent implements OnInit {
       console.log(this.lstLabels)
     }, err => {
       console.log(err)
+    });
+  }
+
+  fillLstVentas() {
+    this.lstLabels = [];
+
+    this.facturaService.getAll().subscribe(data => {
+
+      this.keyNames = [];
+      this.lstVentas = data;
+      this.keyNames = Object.keys(data[0]);
+      let index = this.keyNames.findIndex(x => x === '__v');
+      if (index > -1) {
+        this.keyNames.splice(index, 1);
+      }
+      for (let entry of this.keyNames) {
+        if (entry.localeCompare('num_factura') !== 0 && entry.localeCompare('num_autorizacion') !== 0 && entry.localeCompare('ruc') !== 0) {
+          let aux = { label: entry, active: false, name: entry }
+          aux.name = aux.name.replace(/[_-]/g, " ");
+          aux.name = aux.name.trim();
+          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+          if (aux.label.localeCompare('detalleFacturaV') === 0) {
+            aux.name = 'Monto Total';
+          }
+          this.lstLabels.push(aux);
+        }
+      }
+    }, err => {
+
     });
   }
 

@@ -7,6 +7,8 @@ import * as moment from 'moment';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { PersonalService } from '../../services/personal.service';
 import { MessageGrowlService } from '../../services/message-growl.service';
+import { MdDialog, MdDialogRef } from '@angular/material';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-personal',
@@ -61,8 +63,19 @@ export class PersonalComponent implements OnInit {
   listaEstado: any = [];
   listaCargoPersonal: any = [];
   listaPersonal: any = [];
-
-  tags = [{ name: 'Administrar', checked: false }, { name: 'Personal', checked: true }, { name: 'Atencion', checked: false }, { name: 'Facturacion', checked: true }, { name: 'Clientes', checked: false }, { name: 'Reportes', checked: false }];
+  es: any;
+  tags = [{ name: 'Administración', checked: false },
+  { name: 'Atención', checked: false },
+  { name: 'Clientes', checked: false },
+  { name: 'Personal', checked: false },
+  { name: 'Productos', checked: false },
+  { name: 'Reportes', checked: false },
+  { name: 'Ventas', checked: false }];
+  fecha_desde: any;
+  fecha_hasta: any;
+  selected_user: any;
+  lstUsers: any[] = [];
+  descripcion;
 
   constructor(
     private cargoPersonalService: CargoPersonalService,
@@ -70,7 +83,8 @@ export class PersonalComponent implements OnInit {
     private authService: AuthService,
     private validateService: ValidateService,
     private messageGrowlService: MessageGrowlService,
-    public el: ElementRef, public renderer: Renderer) {
+    public el: ElementRef, public renderer: Renderer,
+    public dialog: MdDialog) {
     renderer.listenGlobal('document', 'change', (event) => {
       //Set time in datepicker
       this.dt = moment(this.fechaNacimientoString, 'DD/MM/YYYY').toDate();
@@ -83,6 +97,19 @@ export class PersonalComponent implements OnInit {
     this.showDatepicker = false;
     this.idCargoPersona = "";
     this.banCalendar = 1;
+
+    this.es = {
+      firstDayOfWeek: 1,
+      dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+      dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+      dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+      monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+      monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+      today: 'Hoy',
+      clear: 'Borrar'
+    }
+    this.fecha_desde = this.validateService.getDateTimeEsPrimeNG();
+    this.fecha_hasta = this.validateService.getDateTimeEsPrimeNG();
 
     var x = window.innerWidth;
     this.onRzOnInit(x);
@@ -135,7 +162,10 @@ export class PersonalComponent implements OnInit {
 
       /* Get Personal*/
       this.personalService.getAll().subscribe(tp => {
+
         this.listaPersonal = tp;
+        console.log(this.listaPersonal);
+        this.selected_user = 'Todas';
         let i = 0;
         for (let x of tp) {
           let desc = this.searchId(x.id_cargo, this.listaCargoPersonal);
@@ -197,64 +227,61 @@ export class PersonalComponent implements OnInit {
     }
   }
 
-  // cabesera de la tabla Trabajador
   settingsPer = {
     mode: 'external',
     columns: {
       cedula: {
-        title: 'Cédula'
+        title: 'Cédula',
+        width: '15%'
       },
       nombres: {
-        title: 'Nombres'
+        title: 'Nombres',
+        width: '25%'
       },
       apellidos: {
-        title: 'Apellidos'
+        title: 'Apellidos',
+        width: '25%'
       },
       telefono: {
-        title: 'Teléfono'
-      },
-      email: {
-        title: 'Email'
-      },
-      fecha_nacimiento: {
-        title: 'Fecha Nacimiento'
-      },
-      sexo: {
-        title: 'Sexo'
+        title: 'Teléfono',
+        width: '15%'
       },
       id_cargo: {
-        title: 'Cargo'
+        title: 'Cargo',
+        width: '20%'
       }
     },
     actions: {
       add: true,
       edit: true,
-      delete: false
+      delete: true
     },
     attr: {
       class: 'table-bordered table-hover table-responsive'
       //class: 'font-size: 200%;'
     }
   };
-
-  // cabesera tabla Tipo Personal
+  
   settingsCargPer = {
     mode: 'external',
     columns: {
-      _id: {
-        title: 'ID'
-      },
       descripcion_cargo_personal: {
-        title: 'Descripción'
+        title: 'Nombre',
+        width: '25%'
       },
       id_estado: {
-        title: 'Estado'
+        title: 'Estado',
+        width: '25%'
       },
+      descripcion: {
+        title: 'Descripción',
+        width: '50%'
+      }
     },
     actions: {
       add: true,
       edit: true,
-      delete: false
+      delete: true
     },
     attr: {
       class: 'table-bordered table-hover table-responsive'
@@ -339,7 +366,8 @@ export class PersonalComponent implements OnInit {
   onAddCargoPersonalSubmit() {
     const cargoPersonal = {
       descripcion_cargo_personal: this.descripcionCargoPersonal,
-      id_estado: this.selectEstado.id
+      id_estado: this.selectEstado.id,
+      descripcion: this.descripcion
     }
     //Required fields
     if (!this.validateService.validateCargoPersonal(cargoPersonal)) {
@@ -383,6 +411,29 @@ export class PersonalComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
   }
+
+  onDeleteCP(event): void {
+    this.openDialog(event.data);
+  }
+
+  openDialog(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          this.sourceCargoPer.remove(data);
+          // remove from database
+          this.cargoPersonalService.deleteCargoPersonal(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+          });
+        }
+      }
+    });
+  }
+
   //POSICION DEL CURSOR PERSONAL
   setCursorPerAdd() {
     setTimeout(function () {
@@ -399,6 +450,12 @@ export class PersonalComponent implements OnInit {
 
     if (this.descripcionCargoPersonal.length > 1)
       document.getElementById("descCargoPerAdd").style.borderColor = "#DADAD2";
+  }
+
+  onChangeDesc($event) {
+    if (this.descripcion.length == 1)
+      this.descripcion = this.descripcion.charAt(0).toUpperCase();
+
   }
 
   onChange() {
@@ -563,6 +620,35 @@ export class PersonalComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
     });
+  }
+
+  onDeleteP(event): void {
+    this.openDialogP(event.data);
+  }
+
+  openDialogP(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          this.sourcePer.remove(data);
+          // remove from database
+          this.personalService.deletePersonal(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+          });
+        }
+      }
+    });
+  }
+
+  /* LOG ACTIVITY */
+  generateLog() {
+    console.log(this.fecha_desde);
+    console.log(this.fecha_hasta);
+    console.log(this.validateService.getDateTimeEsPrimeNG())
   }
 
   //Width detection

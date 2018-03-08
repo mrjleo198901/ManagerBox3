@@ -592,7 +592,6 @@ export class ClientesComponent implements OnInit {
     //settear cursor
     this.desc_tipo_cliente = event.data.nombre;
     this.descUpdt = event.data.nombre;
-    //console.log(this.lstProductosTC)
     this.setDefaultsTipoClienteU();
     setTimeout(function () {
       document.getElementById('descTCU').focus();
