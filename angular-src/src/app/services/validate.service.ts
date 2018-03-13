@@ -816,11 +816,16 @@ export class ValidateService {
   }
 
   getTimeStampFromDate(fecha) {
-    
     var date1 = new Date(fecha);
     var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
     var localISOTime = (new Date(date1.getTime() - tzoffset)).toISOString();
     return localISOTime
+  }
+
+  isoToString(s) {
+    var date = new Date(s);
+    date.setHours(date.getHours() + 5);
+    return (this.datePipe.transform(date, 'dd/MM/yyyy HH:mm:ss'))
   }
 
   validateCads(s) {

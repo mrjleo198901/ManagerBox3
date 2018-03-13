@@ -10,18 +10,16 @@
         style="z-index: 1;" tabindex="1">
         <option *ngFor="let c of tipo_reportes" [ngValue]="c">{{c.label}}</option>
     </select><br>
-
-    <button type="button" (click)="doDate()">viewDate</button>
-
+    <!--<button type="button" (click)="doDate()">viewDate</button>-->
 </div>
 <!-- Rango de Fechas-->
-<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" *ngIf="flagRangoFechas">
     <label>Desde: </label><br>
     <p-calendar [(ngModel)]="fecha_desde" [locale]="es" dateFormat="mm/dd/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
         yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true" [style]="{'width':'200px'}">
     </p-calendar>
 </div>
-<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" *ngIf="flagRangoFechas">
     <label>Hasta: </label><br>
     <p-calendar [(ngModel)]="fecha_hasta" [locale]="es" dateFormat="mm/dd/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
         yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
@@ -59,4 +57,5 @@
     <iframe id="iFramePDF" type="application/pdf" width="100%" height="650" style="position:relative;z-index:1; border: solid 2px; border-color: #CDC8CE">
         Your Browser doesn´t support iframes
     </iframe>
+    <hr>
 </div>

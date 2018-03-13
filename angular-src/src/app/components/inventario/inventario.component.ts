@@ -10,6 +10,7 @@ import { ClienteService } from '../../services/cliente.service';
 import { DecimalPipe } from '@angular/common';
 import { TipoProductoService } from '../../services/tipo-producto.service';
 import { FacturaService } from '../../services/factura.service';
+import { DatePipe } from '@angular/common';
 import 'jspdf-autotable';
 declare let jsPDF;
 
@@ -43,7 +44,8 @@ export class InventarioComponent implements OnInit {
     private decimalPipe: DecimalPipe,
     private tipoProductoService: TipoProductoService,
     private facturaService: FacturaService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private datePipe: DatePipe) {
     InventarioComponent.updateUserStatus.subscribe(res => {
       console.log("entrooooooo")
     });
@@ -95,24 +97,33 @@ export class InventarioComponent implements OnInit {
 
 
   doDate() {
+    let s = '2018-03-12T17:11:17.353Z';
+    console.log(this.validateService.isoToString(s));
 
     /*let cad1 = this.validateService.getTimeStampFromDate(this.fecha_desde);
     let cad2 = this.validateService.getTimeStampFromDate(this.fecha_hasta);
 
-    let obj = { fecha_ini: cad1, fecha_fin: cad2 }
+    let obj = { fecha_ini: cad1, fecha_fin: cad2 };
+    console.log(obj);
+    let obj1 = { fecha_ini: '/*' }
     this.facturaService.getByDateTime(obj).subscribe(data => {
+
       console.log(data);
     }, err => {
       console.log(err);
     });*/
 
-    this.facturaService.getLastOne().subscribe(data => {
+    /*this.facturaService.getLastOne().subscribe(data => {
       console.log("in")
       console.log(data);
     }, err => {
       console.log(err);
-    });
+    });*/
 
+  }
+  parseISOString(s) {
+    var b = s.split(/\D+/);
+    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
   }
 
 
@@ -239,76 +250,106 @@ export class InventarioComponent implements OnInit {
     doc.setFontSize(20);
     doc.setTextColor(12, 86, 245);
     doc.text(14, 20, 'Reporte de Productos');
+    let flagHorizontal = false;
     var cols: any[] = [];
     for (let entry of this.lstLabels) {
       if (entry.active == true)
-        cols.push(entry.name)
-    }
+        cols.push({ title: entry.name, dataKey: entry.name });
+    };
+    let flagPaddingY = false;
     if (cols.length > 6) {
       doc = new jsPDF('l', 'mm', [297, 210]);
+      doc.setFontSize(20);
+      doc.setTextColor(12, 86, 245);
+      doc.text(14, 20, 'Reporte de Productos');
+      flagHorizontal = true;
     }
     var rows = [];
     let i = 0;
     for (let entry of this.lstProds) {
       let ele = [];
       if (this.lstLabels[0].active === true) {
-        ele.push(++i);
+        ele["ID"] = ++i;
       }
       if (this.lstLabels[1].active === true) {
-        ele.push(entry.nombre);
+        ele["Nombre"] = entry.nombre;
       }
       if (this.lstLabels[2].active === true) {
         entry.precio_costo = this.decimalPipe.transform(entry.precio_costo, '1.2-2');
-        ele.push('$' + entry.precio_costo);
+        ele["Precio costo"] = '$' + entry.precio_costo;
       }
       if (this.lstLabels[3].active === true) {
         entry.precio_venta = this.decimalPipe.transform(entry.precio_venta, '1.2-2');
-        ele.push('$' + entry.precio_venta);
+        ele["Precio venta"] = '$' + entry.precio_venta;
       }
       if (this.lstLabels[4].active === true) {
         entry.utilidad = this.decimalPipe.transform(entry.utilidad, '1.2-2');
-        ele.push(entry.utilidad + '%');
+        ele["Utilidad"] = entry.utilidad + '%';
       }
       if (this.lstLabels[5].active === true) {
-        ele.push(entry.cant_existente);
+        ele["Cant existente"] = entry.cant_existente;
       }
       if (this.lstLabels[6].active === true) {
-        ele.push(entry.id_tipo_producto);
+        ele["Cant minima"] = entry.cant_minima;
       }
       if (this.lstLabels[7].active === true) {
-        ele.push(entry.path);
+        ele["Tipo producto"] = entry.id_tipo_producto;
       }
       if (this.lstLabels[8].active === true) {
-        entry.contenido = entry.contenido + ' ml';
-        ele.push(entry.contenido);
+        ele["Path"] = entry.path;
       }
       if (this.lstLabels[9].active === true) {
-        ele.push(entry.promocion);
+        ele["Contenido"] = entry.contenido + 'ml';
       }
       if (this.lstLabels[10].active === true) {
-        ele.push(entry.subproductoV);
+        ele["Promocion"] = entry.promocion;
       }
-      rows.push(ele)
+      if (this.lstLabels[11].active === true) {
+        console.log(entry.subproductoV)
+        ele["Subproductos"] = entry.subproductoV;
+      }
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
+      rows.push(ele);
     }
+
     doc.autoTable(cols, rows,
       {
         startY: 25,
-        showHeader: 'firstPage',
-        columnStyles: { Path: { columnWidth: 'auto' } }
+        margin: { top: 16, right: 14, bottom: 20, left: 14 },
+        //showHeader: 'firstPage',
+        styles: { overflow: 'linebreak' },
+        columnStyles: { ID: { columnWidth: 'wrap' }, Nombre: { columnWidth: 'wrap' }, Utilidad: { columnWidth: 'wrap' }, Contenido: { columnWidth: 'wrap' } }
       });
-
+    this.setFooter(doc, flagHorizontal);
     this.data = doc.output('datauristring')
     document.getElementById('iFramePDF').setAttribute('src', this.data);
   }
 
   fillPDF2() {
-    console.log(this.lstClientes)
     var doc = new jsPDF('p', 'mm', [297, 210]);
     doc.setFontSize(20);
     doc.setTextColor(12, 86, 245);
-    doc.text(20, 20, 'Reporte de Clientes');
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
+    doc.text(14, 20, 'Reporte de Clientes');
+    let flagHorizontal = false;
     var cols: any[] = [];
     for (let entry of this.lstLabels) {
       if (entry.active == true)
@@ -316,6 +357,10 @@ export class InventarioComponent implements OnInit {
     }
     if (cols.length > 6) {
       doc = new jsPDF('l', 'mm', [297, 210]);
+      doc.setFontSize(20);
+      doc.setTextColor(12, 86, 245);
+      doc.text(14, 20, 'Reporte de Clientes');
+      flagHorizontal = true;
     }
     var rows = [];
     let i = 0;
@@ -354,95 +399,129 @@ export class InventarioComponent implements OnInit {
       }
       rows.push(ele)
     }
-    doc.autoTable(cols, rows);
+    doc.autoTable(cols, rows,
+      {
+        startY: 25,
+        margin: { top: 18, right: 14, bottom: 20, left: 14 },
+        styles: { overflow: 'linebreak' },
+        columnStyles: { ID: { columnWidth: 'wrap' }, Nombre: { columnWidth: 'wrap' }, Utilidad: { columnWidth: 'wrap' }, Contenido: { columnWidth: 'wrap' } }
+      });
+    this.setFooter(doc, flagHorizontal);
     this.data = doc.output('datauristring')
     document.getElementById('iFramePDF').setAttribute('src', this.data);
   }
 
   fillPDF3() {
-    this.fillLstVentas();
-    /*console.log(this.lstLabels);*/
-    var doc = new jsPDF('p', 'mm', [297, 210]);
-    doc.setFontSize(20);
-    doc.setTextColor(12, 86, 245);
-    doc.text(14, 20, 'Reporte de Ventas');
+    let cad1 = this.validateService.getTimeStampFromDate(this.fecha_desde);
+    let cad2 = this.validateService.getTimeStampFromDate(this.fecha_hasta);
+    let obj = { fecha_ini: cad1, fecha_fin: cad2 };
+    this.facturaService.getByDateTime(obj).subscribe(data => {
+      this.lstVentas = data;
+      var doc = new jsPDF('p', 'mm', [297, 210]);
+      doc.setFontSize(20);
+      doc.setTextColor(12, 86, 245);
+      doc.text(14, 20, 'Reporte de Ventas');
+      let flagHorizontal = false;
+      var cols: any[] = [];
+      for (let entry of this.lstLabels) {
+        if (entry.active == true)
+          cols.push({ title: entry.name, dataKey: entry.name })
+      }
+      if (cols.length > 6) {
+        doc = new jsPDF('l', 'mm', [297, 210]);
+        doc.setFontSize(20);
+        doc.setTextColor(12, 86, 245);
+        doc.text(14, 20, 'Reporte de Ventas');
+        flagHorizontal = true;
+      }
+      var rows = [];
+      let i = 0;
+      for (let entry of this.lstVentas) {
+        let ele = {};
+        if (this.lstLabels[0].active === true) {
+          ele["ID"] = ++i;
+        }
+        if (this.lstLabels[1].active === true) {
+          ele["Cedula"] = entry.cedula;
+        }
+        if (this.lstLabels[2].active === true) {
+          ele["Nombre"] = entry.nombre;
+        }
+        if (this.lstLabels[3].active === true) {
+          ele["Telefono"] = entry.telefono;
+        }
+        if (this.lstLabels[4].active === true) {
+          ele["Direccion"] = entry.direccion;
+        }
+        if (this.lstLabels[5].active === true) {
+          ele["Fecha emision"] = this.validateService.isoToString(entry.fecha_emision);
+        }
+        if (this.lstLabels[6].active === true) {
+          let us: any = this.mapUsers.filter(function (obj) {
+            return obj._id.localeCompare(entry.cajero) === 0;
+          });
+          ele["Cajero"] = us[0].name;
+        }
+        if (this.lstLabels[7].active === true) {
+          if (entry.formaPago.length > 0) {
+            ele["Forma Pago"] = this.formatFP(entry.formaPago[0]);
+          } else {
+            ele["Forma Pago"] = '-';
+          }
+        }
+        if (this.lstLabels[8].active === true) {
+          if (entry.detalleFacturaV.length > 0) {
+            ele["Monto Total"] = this.decimalPipe.transform(this.formatDetalle(entry.detalleFacturaV), '1.2-2');
+          } else {
+            ele["Monto Total"] = this.decimalPipe.transform(0, '1.2-2');
+          }
+        }
+        rows.push(ele)
+      }
+
+      doc.autoTable(cols, rows,
+        {
+          startY: 25,
+          showHeader: 'firstPage',
+          styles: { overflow: 'linebreak' },
+          columnStyles: { Cedula: { columnWidth: 'wrap' }, Telefono: { columnWidth: 'wrap' }, ID: { fillColor: 185, columnWidth: 'wrap' } }
+        });
+      this.setFooter(doc, flagHorizontal)
+      this.data = doc.output('datauristring');
+      document.getElementById('iFramePDF').setAttribute('src', this.data);
+    }, err => {
+      console.log(err);
+    })
+  }
+
+  fillPDF4() {
     var cols: any[] = [];
     for (let entry of this.lstLabels) {
       if (entry.active == true)
-        cols.push(entry.name)
+        cols.push({ title: entry.name, dataKey: entry.name })
     }
-    if (cols.length > 6) {
-      doc = new jsPDF('l', 'mm', [297, 210]);
-    }
-    var rows = [];
-    let i = 0;
-    for (let entry of this.lstVentas) {
-      let ele = [];
-      if (this.lstLabels[0].active === true) {
-        ele.push(++i);
-      }
-      if (this.lstLabels[1].active === true) {
-        ele.push(entry.cedula);
-      }
-      if (this.lstLabels[2].active === true) {
-        ele.push(entry.nombre);
-      }
-      if (this.lstLabels[3].active === true) {
-        ele.push(entry.telefono);
-      }
-      if (this.lstLabels[4].active === true) {
-        ele.push(entry.direccion);
-      }
-      if (this.lstLabels[5].active === true) {
-        ele.push(entry.fecha_emision);
-      }
-      if (this.lstLabels[6].active === true) {
-        let us: any = this.mapUsers.filter(function (obj) {
-          return obj._id.localeCompare(entry.cajero) === 0;
-        });
-        ele.push(us[0].name);
-
-      }
-      if (this.lstLabels[7].active === true) {
-        if (entry.formaPago.length > 0) {
-          ele.push(this.formatFP(entry.formaPago[0]));
-        } else {
-          ele.push('-')
-        }
-      }
-      if (this.lstLabels[8].active === true) {
-        if (entry.detalleFacturaV.length > 0) {
-          ele.push(this.decimalPipe.transform(this.formatDetalle(entry.detalleFacturaV), '1.2-2'));
-        } else {
-          ele.push(this.decimalPipe.transform(0, '1.2-2'));
-        }
-      }
-      rows.push(ele)
-    }
-    doc.autoTable(cols, rows,
-      {
-        startY: 25,
-        showHeader: 'firstPage',
-        columnStyles: { Path: { columnWidth: 'auto' } }
-      });
-
-    this.data = doc.output('datauristring')
-    document.getElementById('iFramePDF').setAttribute('src', this.data);
+    console.log(cols);
+    var columns = [
+      { title: "ID", dataKey: "id" },
+      { title: "Name", dataKey: "name" },
+      { title: "Country", dataKey: "country" },
+    ];
+    console.log(columns);
   }
 
   formatFP(fp) {
     let cad = '';
     if (fp.cheque > 0) {
-      cad += 'Cheque:' + fp.cheque;
+      cad += 'Cheque:' + fp.cheque + ' ';
     }
     if (fp.credito > 0) {
-      cad += ' Crédito:' + fp.credito;
+      cad += 'Crédito:' + fp.credito + ' ';
     }
     if (fp.tarjeta > 0) {
-      cad += ' Tarjeta:' + fp.tarjeta;
+      cad += 'Tarjeta:' + fp.tarjeta + ' ';
     }
     if (fp.efectivo > 0) {
-      cad += ' Efectivo:' + fp.efectivo;
+      cad += 'Efectivo:' + fp.efectivo + ' ';
     }
     return cad;
   }
@@ -453,6 +532,22 @@ export class InventarioComponent implements OnInit {
       monto += entry.total;
     }
     return monto;
+  }
+
+  setFooter(doc: any, flagHorizontal) {
+    var pageCount = doc.internal.getNumberOfPages();
+    for (let i = 0; i < pageCount; i++) {
+      doc.setFontSize(7);
+      doc.setTextColor(0, 0, 0);
+      doc.setPage(i);
+      if (!flagHorizontal) {
+        doc.text(14, 283, 'Generado por ® Managerbox - Gestor de comercios. Todos los derechos reservados. ® Riobytes Solutions 2018 - www.riobytes.com/managerbox');
+        doc.text(190, 283, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+      } else {
+        doc.text(14, 200, 'Generado por ® Managerbox - Gestor de comercios. Todos los derechos reservados. ® Riobytes Solutions 2018 - www.riobytes.com/managerbox');
+        doc.text(277, 200, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
+      }
+    }
   }
 
   fillParameters($event) {
@@ -466,7 +561,7 @@ export class InventarioComponent implements OnInit {
       this.fillLstClientes();
     }
     if (this.selecTipoReporte.value === 3) {
-      //this.fillLstVentas();
+      this.fillHeadersVentas();
       this.flagRangoFechas = true;
     }
   }
@@ -488,7 +583,7 @@ export class InventarioComponent implements OnInit {
         if (entry.subproductoV.length > 0) {
           let cad = "";
           for (let sub of entry.subproductoV) {
-            cad += sub.cantidad + " " + sub.label;
+            cad += '-' + sub.label + " " + sub.cantidad + " ";
             entry.subproductoV = cad;
           }
         } else {
@@ -504,8 +599,14 @@ export class InventarioComponent implements OnInit {
         aux.name = aux.name.replace(/[_-]/g, " ");
         aux.name = aux.name.trim();
         aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+        if (aux.label.localeCompare('_id') === 0) {
+          aux.name = 'ID';
+        }
         if (aux.label.localeCompare('id_tipo_producto') === 0) {
           aux.name = 'Tipo producto';
+        }
+        if (aux.label.localeCompare('subproductoV') === 0) {
+          aux.name = 'Subproductos';
         }
         this.lstLabels.push(aux);
       }
@@ -542,14 +643,13 @@ export class InventarioComponent implements OnInit {
     });
   }
 
-  fillLstVentas() {
+  fillHeadersVentas() {
     this.lstLabels = [];
 
-    this.facturaService.getAll().subscribe(data => {
-
+    this.facturaService.getLastOne().subscribe(data => {
       this.keyNames = [];
-      this.lstVentas = data;
-      this.keyNames = Object.keys(data[0]);
+      //this.lstVentas = data;
+      this.keyNames = Object.keys(data);
       let index = this.keyNames.findIndex(x => x === '__v');
       if (index > -1) {
         this.keyNames.splice(index, 1);
@@ -560,6 +660,12 @@ export class InventarioComponent implements OnInit {
           aux.name = aux.name.replace(/[_-]/g, " ");
           aux.name = aux.name.trim();
           aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+          if (aux.label.localeCompare('_id') === 0) {
+            aux.name = 'ID';
+          }
+          if (aux.label.localeCompare('formaPago') === 0) {
+            aux.name = 'Forma Pago';
+          }
           if (aux.label.localeCompare('detalleFacturaV') === 0) {
             aux.name = 'Monto Total';
           }
