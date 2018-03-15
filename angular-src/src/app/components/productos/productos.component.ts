@@ -2709,11 +2709,13 @@ export class ProductosComponent implements OnInit {
     contenido: 0
   };
   showDialogMat = false;
+  showDialogMatU = false;
   lstUnidadMedida: any = [];
   lstUnidadMedida1: any = [];
   flagUnits = true;
   selectedUmMat: any;
   selectedUmMat1: any;
+  idMatUpdate: any;
 
   setCursorAddMat() {
     setTimeout(function () {
@@ -2737,7 +2739,7 @@ export class ProductosComponent implements OnInit {
       this.flagUnits = true;
       this.lstUnidadMedida1 = [];
       this.lstUnidadMedida1.push({ label: 'Mililitros', value: 0 });
-      this.lstUnidadMedida1.push({ label: 'Onza Líquida', value: 0 });
+      this.lstUnidadMedida1.push({ label: 'Onza Liquida', value: 0 });
       this.lstUnidadMedida1.push({ label: 'Litros', value: 1 });
       this.selectedUmMat1 = this.lstUnidadMedida1[0];
 
@@ -2781,8 +2783,6 @@ export class ProductosComponent implements OnInit {
       this.objMat.unidad_medida = this.selectedUmMat.label;
     }
 
-    console.log(this.objMat);
-
     if (!this.validateService.customValidateMateria(this.objMat)) {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
@@ -2797,7 +2797,101 @@ export class ProductosComponent implements OnInit {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
+  }
 
+  setCursorUpdateMat(event: any) {
+    setTimeout(function () {
+      document.getElementById('nombreMatU').focus();
+      setOriginalColorsMat();
+    }, 0);
+    this.setDvMat();
+  }
+
+  onUpdateMatSubmit() {
+    if (this.selectedUmMat.value !== 2) {
+      this.objMat.unidad_medida = this.selectedUmMat1.label;
+    } else {
+      this.objMat.unidad_medida = this.selectedUmMat.label;
+    }
+
+    console.log(this.objMat);
+
+    if (!this.validateService.customValidateMateriaU(this.objMat)) {
+      this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+      return false;
+    }
+    this.objMat['_id'] = this.idMatUpdate;
+    this.materiaPrimaService.update(this.objMat).subscribe(data => {
+      this.showDialogMatU = false;
+      setOriginalColorsMatU();
+      this.ngOnInitMateriaPrima();
+      this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });
+  }
+
+  onUpdateMat(event: any) {
+    this.objMat.cant_existente = event.data.cant_existente;
+    this.objMat.contenido = event.data.contenido;
+    this.objMat.nombre = event.data.nombre;
+    this.objMat.precio_costo = event.data.precio_costo;
+    this.objMat.unidad_medida = event.data.unidad_medida;
+    this.idMatUpdate = event.data._id;
+    this.searchUm(event.data.unidad_medida)
+  }
+
+  searchUm(value: any) {
+    if (value.localeCompare('Unidades') === 0) {
+      let result = this.lstUnidadMedida.filter(function (obj) {
+        return obj.label.localeCompare(value) === 0;
+      });
+      this.selectedUmMat = result[0];
+      this.flagUnits = false;
+      this.lstUnidadMedida1 = [];
+      this.objMat.contenido = 0;
+    } else {
+
+      if (value.localeCompare('Gramos') || value.localeCompare('Onza') || value.localeCompare('Libras') || value.localeCompare('Kilogramos')) {
+
+        this.lstUnidadMedida1 = [];
+        this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
+        this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+
+        let result = this.lstUnidadMedida.filter(function (obj) {
+          return obj.value === 0;
+        });
+        this.selectedUmMat = result[0];
+
+        let result1 = this.lstUnidadMedida1.filter(function (obj) {
+          return obj.label.localeCompare(value) === 0;
+        });
+        this.selectedUmMat1 = result1[0];
+
+      }
+      if (value.localeCompare('Mililitros') || value.localeCompare('Onza Liquida') || value.localeCompare('Litros')) {
+
+        this.lstUnidadMedida1 = [];
+        this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
+        this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+
+        let result = this.lstUnidadMedida.filter(function (obj) {
+          return obj.value === 0;
+        });
+        this.selectedUmMat = result[0];
+
+        let result1 = this.lstUnidadMedida1.filter(function (obj) {
+          return obj.label.localeCompare(value) === 0;
+        });
+        this.selectedUmMat1 = result1[0];
+
+      }
+    }
   }
 
   ngOnInitMateriaPrima() {
@@ -2912,4 +3006,8 @@ function setOriginalColorsKardex1U() {
 
 function setOriginalColorsMat() {
   document.getElementById("nombreMat").style.borderColor = "";
+}
+
+function setOriginalColorsMatU() {
+  document.getElementById("nombreMatU").style.borderColor = "";
 }

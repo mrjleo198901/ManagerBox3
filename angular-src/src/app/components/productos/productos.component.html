@@ -80,7 +80,7 @@
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <ng2-smart-table id="dtMateria" [settings]="settingsMat" [source]="sourceMat" (create)="showDialogMat = true;setCursorAddMat()"
-            (edit)="showDialogMatU = true;setCursorUpdateMat($event)" (delete)="onDeleteMat($event)">
+            (edit)="showDialogMatU = true;setCursorUpdateMat();onUpdateMat($event)" (delete)="onDeleteMat($event)">
           </ng2-smart-table>
           <hr>
         </div>
@@ -1015,5 +1015,50 @@
     <hr>
     <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onAddMatSubmit()">Registrar</button>
     <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogMat = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Update Materia-->
+<p-dialog [(visible)]="showDialogMatU" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Actualizar Materia Prima
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="nombrePC">Nombre*:</label>
+      <input type="text" [(ngModel)]="objMat.nombre" (ngModelChange)="onChangeNombreMat($event)" id="nombreMatU" name="nombreMat"
+        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Cantidad Existente*:</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.cant_existente" placeholder="0.00" class="form-control input-sm"
+        (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Precio Costo*:</label>
+      <input currencyMask type="text" [(ngModel)]="objMat.precio_costo" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Unidad de Medida*:</label>
+      <select [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" class="form-control input-sm">
+        <option *ngFor="let c of lstUnidadMedida" [ngValue]="c">{{c.label}}</option>
+      </select>
+      <select [(ngModel)]="selectedUmMat1" class="form-control input-sm" *ngIf="flagUnits" style="margin-top: 10px;">
+        <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
+      </select>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label *ngIf="flagUnits">Contenido (Si aplica):</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.contenido" placeholder="0.00" class="form-control input-sm"
+        *ngIf="flagUnits" (click)="$event.target.select()">
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <hr>
+    <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onUpdateMatSubmit()">Actualizar</button>
+    <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogMatU = false">Cancelar</button>
   </div>
 </p-dialog>

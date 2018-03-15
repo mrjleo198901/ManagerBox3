@@ -21,7 +21,6 @@ export class MateriaPrimaService {
   }
 
   update(materia_prima) {
-    //console.log(producto)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put(this.url + 'materia_prima/' + materia_prima._id, materia_prima, { headers: headers })

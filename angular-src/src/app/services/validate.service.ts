@@ -757,6 +757,15 @@ export class ValidateService {
     return res;
   }
 
+  customValidateMateriaU(materia_prima) {
+    let res = true;
+    if (materia_prima.nombre == "") {
+      document.getElementById("nombreMatU").style.borderColor = "#FE2E2E";
+      res = false;
+    }
+    return res;
+  }
+
   //SOLO LETRAS MAYUSCULAS O MINUSCULAS Y ESPACIOS 
   soloLetras(evt) {
     var key = evt.keyCode || evt.which;
