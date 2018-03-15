@@ -1944,18 +1944,21 @@ export class CardComponent implements OnInit {
 
   searchConsumo(idFactura) {
     this.facturaService.getById(idFactura).subscribe(data => {
+      console.log(data)
       this.lstConsumo = [];
       this.totalPagar = 0;
-      for (let entry of data[0].detalleFacturaV) {
-        let aux = {
-          descripcion: entry.descripcion,
-          precio_venta: entry.precio_venta,
-          total: entry.total,
-          cantidad: entry.cantidad,
-          fecha: entry.fecha
+      if (data.length > 0) {
+        for (let entry of data[0].detalleFacturaV) {
+          let aux = {
+            descripcion: entry.descripcion,
+            precio_venta: entry.precio_venta,
+            total: entry.total,
+            cantidad: entry.cantidad,
+            fecha: entry.fecha
+          }
+          this.totalPagar += parseFloat(aux.total);
+          this.lstConsumo.push(aux);
         }
-        this.totalPagar += parseFloat(aux.total);
-        this.lstConsumo.push(aux);
       }
     }, err => {
       console.log(err);

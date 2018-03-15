@@ -338,7 +338,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   send() {
-    console.log(this.selectedProductos)
+    //console.log(this.selectedProductos)
     const user = {
       username: this.selectedMesero.cedula,
       password: this.password
@@ -346,6 +346,7 @@ export class FacturacionComponent implements OnInit {
     this.authService.authenticateUser(user).subscribe(data => {
       if (data.success) {
         this.facturaService.getById(this.idFact).subscribe(data => {
+          console.log(data)
           let updatedFact = data;
           let vecDF: any = [];
           //cambiar formato del detalle de la factura
@@ -366,13 +367,13 @@ export class FacturacionComponent implements OnInit {
           }
           updatedFact[0].detalleFacturaV = vecDF;
           console.log(updatedFact)
-          this.facturaService.update(updatedFact[0]).subscribe(data => {
+          /*this.facturaService.update(updatedFact[0]).subscribe(data => {
             this.ngOnInitConfVenta();
             this.selectedProductos = [];
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-          });
+          });*/
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');

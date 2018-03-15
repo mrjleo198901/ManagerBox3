@@ -21,7 +21,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Productos" [active]="true">
+      <tab heading="Productos">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Productos</h3>
@@ -69,6 +69,19 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <ng2-smart-table id="dtPro" [settings]="settingsPro" [source]="sourcePro" (create)="showDialogPro = true;setCursorAddPro()"
             (delete)="onDeletePro($event)"></ng2-smart-table>
+          <hr>
+        </div>
+      </tab>
+      <tab heading="Materia Prima" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Materia Prima</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <ng2-smart-table id="dtMateria" [settings]="settingsMat" [source]="sourceMat" (create)="showDialogMat = true;setCursorAddMat()"
+            (edit)="showDialogMatU = true;setCursorUpdateMat($event)" (delete)="onDeleteMat($event)">
+          </ng2-smart-table>
           <hr>
         </div>
       </tab>
@@ -201,12 +214,14 @@
       <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" placeholder="0.00" class="form-control input-sm"
         (ngModelChange)="valueChangePrecioCompra($event)" (click)="$event.target.select()" [disabled]="flagSubProd">
     </div>
+
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Ganancia*:</label>
       <input currencyMask type="text" [options]="{ suffix :' %',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
         placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)" (click)="$event.target.select()"
         tooltip="Los productos con ganancia 0%, no se mostrarán en el módulo de VENTAS." tooltipPlacement="bottom">
     </div>
+
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Precio Venta*:</label>
       <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
@@ -954,5 +969,51 @@
   </div>
   <div class="ui-g-12" style="text-align: center">
     <button type="button" style="font-size: 11px" (click)="showVentasDetail=false" class="btn btn-primary">Entendido</button>
+  </div>
+</p-dialog>
+
+<!-- Add Materia-->
+<p-dialog [(visible)]="showDialogMat" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Registrar Materia Prima
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+      <label for="nombrePC">Nombre*:</label>
+      <input type="text" [(ngModel)]="objMat.nombre" (ngModelChange)="onChangeNombreMat($event)" id="nombreMat" name="nombreMat"
+        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Cantidad Existente*:</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.cant_existente" id="cantMat" placeholder="0.00"
+        class="form-control input-sm" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Precio Costo*:</label>
+      <input currencyMask type="text" [(ngModel)]="objMat.precio_costo" id="pcMat" placeholder="0.00" class="form-control input-sm"
+        (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label>Unidad de Medida*:</label>
+      <select [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" id="tipoUmMat" class="form-control input-sm">
+        <option *ngFor="let c of lstUnidadMedida" [ngValue]="c">{{c.label}}</option>
+      </select>
+      <select [(ngModel)]="selectedUmMat1" id="tipoUmMat" class="form-control input-sm" *ngIf="flagUnits" style="margin-top: 10px;">
+        <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
+      </select>
+    </div>
+    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
+      <label *ngIf="flagUnits">Contenido (Si aplica):</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.contenido" id="cantMat" placeholder="0.00"
+        class="form-control input-sm" *ngIf="flagUnits" (click)="$event.target.select()">
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <hr>
+    <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onAddMatSubmit()">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogMat = false">Cancelar</button>
   </div>
 </p-dialog>

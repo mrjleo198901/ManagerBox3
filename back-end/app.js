@@ -59,6 +59,7 @@ app.use('/api', require('./routes/activeCardsApi'));
 app.use('/api', require('./routes/coverApi'));
 app.use('/api', require('./routes/cajaApi'));
 app.use('/api', require('./routes/userApi'));
+app.use('/api', require('./routes/materiaPrimaApi'));
 
 var profileController = require('./routes/uploadFiles');
 
