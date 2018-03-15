@@ -2894,6 +2894,31 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+
+  onDeleteMat(event): void {
+    this.openDialogMat(event.data);
+  }
+
+  openDialogMat(data) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (result.localeCompare('Aceptar') === 0) {
+          // remove from database
+          this.materiaPrimaService.delete(data._id).subscribe(data => {
+            this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
+            this.ngOnInitMateriaPrima();
+          }, err => {
+            console.log(err);
+            this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!!');
+
+          });
+        }
+      }
+    });
+  }
+
+
   ngOnInitMateriaPrima() {
     this.setDvMat();
     this.materiaPrimaService.getAll().subscribe(data => {
