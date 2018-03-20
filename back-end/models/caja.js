@@ -7,7 +7,9 @@ var cajaSchema = new mongoose.Schema({
     montoO: String,
     montoF: String,
     fechaO: String,
-    fechaF: String
+    fechaF: String,
+    entradas: Array,
+    salidas: Array
 
 });
 

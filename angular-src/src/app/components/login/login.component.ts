@@ -64,35 +64,46 @@ export class LoginComponent implements OnInit {
     }
     this.authService.authenticateUser(user).subscribe(data => {
       if (data.success) {
-        this.authService.storeUserData(data.token, data.user);
-        this.messageGrowlService.notify('info', 'Información', 'Bienvenido!');
 
-        NavbarComponent.updateUserStatus.next(true);
+        this.personalService.getByCedula(data.user.username).subscribe(per => {
+          data.user['idPersonal'] = per[0]._id;
+          this.authService.storeUserData(data.token, data.user);
+          this.messageGrowlService.notify('info', 'Información', 'Bienvenido!');
 
-        if (this.chckRememberme) {
-          localStorage.setItem('rememberMe', JSON.stringify(user));
-        } else {
-          localStorage.removeItem('rememberMe');
-        }
-        //Check cajero
-        this.personalService.getByCedula(user.username).subscribe(data => {
+          NavbarComponent.updateUserStatus.next(true);
 
-          if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
-            CardComponent.updateDisplayCaja.next(true);
-            this.router.navigate(['card']);
+          if (this.chckRememberme) {
+            localStorage.setItem('rememberMe', JSON.stringify(user));
+          } else {
+            localStorage.removeItem('rememberMe');
           }
-          if (data[0].id_cargo === '59937c6337eac33cd4819873') {
-            this.router.navigate(['facturacion']);
-          }
+          //Check cajero
+          this.personalService.getByCedula(user.username).subscribe(data => {
+
+            if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
+              CardComponent.updateDisplayCaja.next(true);
+              this.router.navigate(['card']);
+            }
+            if (data[0].id_cargo === '59937c6337eac33cd4819873') {
+              this.router.navigate(['facturacion']);
+            }
+          }, err => {
+            console.log(err);
+          })
+          this.router.navigate(['card']);
         }, err => {
-          console.log(err);
-        })
-        this.router.navigate(['card']);
+          console.log(err)
+        });
+
       } else {
         this.messageGrowlService.notify('error', 'Error', data.msg);
         this.router.navigate(['login']);
       }
     });
+  }
+
+  searchUserInLogin(ci) {
+
   }
 
   showDialog() {
@@ -113,8 +124,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onChangeNombres(){
-    
+  onChangeNombres() {
+
   }
 
   sendEmail() {

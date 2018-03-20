@@ -326,6 +326,13 @@ export class ProductosComponent implements OnInit {
           if (entry.subproductoV.length < 1)
             this.productosShow.push(entry);
         }
+        console.log(this.productosShow);
+
+        this.materiaPrimaService.getAll().subscribe(p => {
+          console.log(p);
+        }, err => {
+
+        })
 
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
@@ -574,6 +581,10 @@ export class ProductosComponent implements OnInit {
     this.ngOnInitMateriaPrima();
   }
 
+  formatProdMateriaPrima(){
+
+  }
+  
   /* GESTION DE PRODUCTO */
   setCursorAddTP() {
     setTimeout(function () {
@@ -1985,6 +1996,7 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE KARDEX */
+  checkedK = false;
   public getDate(): number {
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
@@ -2003,6 +2015,15 @@ export class ProductosComponent implements OnInit {
     this.validRuc = false;
     this.showDialogK = false;
     this.showDialogKU = false;
+  }
+
+  saveKardexOp() {
+
+    if (!this.checkedK) {
+      console.log('producto');
+    } else {
+      console.log('materia');
+    }
   }
 
   saveKardex() {
@@ -2033,6 +2054,84 @@ export class ProductosComponent implements OnInit {
       };
       producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
       this.productoService.registerProducto(producto).subscribe(data => {
+        this.kardex.desc_producto = data._id;
+        this.kardexService.register(this.kardex).subscribe(dataP => {
+          this.sourceK.add(dataP);
+          this.sourceK.refresh();
+          this.ngOnInit();
+          this.ngOnInitKardex();
+          this.messageGrowlService.notify('info', 'Información', 'Se ha ingresado un nuevo producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });
+      setOriginalColorsKardex();
+    } else {
+      //update product
+      let prod: any;
+      prod = this.kardex.desc_producto;
+      const producto = {
+        nombre: prod.nombre,
+        precio_costo: (parseFloat(prod.precio_costo) + (this.kardex.total / this.kardex.cantidad)) / 2,
+        precio_venta: 0,
+        utilidad: prod.utilidad,
+        cant_existente: prod.cant_existente + this.kardex.cantidad,
+        subproductoV: prod.subproductoV,
+        id_tipo_producto: this.selectedTP._id,
+        path: prod.path,
+        contenido: prod.contenido,
+        promocion: prod.promocion,
+        _id: prod._id
+      };
+      producto.precio_venta = this.calcPrecioVentaKardex(producto.precio_costo, producto.utilidad);
+      this.productoService.updateProducto(producto).subscribe(data => {
+        this.kardex.desc_producto = producto._id;
+        this.kardexService.register(this.kardex).subscribe(dataP => {
+          this.sourceK.add(dataP);
+          this.sourceK.refresh();
+          this.ngOnInit();
+          this.ngOnInitKardex();
+          this.messageGrowlService.notify('info', 'Información', 'Se ha actualizada el producto, revisa sus datos antes de que pasen al modulo de VENTAS!');
+        }, err => {
+          console.log(err);
+          this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+        })
+
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      })
+      setOriginalColorsKardex1();
+    }
+  }
+
+  saveKardexM() {
+    if (this.flagProdK === true) {
+      if (!this.validateService.validateKardex(this.kardex)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    } else {
+      if (!this.validateService.validateKardex1(this.kardex)) {
+        this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
+        return false;
+      }
+    }
+    //new product
+    if (this.flagProdK === true) {
+
+      const materia = {
+        nombre: this.kardex.desc_producto,
+        precio_costo: this.kardex.total / this.kardex.cantidad,
+        cant_existente: this.kardex.cantidad,
+        contenido: this.kardex.contenido,
+        unidad_medida: 'vacio'
+      };
+      this.materiaPrimaService.register(materia).subscribe(data => {
         this.kardex.desc_producto = data._id;
         this.kardexService.register(this.kardex).subscribe(dataP => {
           this.sourceK.add(dataP);

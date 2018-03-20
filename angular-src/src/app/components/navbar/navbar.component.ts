@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
     let us = JSON.parse(localStorage.getItem('user'));
     if (us !== null) {
       this.personalService.getByCedula(us.username).subscribe(data => {
-
+        console.log("1")
         if (data.length > 0) {
           let nombres = data[0].nombres.split(' ');
           let apellidos = data[0].apellidos.split(' ');
@@ -41,6 +41,7 @@ export class NavbarComponent implements OnInit {
     NavbarComponent.updateUserStatus.subscribe(res => {
       let us = JSON.parse(localStorage.getItem('user'));
       this.personalService.getByCedula(us.username).subscribe(data => {
+        console.log("2")
         if (data.length > 0) {
           let nombres = data[0].nombres.split(' ');
           let apellidos = data[0].apellidos.split(' ');
@@ -59,14 +60,14 @@ export class NavbarComponent implements OnInit {
 
   onLogOutClick() {
     let us = JSON.parse(localStorage.getItem('user'));
-    this.cajaService.getActiveCajaById('open', us.id).subscribe(data => {
+    this.cajaService.getActiveCajaById('open', us.idPersonal).subscribe(data => {
       console.log(data);
       if (data.length > 0) {
         CardComponent.checkOpenCaja.next(true);
       }
-      this.authService.logout();
+      /*this.authService.logout();
       this.messageGrowlService.notify('info', 'Información', 'Saliste!');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']);*/
       return false;
     }, err => {
       console.log(err)

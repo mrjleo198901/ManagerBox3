@@ -568,46 +568,48 @@ export class InventarioComponent implements OnInit {
   fillLstProductos() {
     this.lstLabels = [];
     this.productoService.getAll().subscribe(data => {
-      this.keyNames = [];
-      this.lstProds = [];
-      this.keyNames = Object.keys(data[0]);
-      for (let entry of data) {
-        entry.id_tipo_producto = this.searchTipoProdById(entry.id_tipo_producto, this.lstTipoProductos)
-        this.lstProds.push(entry);
-        if (entry.promocion.length > 0) {
-          entry.promocion = this.decimalPipe.transform(entry.promocion[0].precio_venta, '1.2-2');
-        } else {
-          entry.promocion = '-';
-        }
-        if (entry.subproductoV.length > 0) {
-          let cad = "";
-          for (let sub of entry.subproductoV) {
-            cad += '-' + sub.label + " " + sub.cantidad + " ";
-            entry.subproductoV = cad;
+      if (data.length > 0) {
+        this.keyNames = [];
+        this.lstProds = [];
+        this.keyNames = Object.keys(data[0]);
+        for (let entry of data) {
+          entry.id_tipo_producto = this.searchTipoProdById(entry.id_tipo_producto, this.lstTipoProductos)
+          this.lstProds.push(entry);
+          if (entry.promocion.length > 0) {
+            entry.promocion = this.decimalPipe.transform(entry.promocion[0].precio_venta, '1.2-2');
+          } else {
+            entry.promocion = '-';
           }
-        } else {
-          entry.subproductoV = '-';
+          if (entry.subproductoV.length > 0) {
+            let cad = "";
+            for (let sub of entry.subproductoV) {
+              cad += '-' + sub.label + " " + sub.cantidad + " ";
+              entry.subproductoV = cad;
+            }
+          } else {
+            entry.subproductoV = '-';
+          }
         }
-      }
-      let index = this.keyNames.findIndex(x => x === '__v');
-      if (index > -1) {
-        this.keyNames.splice(index, 1);
-      }
-      for (let entry of this.keyNames) {
-        let aux = { label: entry, active: false, name: entry, dataKey: entry }
-        aux.name = aux.name.replace(/[_-]/g, " ");
-        aux.name = aux.name.trim();
-        aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
-        if (aux.label.localeCompare('_id') === 0) {
-          aux.name = 'ID';
+        let index = this.keyNames.findIndex(x => x === '__v');
+        if (index > -1) {
+          this.keyNames.splice(index, 1);
         }
-        if (aux.label.localeCompare('id_tipo_producto') === 0) {
-          aux.name = 'Tipo producto';
+        for (let entry of this.keyNames) {
+          let aux = { label: entry, active: false, name: entry, dataKey: entry }
+          aux.name = aux.name.replace(/[_-]/g, " ");
+          aux.name = aux.name.trim();
+          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+          if (aux.label.localeCompare('_id') === 0) {
+            aux.name = 'ID';
+          }
+          if (aux.label.localeCompare('id_tipo_producto') === 0) {
+            aux.name = 'Tipo producto';
+          }
+          if (aux.label.localeCompare('subproductoV') === 0) {
+            aux.name = 'Subproductos';
+          }
+          this.lstLabels.push(aux);
         }
-        if (aux.label.localeCompare('subproductoV') === 0) {
-          aux.name = 'Subproductos';
-        }
-        this.lstLabels.push(aux);
       }
     }, err => {
       console.log(err)
@@ -617,26 +619,26 @@ export class InventarioComponent implements OnInit {
   fillLstClientes() {
     this.lstLabels = [];
     this.clienteService.getAll().subscribe(data => {
-      this.keyNames = [];
-      this.lstClientes = data;
-      this.keyNames = Object.keys(data[0]);
+      if (data.length > 0) {
+        this.keyNames = [];
+        this.lstClientes = data;
+        this.keyNames = Object.keys(data[0]);
 
-      let index = this.keyNames.findIndex(x => x === '__v');
-      if (index > -1) {
-        this.keyNames.splice(index, 1);
-      }
-      for (let entry of this.keyNames) {
-        let aux = { label: entry, active: false, name: entry }
-        aux.name = aux.name.replace(/[_-]/g, " ");
-        aux.name = aux.name.trim();
-        aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
-        if (aux.label.localeCompare('id_tipo_cliente') === 0) {
-          aux.name = 'Tipo Cliente';
+        let index = this.keyNames.findIndex(x => x === '__v');
+        if (index > -1) {
+          this.keyNames.splice(index, 1);
         }
-        this.lstLabels.push(aux);
+        for (let entry of this.keyNames) {
+          let aux = { label: entry, active: false, name: entry }
+          aux.name = aux.name.replace(/[_-]/g, " ");
+          aux.name = aux.name.trim();
+          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+          if (aux.label.localeCompare('id_tipo_cliente') === 0) {
+            aux.name = 'Tipo Cliente';
+          }
+          this.lstLabels.push(aux);
+        }
       }
-
-      console.log(this.lstLabels)
     }, err => {
       console.log(err)
     });
@@ -644,31 +646,31 @@ export class InventarioComponent implements OnInit {
 
   fillHeadersVentas() {
     this.lstLabels = [];
-
     this.facturaService.getLastOne().subscribe(data => {
-      this.keyNames = [];
-      //this.lstVentas = data;
-      this.keyNames = Object.keys(data);
-      let index = this.keyNames.findIndex(x => x === '__v');
-      if (index > -1) {
-        this.keyNames.splice(index, 1);
-      }
-      for (let entry of this.keyNames) {
-        if (entry.localeCompare('num_factura') !== 0 && entry.localeCompare('num_autorizacion') !== 0 && entry.localeCompare('ruc') !== 0) {
-          let aux = { label: entry, active: false, name: entry }
-          aux.name = aux.name.replace(/[_-]/g, " ");
-          aux.name = aux.name.trim();
-          aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
-          if (aux.label.localeCompare('_id') === 0) {
-            aux.name = 'ID';
+      if (data !== null) {
+        this.keyNames = [];
+        this.keyNames = Object.keys(data);
+        let index = this.keyNames.findIndex(x => x === '__v');
+        if (index > -1) {
+          this.keyNames.splice(index, 1);
+        }
+        for (let entry of this.keyNames) {
+          if (entry.localeCompare('num_factura') !== 0 && entry.localeCompare('num_autorizacion') !== 0 && entry.localeCompare('ruc') !== 0) {
+            let aux = { label: entry, active: false, name: entry }
+            aux.name = aux.name.replace(/[_-]/g, " ");
+            aux.name = aux.name.trim();
+            aux.name = aux.name.charAt(0).toUpperCase() + aux.name.slice(1);
+            if (aux.label.localeCompare('_id') === 0) {
+              aux.name = 'ID';
+            }
+            if (aux.label.localeCompare('formaPago') === 0) {
+              aux.name = 'Forma Pago';
+            }
+            if (aux.label.localeCompare('detalleFacturaV') === 0) {
+              aux.name = 'Monto Total';
+            }
+            this.lstLabels.push(aux);
           }
-          if (aux.label.localeCompare('formaPago') === 0) {
-            aux.name = 'Forma Pago';
-          }
-          if (aux.label.localeCompare('detalleFacturaV') === 0) {
-            aux.name = 'Monto Total';
-          }
-          this.lstLabels.push(aux);
         }
       }
     }, err => {

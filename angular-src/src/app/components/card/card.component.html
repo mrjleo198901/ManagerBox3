@@ -4,6 +4,8 @@
   </div>
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" [ngStyle]='{"text-align": textAlign}'>
     <button type="button" pButton (click)="openCloseCaja()" label="{{btnLabel}}" [ngStyle]='{"margin-top": "20px", "margin-bottom": marginBot, "font-size": "14px", "width": "50%", "background-color": btnClass, "border-color": btnClass}'></button>
+    <button id="close" (click)="showDialogInOut = true" tooltip="Realizar intercambios de efectivo entre cajas" tooltipPlacement="bottom"
+      tooltipAnimation=false><i class="fa fa-money fa-lg" aria-hidden="true"></i></button>
   </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0">
@@ -1432,13 +1434,13 @@
 <!--Abrir No Login-->
 <p-dialog [(visible)]="displayOpenCajaN" modal="modal" width="450" [responsive]="true">
   <p-header>
-    Apertura de Turno
+    Apertura de Turno No Login
   </p-header>
   <div class="ui-g ui-fluid">
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <p style="text-align: center"><strong>¿Cuánto dinero existe en caja?</strong></p>
     </div>
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-lg-12">
+    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
       <input [(ngModel)]="montoO" currencyMask (click)="$event.target.select()" id="montoO" name="montoO" type="text" class="form-control">
     </div>
   </div>
@@ -1452,7 +1454,7 @@
 <!--Cerrar No Login-->
 <p-dialog [(visible)]="displayCloseCajaN" modal="modal" width="550" [responsive]="true">
   <p-header>
-    Cierre de Turno
+    Cierre de Turno No Login
   </p-header><br>
   <div class="ui-g ui-fluid">
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
@@ -1532,6 +1534,43 @@
   <div style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px; width: 25%;" (click)="closeCajaL()">Cerrar y salir</button>
     <button class="btn btn-default" style="font-size: 11px; width: 25%;" (click)="logOut()">Salir sin Cerrar</button>
+  </div>
+</p-dialog>
+
+<!-- Intercambio de dinero-->
+<p-dialog [(visible)]="showDialogInOut" modal="modal" width="550" [responsive]="true">
+  <p-header>
+    Transeferencia de efectivo
+  </p-header><br>
+  <div class="ui-g ui-fluid">
+
+    <div class="ui-xl-4 ui-lg-4 ui-md-4 ui-sm-12">
+      <p style="padding-top: 13px"><strong>Efectivo en caja:</strong></p>
+    </div>
+    <div class="ui-xl-8 ui-lg-8 ui-md-8 ui-sm-12">
+      <input [(ngModel)]="totalEfectivoCaja" currencyMask (click)="$event.target.select()" type="text" class="form-control" [disabled]="true">
+    </div>
+
+    <div class="ui-xl-4 ui-lg-4 ui-md-4 ui-sm-12">
+      <p style="padding-top: 13px"><strong>Monto a transferir:</strong></p>
+    </div>
+    <div class="ui-xl-8 ui-lg-8 ui-md-8 ui-sm-12">
+      <input [(ngModel)]="montoTrans" (ngModelChange)="onChangeMontoTrans()" id="montoTrans" currencyMask (click)="$event.target.select()"
+        type="text" class="form-control">
+    </div>
+    <div class="ui-xl-4 ui-lg-4 ui-md-4 ui-sm-12">
+      <p style="padding-top: 13px"><strong>Caja destino:</strong></p>
+    </div>
+    <div class="ui-xl-8 ui-lg-8 ui-md-8 ui-sm-12">
+      <select class="form-control" [(ngModel)]="selectedCaja" tabindex="2">
+        <option *ngFor="let c of lstCajas" [ngValue]="c">{{c.nombres}} {{c.apellidos}} -- {{c.cedula}}</option>
+      </select>
+    </div>
+  </div>
+  <hr>
+  <div style="text-align: center">
+    <button class="btn btn-primary ui-xl-3 ui-lg-3 ui-md-3 ui-sm-12" style="font-size: 11px" (click)="doExchange()">Aceptar</button>
+    <button class="btn btn-default ui-xl-3 ui-lg-3 ui-md-3 ui-sm-12" style="font-size: 11px" (click)="showDialogInOut=false">Cancelar</button>
   </div>
 </p-dialog>
 

@@ -301,10 +301,20 @@ export class CardComponent implements OnInit {
         console.log(err);
       })
     }
-
+    //Traer lista de cajas para intercambios monetarios
+    this.personalService.getByTipo('59a054715c0bf80b7cab502d').subscribe(data => {
+      this.lstCajas = data;
+      let user = this.us.username;
+      this.lstCajas = this.lstCajas.filter(function (obj) {
+        return obj.cedula.localeCompare(user) !== 0;
+      });
+      this.selectedCaja = this.lstCajas[0];
+    }, err => {
+      console.log(err);
+    })
     //Verificar si acabo de loguearse
     CardComponent.updateDisplayCaja.subscribe(res => {
-      this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+      this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
         if (data.length > 0) {
           this.displayOptions = true;
         }
@@ -314,15 +324,16 @@ export class CardComponent implements OnInit {
     })
 
     //Chequear caja abierta no loguin
-    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
-      if (data.length > 0) {
-        this.btnLabel = 'Cerrar Turno';
-        this.btnClass = '#EFAD4D';
-        this.blockCaja = false;
-      } else {
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
+      console.log(data)
+      if (data.length == 0) {
         this.btnLabel = 'Abrir Turno';
         this.btnClass = '#2398E5';
         this.blockCaja = true;
+      } else {
+        this.btnLabel = 'Cerrar Turno';
+        this.btnClass = '#EFAD4D';
+        this.blockCaja = false;
       }
     }, err => {
       console.log(err);
@@ -330,6 +341,7 @@ export class CardComponent implements OnInit {
 
     //Verificar si caja se cerro antes de salir
     CardComponent.checkOpenCaja.subscribe(res => {
+      console.log('ininiansdiasnd')
       this.displayCloseCajaL = true;
     })
 
@@ -388,9 +400,9 @@ export class CardComponent implements OnInit {
     var x = window.innerWidth;
     this.onRzOnInit(x);
 
-    /*this.displayOptions = true;
-    let caja1 = {
-      idUser: '5a2f07113d4776179c860762',
+    this.displayOptions = true;
+    /*let caja1 = {
+      idUser: '5a2f07113d4776179c860761',
       montoO: '50',
       montoF: 'open',
       fechaO: this.currentDateTime,
@@ -402,7 +414,7 @@ export class CardComponent implements OnInit {
       console.log(err);
     });
     let caja2 = {
-      idUser: '5a30a670747bd11f78a51331',
+      idUser: '5a30a66f747bd11f78a51330',
       montoO: '35',
       montoF: 'open',
       fechaO: this.currentDateTime,
@@ -516,13 +528,15 @@ export class CardComponent implements OnInit {
 
   closeCaja() {
     this.montoF = this.efectivoExis;
-    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
       let caja = {
         idUser: this.us.id,
         montoO: data[0].montoO,
         montoF: this.montoF,
         fechaO: data[0].fechaO,
-        fechaF: this.validateService.getDateTimeEs()
+        fechaF: this.validateService.getDateTimeEs(),
+        entradas: [],
+        salidas: []
       }
       this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
       /*this.cajaService.register(caja).subscribe(data => {
@@ -549,40 +563,55 @@ export class CardComponent implements OnInit {
   }
 
   openCaja() {
-    let caja = {
-      idUser: this.us.id,
-      montoO: this.montoO,
-      montoF: 'open',
-      fechaO: this.validateService.getDateTimeEs(),
-      fechaF: ''
-    }
-    console.log(caja);
-    /*this.cajaService.register(caja).subscribe(data => {
-  
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
+      console.log(data);
+      console.log(this.us);
+      if (data.length == 0) {
+        let caja = {
+          idUser: this.us.idPersonal,
+          montoO: this.montoO,
+          montoF: 'open',
+          fechaO: this.validateService.getDateTimeEs(),
+          fechaF: ''
+        }
+        this.cajaService.register(caja).subscribe(data => {
+          this.messageGrowlService.notify('info', 'Información', 'Caja habilitada para el cobro a las ' + this.validateService.getDateTimeEs() + '.' + '\nUsuario: ' + this.us.name);
+        }, err => {
+          console.log(err);
+        });
+
+      } else {
+        this.messageGrowlService.notify('error', 'Error', 'La caja ya esta abierta!');
+        console.log("+ de 1 caja abierta por el mismo user")
+      }
     }, err => {
-  
-    })*/
+      console.log(err);
+    })
+
+
   }
 
   closeCajaL() {
     this.montoF = this.efectivoExis;
-    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
 
       let caja = {
-        idUser: this.us.id,
+        idUser: this.us.idPersonal,
         montoO: data[0].montoO,
         montoF: this.montoF,
         fechaO: data[0].fechaO,
-        fechaF: this.validateService.getDateTimeEs()
+        fechaF: this.validateService.getDateTimeEs(),
+        entradas: [],
+        salidas: []
       }
-      /*this.cajaService.register(caja).subscribe(data => {
+      this.cajaService.register(caja).subscribe(data => {
         this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
-          this.displayCloseCajaL = false;
-          this.authService.logout();
-          this.router.navigate(['/login']);
+        this.displayCloseCajaL = false;
+        this.authService.logout();
+        this.router.navigate(['/login']);
       }, err => {
         console.log(err);
-      })*/
+      })
     }, err => {
       console.log(err);
     })
@@ -3153,6 +3182,71 @@ export class CardComponent implements OnInit {
 
   }
 
+  /* INTERCAMBIO DE CAJAS */
+  showDialogInOut = false;
+  lstCajas: any = [];
+  selectedCaja: any;
+  montoTrans = 0;
+  totalEfectivoCaja = 150;
+
+  onChangeMontoTrans() {
+    if (this.montoTrans > this.totalEfectivoCaja) {
+      this.montoTrans = 0;
+      setTimeout(function () {
+        let v = document.getElementById('montoTrans');
+        if (v != null) {
+          v.click();
+          this.montoTrans = 0;
+        }
+      }, 0);
+    }
+  }
+
+  doExchange() {
+
+    console.log(this.selectedCaja)
+
+
+    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
+      let caja = {
+        _id: data[0]._id,
+        idUser: data[0].idUser,
+        montoO: data[0].montoO,
+        montoF: data[0].montoF,
+        fechaO: data[0].fechaO,
+        fechaF: data[0].fechaF,
+        entradas: data[0].entradas,
+        salidas: data[0].salidas
+      }
+      caja.salidas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeEs(), caja: this.us.id });
+      this.cajaService.update(caja).subscribe(data => {
+        this.cajaService.getActiveCajaById('open', this.selectedCaja._id).subscribe(data1 => {
+          let caja1 = {
+            _id: data1[0]._id,
+            idUser: data1[0].idUser,
+            montoO: data1[0].montoO,
+            montoF: data1[0].montoF,
+            fechaO: data1[0].fechaO,
+            fechaF: data1[0].fechaF,
+            entradas: data1[0].entradas,
+            salidas: data1[0].salidas
+          }
+          caja1.entradas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeEs(), caja: this.selectedCaja._id });
+          this.cajaService.update(caja1).subscribe(resp => {
+            this.messageGrowlService.notify('info', 'Información', 'Se ha transferido: $' + this.montoTrans + ' a la caja: ' + this.selectedCaja.nombres + ' ' + this.selectedCaja.apellidos + '--' + this.selectedCaja.cedula);
+          }, err => {
+            console.log(err);
+          });
+        }, err => {
+          console.log(err);
+        });
+      }, err => {
+        console.log(err);
+      });
+    }, err => {
+      console.log(err);
+    });
+  }
   /* Width detection */
   marginBot = '0px';
   textAlign = 'right';
