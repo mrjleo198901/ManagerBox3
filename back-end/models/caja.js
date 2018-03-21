@@ -6,8 +6,8 @@ var cajaSchema = new mongoose.Schema({
     idUser: mongoose.Schema.Types.ObjectId,
     montoO: String,
     montoF: String,
-    fechaO: String,
-    fechaF: String,
+    fechaO: Date,
+    fechaF: Date,
     entradas: Array,
     salidas: Array
 

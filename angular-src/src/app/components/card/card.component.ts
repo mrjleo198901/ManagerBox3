@@ -16,7 +16,6 @@ import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
 import * as myGlobals from '../../components/globals';
 import { FacturaService } from '../../services/factura.service';
-import { DetalleFacturaService } from '../../services/detalle-factura.service';
 import { PromocionService } from '../../services/promocion.service';
 import { DecimalPipe, DatePipe, SlicePipe } from '@angular/common';
 import { LocalStorageService } from '../../services/local-storage.service';
@@ -240,7 +239,7 @@ export class CardComponent implements OnInit {
   montoO = 0;
   montoF = 0;
   efectivoExis = 0;
-  efectivoEsp = 45;
+  efectivoEsp = 0;
   flagShowAlert;
   public static checkOpenCaja: Subject<boolean> = new Subject();
   displayCloseCajaL = false;
@@ -268,7 +267,6 @@ export class CardComponent implements OnInit {
     public dialog: MdDialog,
     private tarjetaService: TarjetaService,
     private facturaService: FacturaService,
-    private detalleFacturaService: DetalleFacturaService,
     private promocionService: PromocionService,
     private decimalPipe: DecimalPipe,
     private datePipe: DatePipe,
@@ -281,69 +279,6 @@ export class CardComponent implements OnInit {
     private router: Router,
     private coverService: CoverService,
     private configurationService: ConfigurationService) {
-
-    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
-    this.showDateApertura = this.currentDateTime.split(' ')[0];
-    this.showHourApertura = this.currentDateTime.split(' ')[1];
-
-    this.displayOpenCaja = false;
-    this.displayCloseCaja = false;
-    this.displayOptions = false;
-
-    this.us = JSON.parse(localStorage.getItem('user'));
-    if (this.us !== null) {
-      this.personalService.getByCedula(this.us.username).subscribe(data => {
-        if (data.length > 0) {
-          let nombres = data[0].nombres.split(' ');
-          this.username = nombres[0];
-        }
-      }, err => {
-        console.log(err);
-      })
-    }
-    //Traer lista de cajas para intercambios monetarios
-    this.personalService.getByTipo('59a054715c0bf80b7cab502d').subscribe(data => {
-      this.lstCajas = data;
-      let user = this.us.username;
-      this.lstCajas = this.lstCajas.filter(function (obj) {
-        return obj.cedula.localeCompare(user) !== 0;
-      });
-      this.selectedCaja = this.lstCajas[0];
-    }, err => {
-      console.log(err);
-    })
-    //Verificar si acabo de loguearse
-    CardComponent.updateDisplayCaja.subscribe(res => {
-      this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
-        if (data.length > 0) {
-          this.displayOptions = true;
-        }
-      }, err => {
-        console.log(err);
-      });
-    })
-
-    //Chequear caja abierta no loguin
-    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
-      console.log(data)
-      if (data.length == 0) {
-        this.btnLabel = 'Abrir Turno';
-        this.btnClass = '#2398E5';
-        this.blockCaja = true;
-      } else {
-        this.btnLabel = 'Cerrar Turno';
-        this.btnClass = '#EFAD4D';
-        this.blockCaja = false;
-      }
-    }, err => {
-      console.log(err);
-    });
-
-    //Verificar si caja se cerro antes de salir
-    CardComponent.checkOpenCaja.subscribe(res => {
-      console.log('ininiansdiasnd')
-      this.displayCloseCajaL = true;
-    })
 
     this.cardNumber = "";
     this.validCard = "ñ1006771_";
@@ -397,44 +332,41 @@ export class CardComponent implements OnInit {
     this.lstFP.push({ label: 'Consumo en Cero', value: 4 });
     this.selectedFP = this.lstFP[0];
 
+    this.currentDateTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy hh:mm:ss');
+    this.showDateApertura = this.currentDateTime.split(' ')[0];
+    this.showHourApertura = this.currentDateTime.split(' ')[1];
+
+    this.displayOpenCaja = false;
+    this.displayCloseCaja = false;
+    this.displayOptions = false;
+    //Traer datos de usuario logeado desde Personal
+    this.getLoggedUser();
+    //Traer lista de cajas para intercambios monetarios
+    this.getCajas();
+    //Chequear caja abierta no loguin
+    this.checkOpenCajaInside();
+    //Verificar si acabo de loguearse
+    CardComponent.updateDisplayCaja.subscribe(res => {
+      this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
+        if (data.length > 0) {
+          this.displayOptions = true;
+        }
+      }, err => {
+        console.log(err);
+      });
+    })
+    //Verificar si caja se cerro antes de salir
+    CardComponent.checkOpenCaja.subscribe(res => {
+      console.log('check open caja desde afuera')
+      this.displayCloseCajaL = true;
+    })
+
     var x = window.innerWidth;
     this.onRzOnInit(x);
-
-    this.displayOptions = true;
-    /*let caja1 = {
-      idUser: '5a2f07113d4776179c860761',
-      montoO: '50',
-      montoF: 'open',
-      fechaO: this.currentDateTime,
-      fechaF: ''
-    }
-    this.cajaService.register(caja1).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    });
-    let caja2 = {
-      idUser: '5a30a66f747bd11f78a51330',
-      montoO: '35',
-      montoF: 'open',
-      fechaO: this.currentDateTime,
-      fechaF: ''
-    }
-    this.cajaService.register(caja2).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    });*/
   }
 
   ngOnInit() {
 
-    /*let obj = { fecha_ini: '2018-03-06', fecha_fin: '2018-03-07' }
-    this.facturaService.getByDateTime(obj).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    })*/
     this.validateService.getDateTimeStamp();
 
     setTimeout(function () {
@@ -515,9 +447,85 @@ export class CardComponent implements OnInit {
     this.ngOnInitCloseTab();
   }
 
+  getLoggedUser() {
+    this.us = JSON.parse(localStorage.getItem('user'));
+    if (this.us !== null) {
+      this.personalService.getByCedula(this.us.username).subscribe(data => {
+        if (data.length > 0) {
+          let nombres = data[0].nombres.split(' ');
+          this.username = nombres[0];
+        }
+      }, err => {
+        console.log(err);
+      })
+    }
+  }
+
+  getCajas() {
+    this.personalService.getByTipo('59a054715c0bf80b7cab502d').subscribe(data => {
+      this.lstCajas = data;
+      let user = this.us.username;
+      this.lstCajas = this.lstCajas.filter(function (obj) {
+        return obj.cedula.localeCompare(user) !== 0;
+      });
+      if (this.lstCajas.length > 0) {
+        this.selectedCaja = this.lstCajas[0];
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  checkOpenCajaInside() {
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
+      this.objOpenCash = data;
+      if (data.length == 0) {
+        this.btnLabel = 'Abrir Turno';
+        this.btnClass = '#2398E5';
+        this.blockCaja = true;
+      } else {
+        this.btnLabel = 'Cerrar Turno';
+        this.btnClass = '#EFAD4D';
+        this.blockCaja = false;
+      }
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  insertFakeCaja() {
+    /*let caja1 = {
+      idUser: '5a2f07113d4776179c860761',
+      montoO: '50',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja1).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });
+    let caja2 = {
+      idUser: '5a30a66f747bd11f78a51330',
+      montoO: '35',
+      montoF: 'open',
+      fechaO: this.currentDateTime,
+      fechaF: ''
+    }
+    this.cajaService.register(caja2).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    });*/
+  }
+
+  objOpenCash: any;
   openCloseCaja() {
     if (this.btnLabel.localeCompare('Cerrar Turno') == 0) {
       this.displayCloseCajaN = true;
+      //Calcular efectivo esperado ((montoO + entradas) - salidas) + ventas desde apertura
+      this.efectivoEsp = this.calcEfectivoEsperado();
     } else {
       this.displayOpenCajaN = true;
       setTimeout(function () {
@@ -526,28 +534,49 @@ export class CardComponent implements OnInit {
     }
   }
 
+  genericAdd() {
+    const add = (a, b) => a + b;
+    return add;
+  }
+
+  calcEfectivoEsperado() {
+    //console.log(this.objOpenCash[0])
+    let totalEntradas = 0;
+    if (this.objOpenCash[0].entradas.length > 0) {
+      totalEntradas = this.objOpenCash.entradas.reduce(this.genericAdd());
+    }
+    let totalSalidas = 0;
+    if (this.objOpenCash[0].salidas.length > 0) {
+      totalSalidas = this.objOpenCash.salidas.reduce(this.genericAdd());
+    }
+    this.objOpenCash[0].montoO = parseFloat(this.objOpenCash[0].montoO);
+    return (((this.objOpenCash[0].montoO + totalEntradas) - totalSalidas));
+  }
+
   closeCaja() {
-    this.montoF = this.efectivoExis;
     this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
       let caja = {
-        idUser: this.us.id,
+        _id: data[0]._id,
+        idUser: data[0].idUser,
         montoO: data[0].montoO,
-        montoF: this.montoF,
+        montoF: this.efectivoExis,
         fechaO: data[0].fechaO,
-        fechaF: this.validateService.getDateTimeEs(),
-        entradas: [],
-        salidas: []
+        fechaF: this.validateService.getDateTimeStamp(),
+        entradas: data[0].entradas,
+        salidas: data[0].salidas
       }
-      this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
-      /*this.cajaService.register(caja).subscribe(data => {
+
+      this.cajaService.update(caja).subscribe(data => {
+        this.checkOpenCajaInside();
+        this.displayCloseCajaN = false;
         this.messageGrowlService.notify('info', 'Información', 'Se ha cerrado caja exitosamente.\nEnviando correo al administrador.');
       }, err => {
         console.log(err);
-      })*/
+      })
     }, err => {
       console.log(err);
     });
-    this.sendEmail();
+    //this.sendEmail();
   }
 
   sendEmail() {
@@ -564,43 +593,41 @@ export class CardComponent implements OnInit {
 
   openCaja() {
     this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
-      console.log(data);
-      console.log(this.us);
       if (data.length == 0) {
         let caja = {
           idUser: this.us.idPersonal,
           montoO: this.montoO,
           montoF: 'open',
-          fechaO: this.validateService.getDateTimeEs(),
-          fechaF: ''
+          fechaO: this.validateService.getDateTimeStamp(),
+          fechaF: '',
+          entradas: [],
+          salidas: []
         }
         this.cajaService.register(caja).subscribe(data => {
+          this.checkOpenCajaInside();
+          this.displayOpenCajaN = false;
           this.messageGrowlService.notify('info', 'Información', 'Caja habilitada para el cobro a las ' + this.validateService.getDateTimeEs() + '.' + '\nUsuario: ' + this.us.name);
         }, err => {
           console.log(err);
         });
 
       } else {
-        this.messageGrowlService.notify('error', 'Error', 'La caja ya esta abierta!');
+        this.messageGrowlService.notify('error', 'Error', 'La caja ya está abierta!');
         console.log("+ de 1 caja abierta por el mismo user")
       }
     }, err => {
       console.log(err);
     })
-
-
   }
 
   closeCajaL() {
-    this.montoF = this.efectivoExis;
     this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
-
       let caja = {
         idUser: this.us.idPersonal,
         montoO: data[0].montoO,
-        montoF: this.montoF,
+        montoF: this.efectivoExis,
         fechaO: data[0].fechaO,
-        fechaF: this.validateService.getDateTimeEs(),
+        fechaF: this.validateService.getDateTimeStamp(),
         entradas: [],
         salidas: []
       }
@@ -1234,6 +1261,27 @@ export class CardComponent implements OnInit {
     this.updateTarjeta.descripcion = this.updateTarjeta.descripcion.toLowerCase();
   }
 
+  doDate() {
+    /*console.log(this.validateService.getDateTimeStamp());
+    console.log(this.validateService.getDateTimeStamp());*/
+    let aux = {
+      fecha_ini: '2018-03-20T13:01:00',
+      fecha_fin: '2018-03-20T17:26:32',
+      cajero: '5a30a66f747bd11f78a51330'
+    };
+    this.facturaService.getByDateCajero(aux).subscribe(data => {
+      console.log(data)
+    }, err => {
+      console.log(err);
+    });
+
+    /*this.facturaService.getAll().subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    })*/
+  }
+
   insertClientCard() {
     let activeCard = {
       idFactura: '',
@@ -1247,7 +1295,7 @@ export class CardComponent implements OnInit {
       ingresoMujeres: 0,
       ingresoHombres: 0,
       abono: 0,
-      fechaHora: this.validateService.getDateTimeEs(),
+      fechaHora: this.validateService.getDateTimeStamp(),
       productosV: this.loadProductosCover(this.lstResumenOpen),
       estado: 1
     };
@@ -1256,20 +1304,18 @@ export class CardComponent implements OnInit {
     activeCard.cardNumber = this.cardNumber;
     //Se deberia recorrer lista de covers, no directamente del spinner
     console.log(this.lstResumenOpen);
-    let a
     for (let entry of this.lstResumenOpen) {
       if (entry.genero.localeCompare('Mujer') === 0) {
         activeCard.cantMujeres += entry.cantidad;
       } else {
         activeCard.cantHombres += entry.cantidad;
       }
-
     }
     if (this.lstResumenOpen.length > 0) {
       //set factura & detalle factura
       let detalle: any = [];
       detalle = this.formatDetalleFactura(this.lstResumenOpen);
-      this.updateStockProdcutos(detalle);
+      this.updateStockProductos(detalle);
       let newFactura = {
         cedula: this.searchUser.cedula,
         num_factura: '',
@@ -1281,7 +1327,8 @@ export class CardComponent implements OnInit {
         fecha_emision: '',
         detalleFacturaV: detalle,
         formaPago: [],
-        cajero: this.us.id
+        //cajero: this.us.id
+        cajero: null
       }
       activeCard.nombre = newFactura.nombre;
       this.setDvInsertCard();
@@ -1304,19 +1351,19 @@ export class CardComponent implements OnInit {
     for (let entry of lstResumen) {
 
       let aux = {
-        fecha: this.validateService.getDateTimeEs(),
+        fecha: this.validateService.getDateTimeStamp(),
         cantidad: entry.cantidad,
         descripcion: entry.nombre,
         total: entry.precio,
         precio_venta: entry.precio,
-        vendedor: this.us.id
+        vendedor: this.us.idPersonal
       }
       //Insert productos promo-cover
       lst.push(aux);
       if (entry.producto.length > 0) {
         for (let prod of entry.producto) {
           let aux = {
-            fecha: this.validateService.getDateTimeEs(),
+            fecha: this.validateService.getDateTimeStamp(),
             cantidad: prod.cantidad,
             descripcion: prod.label,
             total: 0,
@@ -1365,7 +1412,7 @@ export class CardComponent implements OnInit {
     return vec;
   }
 
-  updateStockProdcutos(lstResumen) {
+  updateStockProductos(lstResumen) {
     let newList = this.validateService.formatSailsStock(lstResumen);
     if (newList.length > 0) {
       for (let entry of newList) {
@@ -2002,8 +2049,8 @@ export class CardComponent implements OnInit {
       nombre: this.nombreS,
       telefono: this.telefonoS,
       direccion: this.direccionS,
-      fecha_emision: this.validateService.getDateTimeEsPrimeNG(),
-      cajero: this.us.id,
+      fecha_emision: this.validateService.getDateTimeStamp(),
+      cajero: this.us.idPersonal,
       formaPago: {
         efectivo: this.fpEfectivo,
         tarjeta: this.fpTarjeta,
@@ -2013,8 +2060,7 @@ export class CardComponent implements OnInit {
       totalPagar: parseFloat(this.totalPagar)
     }
     this.fillFP();
-
-    console.log(this.totalPagar)
+    //console.log(this.totalPagar)
     //Required fields
     if (!this.selectedRucFactura) {
       if (!this.validateService.validateFormaPago(newFP)) {
@@ -3187,7 +3233,39 @@ export class CardComponent implements OnInit {
   lstCajas: any = [];
   selectedCaja: any;
   montoTrans = 0;
-  totalEfectivoCaja = 150;
+  totalEfectivoCaja = 0;
+
+  setInOutValues() {
+    this.showDialogInOut = true;
+    setTimeout(function () {
+      document.getElementById('montoTrans').focus();
+    }, 0);
+
+    this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
+      let totalEntradas = 0;
+      if (data[0].entradas.length > 0) {
+        totalEntradas = this.genericAddObject(data[0].entradas);
+      }
+      let totalSalidas = 0;
+      if (data[0].salidas.length > 0) {
+        totalSalidas = this.genericAddObject(data[0].salidas);
+      }
+      data[0].montoO = parseFloat(data[0].montoO);
+      this.totalEfectivoCaja = (data[0].montoO + totalEntradas) - totalSalidas;
+
+    }, err => {
+      console.log(err);
+    });
+
+  }
+
+  genericAddObject(lst) {
+    let acum = 0;
+    for (let entry of lst) {
+      acum += parseFloat(entry.cantidad);
+    }
+    return acum;
+  }
 
   onChangeMontoTrans() {
     if (this.montoTrans > this.totalEfectivoCaja) {
@@ -3203,50 +3281,51 @@ export class CardComponent implements OnInit {
   }
 
   doExchange() {
-
-    console.log(this.selectedCaja)
-
-
-    this.cajaService.getActiveCajaById('open', this.us.id).subscribe(data => {
-      let caja = {
-        _id: data[0]._id,
-        idUser: data[0].idUser,
-        montoO: data[0].montoO,
-        montoF: data[0].montoF,
-        fechaO: data[0].fechaO,
-        fechaF: data[0].fechaF,
-        entradas: data[0].entradas,
-        salidas: data[0].salidas
-      }
-      caja.salidas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeEs(), caja: this.us.id });
-      this.cajaService.update(caja).subscribe(data => {
-        this.cajaService.getActiveCajaById('open', this.selectedCaja._id).subscribe(data1 => {
-          let caja1 = {
-            _id: data1[0]._id,
-            idUser: data1[0].idUser,
-            montoO: data1[0].montoO,
-            montoF: data1[0].montoF,
-            fechaO: data1[0].fechaO,
-            fechaF: data1[0].fechaF,
-            entradas: data1[0].entradas,
-            salidas: data1[0].salidas
-          }
-          caja1.entradas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeEs(), caja: this.selectedCaja._id });
-          this.cajaService.update(caja1).subscribe(resp => {
-            this.messageGrowlService.notify('info', 'Información', 'Se ha transferido: $' + this.montoTrans + ' a la caja: ' + this.selectedCaja.nombres + ' ' + this.selectedCaja.apellidos + '--' + this.selectedCaja.cedula);
+    this.cajaService.getActiveCajaById('open', this.selectedCaja._id).subscribe(data => {
+      if (data.length > 0) {
+        let caja = {
+          _id: data[0]._id,
+          idUser: data[0].idUser,
+          montoO: data[0].montoO,
+          montoF: data[0].montoF,
+          fechaO: data[0].fechaO,
+          fechaF: data[0].fechaF,
+          entradas: data[0].entradas,
+          salidas: data[0].salidas
+        }
+        caja.entradas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeStamp(), caja: this.us.idPersonal });
+        this.cajaService.update(caja).subscribe(data => {
+          this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data1 => {
+            let caja1 = {
+              _id: data1[0]._id,
+              idUser: data1[0].idUser,
+              montoO: data1[0].montoO,
+              montoF: data1[0].montoF,
+              fechaO: data1[0].fechaO,
+              fechaF: data1[0].fechaF,
+              entradas: data1[0].entradas,
+              salidas: data1[0].salidas
+            }
+            caja1.salidas.push({ cantidad: this.montoTrans, fecha: this.validateService.getDateTimeStamp(), caja: this.selectedCaja._id });
+            this.cajaService.update(caja1).subscribe(resp => {
+              this.messageGrowlService.notify('info', 'Información', 'Se ha transferido: $' + this.montoTrans + ' a la caja: ' + this.selectedCaja.nombres + ' ' + this.selectedCaja.apellidos + '--' + this.selectedCaja.cedula);
+            }, err => {
+              console.log(err);
+            });
           }, err => {
             console.log(err);
           });
         }, err => {
           console.log(err);
         });
-      }, err => {
-        console.log(err);
-      });
+      } else {
+        this.messageGrowlService.notify('error', 'error', 'No se puede transferir a una caja cerrada:' + this.selectedCaja.nombres + ' ' + this.selectedCaja.apellidos + '--' + this.selectedCaja.cedula);
+      }
     }, err => {
       console.log(err);
     });
   }
+
   /* Width detection */
   marginBot = '0px';
   textAlign = 'right';

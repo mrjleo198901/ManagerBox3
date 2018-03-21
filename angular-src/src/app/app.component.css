@@ -16,3 +16,9 @@
   :host /deep/ .ng2-smart-filter select{
     text-align: center;
   }
+
+  :host /deep/ .okCancel{
+    font-size: 11px; 
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }

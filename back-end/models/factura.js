@@ -1,8 +1,17 @@
 var restful = require("node-restful");
 var mongoose = restful.mongoose;
 
-var facturaSchema = new mongoose.Schema({
 
+var subSchema = mongoose.Schema({
+    vendedor: mongoose.Schema.Types.ObjectId,
+    precio_venta: String,
+    total: String,
+    descripcion: String,
+    cantidad: String,
+    fecha: Date
+}, { _id: false });
+
+var facturaSchema = new mongoose.Schema({
     cedula: String,
     num_factura: String,
     num_autorizacion: String,
@@ -11,7 +20,8 @@ var facturaSchema = new mongoose.Schema({
     telefono: String,
     direccion: String,
     fecha_emision: Date,
-    detalleFacturaV: Array,
+    //detalleFacturaV: Array,
+    detalleFacturaV: [subSchema],
     formaPago: Array,
     cajero: mongoose.Schema.Types.ObjectId
 });

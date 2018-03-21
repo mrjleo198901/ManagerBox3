@@ -32,6 +32,20 @@ export class FacturaService {
       .map(res => res.json());
   }
 
+  getByDateCajero(factura) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(this.url + 'getVentasByDateCajero', factura, { headers: headers })
+      .map(res => res.json());
+  }
+
+  getByDateTimeDF(factura) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post(this.url + 'getVentasByDateDF', factura, { headers: headers })
+      .map(res => res.json());
+  }
+
   getLastOne() {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
