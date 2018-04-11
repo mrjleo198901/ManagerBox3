@@ -526,8 +526,13 @@ export class CardComponent implements OnInit {
       this.displayCloseCajaN = true;
       //Calcular efectivo esperado ((montoO + entradas) - salidas) + ventas desde apertura
       this.efectivoEsp = this.calcEfectivoEsperado();
+      this.efectivoExis = 0;
+      setTimeout(function () {
+        document.getElementById('efectivoExis1').focus();
+      }, 0);
     } else {
       this.displayOpenCajaN = true;
+      this.montoO = 0;
       setTimeout(function () {
         document.getElementById('montoO').focus();
       }, 0);
@@ -540,15 +545,18 @@ export class CardComponent implements OnInit {
   }
 
   calcEfectivoEsperado() {
-    //console.log(this.objOpenCash[0])
+    console.log(this.objOpenCash)
     let totalEntradas = 0;
     if (this.objOpenCash[0].entradas.length > 0) {
-      totalEntradas = this.objOpenCash.entradas.reduce(this.genericAdd());
+      //totalEntradas = this.objOpenCash.entradas.reduce(this.genericAdd());
+      totalEntradas = this.genericAddObject(this.objOpenCash[0].entradas)
     }
     let totalSalidas = 0;
     if (this.objOpenCash[0].salidas.length > 0) {
-      totalSalidas = this.objOpenCash.salidas.reduce(this.genericAdd());
+      //totalSalidas = this.objOpenCash.salidas.reduce(this.genericAdd());
+      totalSalidas = this.genericAddObject(this.objOpenCash[0].salidas)
     }
+
     this.objOpenCash[0].montoO = parseFloat(this.objOpenCash[0].montoO);
     return (((this.objOpenCash[0].montoO + totalEntradas) - totalSalidas));
   }
@@ -1349,14 +1357,14 @@ export class CardComponent implements OnInit {
   formatDetalleFactura(lstResumen) {
     let lst = [];
     for (let entry of lstResumen) {
-
       let aux = {
         fecha: this.validateService.getDateTimeStamp(),
         cantidad: entry.cantidad,
         descripcion: entry.nombre,
         total: entry.precio,
         precio_venta: entry.precio,
-        vendedor: this.us.idPersonal
+        vendedor: this.us.idPersonal,
+        promocion: [{ 'tipo': 'cover' }]
       }
       //Insert productos promo-cover
       lst.push(aux);
@@ -1368,7 +1376,8 @@ export class CardComponent implements OnInit {
             descripcion: prod.label,
             total: 0,
             precio_venta: 0,
-            vendedor: this.us.id
+            vendedor: this.us.id,
+            promocion: prod.promocion
           }
           lst.push(aux);
         }
@@ -3240,7 +3249,7 @@ export class CardComponent implements OnInit {
     setTimeout(function () {
       document.getElementById('montoTrans').focus();
     }, 0);
-
+    this.montoTrans = 0;
     this.cajaService.getActiveCajaById('open', this.us.idPersonal).subscribe(data => {
       let totalEntradas = 0;
       if (data[0].entradas.length > 0) {

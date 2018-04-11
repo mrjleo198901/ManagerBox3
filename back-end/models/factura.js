@@ -8,7 +8,8 @@ var subSchema = mongoose.Schema({
     total: String,
     descripcion: String,
     cantidad: String,
-    fecha: Date
+    fecha: Date,
+    promocion: Array
 }, { _id: false });
 
 var facturaSchema = new mongoose.Schema({

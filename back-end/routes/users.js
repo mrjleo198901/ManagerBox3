@@ -96,7 +96,7 @@ router.post('/sendmail', (req, res, next) => {
                 + "<td>"
                 + "<br>"
                 + "<span style='font-family:calibri;font-size:14px'><strong>Estimado(a), " + sujeto + " </strong></span>"
-                + "<br><br><span style='font-family:calibri;font-size:12px'>Se ha generado una nueva clave provisional con éxito: <strong>" + randomPass + "</strong>, para el usuario: <strong>" + username + "</strong>"
+                + "<br><br><span style='font-family:calibri;font-size:12px'>Tu antigua clave ha sido reseteada, se ha generado una nueva clave provisional con éxito.<br><b>Usuario: </b>" + username + "<br> <b>Contraseña: </b>" + randomPass + " "
                 + "<br><br>Accede con estas credenciales al siguiente link <a href='http://localhost:4200/login' target='_blank' data-saferedirecturl='http://localhost:4200/login'>http://www.managerbox.riobytes.com/login</a> para completar el proceso."
                 + "<br></span><br><br><span style='font-family:calibri;font-size:12px'>Recuerda que puedes cambiar esta clave accediendo a la opcion 'Mi perfil', en el menu principal.</span>"
                 + "</td>"
@@ -112,10 +112,13 @@ router.post('/sendmail', (req, res, next) => {
             }
         ]
     }, function (err, message) {
-        if (err)
+        if (err) {
             console.log(err);
-        else
+            res.json({ success: false, msg: 'not sent' });
+        }
+        else {
             res.json({ success: true, msg: 'sent' });
+        }
     });
 });
 

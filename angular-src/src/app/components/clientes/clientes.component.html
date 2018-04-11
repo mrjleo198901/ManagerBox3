@@ -81,8 +81,6 @@
         </div>
         <div class="ui-g-6">
             <label>Tipo Cliente*:</label>
-            <!--<p-dropdown [options]="tipo_clientes" [(ngModel)]="selected_tipo_cliente" 
-            laceholder="Selecciona un Tipo" [style]="{'width':'100%'}"></p-dropdown>-->
             <select [(ngModel)]="selected_tipo_cliente" class="form-control input-sm">
                 <option *ngFor="let c of tipo_clientes" [ngValue]="c">{{c.nombre}}</option>
             </select>

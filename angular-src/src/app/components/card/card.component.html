@@ -371,7 +371,7 @@
           <hr>
         </div>
       </tab>
-      <!--TAB CLOSE-->
+      <!-- TAB CLOSE-->
       <tab heading="Cierre" (select)="alertMe2(2)">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
@@ -1467,8 +1467,8 @@
       <p style="padding-top: 13px"><strong>Efectivo existente en caja:</strong></p>
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
-      <input [(ngModel)]="efectivoExis" (ngModelChange)="onChangeExis()" currencyMask (click)="$event.target.select()" type="text"
-        class="form-control">
+      <input [(ngModel)]="efectivoExis" (ngModelChange)="onChangeExis()" id="efectivoExis1" currencyMask (click)="$event.target.select()"
+        type="text" class="form-control">
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <p style="padding-top: 13px"><strong>Diferencia:</strong></p>

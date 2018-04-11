@@ -202,8 +202,9 @@ export class FacturacionComponent implements OnInit {
   }
 
   eventEmitDoubleClick($event, i) {
-    //No vender si el stock es cero
+    //Producto !== AP
     if (!this.flagPrecioPromo) {
+      //No vender si el stock es cero
       if (this.pathsType[i].cant_existente > 0) {
         console.log(this.pathsType[i]);
         this.flagProdSeleccionados = true;
@@ -217,9 +218,11 @@ export class FacturacionComponent implements OnInit {
           promocion: this.pathsType[i].promocion,
           value: this.pathsType[i].nombre
         };
+        //Verificar si existe promo DP
         if (aux.promocion.length > 0) {
           aux.total = this.pathsType[i].promocion[0].precio_venta;
         }
+        //Insertar producto el lista
         var indexOfInserted = this.selectedProductos.findIndex(i => i.nombre === aux.nombre);
         if (indexOfInserted == -1) {
           this.selectedProductos.push(aux);
@@ -230,6 +233,8 @@ export class FacturacionComponent implements OnInit {
         this.messageGrowlService.notify('error', 'Error', 'No existen unidades del producto seleccionado!');
       }
     } else {
+      //Producto tipo AP
+      //No vender si el stock es cero
       let flag = false;
       for (let p of this.lstProdPromo[i].productosV[0].p) {
         if (p.cant_existente <= 0) {
@@ -355,7 +360,7 @@ export class FacturacionComponent implements OnInit {
           }
           for (let entry of this.selectedProductos) {
             let aux = {
-              fecha: this.validateService.getDateTimeEs(),
+              fecha: this.validateService.getDateTimeStamp(),
               cantidad: entry.cantidad,
               descripcion: entry.nombre,
               total: entry.total,
@@ -367,13 +372,14 @@ export class FacturacionComponent implements OnInit {
           }
           updatedFact[0].detalleFacturaV = vecDF;
           console.log(updatedFact)
-          /*this.facturaService.update(updatedFact[0]).subscribe(data => {
+          this.facturaService.update(updatedFact[0]).subscribe(data => {
             this.ngOnInitConfVenta();
             this.selectedProductos = [];
+            this.messageGrowlService.notify('info', 'Información', 'Venta realizada existosamente!');
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
-          });*/
+          });
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');

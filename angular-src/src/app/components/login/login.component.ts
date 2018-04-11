@@ -143,8 +143,7 @@ export class LoginComponent implements OnInit {
         this.messageGrowlService.notify('info', 'Info', 'Se ha enviado el correo con la nueva clave');
       }, err => {
         console.log(err)
-      })
-
+      });
     });
   }
 
