@@ -6,7 +6,9 @@ import { DatePipe } from '@angular/common';
 export class ValidateService {
 
   constructor(private messageGrowlService: MessageGrowlService,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe) { 
+      let a = "xaipoGay"
+    }
 
   validateRegister(user) {
     if (user.name == undefined || user.email == undefined || user.username == undefined || user.npass == undefined ||

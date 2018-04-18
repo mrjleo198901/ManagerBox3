@@ -85,6 +85,7 @@ export class PersonalComponent implements OnInit {
     private messageGrowlService: MessageGrowlService,
     public el: ElementRef, public renderer: Renderer,
     public dialog: MdDialog) {
+      let a = "xaipoGay"
     renderer.listenGlobal('document', 'change', (event) => {
       //Set time in datepicker
       this.dt = moment(this.fechaNacimientoString, 'DD/MM/YYYY').toDate();

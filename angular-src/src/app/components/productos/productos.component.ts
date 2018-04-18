@@ -1080,7 +1080,7 @@ export class ProductosComponent implements OnInit {
           //this.contenido += parseFloat(str[0]);
           this.reCalcContenidoU(str[0], str[1], entry.value.contenido);
         }
-        this.reCalcPrevioVenta();
+        this.reCalcPrevioVentaU();
         this.selected_productoU = '';
       } else {
         this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
