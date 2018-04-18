@@ -137,7 +137,7 @@ export class ClientesComponent implements OnInit {
     this.flagCreate = false;
     this.flagUpdate = false;
     this.showDatepicker = false;
-
+      var a = "xaipoGay"
     this.es = {
       firstDayOfWeek: 1,
       dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
