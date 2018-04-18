@@ -1050,7 +1050,7 @@ export class ProductosComponent implements OnInit {
           precio_costo: this.costoCantSubProd
         };
         // search wheter subProd already exists
-        const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
+        const index1 = this.productoUpdate.subproductoV.findIndex(x => x.nombre === aux.nombre);
         if (index1 === -1) {
           this.cantSubProdU = 0;
           this.productoUpdate.subproductoV.push(aux);
