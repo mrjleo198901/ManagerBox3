@@ -1,3 +1,4 @@
+'use strict'
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -74,4 +75,4 @@ app.post('/api/pdf', multipartMiddleware, profileController.updatePDFs);
 //start server
 app.listen(port, () => {
     console.log('Server started on port ' + port);
-})
+});

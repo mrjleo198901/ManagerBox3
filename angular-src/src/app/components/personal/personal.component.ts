@@ -9,6 +9,7 @@ import { PersonalService } from '../../services/personal.service';
 import { MessageGrowlService } from '../../services/message-growl.service';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import {FormatterService} from "../../services/formatter.service";
 
 @Component({
   selector: 'app-personal',
@@ -81,11 +82,11 @@ export class PersonalComponent implements OnInit {
     private cargoPersonalService: CargoPersonalService,
     private personalService: PersonalService,
     private authService: AuthService,
+    private formatterService: FormatterService,
     private validateService: ValidateService,
     private messageGrowlService: MessageGrowlService,
     public el: ElementRef, public renderer: Renderer,
     public dialog: MdDialog) {
-      let a = "xaipoGay"
     renderer.listenGlobal('document', 'change', (event) => {
       //Set time in datepicker
       this.dt = moment(this.fechaNacimientoString, 'DD/MM/YYYY').toDate();
@@ -109,8 +110,8 @@ export class PersonalComponent implements OnInit {
       today: 'Hoy',
       clear: 'Borrar'
     }
-    this.fecha_desde = this.validateService.getDateTimeEsPrimeNG();
-    this.fecha_hasta = this.validateService.getDateTimeEsPrimeNG();
+  //  this.fecha_desde = this.validateService.getDateTimeEsPrimeNG();
+   // this.fecha_hasta = this.validateService.getDateTimeEsPrimeNG();
 
     var x = window.innerWidth;
     this.onRzOnInit(x);
@@ -119,8 +120,8 @@ export class PersonalComponent implements OnInit {
 
   // inicializador de variables
   ngOnInit() {
-    var initial = new Date(this.getDate()).toLocaleDateString().split("/");
-    this.fechaNacimientoString = [initial[0], initial[1], initial[2]].join('/');
+ //   var initial = new Date(this.getDate()).toLocaleDateString().split("/");
+  //  this.fechaNacimientoString = [initial[0], initial[1], initial[2]].join('/');
     this.sourcePer = new LocalDataSource();
     this.sourceCargoPer = new LocalDataSource();
     this.idPersona = "";
@@ -175,8 +176,18 @@ export class PersonalComponent implements OnInit {
             this.listaPersonal[i].sexo = "Masculino";
           else
             this.listaPersonal[i].sexo = "Femenino";
+
+          if(x.estado=='1'){
+            this.listaPersonal[i].estado='Activo';
+          }else{
+            this.listaPersonal[i].estado='Inactivo';
+          }
+
           i++;
+
+
         }
+
         this.sourcePer = new LocalDataSource();
         this.sourcePer.load(this.listaPersonal);
       }, err => {
@@ -247,22 +258,26 @@ export class PersonalComponent implements OnInit {
         title: 'Teléfono',
         width: '15%'
       },
-      id_cargo: {
-        title: 'Cargo',
-        width: '20%'
+    id_cargo: {
+      title: 'Cargo',
+      width: '20%'
+    },
+      estado:{
+        title:'Estado',
+        width:'20%'
       }
     },
     actions: {
       add: true,
       edit: true,
-      delete: true
+      delete: false
     },
     attr: {
       class: 'table-bordered table-hover table-responsive'
       //class: 'font-size: 200%;'
     }
   };
-  
+
   settingsCargPer = {
     mode: 'external',
     columns: {
@@ -282,7 +297,7 @@ export class PersonalComponent implements OnInit {
     actions: {
       add: true,
       edit: true,
-      delete: true
+      delete: false
     },
     attr: {
       class: 'table-bordered table-hover table-responsive'
@@ -348,8 +363,8 @@ export class PersonalComponent implements OnInit {
     this.fechaNacimientoString = event.data.fecha_nacimiento;
     this.selectCargoPer = this.searchName(event.data.id_cargo, this.listaCargoPersonal);
 
-    this.banFechaNac = this.dt.toLocaleDateString();
-    this.close();
+    //this.banFechaNac = this.dt.toLocaleDateString();
+   // this.close();
   }
   //POSICION DEL CURSOR CARGO PERSONAL
   setCursorCargoPerAdd() {
@@ -438,7 +453,7 @@ export class PersonalComponent implements OnInit {
   //POSICION DEL CURSOR PERSONAL
   setCursorPerAdd() {
     setTimeout(function () {
-      document.getElementById('ci').focus();
+      document.getElementById('ci2').focus();
     }, 500)
   }
 
@@ -502,13 +517,69 @@ export class PersonalComponent implements OnInit {
       document.getElementById("email").style.borderColor = "#DADAD2";
 
   }
+
+  onChangeValidator(option,id){
+   /* console.log(option);
+    console.log(id);*/
+    switch (option){
+      /**
+       * Author Xaipo
+       * lista de opciones de la validacion del case para toda validacion se requiere el id y la opcion a validar
+       *  cuando se pone 1 para validar cedula
+       *  validaciones de string para que no se utlicen espacios en blanco al inicio
+       * */
+
+
+      case 1:
+            if (this.cedula.length != 10)
+            document.getElementById(id).style.borderColor = "#FE2E2E";
+            if (this.cedula.length != 13)
+              document.getElementById(id).style.borderColor = "#FE2E2E";
+            if (this.cedula.length == 10 || this.cedula.length == 13) {
+              if (!this.validateService.validarRucCedula(this.cedula)) {
+                this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
+                document.getElementById(id).style.borderColor = "#FE2E2E";
+              } else
+              //document.getElementById("ci").style.borderColor = "#DADAD2";
+                document.getElementById(id).style.borderColor = "#5ff442";//green
+            }
+            break;
+      case 2 : var aux =(<HTMLInputElement>document.getElementById(id)).value;
+               /* console.log(aux.length);
+                aux=aux.trim();
+                console.log(aux.length);*/
+               if(aux[0]==' '){
+                 aux=aux.substring(1);
+                // console.log(aux);
+               }
+             (<HTMLInputElement>document.getElementById(id)).value = this.formatterService.toTitleCase(aux);
+              ;break;
+
+      case 3: var correo = (<HTMLInputElement>document.getElementById(id)).value;
+        if(correo[0]==' '){
+          correo=correo.substring(1);
+         // console.log(aux);
+        }
+              if (this.validateService.validateEmail(correo)) {
+                document.getElementById(id).style.borderColor = "#5ff442";
+              }
+              else {
+                document.getElementById(id).style.borderColor = "#FF4B36";
+              }break;
+      default : alert('en validador poner opcion y el id para que funcione');
+               break;
+    }
+
+
+
+  }
   // METODO PARA FECHAS
-  public getDate(): number {
+  /*public getDate(): number {
     //this.fechaNacimientoString = this.dt.toLocaleDateString();
     return this.dt && this.dt.getTime() || new Date().getTime();
-  }
+  }*/
   // MOSTRAR Y CERRAR CALENDARIO
-  showCalendar() {
+ /* showCalendar() {
     if (this.banCalendar == 1) {
       this.open();
       this.banCalendar = 2;
@@ -517,8 +588,9 @@ export class PersonalComponent implements OnInit {
       this.banCalendar = 1;
       this.descripcionCargoPersonal = this.dt.toLocaleDateString();
     }
-  }
+  }*/
   ///CERRAR CALENDARIO
+/*
   hideCalendar() {
     var fe = this.dt.toLocaleDateString();
     if ((fe != this.banFechaNac)) {
@@ -527,14 +599,15 @@ export class PersonalComponent implements OnInit {
       this.descripcionCargoPersonal = this.dt.toLocaleDateString();
     }
   }
+*/
 
-  open() {
+ /* open() {
     this.showDatepicker = true;
   }
 
   close() {
     this.showDatepicker = false;
-  }
+  }*/
 
   setCursorPerUp() {
     setTimeout(function () {
@@ -547,11 +620,12 @@ export class PersonalComponent implements OnInit {
       cedula: this.cedula,
       nombres: this.nombres,
       apellidos: this.apellidos,
-      fecha_nacimiento: this.dt.toLocaleDateString(),
+      fecha_nacimiento: this.fechaNacimientoString,
       telefono: this.telefono,
       sexo: this.sexo,
       email: this.email,
-      id_cargo: this.selectCargoPer._id
+      id_cargo: this.selectCargoPer._id,
+      estado:1
     }
 
     //Required fields
@@ -571,7 +645,8 @@ export class PersonalComponent implements OnInit {
         username: this.cedula,
         name: this.nombres + this.apellidos,
         password: this.cedula,
-        email: this.email
+        email: this.email,
+        estado:1
       }
       this.authService.registerUser(newUser).subscribe(data => {
       }, err => {
@@ -673,6 +748,19 @@ export class PersonalComponent implements OnInit {
     }
   }
 
+
+  onCancelPersonal(){
+    this.fechaNacimientoString="";
+    this.sexo=1;
+    this.email='';
+    this.apellidos='';
+    this.nombres='';
+    this.telefono='';
+    this.cedula='';
+  }
+  onCanceCargo(){
+
+  }
 }
 
 
