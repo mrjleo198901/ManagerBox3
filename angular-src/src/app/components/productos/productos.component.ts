@@ -581,10 +581,10 @@ export class ProductosComponent implements OnInit {
     this.ngOnInitMateriaPrima();
   }
 
-  formatProdMateriaPrima(){
+  formatProdMateriaPrima() {
 
   }
-  
+
   /* GESTION DE PRODUCTO */
   setCursorAddTP() {
     setTimeout(function () {
@@ -660,6 +660,7 @@ export class ProductosComponent implements OnInit {
     this.myInputVariable1.nativeElement.value = '';
     this.selectedLstContenido = 1;
     if (this.productoUpdate.path === undefined) {
+      (<HTMLInputElement>document.getElementById('filesU')).value = "";
       document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
       document.getElementById('filesU').style.color = 'black';
     } else {
@@ -979,6 +980,7 @@ export class ProductosComponent implements OnInit {
   addItem() {
     if (this.cantSubprod !== 0) {
       if (this.selected_producto !== '') {
+        this.valueChangeCantSubprod();
         const index = this.productos.findIndex(x => x.nombre === this.selected_producto);
         this.selected_producto = this.productos[index];
         //const precio_costo = 0;
@@ -1036,6 +1038,7 @@ export class ProductosComponent implements OnInit {
   addItemU() {
     if (this.cantSubProdU !== 0) {
       if (this.selected_productoU !== '') {
+        this.valueChangeCantSubprodU();
         const index = this.productos.findIndex(x => x.nombre === this.selected_productoU);
         this.selected_productoU = this.productos[index];
         //const precio_costo = 0;
@@ -1090,30 +1093,57 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFileC(event) {
-    const files = event.srcElement.files[0];
-    let color = '';
-    if (files === undefined) {
-      color = 'lightsalmon';
-    } else {
-      color = 'lightgreen';
+    if (event.srcElement.files.length > 0) {
+      if (event.srcElement.files[0].type.includes('image')) {
+        const files = event.srcElement.files[0];
+        console.log(files.size);
+        if (files.size <= 1500) {
+          let color = '';
+          if (files === undefined) {
+            color = 'lightsalmon';
+          } else {
+            color = 'lightgreen';
+          }
+          this.pathLogo = files;
+          document.getElementById('filesC').style.backgroundColor = color;
+        } else {
+          (<HTMLInputElement>document.getElementById('filesC')).value = "";
+          document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
+          this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
+        }
+      } else {
+        (<HTMLInputElement>document.getElementById('filesC')).value = "";
+        document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
+        this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
+      }
     }
-    this.pathLogo = files;
-    //console.log(this.pathLogo);
-    document.getElementById('filesC').style.backgroundColor = color;
   }
 
   onChangeFileU(event) {
-    this.colorUpdate = 'black';
-    const files = event.srcElement.files[0];
-    let color = '';
-    if (files === undefined) {
-      color = 'lightsalmon';
-    } else {
-      color = 'lightgreen';
+    if (event.srcElement.files.length > 0) {
+      if (event.srcElement.files[0].type.includes('image')) {
+        const files = event.srcElement.files[0];
+        if (files.size <= 1500) {
+          let color = '';
+          if (files === undefined) {
+            color = 'lightsalmon';
+          } else {
+            color = 'lightgreen';
+          }
+          this.pathLogoU = files;
+          document.getElementById('filesU').style.backgroundColor = color;
+          document.getElementById('filesU').style.color = this.colorUpdate;
+        } else {
+          (<HTMLInputElement>document.getElementById('filesU')).value = "";
+          document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
+          this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
+        }
+      } else {
+        (<HTMLInputElement>document.getElementById('filesU')).value = "";
+        document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
+        this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
+      }
     }
-    this.pathLogoU = files;
-    document.getElementById('filesU').style.backgroundColor = color;
-    document.getElementById('filesU').style.color = this.colorUpdate;
   }
 
   onChangeFileTP(event) {
@@ -1270,7 +1300,7 @@ export class ProductosComponent implements OnInit {
     console.log(value);
   }
 
-  valueChangeCantSubprod($event) {
+  valueChangeCantSubprod() {
     document.getElementById('cantSubprod').style.borderColor = '#DADAD2';
     const onzaEnMl = 29.5735;
     let prod = this.productos.find(x => x.nombre === this.selected_producto);
@@ -1294,8 +1324,8 @@ export class ProductosComponent implements OnInit {
     }
   }
 
-  valueChangeCantSubprodU($event) {
-    document.getElementById('cantSubprod').style.borderColor = '#DADAD2';
+  valueChangeCantSubprodU() {
+    //document.getElementById('cantSubprodU').style.borderColor = '#DADAD2';
     const onzaEnMl = 29.5735;
     let prod = this.productos.find(x => x.nombre === this.selected_productoU);
     if (prod !== undefined) {
@@ -1305,11 +1335,11 @@ export class ProductosComponent implements OnInit {
       }
       //mililitros
       if (this.unidadMedidaSuproducto.value.id == 2) {
-        this.costoCantSubProd = ((this.cantSubprod * prod.precio_costo) / prod.contenido);
+        this.costoCantSubProd = ((this.cantSubProdU * prod.precio_costo) / prod.contenido);
       }
       //onzas
       if (this.unidadMedidaSuproducto.value.id == 3) {
-        this.costoCantSubProd = ((this.cantSubprod * onzaEnMl) * prod.precio_costo) / prod.contenido;
+        this.costoCantSubProd = ((this.cantSubProdU * onzaEnMl) * prod.precio_costo) / prod.contenido;
       }
       //unidades
       if (this.unidadMedidaSuproducto.value.id == 4) {

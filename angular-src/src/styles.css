@@ -3,6 +3,13 @@
 
 /* You can add global styles to this file, and also import other style files */
 /* My custom FM style*/
+
+  .form-hint {
+    font-size: 8pt;
+    line-height: 9pt;
+    margin: -2.5px auto 5px;
+    color: #999;
+  }
   table > thead > tr > th {
     text-align: center;
     font-size: 14px;

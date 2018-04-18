@@ -169,6 +169,9 @@
     Registrar Producto
   </p-header>
   <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+    </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="nombrePC">Nombre*:</label>
       <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="Nombre único del producto"
@@ -184,19 +187,20 @@
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
       <label for="filesC">Logotipo:</label>
+      <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
       <input #myInput type="file" placeholder="File Name" (change)="onChangeFileC($event)" id="filesC" name="filesC" class="form-control inputfile input-sm"
         accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS" tooltipPlacement="bottom" title=" "
         [disabled]="flagProductoGasto">
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Contenido*:</label>
-      <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" [disabled]="flagSubProd" [style]="{'padding-top':'2px'}"></p-selectButton>
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label style="color: white">.</label>
       <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
         class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml." tooltipPlacement="bottom"
         [disabled]="flagSubProd" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label style="color: white">.</label>
+      <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" [disabled]="flagSubProd" [style]="{'padding-top':'2px'}"></p-selectButton>
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Cantidad Existente*:</label>
@@ -263,7 +267,7 @@
         </div>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
           <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubprod" id="cantSubprod" name="cantSubprod" placeholder="0.00"
-            class="form-control input-sm" (ngModelChange)="valueChangeCantSubprod($event)" (click)="$event.target.select()">
+            class="form-control input-sm" (click)="$event.target.select()">
         </div>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
           <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
@@ -296,6 +300,9 @@
     Actualizar Producto
   </p-header>
   <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+    </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="nombrePU">Nombre*:</label>
       <input type="text" [(ngModel)]="productoUpdate.nombre" (ngModelChange)="onChangeNombrePU($event)" id="nombrePU" name="nombrePU"
@@ -311,6 +318,7 @@
     </div>
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
       <label for="filesU">Logotipo</label>
+      <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
       <ng-template #toolTipTemplate>
         <img src={{productoUpdate.path}} width="50%" />
         <p>Esta imagen se mostrará por defecto, en el módulo de VENTAS"</p>
@@ -322,13 +330,13 @@
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Contenido*:</label>
-      <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" [disabled]="flagSubProdUpdate" [style]="{'padding-top':'2px'}"></p-selectButton>
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label style="color: white">.</label>
       <input type="text" currencyMask [options]="{ prefix: ''}" type="text" [(ngModel)]="productoUpdate.contenido" id="contPU"
         name="contPU" placeholder="0.00" class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml."
         tooltipPlacement="bottom" [disabled]="flagSubProdUpdate" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+      <label style="color: white">.</label>
+      <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" [disabled]="flagSubProdUpdate" [style]="{'padding-top':'2px'}"></p-selectButton>
     </div>
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="cantPU">Cantidad Existente*:</label>
@@ -390,9 +398,8 @@
           <label>Cantidad:</label>
         </div>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-          <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubProdU" id="cantSubprod" name="cantSubprod"
-            #cantSubprodU1 placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeCantSubprodU($event)"
-            (click)="$event.target.select()">
+          <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubProdU" id="cantSubProdU" name="cantSubProdU"
+            placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
         </div>
         <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
           <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItemU()" aria-hidden="true" style="vertical-align: middle"></i>
