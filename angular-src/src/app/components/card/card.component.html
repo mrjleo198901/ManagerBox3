@@ -69,8 +69,7 @@
                       <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
                       <input [(ngModel)]="cedula" (ngModelChange)="onChangeCILength($event)" (click)="$event.target.select()" type="text" class="form-control"
                         name="cedulaNew" #cedulaNew id="cedulaNew" placeholder="Cédula del cliente" style="z-index: 1;" maxlength="10"
-                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" [disabled]="blockCaja"
-                      />
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3" [disabled]="blockCaja">
                       <span class="input-group-addon" id="basic-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
                       <span (click)=" setCursorAdd()" class="input-group-addon" id="basic-addon4"><i class="fa fa-plus" aria-hidden="true"></i></span>
                     </div>

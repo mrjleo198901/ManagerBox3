@@ -27,7 +27,6 @@ export class NavbarComponent implements OnInit {
     let us = JSON.parse(localStorage.getItem('user'));
     if (us !== null) {
       this.personalService.getByCedula(us.username).subscribe(data => {
-        console.log("1")
         if (data.length > 0) {
           let nombres = data[0].nombres.split(' ');
           let apellidos = data[0].apellidos.split(' ');

@@ -3,14 +3,15 @@ var mongoose = restful.mongoose;
 
 var proveedorSchema = new mongoose.Schema({
 
-    nombre_proveedor : String,
-    ruc : String,
+    nombre_proveedor: String,
+    ruc: String,
     direccion: String,
-    ciudad: String,
+    ciudad: Object,
     telefono: String,
-    correo : String,
-    comprasV: Array
+    correo: String,
+    comprasV: Array,
+    representanteV: Array
 
-}); 
+});
 
-module.exports= restful.model('proveedor',proveedorSchema);
+module.exports = restful.model('proveedor', proveedorSchema);

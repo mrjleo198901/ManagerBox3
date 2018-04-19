@@ -21,7 +21,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Productos" [active]="true">
+      <tab heading="Productos">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Productos</h3>
@@ -47,7 +47,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Proveedores">
+      <tab heading="Proveedores" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Proveedores</h3>
@@ -817,49 +817,68 @@
   <p-header>
     Registrar Proveedor
   </p-header>
-  <br>
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-6">
-      <label>Nombre*:</label>
-      <input type="text" [(ngModel)]="objProve.nombre_proveedor" (ngModelChange)="onChangeNombreProve($event)" id="nombreProve"
-        name="nombreProve" placeholder="Nombre proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+  <form (ngSubmit)="saveProveedor()" #proveForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+      </div>
+      <div class="ui-g-6">
+        <label>Nombre*:</label>
+        <input type="text" [(ngModel)]="objProve.nombre_proveedor" (ngModelChange)="onChangeNombreProve($event)" id="nombreProve"
+          name="nombreProve" placeholder="Nombre proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" minlength="8" tabindex="1"
+          required>
+      </div>
+      <div class="ui-g-6">
+        <label>Ruc*:</label>
+        <input type="text" [(ngModel)]="objProve.ruc" (ngModelChange)="onChangeRuc()" id="rucProve" name="rucProve" placeholder="Ruc proveedor"
+          class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom" tabindex="2">
+      </div>
+      <div class="ui-g-6">
+        <label>Teléfono*:</label>
+        <input type="tel" [(ngModel)]="objProve.telefono" id="telProve" name="telProve" placeholder="Teléfono proveedor" class="form-control input-sm"
+          minlength="7" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom" tabindex="3" required>
+      </div>
+      <div class="ui-g-6">
+        <label>E-mail:</label>
+        <input type="text" [(ngModel)]="objProve.correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo proveedor"
+          class="form-control input-sm" tabindex="4">
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-12" style="padding:0px 0px 7px 0px">
+          <label>Ciudad:</label>
+          <p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" field="nombre"
+            id="ciudadProve" name="ciudadProve" [size]="30" placeholder="&nbsp;&nbsp;Ciudad Proveedor" [minLength]="1" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+            tabindex="5"></p-autoComplete>
+        </div>
+        <div class="ui-g-12" style="padding-left: 0px; padding-right: 0px;">
+          <label>Dirección:</label><br>
+          <textarea pInputTextarea [(ngModel)]="objProve.direccion" id="dirProve" name="dirProve" placeholder="Dirección proveedor"
+            class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+            tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="7"
+            [rows]="2"></textarea>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <label>Representante:</label>
+        <span style="background-color: #2196F3; border-color: #2196F3" class="input-group-addon input-sm classAddIcon" (click)="showRepre()"><i style="color: white" class="fa fa-plus-square fa-lg" aria-hidden="true"></i></span>
+        <p-listbox [options]="objProve.representanteV" [style]="{'text-align':'left','max-height':'90px','height':'90px','width':'100%'}"
+          id="representante" name="representante">
+          <ng-template let-car pTemplate="item">
+            {{car.nombre}}
+          </ng-template>
+        </p-listbox>
+      </div>
     </div>
-    <div class="ui-g-6">
-      <label>Ruc*:</label>
-      <input type="text" [(ngModel)]="objProve.ruc" (ngModelChange)="onChangeRuc()" id="rucProve" name="rucProve" placeholder="Ruc Proveedor"
-        class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
-        tooltipPlacement="bottom" tabindex="2">
+    <div class="ui-g-12" style="text-align: center">
+      <hr>
+      <button type="submit" style="font-size: 11px" class="btn btn-primary" [disabled]="objProve.correo == undefined || objProve.correo == '' ?  !proveForm.form.valid || validRuc: !proveForm.form.valid && validRuc || validCorreo"
+        tabindex="8">Registrar</button>
+      <button type="button" style="font-size: 11px" (click)="showDialogProve=false" class="btn btn-default" tabindex="9">Cancelar</button>
     </div>
-    <div class="ui-g-6">
-      <label>Teléfono*:</label>
-      <input type="text" [(ngModel)]="objProve.telefono" id="telProve" name="telProve" placeholder="Teléfono Proveedor" class="form-control input-sm"
-        maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
-        tooltipPlacement="bottom" tabindex="3">
-    </div>
-    <div class="ui-g-6">
-      <label>E-mail:</label>
-      <input type="text" [(ngModel)]="objProve.correo" (ngModelChange)="onChangeEmail($event)" id="correo" name="correo" placeholder="Correo del cliente"
-        class="form-control input-sm" tabindex="4">
-    </div>
-    <div class="ui-g-6">
-      <label>Ciudad:</label>
-      <input type="text" [(ngModel)]="objProve.ciudad" (ngModelChange)="onChangeCiudad($event)" id="ciudadProve" name="ciudadProve"
-        placeholder="Ciudad Proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" tabindex="5">
-    </div>
-    <div class="ui-g-6">
-      <label>Dirección:</label>
-      <textarea pInputTextarea [(ngModel)]="objProve.direccion" id="dirProve" name="dirProve" placeholder="Dirección proveedor"
-        class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="6" [rows]="3"></textarea>
-    </div>
-  </div>
-  <div class="ui-g-12" style="text-align: center">
-    <hr>
-    <button type="button" style="font-size: 11px" (click)="saveProveedor()" class="btn btn-primary" [disabled]="!validRuc" tabindex="7">Registrar</button>
-    <button type="button" style="font-size: 11px" (click)="showDialogProve=false" class="btn btn-default" tabindex="8">Cancelar</button>
-  </div>
+  </form>
 </p-dialog>
 
 <!-- Update Proveedor-->
@@ -867,50 +886,132 @@
   <p-header>
     Actualizar Proveedor
   </p-header>
-  <br>
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-6">
-      <label>Nombre*:</label>
-      <input type="text" [(ngModel)]="objProve.nombre_proveedor" (ngModelChange)="onChangeNombreProve($event)" id="nombreProveU"
-        name="nombreProveU" placeholder="Nombre proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
+  <form (ngSubmit)="updateProveedor()" #proveForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+      </div>
+      <div class="ui-g-6">
+        <label>Nombre*:</label>
+        <input type="text" [(ngModel)]="objProve.nombre_proveedor" (ngModelChange)="onChangeNombreProve($event)" id="nombreProveU"
+          name="nombreProveU" placeholder="Nombre proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1"
+          required>
+      </div>
+      <div class="ui-g-6">
+        <label>Ruc*:</label>
+        <input type="text" [(ngModel)]="objProve.ruc" (ngModelChange)="onChangeRucU()" id="rucProveU" name="rucProveU" placeholder="Ruc Proveedor"
+          class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom" tabindex="2">
+      </div>
+      <div class="ui-g-6">
+        <label>Teléfono*:</label>
+        <input type="text" [(ngModel)]="objProve.telefono" id="telProve" name="telProve" placeholder="Teléfono Proveedor" class="form-control input-sm"
+          maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom" tabindex="3" required>
+      </div>
+      <div class="ui-g-6">
+        <label>E-mail:</label>
+        <input type="text" [(ngModel)]="objProve.correo" (ngModelChange)="onChangeEmailU($event)" id="correoU" name="correoU" placeholder="Correo del cliente"
+          class="form-control input-sm" tabindex="4">
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-12" style="padding:0px 0px 7px 0px">
+          <label>Ciudad:</label>
+          <!--<p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" field="nombre"
+            id="ciudadProve" name="ciudadProve" [size]="30" placeholder="&nbsp;&nbsp;Ciudad Proveedor" [minLength]="1" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+            tabindex="5"></p-autoComplete>-->
+          <!--<p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" name="ciudadProve"
+            [size]="30" placeholder="Ciudad Proveedor" [minLength]="1" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+            tabindex="5">
+            <ng-template let-brand pTemplate="item">
+              <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+                  <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.nombre}}--{{brand.provincia}}</div>
+              </div>
+          </ng-template>
+          </p-autoComplete>-->
+
+          <p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" [size]="30"
+            [minLength]="1" placeholder="Ciudad Proveedor" field="nombre" name="ciudadProve">
+            <ng-template let-brand pTemplate="item">
+              <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+                <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.nombre}}--{{brand.provincia}}</div>
+              </div>
+            </ng-template>
+          </p-autoComplete>
+
+        </div>
+        <div class="ui-g-12" style="padding-left: 0px; padding-right: 0px;">
+          <label>Dirección:</label>
+          <textarea pInputTextarea [(ngModel)]="objProve.direccion" id="dirProve" name="dirProve" placeholder="Dirección proveedor"
+            class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+            tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="6"
+            [rows]="2"></textarea>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <label>Representante:</label>
+        <span style="background-color: #2196F3; border-color: #2196F3" class="input-group-addon input-sm classAddIcon" (click)="showRepre()"><i style="color: white" class="fa fa-plus-square fa-lg" aria-hidden="true"></i></span>
+        <p-listbox [options]="objProve.representanteV" [style]="{'text-align':'left','max-height':'90px','height':'90px','width':'100%'}"
+          id="representante" name="representante">
+          <ng-template let-car pTemplate="item">
+            {{car.nombre}}
+          </ng-template>
+        </p-listbox>
+      </div>
     </div>
-    <div class="ui-g-6">
-      <label>Ruc*:</label>
-      <input type="text" [(ngModel)]="objProve.ruc" (ngModelChange)="onChangeRucU()" id="rucProveU" name="rucProveU" placeholder="Ruc Proveedor"
-        class="form-control input-sm" maxlength="13" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
-        tooltipPlacement="bottom" tabindex="2">
+    <div class="ui-g-12" style="text-align: center">
+      <hr>
+      <button type="submit" style="font-size: 11px" class="btn btn-primary" [disabled]="objProve.correo == undefined || objProve.correo == '' ?  !proveForm.form.valid || validRuc: !proveForm.form.valid && validRuc || validCorreo"
+        tabindex="7">Actualizar</button>
+      <button type="button" style="font-size: 11px" (click)="showDialogProveU=false" class="btn btn-default" tabindex="8">Cancelar</button>
     </div>
-    <div class="ui-g-6">
-      <label>Teléfono*:</label>
-      <input type="text" [(ngModel)]="objProve.telefono" id="telProve" name="telProve" placeholder="Teléfono Proveedor" class="form-control input-sm"
-        maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tooltip="Solo se permiten NUMEROS."
-        tooltipPlacement="bottom" tabindex="3">
+  </form>
+</p-dialog>
+
+<!-- Add Representante -->
+<p-dialog [(visible)]="showRepresentante" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Registrar Representante
+  </p-header>
+  <form (ngSubmit)="addRepre()" #heroForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+      </div>
+      <div class="ui-g-12">
+        <label>Nombre y Apellido*:</label>
+        <input type="text" [(ngModel)]="representante.nombre" (ngModelChange)="onChangeNombreRepre($event)" id="nombreRepre" name="nombreRepre"
+          placeholder="Nombre de representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
+          tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" minlength="8" tabindex="10" required>
+      </div>
+      <div class="ui-g-6">
+        <label>Teléfono*:</label>
+        <input type="text" [(ngModel)]="representante.telefono" id="telRepre" name="telRepre" placeholder="Teléfono representante"
+          class="form-control input-sm" minlength="7" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" tabindex="11" required>
+      </div>
+      <div class="ui-g-6">
+        <label>E-mail*:</label>
+        <input type="text" [(ngModel)]="representante.correo" (ngModelChange)="onChangeEmailRepre($event)" id="correoRepre" name="correoRepre"
+          placeholder="Correo representante" class="form-control input-sm" tabindex="12">
+      </div>
+      <div class="ui-g-12">
+        <label>Descripcion:</label><br>
+        <textarea pInputTextarea [(ngModel)]="representante.descripcion" (ngModelChange)="onChangeDescRepre($event)" id="descRepre"
+          name="descRepre" placeholder="Dirección representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="13"
+          [rows]="3"></textarea>
+      </div>
     </div>
-    <div class="ui-g-6">
-      <label>E-mail:</label>
-      <input type="text" [(ngModel)]="objProve.correo" (ngModelChange)="onChangeEmail($event)" id="correoU" name="correoU" placeholder="Correo del cliente"
-        class="form-control input-sm" tabindex="4">
+    <div class="ui-g-12" style="text-align: center">
+      <hr>
+      <button type="submit" style="font-size: 11px" [disabled]="!heroForm.form.valid || flagEmailRepre" class="btn btn-primary"
+        tabindex="14">Registrar</button>
+      <button type="button" style="font-size: 11px" (click)="showRepresentante=false" class="btn btn-default" tabindex="15">Cancelar</button>
     </div>
-    <div class="ui-g-6">
-      <label>Ciudad:</label>
-      <input type="text" [(ngModel)]="objProve.ciudad" (ngModelChange)="onChangeCiudad($event)" id="ciudadProve" name="ciudadProve"
-        placeholder="Ciudad Proveedor" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-        tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" tabindex="5">
-    </div>
-    <div class="ui-g-6">
-      <label>Dirección:</label>
-      <textarea pInputTextarea [(ngModel)]="objProve.direccion" id="dirProve" name="dirProve" placeholder="Dirección proveedor"
-        class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="6" [rows]="3"></textarea>
-    </div>
-  </div>
-  <div class="ui-g-12" style="text-align: center">
-    <hr>
-    <button type="button" style="font-size: 11px" (click)="updateProveedor()" class="btn btn-primary" [disabled]="!validRuc"
-      tabindex="7">Registrar</button>
-    <button type="button" style="font-size: 11px" (click)="showDialogProveU=false" class="btn btn-default" tabindex="8">Cancelar</button>
-  </div>
+  </form>
 </p-dialog>
 
 <!-- Show Compras-->
