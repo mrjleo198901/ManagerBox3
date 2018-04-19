@@ -8,15 +8,20 @@
     <div class="row" style="margin-left: 0px; margin-right: 0px">
         <div (click)="$event.preventDefault()">
             <tabset [justified]="true">
+              <!--en esta parte se carga los botones de los tabs-->
 
                 <tab heading="Cargo Personal" (select)="hideDetails()">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <hr>
-                        <h3 style="text-align:center">Cargo Personal</h3>
-                        <hr>
+                        <h3 style="text-align:center">Listado de Cargos del Personal</h3>
+
+                      <hr>
                     </div>
+
                     <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
-                        <ng2-smart-table id="dtCargoPersonal" [settings]="settingsCargPer" [source]="sourceCargoPer" (create)="showDialogCargoPerAdd = true;onCreateCargoPer($event);setCursorCargoPerAdd()"
+                      <div class="form-hint" >En el presente formulario se gestiona los roles que se asignarán a las personas que trabajen en el establecimiento.</div>
+
+                      <ng2-smart-table id="dtCargoPersonal" [settings]="settingsCargPer" [source]="sourceCargoPer" (create)="showDialogCargoPerAdd = true;onCreateCargoPer($event);setCursorCargoPerAdd()"
                             (edit)="showDialogCargoPerUp = true;onCargoPerUpdate($event);setCursorCargoPerUp()" (delete)="onDeleteCP($event)">
                         </ng2-smart-table>
                         <hr>
@@ -26,11 +31,13 @@
                 <tab heading="Personal" [active]="true">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <hr>
-                        <h3 style="text-align:center">Personal</h3>
-                        <hr>
+                        <h3 style="text-align:center">Personal del Establecimiento</h3>
+                      <div class="form-hint" >En el presente formulario se gestiona las personas que trabajan en el establecimiento.</div>
+
+                      <hr>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = false;onCreatePer($event);setCursorPerAdd()"
+                        <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = true;onCreatePer($event);setCursorPerAdd()"
                             (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()" (delete)="onDeleteP($event)"
                             (userRowSelect)="showPersonal($event)">
                         </ng2-smart-table>
@@ -54,17 +61,20 @@
                           </select>
                         </div>
                     </div>
+                  <!--fin  tabs -->
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
                         <h4>Período: </h4>
-                        <p-calendar [(ngModel)]="fecha_desde" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
-                            yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
-                        </p-calendar>
+                      <p-calendar [(ngModel)]="fecha_desde" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
+                                  [yearNavigator]="true" yearRange="1950:2030" dataType="string" >
+                      </p-calendar>
+
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
                         <h4 style="color: white">Período: </h4>
-                        <p-calendar [(ngModel)]="fecha_hasta" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
-                            yearRange="1950:2030" dataType="string" [readonlyInput]="true" [showTime]="true">
-                        </p-calendar>
+                      <p-calendar [(ngModel)]="fecha_hasta" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
+                                  [yearNavigator]="true" yearRange="1950:2030" dataType="string" >
+                      </p-calendar>
+
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
                         <h4 style="color: white">Período: </h4>
@@ -101,6 +111,7 @@
                             <br><label>Fecha de Nacimiento:</label>&nbsp;{{showPersona.fecha_nacimiento}}
                             <br><label>Sexo:</label>&nbsp;{{showPersona.sexo}}
                             <br><label>Cargo:</label>&nbsp;{{showPersona.id_cargo}}
+
                         </div>
                         <br>
                     </div>
@@ -128,19 +139,20 @@
 <!-- Add cargo personal -->
 <p-dialog [(visible)]="showDialogCargoPerAdd" modal="modal" width="500" [responsive]="true">
     <p-header>
-        Registro Cargo Personal
+        Agregar Cargo
     </p-header>
+  <div class="form-hint">Los campos marcados con * son obligatorios</div>
     <div class="ui-g ui-fluid">
         <!-- Nombre  -->
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="desCP" style="display: inline-block">Nombre:</label>
+            <label for="desCP" style="display: inline-block">Nombre* :</label>
             <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" id="descCargoPerAdd" name="descCargoPerAdd"
                 placeholder="Nombre cargo" class="form-control">
             <br>
         </div>
         <!-- Estado  -->
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="est" style="display: inline-block">Estado</label>
+            <label for="est" style="display: inline-block">Estado*:</label>
             <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
                     <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
             </select>
@@ -148,7 +160,7 @@
         </div>
         <!--Descripción-->
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="est" style="display: inline-block">Descripción</label>
+            <label for="est" style="display: inline-block">Descripción: </label>
             <input type="text" [(ngModel)]="descripcion" (ngModelChange)="onChangeDesc()" id="desc" placeholder="Descripción cargo" class="form-control">
             <br>
         </div>
@@ -167,18 +179,20 @@
     <p-header>
         Actualizar Cargo Personal
     </p-header>
+
+  <div class="form-hint">Los campos marcados con * son obligatorios</div>
     <div class="ui-g ui-fluid">
         <!-- Nombre -->
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="descTPC" style="display: inline-block">Descripción</label>
-            <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+            <label for="descTPC" style="display: inline-block">Nombre* :</label>
+            <input type="text" [(ngModel)]="descripcionCargoPersonal" (ngModelChange)="onChangeCargPer()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
                 event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
                 id="descCargoPerAdd" name="descCargoPerAdd" placeholder="Descripción cargo" class="form-control">
             <br>
         </div>
         <!-- Estado  -->
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-            <label for="est" style="display: inline-block">Estado</label>
+            <label for="est" style="display: inline-block">Estado *:</label>
             <select [(ngModel)]="selectEstado" id="estadoCar" name="estadoCar" class="form-control input">
                     <option *ngFor="let c of listaEstado" [ngValue]="c">{{c.estado}}</option>
                 </select>
@@ -200,47 +214,48 @@
 </p-dialog>
 
 <!-- Add personal -->
-<app-dialog [(visible)]="showDialogPerAdd" (visibleChange)="changePerAdd($event)" #dialog2="dialog">
-    <h3 style="text-align: center">
-        Agregar Personal
-    </h3>
+<p-dialog [(visible)]="showDialogPerAdd" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Agregar Persona
+  </p-header>
+  <div class="form-hint">Los campos marcados con * son obligatorios</div>
     <hr>
     <!-- Cedula -->
     <div class="col-lg-6 col-md-6">
-        <label for="ci" style="display: inline-block">Cédula</label>
-        <input type="text" [(ngModel)]="cedula" (ngModelChange)="onChange()" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-            id="ci" name="ci" placeholder="Cédula" class="form-control input-sm" maxlength="10">
+        <label for="ci" style="display: inline-block">Cédula *:</label>
+        <input type="text" [(ngModel)]="cedula" (ngModelChange)="onChangeValidator(1,'ci2')" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+            id="ci2" name="ci" placeholder="Cédula" class="form-control input-sm" maxlength="10">
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- Telefono -->
-        <label for="telefono">Teléfono/Celular</label>
-        <input type="text" [(ngModel)]="telefono" (ngModelChange)="onChange()" id="telefono" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+        <label for="telefono">Teléfono/Celular* :</label>
+        <input type="text" [(ngModel)]="telefono"  id="telefonoUs" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
             name="telefono" placeholder="Teléfono" class="form-control  input-sm" maxlength="10" minlength="9">
         <br>
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- Nombres -->
-        <label class="cols-sm-2 control-label" for="username">Nombres</label>
-        <input type="text" [(ngModel)]="nombres" (ngModelChange)="onChange()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        <label class="cols-sm-2 control-label" for="username">Nombres* :</label>
+        <input type="text" [(ngModel)]="nombres" (ngModelChange)="onChangeValidator(2,'username')" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
             event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            id="nombres" name="nombres" placeholder="Nombres" class="form-control  input-sm">
+            id="username" name="nombres" placeholder="Nombres" class="form-control  input-sm">
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- Apellidos -->
-        <label class="cols-sm-2 control-label" for="apellido">Apellidos</label>
-        <input type="text" [(ngModel)]="apellidos" (ngModelChange)="onChange()" id="apellidos" name="apellidos" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        <label class="cols-sm-2 control-label" for="apellido">Apellidos* :</label>
+        <input type="text" [(ngModel)]="apellidos" (ngModelChange)="onChangeValidator(2,'apellido')" id="apellido" name="apellidos" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
             event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
             placeholder="Apellidos" class="form-control  input-sm">
         <br>
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- E-mail -->
-        <label class="control-label" for="email">E-mail</label>
-        <input type="text" [(ngModel)]="email" (ngModelChange)="onChange()" id="email" name="email" placeholder="Correo" class="form-control  input-sm">
+        <label class="control-label" for="email">E-mail* :</label>
+        <input type="text" [(ngModel)]="email" (ngModelChange)="onChangeValidator(3,'email2')" id="email2" name="email" placeholder="Correo" class="form-control  input-sm">
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- Sexo -->
-        <label class="control-label" for="fecha">Sexo</label><br>
+        <label class="control-label" for="fecha">Sexo* :</label><br>
         <div class="radio">
             &nbsp;&nbsp;&nbsp;<label class="form-check-inline">
                     <input class="form-check-input" type="radio" name="mode" [value]="1" [(ngModel)]="sexo">
@@ -253,37 +268,38 @@
         </div>
         <br>
     </div>
-    <div class="col-lg-6 col-md-6" (click)="showCalendar()">
-        <!-- Fecha de nacimiento -->
+ <!--   <div class="col-lg-6 col-md-6" (click)="showCalendar()">
+        &lt;!&ndash; Fecha de nacimiento &ndash;&gt;
         <label for="est" style="display: inline-block">Fecha de Nacimiento</label>
         <div class="input-group col-lg-12 col-md-12">
             <input type="text" value="{{ getDate() | date:'shortDate'}}" [(ngModel)]="fechaNacimientoString" id="fecha" name="fecha"
                 placeholder="MM/DD/YYYY" class="form-control  input-sm">
             <span class="input-group-addon input-sm" id="btnCalendar"><i class="fa fa-calendar" aria-hidden="true"></i></span>
         </div>
-    </div>
+    </div>-->
+  <div class="col-lg-6 col-md-6">
+  <label>Fecha de nacimiento* :</label>
+  <p-calendar [(ngModel)]="fechaNacimientoString" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
+              [yearNavigator]="true" yearRange="1950:2030" dataType="string" >
+  </p-calendar>
+  </div>
 
     <!-- Cargo  -->
     <div class="col-lg-6 col-md-6">
-        <label for="est" style="display: inline-block">Cargo</label>
-        <select [(ngModel)]="selectCargoPer" id="cargoPer" name="cargoPer" class="form-control input-sm">
+        <label for="cargoPer1" style="display: inline-block">Cargo* :</label>
+        <select [(ngModel)]="selectCargoPer" id="cargoPer1" name="cargoPer" class="form-control input-sm">
                 <option *ngFor="let c of listaCargoPersonal" [ngValue]="c">{{c.descripcion_cargo_personal}}</option>
             </select>
         <br>
     </div>
-    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
-        <!--calendar-->
-        <div style="display:inline-block;text-align: center">
-            <datepicker [(ngModel)]="dt" [showWeeks]="false"></datepicker>
-        </div>
-    </div>
+
     <br>
     <!-- Button -->
     <div class="form-group" style="text-align: center">
         <button class="btn btn-primary" (click)="onAddPerSubmit()" style="width: 25%">Registrar</button>
-        <button class="btn btn-default" (click)="showDialogPerAdd = !showDialogPerAdd" style="width: 25%">Cancelar</button>
+        <button class="btn btn-default" (click)="onCancelPersonal();showDialogPerAdd = !showDialogPerAdd" style="width: 25%">Cancelar</button>
     </div>
-</app-dialog>
+</p-dialog>
 <!-- UPDATE PERSONAL -->
 <app-dialog [(visible)]="showDialogPerUp" (visibleChange)="changePerUp($event)" #dialog3="dialog">
     <h3 style="text-align: center">
@@ -306,14 +322,14 @@
     <div class="col-lg-6 col-md-6">
         <!-- Nombres -->
         <label class="cols-sm-2 control-label" for="username">Nombres</label>
-        <input type="text" [(ngModel)]="nombres" (ngModelChange)="onChange()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        <input type="text" [(ngModel)]="nombres" (ngModelChange)="onChange()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
             event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
             id="nombres" name="nombres" placeholder="Nombres" class="form-control  input-sm">
     </div>
     <div class="col-lg-6 col-md-6">
         <!-- Apellidos -->
         <label class="cols-sm-2 control-label" for="apellido">Apellidos</label>
-        <input type="text" [(ngModel)]="apellidos" (ngModelChange)="onChange()" id="apellidos" name="apellidos" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        <input type="text" [(ngModel)]="apellidos" (ngModelChange)="onChange()" id="apellidos" name="apellidos" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
             event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
             placeholder="Apellidos" class="form-control  input-sm">
         <br>
@@ -338,7 +354,7 @@
         </div>
         <br>
     </div>
-    <div class="col-lg-6 col-md-6" (click)="showCalendar()">
+    <div class="col-lg-6 col-md-6" >
         <!-- Fecha de nacimiento -->
         <label for="est" style="display: inline-block">Fecha de Nacimiento</label>
         <div class="input-group col-lg-12 col-md-12">
@@ -355,16 +371,16 @@
             </select>
         <br>
     </div>
-    <div class="col-lg-6 col-md-6" *ngIf="showDatepicker">
+    <div class="col-lg-6 col-md-6" >
         <!--calendar-->
         <div style="display:inline-block;text-align: center">
-            <datepicker [(ngModel)]="dt" [showWeeks]="false" (click)="hideCalendar()"></datepicker>
+           <!-- <datepicker [(ngModel)]="dt" [showWeeks]="false" ></datepicker>-->
         </div>
     </div>
     <br>
     <!-- Button -->
     <div class="form-group" style="text-align: center">
         <button class="btn btn-primary" (click)="onUpdatePerSubmit()" style="width: 25%">Actualizar</button>
-        <button class="btn btn-default" (click)="showDialogPerUp = !showDialogPerUp" style="width: 25%">Cancelar</button>
+        <button class="btn btn-default" (click)="onCancelPersonal(); showDialogPerUp = !showDialogPerUp " style="width: 25%">Cancelar</button>
     </div>
 </app-dialog>
