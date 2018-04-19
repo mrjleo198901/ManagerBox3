@@ -1003,14 +1003,14 @@
     <div class="ui-g-6">
       <label>Nombre*:</label>
       <input type="text" [(ngModel)]="nombre" id="nombre" name="nombre" placeholder="Nombre del cliente" class="form-control input-sm"
-        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
         tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeNombre($event)">
     </div>
     <div class="ui-g-6">
       <label>Apellido*:</label>
       <input type="text" [(ngModel)]="apellido" id="apellido" name="apellido" placeholder="Apellido del cliente" class="form-control input-sm"
-        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
         tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" (ngModelChange)="onChangeApellido($event)">
     </div>
@@ -1080,7 +1080,7 @@
     </div>
 
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6" style="padding-top: 0;">
-      <div class="panel-body" style="padding-top: 1; padding-bottom: 0">
+      <div class="panel-body" style="padding-top: 0; padding-bottom: 0">
         <label>Tipo*:</label>
         <p-dropdown [options]="tipoTarjetas" [(ngModel)]="selectedTipoTarjeta" [style]="{'width':'100%'}" name="tipoTarjetas" id="tipoTarjetas"
           [inputId]="tipoTarjetas" (onChange)="changeTC()">
@@ -1609,7 +1609,7 @@
   Set WB = nothing
   On Error Goto 0
   End Sub
-  
+
   Sub Print()
   OLECMDID_PRINT = 6
   OLECMDEXECOPT_DONTPROMPTUSER = 2
@@ -1617,7 +1617,7 @@
 
 
   On Error Resume Next
-  
+
   If DA Then
   call WB.ExecWB(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, 1)
 
@@ -1625,9 +1625,9 @@
   call WB.IOleCommandTarget.Exec(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, "", "", "")
 
   End If
-  
+
   If Err.Number <> 0 Then
-  If DA Then 
+  If DA Then
   Alert("Nothing Printed :" & err.number & " : " & err.description)
   Else
   HandleError()
@@ -1635,13 +1635,13 @@
   End If
   On Error Goto 0
   End Sub
-  
+
   If DA Then
   wbvers = "8856F961-340A-11D0-A96B-00C04FD705A2"
   Else
   wbvers = "EAB22AC3-30C1-11CF-A7EB-0000C05BAE0B"
   End If
-  
+
   document.write "<object ID=""WB"" WIDTH=0 HEIGHT=0 CLASSID=""CLSID:"
   document.write wbvers & """> </object>"
 
