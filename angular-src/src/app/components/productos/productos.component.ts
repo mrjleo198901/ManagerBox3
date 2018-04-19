@@ -2720,6 +2720,7 @@ export class ProductosComponent implements OnInit {
   }
 
   setCursorUpdateProve(event: any) {
+    
     setTimeout(function () {
       document.getElementById('nombreProveU').focus();
       document.getElementById("rucProveU").style.borderLeft = "5px solid #42A948"; /* green */
