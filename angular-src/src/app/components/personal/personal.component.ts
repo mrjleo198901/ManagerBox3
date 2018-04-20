@@ -50,7 +50,7 @@ export class PersonalComponent implements OnInit {
   //Atributos del cargo personal
   idCargoPersona: string;
   descripcionCargoPersonal: string;
-  estado: string;
+  estado: boolean;
   // varales como banderas
   banFechaNac: string;
   checked;
@@ -177,7 +177,7 @@ export class PersonalComponent implements OnInit {
           else
             this.listaPersonal[i].sexo = "Femenino";
 
-          if(x.estado=='1'){
+          if(x.estado==true){
             this.listaPersonal[i].estado='Activo';
           }else{
             this.listaPersonal[i].estado='Inactivo';
@@ -361,6 +361,12 @@ export class PersonalComponent implements OnInit {
     else
       this.sexo = 2;
     this.fechaNacimientoString = event.data.fecha_nacimiento;
+    if(event.data.estado=="Activo"){
+      this.estado = true;
+    }else{
+      this.estado = false;
+    }
+
     this.selectCargoPer = this.searchName(event.data.id_cargo, this.listaCargoPersonal);
 
     //this.banFechaNac = this.dt.toLocaleDateString();
@@ -402,11 +408,11 @@ export class PersonalComponent implements OnInit {
   }
   //MODIFICAR CARGO PERSONAL
   onUpdateTPSubmit() {
-    if (this.estado === 'Activo')
+   /* if (this.estado === true)
       this.estado = this.listaEstado[0].id;
     else
       this.estado = this.listaEstado[1].id;
-
+*/
     const cargoPersonal = {
       id: this.idCargoPersona,
       descripcion_cargo_personal: this.descripcionCargoPersonal,
@@ -532,16 +538,16 @@ export class PersonalComponent implements OnInit {
 
       case 1:
             if (this.cedula.length != 10)
-            document.getElementById(id).style.borderColor = "#FE2E2E";
+            document.getElementById(id).style.borderLeft = "5px solid #a94442";
             if (this.cedula.length != 13)
-              document.getElementById(id).style.borderColor = "#FE2E2E";
+              document.getElementById(id).style.borderLeft = "5px solid #a94442";
             if (this.cedula.length == 10 || this.cedula.length == 13) {
               if (!this.validateService.validarRucCedula(this.cedula)) {
                 this.messageGrowlService.notify('error', 'Error', 'Cedula/Ruc Inválido!');
-                document.getElementById(id).style.borderColor = "#FE2E2E";
+                document.getElementById(id).style.borderLeft = "5px solid #a94442";
               } else
               //document.getElementById("ci").style.borderColor = "#DADAD2";
-                document.getElementById(id).style.borderColor = "#5ff442";//green
+                document.getElementById(id).style.borderLeft = "5px solid #42A948";//green
             }
             break;
       case 2 : var aux =(<HTMLInputElement>document.getElementById(id)).value;
@@ -561,10 +567,10 @@ export class PersonalComponent implements OnInit {
          // console.log(aux);
         }
               if (this.validateService.validateEmail(correo)) {
-                document.getElementById(id).style.borderColor = "#5ff442";
+                document.getElementById(id).style.borderLeft = "5px solid #42A948";
               }
               else {
-                document.getElementById(id).style.borderColor = "#FF4B36";
+                document.getElementById(id).style.borderLeft = "5px solid #a94442";
               }break;
       default : alert('en validador poner opcion y el id para que funcione');
                break;
@@ -625,7 +631,7 @@ export class PersonalComponent implements OnInit {
       sexo: this.sexo,
       email: this.email,
       id_cargo: this.selectCargoPer._id,
-      estado:1
+      estado:true
     }
 
     //Required fields
@@ -673,7 +679,8 @@ export class PersonalComponent implements OnInit {
       telefono: this.telefono,
       sexo: this.sexo,
       email: this.email,
-      id_cargo: this.selectCargoPer._id
+      id_cargo: this.selectCargoPer._id,
+      estado: this.estado
     }
 
     //Required fields
@@ -759,7 +766,9 @@ export class PersonalComponent implements OnInit {
     this.cedula='';
   }
   onCanceCargo(){
-
+    this.descripcion='';
+    this.selectEstado='';
+    this.descripcionCargoPersonal='';
   }
 }
 

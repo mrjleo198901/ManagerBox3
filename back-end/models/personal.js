@@ -12,7 +12,7 @@ var personalSchema = new mongoose.Schema({
     email: String,
     id_cargo: String,
     modulosV: Array,
-    estado:String
+    estado:Boolean
 
 });
 
