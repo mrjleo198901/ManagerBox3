@@ -23,6 +23,7 @@ import { ProveedorService } from '../../services/proveedor.service';
 import { KardexService } from '../../services/kardex.service';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { MateriaPrimaService } from '../../services/materia-prima.service';
+import { CiudadService } from '../../services/ciudad.service';
 
 const URL = 'http://localhost:3000/api/imagen';
 @Component({
@@ -153,16 +154,6 @@ export class ProductosComponent implements OnInit {
   flagProdK = true;
   settingsProve = {};
   sourceProve: LocalDataSource = new LocalDataSource();
-  showDialogProve = false;
-  objProve = {
-    nombre_proveedor: '',
-    ruc: '',
-    direccion: '',
-    ciudad: '',
-    telefono: '',
-    correo: ''
-  };
-  validRuc = false;
   showComprasDetail = false;
   lstComprasProve: any[];
   showProveDialog;
@@ -221,7 +212,8 @@ export class ProductosComponent implements OnInit {
     private proveedorService: ProveedorService,
     private decimalPipe: DecimalPipe,
     private kardexService: KardexService,
-    private materiaPrimaService: MateriaPrimaService) {
+    private materiaPrimaService: MateriaPrimaService,
+    private ciudadService: CiudadService) {
 
     this.pathLogo = undefined;
     this.lstUnidades = [];
@@ -326,14 +318,7 @@ export class ProductosComponent implements OnInit {
           if (entry.subproductoV.length < 1)
             this.productosShow.push(entry);
         }
-        console.log(this.productosShow);
-
-        this.materiaPrimaService.getAll().subscribe(p => {
-          console.log(p);
-        }, err => {
-
-        })
-
+        //console.log(this.productosShow);
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
           if (this.lstProveedoresK.length > 0) {
@@ -427,7 +412,7 @@ export class ProductosComponent implements OnInit {
         localStorage.setItem('lstProductos', JSON.stringify(this.productos));
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
-        console.log(this.productos)
+        //console.log(this.productos)
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
@@ -527,53 +512,10 @@ export class ProductosComponent implements OnInit {
       return false;
     });
 
-    this.proveedorService.getAll().subscribe(data => {
-      localStorage.setItem('lstProveedor', JSON.stringify(data));
-      this.sourceProve = new LocalDataSource();
-      this.sourceProve.load(data);
-      this.settingsProve = {
-        mode: 'external',
-        noDataMessage: 'No existen registros',
-        columns: {
-          ruc: {
-            title: 'Ruc',
-            width: '14%'
-          },
-          nombre_proveedor: {
-            title: 'Nombre',
-            width: '25%'
-          },
-          direccion: {
-            title: 'Dirección',
-            width: '25%'
-          },
-          ciudad: {
-            title: 'Ciudad',
-            width: '12%'
-          },
-          telefono: {
-            title: 'Teléfono',
-            width: '12%'
-          },
-          compras: {
-            title: 'Compras',
-            width: '12%',
-            filter: false,
-            type: 'custom',
-            renderComponent: IconRenderComponent
-          }
-        },
-        actions: {
-          // columnTitle: '',
-          add: true,
-          edit: true,
-          delete: true
-        },
-        attr: {
-          class: 'table-bordered table-hover table-responsive'
-        }
-      }
-    })
+    /* Get Ciudades */
+    this.ciudadService.getAll().subscribe(countries => {
+      this.citiesEcu = countries;
+    });
 
     this.ngOnInitProve();
     this.ngOnInitProducto();
@@ -2042,7 +1984,7 @@ export class ProductosComponent implements OnInit {
       'contenido': 0
     };
     this.kardex.fecha = this.todayDate;
-    this.validRuc = false;
+    this.validRuc = true;
     this.showDialogK = false;
     this.showDialogKU = false;
   }
@@ -2626,58 +2568,108 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE PROVEEDORES*/
+  showDialogProve = false;
+  objProve = {
+    nombre_proveedor: '',
+    ruc: '',
+    direccion: '',
+    ciudad: undefined,
+    telefono: '',
+    correo: '',
+    comprasV: [],
+    representanteV: []
+  };
+  showRepresentante = false;
+  representante = {
+    nombre: '',
+    telefono: '',
+    correo: '',
+    descripcion: '',
+    value: ''
+  }
+  filteredCiudades: any[];
+  citiesEcu: any[];
+  ciudad: string;
+
+  filterCiudad(event) {
+    let query = event.query;
+    this.filteredCiudades = this.filterCiudadS(query, this.citiesEcu);
+  }
+
+  filterCiudadS(query, countries: any[]): any[] {
+    //in a real application, make a request to a remote url with the query and return filtered results, for demo we filter at client side
+    let filtered: any[] = [];
+    for (let i = 0; i < countries.length; i++) {
+      let country = countries[i];
+      if (country.nombre.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push(country);
+      }
+    }
+    return filtered;
+  }
+
   onChangeNombreProve($event) {
     this.objProve.nombre_proveedor = this.fs.toTitleCase(this.objProve.nombre_proveedor);
   }
 
+  validCorreo = true;
   onChangeEmail($event) {
     this.objProve.correo = this.objProve.correo.toLocaleLowerCase();
     if (this.validateService.validateEmail(this.objProve.correo)) {
-      document.getElementById("correo").style.borderColor = "#5ff442";
+      this.messageGrowlService.notify('success', 'Éxito', 'Correo válido!');
+      document.getElementById("correo").style.borderLeft = "5px solid #42A948"; /* green */
+      this.validCorreo = false;
     }
     else {
-      document.getElementById("correo").style.borderColor = "#FE2E2E";
+      document.getElementById("correo").style.borderLeft = "5px solid #a94442"; /* red */
+      this.validCorreo = true;
     }
   }
 
   onChangeEmailU($event) {
     this.objProve.correo = this.objProve.correo.toLocaleLowerCase();
     if (this.validateService.validateEmail(this.objProve.correo)) {
-      document.getElementById("correoU").style.borderColor = "#5ff442";
+      this.messageGrowlService.notify('success', 'Éxito', 'Correo válido!');
+      document.getElementById("correoU").style.borderLeft = "5px solid #42A948"; /* green */
+      this.validCorreo = false;
     }
     else {
-      document.getElementById("correoU").style.borderColor = "#FE2E2E";
+      document.getElementById("correoU").style.borderLeft = "5px solid #a94442"; /* red */
+      this.validCorreo = true;
     }
   }
 
+  validRuc = true;
   onChangeRuc() {
     if (this.objProve.ruc.length != 13) {
-      document.getElementById("rucProve").style.borderColor = "#FE2E2E";
-      this.validRuc = false;
+      document.getElementById("rucProve").style.borderLeft = "5px solid #a94442"; /* red */
+      this.validRuc = true;
     } else {
       if (!this.validateService.validarRucCedula(this.objProve.ruc)) {
-        this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
-        document.getElementById("rucProve").style.borderColor = "#FE2E2E";
-        this.validRuc = false;
-      } else {
-        document.getElementById("rucProve").style.borderColor = "#5ff442";
+        this.messageGrowlService.notify('error', 'Error', 'Ruc inválido!');
+        document.getElementById("rucProve").style.borderLeft = "5px solid #a94442"; /* red */
         this.validRuc = true;
+      } else {
+        this.messageGrowlService.notify('success', 'Éxito', 'Ruc válido!');
+        document.getElementById("rucProve").style.borderLeft = "5px solid #42A948"; /* green */
+        this.validRuc = false;
       }
     }
   }
 
   onChangeRucU() {
     if (this.objProve.ruc.length != 13) {
-      document.getElementById("rucProveU").style.borderColor = "#FE2E2E";
-      this.validRuc = false;
+      document.getElementById("rucProveU").style.borderLeft = "5px solid #a94442"; /* red */
+      this.validRuc = true;
     } else {
       if (!this.validateService.validarRucCedula(this.objProve.ruc)) {
         this.messageGrowlService.notify('error', 'Error', 'Cedula Inválida!');
-        document.getElementById("rucProveU").style.borderColor = "#FE2E2E";
-        this.validRuc = false;
-      } else {
-        document.getElementById("rucProveU").style.borderColor = "#5ff442";
+        document.getElementById("rucProveU").style.borderLeft = "5px solid #a94442"; /* red */
         this.validRuc = true;
+      } else {
+        this.messageGrowlService.notify('success', 'Éxito', 'Ruc válido!');
+        document.getElementById("rucProveU").style.borderLeft = "5px solid #42A948"; /* green */
+        this.validRuc = false;
       }
     }
   }
@@ -2695,9 +2687,11 @@ export class ProductosComponent implements OnInit {
       nombre_proveedor: '',
       ruc: '',
       direccion: '',
-      ciudad: '',
+      ciudad: undefined,
       telefono: '',
-      correo: ''
+      correo: '',
+      comprasV: [],
+      representanteV: []
     };
   }
 
@@ -2706,15 +2700,14 @@ export class ProductosComponent implements OnInit {
       this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
       return false;
     }
+
     this.proveedorService.register(this.objProve).subscribe(data => {
       this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
-      /*this.sourceProve.add(data);
-      this.sourceProve.refresh();*/
       this.lstProveedoresK.push(data);
       this.kardex.proveedor = data;
       this.ngOnInitProve();
-      this.ngOnInit();
       setOriginalColorsProve();
+      this.showDialogProve = false;
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -2726,32 +2719,20 @@ export class ProductosComponent implements OnInit {
     this.showComprasDetail = true;
   }
 
-  ngOnInitProve() {
-    this.objProve = {
-      nombre_proveedor: '',
-      ruc: '',
-      direccion: '',
-      ciudad: '',
-      telefono: '',
-      correo: ''
-    };
-    this.validRuc = false;
-    this.showDialogProve = false;
-    this.showDialogProveU = false;
-  }
-
   setCursorUpdateProve(event: any) {
+    
     setTimeout(function () {
       document.getElementById('nombreProveU').focus();
-      setOriginalColorsProve();
+      document.getElementById("rucProveU").style.borderLeft = "5px solid #42A948"; /* green */
+      document.getElementById("correoU").style.borderLeft = "5px solid #42A948"; /* green */
     }, 0);
-    this.validRuc = true;
     let lst = JSON.parse(localStorage.getItem('lstProveedor'));
     let prodUpdt = lst.filter(function (obj) {
       return obj._id.localeCompare(event.data._id) === 0;
     });
     this.objProve = prodUpdt[0];
-    //this.objProve = event.data;
+    this.validCorreo = false;
+    this.validRuc = false;
   }
 
   onDeleteProve(event): void {
@@ -2783,14 +2764,147 @@ export class ProductosComponent implements OnInit {
     }
     this.proveedorService.update(this.objProve).subscribe(data => {
       this.messageGrowlService.notify('info', 'Información', 'Modificación Existosa!');
-      this.sourceProve.update(this.objProve, this.objProve);
-      this.sourceProve.refresh();
       this.ngOnInitProve();
       setOriginalColorsProve();
+      this.showDialogProveU = false;
     }, err => {
       console.log(err);
       this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
     });
+  }
+
+  ngOnInitProve() {
+    this.objProve = {
+      nombre_proveedor: '',
+      ruc: '',
+      direccion: '',
+      ciudad: undefined,
+      telefono: '',
+      correo: '',
+      comprasV: [],
+      representanteV: []
+    };
+    this.validRuc = true;
+    this.showDialogProve = false;
+    this.showDialogProveU = false;
+
+    /* Get Proveedores*/
+    this.proveedorService.getAll().subscribe(data => {
+      localStorage.setItem('lstProveedor', JSON.stringify(data));
+      this.sourceProve = new LocalDataSource();
+      this.sourceProve.load(data);
+      this.settingsProve = {
+        mode: 'external',
+        noDataMessage: 'No existen registros',
+        columns: {
+          ruc: {
+            title: 'Ruc',
+            width: '12%'
+          },
+          nombre_proveedor: {
+            title: 'Nombre',
+            width: '20%'
+          },
+          direccion: {
+            title: 'Dirección',
+            width: '20%'
+          },
+          ciudad: {
+            title: 'Ciudad',
+            width: '12%',
+            valuePrepareFunction: (ciudad) => {
+              let fila = ciudad.nombre + '--' + ciudad.provincia;
+              return fila;
+            }
+          },
+          telefono: {
+            title: 'Teléfono',
+            width: '12%'
+          },
+          representanteV: {
+            title: 'Representante',
+            width: '14%',
+            valuePrepareFunction: (representanteV) => {
+              let fila = '';
+              for (let entry of representanteV) {
+                fila += entry.nombre + '--' + entry.telefono + ' ';
+              }
+              return fila;
+            }
+          },
+          compras: {
+            title: 'Compras',
+            width: '10%',
+            filter: false,
+            type: 'custom',
+            renderComponent: IconRenderComponent
+          }
+        },
+        actions: {
+          // columnTitle: '',
+          add: true,
+          edit: true,
+          delete: true
+        },
+        attr: {
+          class: 'table-bordered table-hover table-responsive'
+        }
+      }
+    })
+  }
+  //Representante
+  showRepre() {
+    this.showRepresentante = true;
+    setTimeout(function () {
+      document.getElementById('nombreRepre').focus();
+      setOriginalColorsRepre();
+    }, 0);
+  }
+
+  onChangeNombreRepre($event) {
+    this.representante.nombre = this.representante.nombre.trim();
+    this.representante.nombre = this.fs.toTitleCase(this.representante.nombre);
+  }
+
+  flagEmailRepre = true;
+  onChangeEmailRepre($event) {
+    this.representante.correo = this.representante.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.representante.correo)) {
+      this.messageGrowlService.notify('success', 'Éxito', 'Correo válido!');
+      document.getElementById("correoRepre").style.borderLeft = "5px solid #42A948"; /* green */
+      this.flagEmailRepre = false;
+    }
+    else {
+      document.getElementById("correoRepre").style.borderLeft = "5px solid #a94442"; /* red */
+      this.flagEmailRepre = true;
+    }
+  }
+
+  onChangeDescRepre($event) {
+    this.representante.descripcion = this.representante.descripcion.trim();
+  }
+
+  addRepre() {
+    this.representante.value = this.representante.nombre;
+    this.objProve.representanteV = [...this.objProve.representanteV, this.representante];
+    this.showRepresentante = false;
+    this.representante = {
+      nombre: '',
+      telefono: '',
+      correo: '',
+      descripcion: '',
+      value: ''
+    }
+    document.getElementById("correoRepre").style.borderLeft = "5px solid #a94442"; /* red */
+    this.flagEmailRepre = true;
+  }
+
+  doSomething() {
+    if (this.objProve.correo == undefined || this.objProve.correo == '') {
+      console.log('validar sin correo')
+    } else {
+      console.log('validar con correo')
+    }
   }
 
   /* GESTION DE PROMOCIONES */
@@ -3051,7 +3165,7 @@ export class ProductosComponent implements OnInit {
   ngOnInitMateriaPrima() {
     this.setDvMat();
     this.materiaPrimaService.getAll().subscribe(data => {
-      console.log(data);
+      //console.log(data);
       this.sourceMat = data;
     }, err => {
       console.log(err);
@@ -3123,6 +3237,15 @@ function setOriginalColorsPromoU() {
 function setOriginalColorsProve() {
   document.getElementById("rucProve").style.borderColor = "";
   document.getElementById("correo").style.borderColor = "";
+}
+
+function setOriginalColorsProveU() {
+  document.getElementById("rucProveU").style.borderColor = "";
+  document.getElementById("correoU").style.borderColor = "";
+}
+
+function setOriginalColorsRepre() {
+  document.getElementById("correoRepre").style.borderColor = "";
 }
 
 function setOriginalColorsKardex() {

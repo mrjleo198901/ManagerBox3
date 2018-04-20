@@ -14,7 +14,6 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <hr>
                         <h3 style="text-align:center">Listado de Cargos del Personal</h3>
-
                       <hr>
                     </div>
 
@@ -32,11 +31,10 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <hr>
                         <h3 style="text-align:center">Personal del Establecimiento</h3>
-                      <div class="form-hint" >En el presente formulario se gestiona las personas que trabajan en el establecimiento.</div>
-
                       <hr>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-hint" >En el presente formulario se gestiona las personas que trabajan en el establecimiento.</div>
                         <ng2-smart-table id="dtPersonal" [settings]="settingsPer" [source]="sourcePer" (create)="showDialogPerAdd = true;onCreatePer($event);setCursorPerAdd()"
                             (edit)="showDialogPerUp = !showDialogPerUp;onPerUpdate($event);setCursorPerAdd()" (delete)="onDeleteP($event)"
                             (userRowSelect)="showPersonal($event)">
