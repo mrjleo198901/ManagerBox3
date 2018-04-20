@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e11abc0-b26a-48af-b14c-2db113e5ad4f" name="Default" comment="finalizacion de refactorizacion modulos de roles cargo y personal previo a iniciar log de eventos">
+    <list default="true" id="8e11abc0-b26a-48af-b14c-2db113e5ad4f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ManagerBox3.iws" />
@@ -89,8 +89,13 @@
             <state relative-caret-position="663">
               <caret line="84" column="79" selection-start-line="84" selection-start-column="79" selection-end-line="84" selection-end-column="79" />
               <folding>
-                <element signature="e#0#58#0" expanded="true" />
-                <element signature="e#432#503#0" expanded="true" />
+                <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+                <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+                <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+                <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+                <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+                <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+                <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -111,8 +116,8 @@
       <file leaf-file-name="personal.component.ts" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="768" column="24" selection-start-line="768" selection-start-column="24" selection-end-line="768" selection-end-column="24" />
+            <state relative-caret-position="190">
+              <caret line="759" column="34" selection-start-line="759" selection-start-column="34" selection-end-line="759" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -180,10 +185,10 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="-7" />
+    <option name="y" value="2" />
+    <option name="width" value="1932" />
+    <option name="height" value="1045" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -623,7 +628,7 @@
       <workItem from="1524087407036" duration="1665000" />
       <workItem from="1524121761902" duration="1217000" />
       <workItem from="1524172940499" duration="1290000" />
-      <workItem from="1524242501479" duration="3878000" />
+      <workItem from="1524242501479" duration="5257000" />
     </task>
     <task id="LOCAL-00001" summary="80% modulo de personal y usuarios con activar y desactivar usuarios agrego calendarios y refactorizo la interfaz">
       <created>1524024360534</created>
@@ -639,22 +644,29 @@
       <option name="project" value="LOCAL" />
       <updated>1524245975934</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="finalizacion de refactorizacion modulos de roles cargo y personal previo a iniciar log de eventos">
+      <created>1524246656989</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1524246656989</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27739000" />
+    <option name="totallyTimeSpent" value="29118000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
-    <editor active="false" />
+    <frame x="-7" y="2" width="1932" height="1045" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.250264" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TypeScript Compiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13528138" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32719395" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33114034" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -768,8 +780,13 @@
         <state relative-caret-position="289">
           <caret line="83" column="79" selection-start-line="83" selection-start-column="79" selection-end-line="83" selection-end-column="79" />
           <folding>
-            <element signature="e#0#58#0" expanded="true" />
-            <element signature="e#432#503#0" expanded="true" />
+            <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+            <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -870,8 +887,13 @@
         <state relative-caret-position="289">
           <caret line="83" column="79" selection-start-line="83" selection-start-column="79" selection-end-line="83" selection-end-column="79" />
           <folding>
-            <element signature="e#0#58#0" expanded="true" />
-            <element signature="e#432#503#0" expanded="true" />
+            <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+            <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -993,8 +1015,13 @@
         <state relative-caret-position="289">
           <caret line="83" column="79" selection-start-line="83" selection-start-column="79" selection-end-line="83" selection-end-column="79" />
           <folding>
-            <element signature="e#0#58#0" expanded="true" />
-            <element signature="e#432#503#0" expanded="true" />
+            <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+            <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1110,8 +1137,13 @@
         <state relative-caret-position="170">
           <caret line="76" column="14" selection-start-line="76" selection-start-column="14" selection-end-line="76" selection-end-column="14" />
           <folding>
-            <element signature="e#0#58#0" expanded="true" />
-            <element signature="e#432#503#0" expanded="true" />
+            <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+            <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1154,8 +1186,13 @@
         <state relative-caret-position="663">
           <caret line="84" column="79" selection-start-line="84" selection-start-column="79" selection-end-line="84" selection-end-column="79" />
           <folding>
-            <element signature="e#0#58#0" expanded="true" />
-            <element signature="e#432#503#0" expanded="true" />
+            <marker date="1524245992236" expanded="true" signature="7:413" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="414:431" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="true" signature="439:1872" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="1873:1885" placeholder="/*...*/" />
+            <marker date="1524245992236" expanded="false" signature="1893:3378" placeholder="..." />
+            <marker date="1524245992236" expanded="true" signature="7967:8339" placeholder="{...}" />
+            <marker date="1524245992236" expanded="true" signature="8365:8368" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1242,8 +1279,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="768" column="24" selection-start-line="768" selection-start-column="24" selection-end-line="768" selection-end-column="24" />
+        <state relative-caret-position="190">
+          <caret line="759" column="34" selection-start-line="759" selection-start-column="34" selection-end-line="759" selection-end-column="34" />
           <folding />
         </state>
       </provider>
