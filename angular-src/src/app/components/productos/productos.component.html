@@ -34,12 +34,51 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Kardex">
+      <tab heading="Compras">
+
+      </tab>
+      <tab heading="Kardex" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Kardex</h3>
           <hr>
         </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">Datos del Producto</div>
+            <div class="panel-body">
+              <div class="col-xs-2" style="text-align: right">
+                <label class="labelDropdown">Producto:</label>
+              </div>
+              <div class="col-xs-4">
+                <p-dropdown [options]="productosShow" [(ngModel)]="selectedProdKardex" (onChange)="generateKardex()" placeholder="Selecciona.." [style]="{'width':'100%'}" filter="true">
+                  <ng-template let-brand pTemplate="item">
+                    <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+                      <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.label}}--{{brand.id_tipo_producto}}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <div class="col-xs-3">
+                <label class="labelDropdown">Stock Actual:</label>
+                <p style="display: inline">0</p>
+              </div>
+              <div class="col-xs-3">
+                <label class="labelDropdown">Cantidad Mínima:</label>
+                <p style="display: inline">0</p>
+              </div>
+              <div class="col-xs-3 col-xs-offset-6">
+                <label class="labelDropdown">Precio Costo:</label>
+                <p style="display: inline">0</p>
+              </div>
+              <div class="col-xs-3">
+                <label class="labelDropdown">Precio Venta:</label>
+                <p style="display: inline">0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <ng2-smart-table id="dtK" [settings]="settingsK" [source]="sourceK" (create)="showDialogK = true;setCursorAddK()" (edit)="showDialogKU = true;setCursorUpdateK($event)"
             (delete)="onDeleteK($event)" (userRowSelect)="showKardex($event)">
@@ -47,7 +86,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Proveedores" [active]="true">
+      <tab heading="Proveedores">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Proveedores</h3>
@@ -918,19 +957,6 @@
       <div class="ui-g-6">
         <div class="ui-g-12" style="padding:0px 0px 7px 0px">
           <label>Ciudad:</label>
-          <!--<p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" field="nombre"
-            id="ciudadProve" name="ciudadProve" [size]="30" placeholder="&nbsp;&nbsp;Ciudad Proveedor" [minLength]="1" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            tabindex="5"></p-autoComplete>-->
-          <!--<p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" name="ciudadProve"
-            [size]="30" placeholder="Ciudad Proveedor" [minLength]="1" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
-            tabindex="5">
-            <ng-template let-brand pTemplate="item">
-              <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
-                  <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.nombre}}--{{brand.provincia}}</div>
-              </div>
-          </ng-template>
-          </p-autoComplete>-->
-
           <p-autoComplete [(ngModel)]="objProve.ciudad" [suggestions]="filteredCiudades" (completeMethod)="filterCiudad($event)" [size]="30"
             [minLength]="1" placeholder="Ciudad Proveedor" field="nombre" name="ciudadProve">
             <ng-template let-brand pTemplate="item">
