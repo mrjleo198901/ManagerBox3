@@ -12,7 +12,8 @@ var personalSchema = new mongoose.Schema({
     email: String,
     id_cargo: String,
     modulosV: Array,
-    estado:Boolean
+    estado:Boolean,
+    permission:Array
 
 });
 
