@@ -254,6 +254,7 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit() {
+
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.todayDate = [initial[0], initial[1], initial[2]].join('/');
     this.es = {
@@ -318,7 +319,7 @@ export class ProductosComponent implements OnInit {
           if (entry.subproductoV.length < 1)
             this.productosShow.push(entry);
         }
-        //console.log(this.productosShow);
+        console.log(this.productosShow);
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
           if (this.lstProveedoresK.length > 0) {
@@ -1969,6 +1970,7 @@ export class ProductosComponent implements OnInit {
 
   /* GESTION DE KARDEX */
   checkedK = false;
+  selectedProdKardex: any;
   public getDate(): number {
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
@@ -1987,6 +1989,13 @@ export class ProductosComponent implements OnInit {
     this.validRuc = true;
     this.showDialogK = false;
     this.showDialogKU = false;
+    
+  }
+
+  generateKardex(){
+    console.log(this.selectedProdKardex);
+    console.log(this.productosShow);
+    
   }
 
   saveKardexOp() {
@@ -2720,7 +2729,7 @@ export class ProductosComponent implements OnInit {
   }
 
   setCursorUpdateProve(event: any) {
-    
+
     setTimeout(function () {
       document.getElementById('nombreProveU').focus();
       document.getElementById("rucProveU").style.borderLeft = "5px solid #42A948"; /* green */

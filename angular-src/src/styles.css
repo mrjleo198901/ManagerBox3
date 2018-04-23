@@ -21,6 +21,10 @@
     font-size: 14px;
   }
 
+  .labelDropdown{
+    line-height:27.5px;
+  }
+
   /*bootswatch*/
   html{
       font-family:sans-serif;

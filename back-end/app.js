@@ -62,6 +62,7 @@ app.use('/api', require('./routes/cajaApi'));
 app.use('/api', require('./routes/userApi'));
 app.use('/api', require('./routes/materiaPrimaApi'));
 app.use('/api', require('./routes/ciudadApi'));
+app.use('/api', require('./routes/kardexApi'));
 
 var profileController = require('./routes/uploadFiles');
 
