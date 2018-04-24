@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   displayCaja = false;
   card: CardComponent;
   permisos=[];
+  listCargo=[];
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -52,8 +53,13 @@ export class LoginComponent implements OnInit {
       this.username = user.username;
       this.password = user.password;
       document.getElementById('username').style.backgroundColor = '#FAFFBF';
-      document.getElementById('password').style.backgroundColor = '#FAFFBF'
+      document.getElementById('password').style.backgroundColor = '#FAFFBF';
+
+
+
     }
+
+
 
   }
 
@@ -78,16 +84,23 @@ export class LoginComponent implements OnInit {
             localStorage.removeItem('rememberMe');
           }
           //Check cajero
-          this.personalService.getByCedula(user.username).subscribe(data => {
+          this.personalService.getByCedulaJoinCargo(user.username).subscribe(data => {
               /*trae el personal*/
-            if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
-              CardComponent.updateDisplayCaja.next(true);
-              this.router.navigate(['card']);
-            }
-            if (data[0].id_cargo === '59937c6337eac33cd4819873') {
-              this.router.navigate(['facturacion']);
-            }
 
+
+
+          console.log(data[0]);
+            this.router.navigate(['dashboard']);
+            //if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
+            /*if (data[0].id_cargo === data[0].id_cargo._id) {
+              CardComponent.updateDisplayCaja.next(true);
+              CardComponent.updateDisplayCaja.next(true);
+              this.router.navigate(['dashboard']);
+            }
+            if (data[0].id_cargo.descripcion_cargo_personal === 'Caja') {
+              this.router.navigate(['dashboard']);
+            }
+*/
             /* generar los permisos*/
 
             localStorage.setItem('permisos', JSON.stringify(data[0].permission));

@@ -1,30 +1,45 @@
 
 <br>
-<div class="jumbotron text-center">
-  <img class="center-block" src="assets/img/ManagerBox1.svg" style="max-width: 15%; max-height: 15%;">
+
+<div class="row " >
+<div class="col-md-6  col-xs-0 col-sm-0">
+  <br>
+  <br>
+<div class="jumbotron text-center" >
+
+
+  <img class="center-block" src="assets/img/ManagerBox1.svg" style="max-width: 15%; max-height: 15%;  vertical-align:middle;" >
   <h1>ManagerBox App</h1>
   <p class="lead">Bienvenido al sistema de administracion integral de tu negocio</p>
   <div>
     <!--<a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/register']">Registro</a>
     <a *ngIf="!authService.loggedIn()" class="btn btn-default" [routerLink]="['/login']">Ingresar</a>-->
-    <a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/login']">Ingresar</a>
+    <!--<a *ngIf="!authService.loggedIn()" class="btn btn-primary" [routerLink]="['/login']">Ingresar</a>-->
   </div>
+  <div class="row">
+    <br>
+    <div class="col-md-4 ">
+      <h3>Flexible</h3>
+      <h5>Accede a traves de tu navegador, no necesitas instalar la aplicación</h5>
+    </div>
+    <div class="col-md-4">
+      <h3>Rapido</h3>
+      <h5>Con el uso de tecnologías nuevas asegura tiempos de respuesta mínimos</h5>
+    </div>
+    <div class="col-md-4">
+      <h3>Seguro</h3>
+      <h5>El sistema esta asegurado con tokens, lo que vuelve al sistema infranqueable</h5>
+    </div>
+  </div>
+    </div>
+
+  </div>
+
+
+  <app-login class="col-md-6 col-xs-12"></app-login>
+
 </div>
 
-<div class="row">
-  <div class="col-md-4">
-    <h3>Flexible</h3>
-    <p>Accede a traves de tu navegador, no necesitas instalar la aplicación</p>
-  </div>
-  <div class="col-md-4">
-    <h3>Rapido</h3>
-    <p>Con el uso de tecnologías nuevas asegura tiempos de respuesta mínimos</p>
-  </div>
-  <div class="col-md-4">
-    <h3>Seguro</h3>
-    <p>El sistema esta asegurado con tokens, lo que vuelve al sistema infranqueable</p>
-  </div>
-</div>
 
 <div style="text-align: center">
   <p>© 2017 Riobytes Solutions, Cia. Ltda., Todos los derechos reservados. Managerbox es una marca registrada de Riobytes Solutions,

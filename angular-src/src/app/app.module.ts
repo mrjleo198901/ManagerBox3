@@ -89,6 +89,7 @@ const appRoutes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard] },
   { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: HomeComponent},
 
   { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard] }
 ]

@@ -82,7 +82,7 @@ export class NavbarComponent implements OnInit {
     let us = JSON.parse(localStorage.getItem('user'));
     this.authService.logout();
     localStorage.removeItem('permisos');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
    /* this.cajaService.getActiveCajaById('open', us.idPersonal).subscribe(data => {
       console.log(data);
       if (data.length > 0) {

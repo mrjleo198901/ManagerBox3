@@ -58,5 +58,13 @@ export class PersonalService {
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
+  getByCedulaJoinCargo(cedula) {
+    let params: URLSearchParams = new URLSearchParams();
+    params.set('cedula', cedula);
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get(this.url + 'personalJoinCargo/', { search: params })
+      .map(res => res.json())
+  }
 
 }
