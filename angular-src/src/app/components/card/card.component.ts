@@ -370,6 +370,7 @@ export class CardComponent implements OnInit {
     this.validateService.getDateTimeStamp();
 
     setTimeout(function () {
+      if (document.getElementById('cedulaNew') !== null)
       document.getElementById('cedulaNew').focus();
     }, 50)
     document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
@@ -2805,7 +2806,7 @@ export class CardComponent implements OnInit {
 
 
           this.updateAC();
-          //print 
+          //print
           this.printOrdenSalidaEgreso();
           this.setDvInsertEgreso();
         } else {

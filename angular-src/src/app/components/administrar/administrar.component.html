@@ -1,3 +1,5 @@
+<app-navbar>
+</app-navbar>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
     <h2>Administración</h2>
@@ -399,7 +401,7 @@
     <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-6">
       <label>Nombre*:</label>
       <input type="text" [(ngModel)]="objCoverUpdate.nombre" (ngModelChange)="onChangeNombreCoverU($event)" id="nombreU" name="nombreU"
-        placeholder="Nombre único de cover" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de cover" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
     </div>

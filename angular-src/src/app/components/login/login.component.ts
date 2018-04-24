@@ -29,14 +29,14 @@ export class LoginComponent implements OnInit {
   nombres;
   displayCaja = false;
   card: CardComponent;
-
+  permisos=[];
   constructor(
     private authService: AuthService,
     private router: Router,
     private messageGrowlService: MessageGrowlService,
     private validateService: ValidateService,
     private formatterService: FormatterService,
-    private personalService: PersonalService,
+    private personalService: PersonalService
   ) { }
 
   ngOnInit() {
@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit {
           }
           //Check cajero
           this.personalService.getByCedula(user.username).subscribe(data => {
-
+              /*trae el personal*/
             if (data[0].id_cargo === '59a054715c0bf80b7cab502d') {
               CardComponent.updateDisplayCaja.next(true);
               this.router.navigate(['card']);
@@ -87,6 +87,11 @@ export class LoginComponent implements OnInit {
             if (data[0].id_cargo === '59937c6337eac33cd4819873') {
               this.router.navigate(['facturacion']);
             }
+
+            /* generar los permisos*/
+
+            localStorage.setItem('permisos', JSON.stringify(data[0].permission));
+
           }, err => {
             console.log(err);
           })

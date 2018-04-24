@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e11abc0-b26a-48af-b14c-2db113e5ad4f" name="Default" comment="fina">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/angular-src/src/app/ModelsConfig/configListPermissions.ts" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="8e11abc0-b26a-48af-b14c-2db113e5ad4f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/app.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/app.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/administrar/administrar.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/administrar/administrar.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.ts" afterPath="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/clientes/clientes.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/clientes/clientes.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/configuration/configuration.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/configuration/configuration.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/facturacion/facturacion.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/facturacion/facturacion.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/home/home.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/home/home.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.ts" afterPath="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.ts" afterPath="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.ts" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts" afterPath="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/back-end/models/personal.js" afterPath="$PROJECT_DIR$/back-end/models/personal.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/back-end/routes/users.js" afterPath="$PROJECT_DIR$/back-end/routes/users.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html" afterPath="$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html" />
     </list>
     <ignored path="ManagerBox3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,99 +39,226 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="personal.component.ts" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
+      <file leaf-file-name="navbar.component.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="813" column="33" selection-start-line="813" selection-start-column="33" selection-end-line="813" selection-end-column="33" />
+            <state relative-caret-position="187">
+              <caret line="11" column="162" selection-start-line="11" selection-start-column="74" selection-end-line="11" selection-end-column="162" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login.component.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/login/login.component.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="55" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
               <folding>
-                <element signature="e#147#213#0" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="personal.service.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/angular-src/src/app/services/personal.service.ts">
+      <file leaf-file-name="card.component.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/card/card.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="globals.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/globals.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="29" column="11" selection-start-line="29" selection-start-column="11" selection-end-line="29" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="personalApi.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/back-end/routes/personalApi.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="personal.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/back-end/models/personal.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="database.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/back-end/config/database.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="80" selection-start-line="1" selection-start-column="80" selection-end-line="1" selection-end-column="80" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userApi.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/back-end/routes/userApi.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/back-end/app.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="4505">
+              <caret line="376" column="25" selection-start-line="376" selection-start-column="25" selection-end-line="376" selection-end-column="25" />
               <folding>
-                <marker date="1524522410577" expanded="true" signature="688:748" placeholder="/*...*/" />
-                <marker date="1524522410577" expanded="true" signature="970:1007" placeholder="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="personal.component.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="282" column="73" selection-start-line="282" selection-start-column="73" selection-end-line="282" selection-end-column="73" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
+                <element signature="e#0#127#0" expanded="true" />
+                <marker date="1524541833572" expanded="true" signature="75690:77424" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="75701:75786" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="75715:75774" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="75836:77424" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="75885:75924" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76023:76055" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="76056:76771" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76079:76097" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76173:76191" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76269:76287" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76366:76384" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76465:76483" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76558:76576" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76670:76688" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76835:76867" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="76868:77424" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="76946:77340" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="76983:77040" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77088:77144" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77194:77231" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77277:77314" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="77483:77876" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="77495:77531" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77578:77613" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77695:77711" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77798:77814" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="77983:78015" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="78016:79757" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78103:78121" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78162:78200" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78300:78318" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78358:78396" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78434:78452" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78497:78535" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78635:78653" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78698:78736" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78774:78792" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78826:78864" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78902:78920" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="78953:78991" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79091:79109" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79137:79175" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79213:79231" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79263:79301" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79421:79439" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79471:79509" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79543:79557" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79570:79588" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79624:79662" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="79883:79915" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="80046:80064" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="80131:80149" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80239:80277" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80465:80497" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="80498:81027" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80521:80539" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80629:80647" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80707:80725" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80765:80780" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80839:80857" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="80938:80956" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81154:81186" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81187:82133" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81200:81575" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81212:81230" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81266:81286" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81287:81408" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81429:81448" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81449:81570" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81588:81756" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81600:81618" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81769:81940" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81781:81799" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="81953:82120" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="81965:81983" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="82213:82293" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="82294:82502" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="82935:85343" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="82948:83041" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="82964:83027" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="83093:85331" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83129:83168" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83271:83303" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="83304:83858" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83331:83349" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83431:83449" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83540:83558" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83637:83655" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83753:83771" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="83927:83959" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="83960:85316" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84051:84065" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="84066:84278" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84078:84096" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84134:84154" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="84155:84273" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84301:84315" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="84316:84527" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84328:84346" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84384:84403" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="84404:84522" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84554:84572" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84683:84701" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84812:84830" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="84943:84961" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="85074:85092" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="85200:85218" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="100449:102676" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="100462:100555" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="100478:100541" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="100607:102662" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="100643:100682" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="100770:100802" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="100803:101357" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="100830:100848" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="100930:100948" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101039:101057" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101136:101154" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101252:101270" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101426:101458" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="101459:102647" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101550:101564" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="101565:101693" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101577:101595" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101633:101653" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="101654:101688" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101716:101730" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="101731:101858" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101743:101761" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101799:101818" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="101819:101853" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="101885:101903" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="102014:102032" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="102143:102161" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="102274:102292" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="102405:102423" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="102531:102549" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="109380:111044" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="109391:109476" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="109405:109464" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="109526:111044" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="109575:109614" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="109713:109745" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="109746:110449" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="109769:109787" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="109863:109881" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="109959:109977" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110056:110074" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110155:110173" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110236:110254" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110348:110366" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110513:110545" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="110546:111044" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="110624:110951" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110649:110706" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110742:110779" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110817:110854" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="110888:110925" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="111035:111044" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="111104:111489" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="111116:111154" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111201:111220" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111302:111321" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111408:111427" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111604:111636" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="111637:112902" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111724:111742" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111783:111803" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111903:111921" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="111990:112008" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112144:112162" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112236:112254" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112317:112335" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112459:112477" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112534:112552" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112695:112713" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="112774:112792" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113028:113060" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="113191:113209" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="113276:113294" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113384:113422" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113606:113638" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="113639:114154" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113662:113680" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113770:113788" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113848:113866" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113906:113921" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="113979:113997" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="114069:114087" placeholder="..." />
+                <marker date="1524541833572" expanded="false" signature="114232:114312" placeholder="..." />
+                <marker date="1524541833572" expanded="true" signature="114313:114521" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -143,7 +280,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.html" />
         <option value="$PROJECT_DIR$/angular-src/src/app/components/card/prueba.html" />
         <option value="$PROJECT_DIR$/angular-src/package.json" />
         <option value="$PROJECT_DIR$/back-end/app.js" />
@@ -154,10 +290,24 @@
         <option value="$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.ts" />
         <option value="$PROJECT_DIR$/back-end/routes/users.js" />
         <option value="$PROJECT_DIR$/back-end/models/personal.js" />
-        <option value="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html" />
         <option value="$PROJECT_DIR$/angular-src/src/app/services/personal.service.ts" />
         <option value="$PROJECT_DIR$/angular-src/src/app/ModelsConfig/configListPermissions.ts" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.ts" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.ts" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/app.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/facturacion/facturacion.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/clientes/clientes.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/configuration/configuration.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/home/home.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/administrar/administrar.component.html" />
         <option value="$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/card/card.component.ts" />
+        <option value="$PROJECT_DIR$/angular-src/src/app/components/login/login.component.html" />
       </list>
     </option>
   </component>
@@ -167,8 +317,8 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-6" />
-    <option name="y" value="1" />
+    <option name="x" value="-7" />
+    <option name="y" value="2" />
     <option name="width" value="1932" />
     <option name="height" value="1045" />
   </component>
@@ -197,6 +347,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -337,10 +489,544 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="subprod-render" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="register" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="profile" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="productos" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="personal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="navbar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="login" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inventario" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="home" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="facturacion" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dashboard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="coverprod-render" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="confirm-dialog" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="configuration" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="clientes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="card" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ManagerBox3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="administrar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -351,122 +1037,6 @@
     <property name="editor.config.accepted" value="true" />
     <property name="js-jscs-nodeInterpreter" value="C:\Program Files\nodejs\node.exe" />
     <property name="nodejs_interpreter_path" value="C:\Program Files\nodejs\node" />
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/misc.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.ts</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/angular-src/src/styles.css</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/back-end/app.js</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/back-end/models/kardex.js</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/back-end/routes/kardexApi.js</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Node.js.app.js">
     <configuration default="false" name="app.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="project" path-to-js-file="app.js" working-dir="$PROJECT_DIR$/back-end">
@@ -557,7 +1127,8 @@
       <workItem from="1524121761902" duration="1217000" />
       <workItem from="1524172940499" duration="1290000" />
       <workItem from="1524242501479" duration="14240000" />
-      <workItem from="1524519480861" duration="3410000" />
+      <workItem from="1524519480861" duration="10551000" />
+      <workItem from="1524536285429" duration="5469000" />
     </task>
     <task id="LOCAL-00001" summary="80% modulo de personal y usuarios con activar y desactivar usuarios agrego calendarios y refactorizo la interfaz">
       <created>1524024360534</created>
@@ -587,24 +1158,31 @@
       <option name="project" value="LOCAL" />
       <updated>1524258065630</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="final modulo de permisos">
+      <created>1524524273415</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1524524273415</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41511000" />
+    <option name="totallyTimeSpent" value="54121000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="1" width="1932" height="1045" extended-state="0" />
+    <frame x="-7" y="2" width="1932" height="1045" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17106652" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="TypeScript Compiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1347207" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2993421" sideWeight="0.5021119" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="TypeScript Compiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1347207" sideWeight="0.49577615" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2993421" sideWeight="0.5084477" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267544" sideWeight="0.49788806" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267544" sideWeight="0.49788806" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3263965" sideWeight="0.49577615" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2993421" sideWeight="0.49788806" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2993421" sideWeight="0.49155226" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -632,7 +1210,8 @@
     <MESSAGE value="80% modulo de personal y usuarios con activar y desactivar usuarios agrego calendarios y refactorizo la interfaz" />
     <MESSAGE value="finalizacion de refactorizacion modulos de roles cargo y personal previo a iniciar log de eventos" />
     <MESSAGE value="test push" />
-    <option name="LAST_COMMIT_MESSAGE" value="test push" />
+    <MESSAGE value="final modulo de permisos" />
+    <option name="LAST_COMMIT_MESSAGE" value="final modulo de permisos" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -641,146 +1220,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#147#213#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/back-end/routes/users.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/styles.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="12" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/node_modules/ng2-smart-table/ng2-smart-table.component.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="68" column="30" selection-start-line="68" selection-start-column="30" selection-end-line="68" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/app.module.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="83" column="79" selection-start-line="83" selection-start-column="79" selection-end-line="83" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#50#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#147#213#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/back-end/routes/users.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="127" selection-start-line="21" selection-start-column="127" selection-end-line="21" selection-end-column="127" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/angular-src/src/styles.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -833,6 +1272,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -841,8 +1281,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -851,9 +1291,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -861,6 +1299,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -929,27 +1368,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9180">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/back-end/routes/users.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="12" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -981,10 +1404,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <marker date="1524522410577" expanded="true" signature="688:748" placeholder="/*...*/" />
-            <marker date="1524522410577" expanded="true" signature="970:1007" placeholder="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -992,7 +1411,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="80" selection-start-line="1" selection-start-column="80" selection-end-line="1" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1000,7 +1418,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1008,7 +1425,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="17" column="3" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1016,7 +1432,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
           <caret line="29" column="11" selection-start-line="29" selection-start-column="11" selection-end-line="29" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1024,7 +1439,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1044,23 +1458,373 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="282" column="73" selection-start-line="282" selection-start-column="73" selection-end-line="282" selection-end-column="73" />
+        <state relative-caret-position="124">
+          <caret line="66" column="14" selection-start-line="66" selection-start-column="14" selection-end-line="66" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/login/login.component.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/app.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/facturacion/facturacion.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/clientes/clientes.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/configuration/configuration.component.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/configuration/configuration.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
           <folding>
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#p-panel#0;n#div#1;n#div#1;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/home/home.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/profile/profile.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/register/register.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/administrar/administrar.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/productos/productos.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="813" column="33" selection-start-line="813" selection-start-column="33" selection-end-line="813" selection-end-column="33" />
+        <state relative-caret-position="177">
+          <caret line="98" column="55" selection-start-line="98" selection-start-column="55" selection-end-line="98" selection-end-column="55" />
           <folding>
             <element signature="e#147#213#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/card/card.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="72" column="39" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/personal/personal.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="133" column="27" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/inventario/inventario.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/navbar/navbar.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="162" selection-start-line="11" selection-start-column="74" selection-end-line="11" selection-end-column="162" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/card/card.component.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4505">
+          <caret line="376" column="25" selection-start-line="376" selection-start-column="25" selection-end-line="376" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#127#0" expanded="true" />
+            <marker date="1524541833572" expanded="true" signature="75690:77424" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="75701:75786" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="75715:75774" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="75836:77424" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="75885:75924" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76023:76055" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="76056:76771" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76079:76097" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76173:76191" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76269:76287" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76366:76384" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76465:76483" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76558:76576" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76670:76688" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76835:76867" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="76868:77424" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="76946:77340" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="76983:77040" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77088:77144" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77194:77231" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77277:77314" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="77483:77876" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="77495:77531" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77578:77613" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77695:77711" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77798:77814" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="77983:78015" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="78016:79757" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78103:78121" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78162:78200" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78300:78318" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78358:78396" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78434:78452" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78497:78535" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78635:78653" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78698:78736" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78774:78792" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78826:78864" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78902:78920" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="78953:78991" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79091:79109" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79137:79175" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79213:79231" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79263:79301" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79421:79439" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79471:79509" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79543:79557" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79570:79588" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79624:79662" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="79883:79915" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="80046:80064" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="80131:80149" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80239:80277" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80465:80497" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="80498:81027" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80521:80539" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80629:80647" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80707:80725" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80765:80780" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80839:80857" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="80938:80956" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81154:81186" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81187:82133" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81200:81575" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81212:81230" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81266:81286" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81287:81408" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81429:81448" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81449:81570" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81588:81756" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81600:81618" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81769:81940" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81781:81799" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="81953:82120" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="81965:81983" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="82213:82293" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="82294:82502" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="82935:85343" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="82948:83041" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="82964:83027" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="83093:85331" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83129:83168" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83271:83303" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="83304:83858" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83331:83349" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83431:83449" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83540:83558" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83637:83655" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83753:83771" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="83927:83959" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="83960:85316" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84051:84065" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="84066:84278" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84078:84096" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84134:84154" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="84155:84273" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84301:84315" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="84316:84527" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84328:84346" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84384:84403" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="84404:84522" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84554:84572" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84683:84701" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84812:84830" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="84943:84961" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="85074:85092" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="85200:85218" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="100449:102676" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="100462:100555" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="100478:100541" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="100607:102662" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="100643:100682" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="100770:100802" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="100803:101357" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="100830:100848" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="100930:100948" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101039:101057" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101136:101154" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101252:101270" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101426:101458" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="101459:102647" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101550:101564" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="101565:101693" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101577:101595" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101633:101653" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="101654:101688" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101716:101730" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="101731:101858" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101743:101761" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101799:101818" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="101819:101853" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="101885:101903" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="102014:102032" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="102143:102161" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="102274:102292" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="102405:102423" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="102531:102549" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="109380:111044" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="109391:109476" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="109405:109464" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="109526:111044" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="109575:109614" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="109713:109745" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="109746:110449" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="109769:109787" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="109863:109881" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="109959:109977" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110056:110074" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110155:110173" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110236:110254" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110348:110366" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110513:110545" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="110546:111044" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="110624:110951" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110649:110706" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110742:110779" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110817:110854" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="110888:110925" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="111035:111044" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="111104:111489" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="111116:111154" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111201:111220" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111302:111321" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111408:111427" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111604:111636" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="111637:112902" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111724:111742" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111783:111803" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111903:111921" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="111990:112008" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112144:112162" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112236:112254" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112317:112335" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112459:112477" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112534:112552" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112695:112713" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="112774:112792" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113028:113060" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="113191:113209" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="113276:113294" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113384:113422" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113606:113638" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="113639:114154" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113662:113680" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113770:113788" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113848:113866" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113906:113921" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="113979:113997" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="114069:114087" placeholder="..." />
+            <marker date="1524541833572" expanded="false" signature="114232:114312" placeholder="..." />
+            <marker date="1524541833572" expanded="true" signature="114313:114521" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/angular-src/src/app/components/login/login.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="55" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

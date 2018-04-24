@@ -16,7 +16,14 @@ export class NavbarComponent implements OnInit {
 
   public user;
   public static updateUserStatus: Subject<boolean> = new Subject();
-
+  public permissions=[];
+  public personal;
+  public atencion;
+  public administracion;
+  public clientes;
+  public productos;
+  public reportes;
+  public ventas;
   constructor(
     public authService: AuthService,
     private router: Router,
@@ -51,25 +58,43 @@ export class NavbarComponent implements OnInit {
       })
     })
 
+
+    //console.log(this.permissions);
+
+
   }
 
   ngOnInit() {
+    this.permissions=JSON.parse(localStorage.getItem('permisos'));
+    if(this.permissions!==null){
 
+      this.personal=this.permissions[3].checked;
+      this.atencion=this.permissions[1].checked;
+      this.administracion=this.permissions[0].checked;
+      this.clientes=this.permissions[2].checked;
+      this.productos=this.permissions[4].checked;
+      this.reportes=this.permissions[5].checked;
+      this.ventas=this.permissions[6].checked;
+    }
   }
 
   onLogOutClick() {
     let us = JSON.parse(localStorage.getItem('user'));
-    this.cajaService.getActiveCajaById('open', us.idPersonal).subscribe(data => {
+    this.authService.logout();
+    localStorage.removeItem('permisos');
+    this.router.navigate(['/login']);
+   /* this.cajaService.getActiveCajaById('open', us.idPersonal).subscribe(data => {
       console.log(data);
       if (data.length > 0) {
         CardComponent.checkOpenCaja.next(true);
       }
-      /*this.authService.logout();
+
+
       this.messageGrowlService.notify('info', 'Información', 'Saliste!');
-      this.router.navigate(['/login']);*/
+      this.router.navigate(['/login']);
       return false;
     }, err => {
       console.log(err)
-    })
+    })*/
   }
 }

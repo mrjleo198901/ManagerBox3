@@ -1,3 +1,5 @@
+<app-navbar>
+</app-navbar>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
         <h2>Ventas</h2>
@@ -301,7 +303,7 @@
     Set WB = nothing
     On Error Goto 0
     End Sub
-    
+
     Sub Print()
     OLECMDID_PRINT = 6
     OLECMDEXECOPT_DONTPROMPTUSER = 2
@@ -309,7 +311,7 @@
 
 
     On Error Resume Next
-    
+
     If DA Then
     call WB.ExecWB(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, 1)
 
@@ -317,9 +319,9 @@
     call WB.IOleCommandTarget.Exec(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER, "", "", "")
 
     End If
-    
+
     If Err.Number <> 0 Then
-    If DA Then 
+    If DA Then
     Alert("Nothing Printed :" & err.number & " : " & err.description)
     Else
     HandleError()
@@ -327,13 +329,13 @@
     End If
     On Error Goto 0
     End Sub
-    
+
     If DA Then
     wbvers = "8856F961-340A-11D0-A96B-00C04FD705A2"
     Else
     wbvers = "EAB22AC3-30C1-11CF-A7EB-0000C05BAE0B"
     End If
-    
+
     document.write "<object ID=""WB"" WIDTH=0 HEIGHT=0 CLASSID=""CLSID:"
     document.write wbvers & """> </object>"
 

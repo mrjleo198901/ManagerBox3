@@ -97,7 +97,7 @@ export class PersonalComponent implements OnInit {
     this.idCargoPersona = "";
     this.banCalendar = 1;
     this.tagOriginal=ConfigListPermissions.permissions;
-    console.log(this.tagOriginal);
+    //console.log(this.tagOriginal);
     this.es = {
       firstDayOfWeek: 1,
       dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
@@ -148,7 +148,7 @@ export class PersonalComponent implements OnInit {
     ];
     //Load data to localDataSource
     this.cargoPersonalService.getAll().subscribe(tp => {
-        console.log(tp);
+       // console.log(tp);
       this.listaCargoPersonal = tp;
      // this.listaCargoPersonal2.slice(tp);
       this.sourceCargoPer = new LocalDataSource();
@@ -219,7 +219,7 @@ export class PersonalComponent implements OnInit {
   }
 
   getCheck() {
-    console.log(this.modulosPersonal)
+   // console.log(this.modulosPersonal)
   }
 
   hideDetails() {
@@ -756,8 +756,8 @@ export class PersonalComponent implements OnInit {
 
   /* LOG ACTIVITY */
   generateLog() {
-    console.log(this.fecha_desde);
-    console.log(this.fecha_hasta);
+   /* console.log(this.fecha_desde);
+    console.log(this.fecha_hasta);*/
     console.log(this.validateService.getDateTimeEsPrimeNG())
   }
 
@@ -809,7 +809,7 @@ export class PersonalComponent implements OnInit {
     var id=this.showPersona._id;
 
     var resp=this.listaPersonal.filter((persona:any)=>persona._id===id);
-    console.log(resp);
+   // console.log(resp);
     resp[0].id_cargo=resp1[0]._id;
     resp[0].permission=this.tags;
 
