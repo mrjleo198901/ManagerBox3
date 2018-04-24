@@ -49,6 +49,7 @@ import { CajaService } from './services/caja.service';
 import { ConfigurationService } from './services/configuration.service';
 import { MateriaPrimaService } from './services/materia-prima.service';
 import { CiudadService } from './services/ciudad.service';
+import { ComprasService } from './services/compras.service';
 /*angular-2-ui-framework*/
 import { TabsModule } from './com/tabs/tabs.module';
 import { DatepickerModule } from './com/datepicker/datepicker.module';
@@ -143,7 +144,7 @@ const appRoutes: Routes = [
     TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule, PasswordModule,
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule, AutoCompleteModule
   ],
-  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService, ConfigurationService, CiudadService,
+  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService, ConfigurationService, CiudadService, ComprasService,
     CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService, CoverService, CajaService, MateriaPrimaService,
     FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, SlicePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService],
   bootstrap: [AppComponent]

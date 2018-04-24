@@ -25,6 +25,21 @@
     line-height:27.5px;
   }
 
+  .labelInput{
+    line-height: 15px;
+  }
+
+  .ids{
+    /*display: inline; */
+    background-color: lightgray; 
+    font-size: 21px;
+  }
+
+  .buttonFooter{
+      padding: 0px 10px 0px 10px;
+      font-size: 8px;
+  }
+
   /*bootswatch*/
   html{
       font-family:sans-serif;

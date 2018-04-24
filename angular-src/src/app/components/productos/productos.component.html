@@ -34,10 +34,19 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Compras">
-
+      <tab heading="Compras" [active]="true">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <hr>
+          <h3 style="text-align: center">Compras</h3>
+          <hr>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <ng2-smart-table id="dtC" [settings]="settingsC" [source]="sourceC" (create)="showDialogC = true;setCursorAddC()" (edit)="showDialogCU = true;setCursorUpdateC($event)">
+          </ng2-smart-table>
+          <hr>
+        </div>
       </tab>
-      <tab heading="Kardex" [active]="true">
+      <tab heading="Kardex">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Kardex</h3>
@@ -51,7 +60,8 @@
                 <label class="labelDropdown">Producto:</label>
               </div>
               <div class="col-xs-4">
-                <p-dropdown [options]="productosShow" [(ngModel)]="selectedProdKardex" (onChange)="generateKardex()" placeholder="Selecciona.." [style]="{'width':'100%'}" filter="true">
+                <p-dropdown [options]="productosShow" [(ngModel)]="selectedProdKardex" (onChange)="generateKardex()" placeholder="Selecciona.."
+                  [style]="{'width':'100%'}" filter="true">
                   <ng-template let-brand pTemplate="item">
                     <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
                       <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.label}}--{{brand.id_tipo_producto}}</div>
@@ -129,77 +139,82 @@
 </div>
 
 <!-- Add TP -->
-<p-dialog [(visible)]="showDialogTPC" modal="modal" width="500" [responsive]="true">
+<p-dialog [(visible)]="showDialogTPC" modal="modal" width="400" [responsive]="true">
   <p-header>
     Registrar Tipo Producto
   </p-header>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-      <label for="descTPC" style="display: inline-block">Nombre*:</label>
-      <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPC" name="descTPC"
-        placeholder="Descripcion de tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+  <form (ngSubmit)="onAddTPSubmit()" #tpCForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+      </div>
+      <div class="ui-g-12">
+        <label>Nombre*:</label>
+        <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPC" name="descTPC"
+          minlength="4" placeholder="Descripción tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " required>
+      </div>
+      <div class="ui-g-12">
+        <label>Logotipo*:</label>
+        <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
+        <input #myInput2 type="file" placeholder="File Name" (change)="onChangeFileTP($event)" id="filesTP" name="filesTP" class="form-control inputfile input-sm"
+          accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS." tooltipPlacement="bottom"
+          required title=" ">
+      </div>
+      <div class="ui-g-12 form-hint">
+        <p><b>Nota: </b>Si algún producto no cuenta con una imagen, ésta imagen se mostrará por defecto.</p>
+        <hr>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"><br>
-      <label for="filesC">Logotipo*:</label>
-      <input #myInput2 type="file" placeholder="File Name" (change)="onChangeFileTP($event)" id="filesTP" name="filesTP" class="form-control inputfile input-sm"
-        accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS." tooltipPlacement="bottom" title=" ">
+    <div class="ui-g-12" style="text-align: center">
+      <button type="submit" class="btn btn-primary" style="font-size: 11px;" [disabled]="!tpCForm.form.valid || flagImageTP">Registrar</button>
+      <button class="btn btn-default" style="font-size: 11px;" (click)="showDialogTPC = false">Cancelar</button>
     </div>
-  </div>
-  <hr>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
-    <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onAddTPSubmit()">Registrar</button>
-    <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogTPC = false">Cancelar</button>
-  </div>
+  </form>
 </p-dialog>
 
 <!-- Update TP -->
-<p-dialog [(visible)]="showDialogTPU" modal="modal" width="500" [responsive]="true">
+<p-dialog [(visible)]="showDialogTPU" modal="modal" width="400" [responsive]="true">
   <p-header>
     Actualizar Tipo Producto
   </p-header>
-  <div class="row">
-    <div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
-      <label for="idTPC" style="display: inline-block">Id:</label>
-      <input type="text" [(ngModel)]="tipoProductoUpdate._id" id="idTPU" name="idTPU" class="form-control input-sm" title=" " readonly>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"><br>
-      <label for="descTPC" style="display: inline-block">Nombre*:</label>
-      <input type="text" [(ngModel)]="tipoProductoUpdate.desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPU"
-        name="descTPU" placeholder="Descripcion de tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
-          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"><br>
-      <label for="filesU">Logotipo*:</label>
-      <ng-template #toolTipTemplateTP>
-        <img src={{tipoProductoUpdate.path}} width="50%" />
-      </ng-template>
-      <a href="#" [tooltipHtml]="toolTipTemplateTP" tooltipPlacement="bottom" tooltipAnimation=false>
+  <form (ngSubmit)="onUpdateTPSubmit()" #tpUForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+      </div>
+      <div class="ui-g-4">
+        <label style="display: inline-block">Id:</label>
+        <p class="ids" style="text-align: center;">{{tipoProductoUpdate._id | slice:-6}}</p>
+      </div>
+      <div class="ui-g-8">
+        <label>Nombre*:</label>
+        <input type="text" [(ngModel)]="tipoProductoUpdate.desc_tipo_producto" (ngModelChange)="onChangeDescTPU($event)" id="descTPU"
+          name="descTPU" minlength="4" placeholder="Descripción tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " required>
+      </div>
+      <div class="ui-g-12">
+        <label>Logotipo*:</label>
+        <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
+        <ng-template #toolTipTemplateTP>
+          <img src={{tipoProductoUpdate.path}} width="50%" />
+        </ng-template>
+        <a href="#" [tooltipHtml]="toolTipTemplateTP" tooltipPlacement="bottom" tooltipAnimation=false>
           <input #myInput3 type="file" placeholder="File Name" (change)="onChangeFileTPU($event)" id="filesTPU" name="filesTPU" 
-          class="form-control inputfile input-sm" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" ">
+          minlength="1" class="form-control inputfile input-sm" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" " required>
       </a>
+      </div>
+      <div class="ui-g-12 form-hint">
+        <p><b>Nota: </b>Si algún producto no cuenta con una imagen, ésta imagen se mostrará por defecto.</p>
+        <hr>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"><br>
-      <p>
-        <b>Nota: </b>Si algún producto no cuenta con una imagen, ésta imagen se mostrará por defecto.
-      </p>
+    <div class="ui-g-12" style="text-align: center">
+      <button type="submit" style="font-size: 11px" [disabled]="!tpUForm.form.valid" class="btn btn-primary">Actualizar</button>
+      <button type="button" style="font-size: 11px" (click)="showDialogTPU=false" class="btn btn-default">Cancelar</button>
     </div>
-  </div>
-  <hr>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
-    <button class="btn btn-primary" style="font-size: 11px; width: 25%" (click)="onUpdateTPSubmit()">Actualizar</button>
-    <button class="btn btn-default" style="font-size: 11px; width: 25%" (click)="showDialogTPU = false">Cancelar</button>
-  </div>
+  </form>
 </p-dialog>
 
 <!-- Add P-->
@@ -257,14 +272,12 @@
       <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" placeholder="0.00" class="form-control input-sm"
         (ngModelChange)="valueChangePrecioCompra($event)" (click)="$event.target.select()" [disabled]="flagSubProd">
     </div>
-
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Ganancia*:</label>
       <input currencyMask type="text" [options]="{ suffix :' %',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
         placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)" (click)="$event.target.select()"
         tooltip="Los productos con ganancia 0%, no se mostrarán en el módulo de VENTAS." tooltipPlacement="bottom">
     </div>
-
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label>Precio Venta*:</label>
       <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
@@ -676,6 +689,171 @@
   <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
     <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePromoSubmit()" tabindex="4">Registrar</button>
     <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Add Compras -->
+<p-dialog [(visible)]="showDialogC" modal="modal" width="800" [responsive]="true">
+  <p-header>
+    Registrar Factura Compra
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+    </div>
+    <div class="ui-g-3">
+      <label>Proveedor*:</label>
+      <div class="input-group">
+        <select [(ngModel)]="kardex.proveedor" id="selectProve" name="selectProve" class="form-control input-sm">
+            <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
+          </select>
+        <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+      </div>
+    </div>
+    <div class="ui-g-3">
+      <label>Vendedor*:</label>
+      <div class="input-group">
+        <select [(ngModel)]="kardex.proveedor" id="selectProve" name="selectProve" class="form-control input-sm">
+            <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
+          </select>
+        <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+      </div>
+    </div>
+    <div class="ui-g-3">
+      <label>Número Factura*:</label>
+      <input type="text" [(ngModel)]="kardex.num_factura" id="num_facturaK" name="num_facturaK" placeholder="Número de Factura"
+        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
+    </div>
+    <div class="ui-g-3">
+      <label>Fecha*:</label>
+      <p-calendar [(ngModel)]="kardex.fecha" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
+        yearRange="1950:2030" dataType="string" [readonlyInput]="true" id="fechaK" name="fechaK">
+      </p-calendar>
+    </div>
+    <div class="ui-g-3">
+      <button pButton type="button" (click)="showDialogProdC = true;" label="Añadir producto" class="ui-button-warning"></button>
+    </div>
+    <div class="ui-g-12">
+      <p-dataTable [value]="lstComprasProve" [responsive]="true" [paginator]="true" [rows]="5">
+        <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'25%'}"></p-column>
+        <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'35%'}"></p-column>
+        <p-column field="unidades" header="Unidades" [style]="{'overflow':'visible','width':'20%'}"></p-column>
+        <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'20%'}"></p-column>
+      </p-dataTable>
+    </div>
+
+    <div class="panel panel-default" style="width: 100%;margin-bottom: 0px;" id="pnlFp">
+      <div class="ui-g-12">
+        <div class="ui-g-3 ui-g-nopad">
+          <label>Forma de Pago*:</label>
+        </div>
+        <div class="ui-g-9 ui-g-nopad">
+          <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP">
+            <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo <i>{{campoFP}}</i>, puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
+          </div>
+          <div *ngIf="!flagErrorFP">
+            <p style="color: white;font-size: 12px">Espacio</p>
+          </div>
+        </div>
+        <div class="ui-g-3">
+          <label>Efectivo:</label>
+          <input currencyMask type="text" [(ngModel)]="fpEfectivo" id="fpEfectivo" name="fpEfectivo" placeholder="0.00" class="form-control input-sm"
+            (ngModelChange)="onChangeFPE($event)" (click)="$event.target.select()" [disabled]="flagConsCero" max="57">
+        </div>
+        <div class="ui-g-3">
+          <label>Tarjeta Crédito:</label>
+          <input currencyMask type="text" [(ngModel)]="fpTarjeta" id="fpTarjeta" name="fpTarjeta" placeholder="0.00" class="form-control input-sm"
+            (ngModelChange)="onChangeFPT($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+        <div class="ui-g-3">
+          <label>Crédito Directo:</label>
+          <input currencyMask type="text" [(ngModel)]="fpPorCobrar" id="fpPorCobrar" name="fpPorCobrar" placeholder="0.00" class="form-control input-sm"
+            (ngModelChange)="onChangeFPC($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+        <div class="ui-g-3">
+          <label>Cheque:</label>
+          <input currencyMask type="text" [(ngModel)]="fpCheque" id="fpCheque" name="fpCheque" placeholder="0.00" class="form-control input-sm"
+            (ngModelChange)="onChangeFPCH($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <hr>
+  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
+    <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePromoSubmit()" tabindex="4">Registrar</button>
+    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
+  </div>
+</p-dialog>
+
+<!-- Add ProdCompra -->
+<p-dialog [(visible)]="showDialogProdC" modal="modal" width="500" [responsive]="true">
+  <p-header>
+    Producto
+  </p-header>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+    </div>
+    <div class="ui-g-12">
+      <label>Descripción Producto*:</label>
+      <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButton($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
+    </div>
+    <div class="ui-g-12" *ngIf="flagProdK">
+      <input type="text" [(ngModel)]="kardex.desc_producto" (ngModelChange)="onChangeNombrePK($event)" id="desc_productoK" name="desc_productoK"
+        placeholder="Producto Nuevo" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
+    </div>
+    <div class="ui-g-12" *ngIf="!flagProdK">
+      <p-dropdown [options]="productosShow" [(ngModel)]="selectedProdKardex" (onChange)="generateKardex()" placeholder="Selecciona.."
+        [style]="{'width':'100%'}" filter="true">
+        <ng-template let-brand pTemplate="item">
+          <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+            <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.label}}--{{brand.id_tipo_producto}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="ui-g-6">
+      <label>Cantidad*:</label>
+      <input [(ngModel)]="kardex.cantidad" (ngModelChange)="onChangeUnidades($event)" currencyMask type="text" [options]="{ prefix: ''}"
+        id="cantK" name="cantK" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6">
+      <label>Precio Costo Unitario*:</label>
+      <input [(ngModel)]="kardex.total" (ngModelChange)="onChangeTotalK($event)" currencyMask type="text" [options]="{ prefix: '$ '}"
+        id="totalK" name="totalK" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6">
+      <label>Unidad de Medida*:</label>
+      <select [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" id="tipoUmMat" class="form-control input-sm">
+        <option *ngFor="let c of lstUnidadMedida" [ngValue]="c">{{c.label}}</option>
+      </select>
+      <select [(ngModel)]="selectedUmMat1" id="tipoUmMat" class="form-control input-sm" *ngIf="flagUnits" style="margin-top: 10px;">
+        <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
+      </select>
+    </div>
+    <div class="ui-g-6" *ngIf="flagUnits">
+      <label>Contenido (Si aplica):</label>
+      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.contenido" id="cantMat" placeholder="0.00"
+        class="form-control input-sm" (click)="$event.target.select()">
+    </div>
+    <div class="ui-g-6" *ngIf="!flagProdK">
+      <label>Precio Costo Actual*:</label>
+      <p class="ids">&nbsp;{{newProd.precio_costo | number : '1.2-2'}}</p>
+    </div>
+    <div class="ui-g-6">
+      <label>Total*:</label>
+      <p class="ids">&nbsp;{{prizeKardex | number : '1.2-2'}}</p>
+    </div>
+    <div class="ui-g-12">
+      <md-checkbox [(ngModel)]="checkedK" [color]="color">¿Usar este producto como materia prima?</md-checkbox>
+    </div>
+  </div>
+
+  <div class="ui-g-12" style="text-align: center">
+    <hr>
+    <button pButton type="button" (click)="addProdCompra()" label="&nbsp; Añadir &nbsp;"></button>
+    <button pButton type="button" (click)="showDialogProdC = false" label="Cancelar" class="ui-button-warning"></button>
   </div>
 </p-dialog>
 

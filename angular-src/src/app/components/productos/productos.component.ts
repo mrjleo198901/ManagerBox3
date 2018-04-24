@@ -21,7 +21,7 @@ import { SelectItem } from 'primeng/primeng';
 import { PromocionService } from '../../services/promocion.service';
 import { ProveedorService } from '../../services/proveedor.service';
 import { KardexService } from '../../services/kardex.service';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DecimalPipe, SlicePipe } from '@angular/common';
 import { MateriaPrimaService } from '../../services/materia-prima.service';
 import { CiudadService } from '../../services/ciudad.service';
 
@@ -35,8 +35,8 @@ const URL = 'http://localhost:3000/api/imagen';
 export class ProductosComponent implements OnInit {
 
   tmpProd;
-  borderStyleProdExistente = '#DADAD2';
-  borderStyleProdSelec = '#DADAD2'
+  borderStyleProdExistente = '';
+  borderStyleProdSelec = ''
   colorUpdate = '';
   auxSubprod;
   sourceTP: LocalDataSource = new LocalDataSource();
@@ -86,7 +86,10 @@ export class ProductosComponent implements OnInit {
       _id: {
         title: 'ID',
         width: '90px',
-        filter: false
+        filter: false,
+        valuePrepareFunction: (_id) => {
+          return this.slicePipe.transform(_id, -6)
+        }
       },
       desc_tipo_producto: {
         title: 'Nombre',
@@ -211,6 +214,7 @@ export class ProductosComponent implements OnInit {
     private promocionService: PromocionService,
     private proveedorService: ProveedorService,
     private decimalPipe: DecimalPipe,
+    private slicePipe: SlicePipe,
     private kardexService: KardexService,
     private materiaPrimaService: MateriaPrimaService,
     private ciudadService: CiudadService) {
@@ -254,6 +258,8 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    console.log(document.getElementById("fpEfectivo").offsetHeight)
 
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.todayDate = [initial[0], initial[1], initial[2]].join('/');
@@ -1034,13 +1040,14 @@ export class ProductosComponent implements OnInit {
       document.getElementById('cantSubprod').style.borderColor = '#FE2E2E';
     }
   }
-
+  flagImage = true;
   onChangeFileC(event) {
     if (event.srcElement.files.length > 0) {
       if (event.srcElement.files[0].type.includes('image')) {
         const files = event.srcElement.files[0];
         console.log(files.size);
-        if (files.size <= 1500) {
+        if (files.size <= 1000000) {
+          this.flagImage = false;
           let color = '';
           if (files === undefined) {
             color = 'lightsalmon';
@@ -1050,23 +1057,30 @@ export class ProductosComponent implements OnInit {
           this.pathLogo = files;
           document.getElementById('filesC').style.backgroundColor = color;
         } else {
+          this.flagImage = true;
           (<HTMLInputElement>document.getElementById('filesC')).value = "";
           document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
           this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
         }
       } else {
+        this.flagImage = true;
         (<HTMLInputElement>document.getElementById('filesC')).value = "";
         document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
         this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
       }
+    } else {
+      this.flagImage = true;
+      document.getElementById('filesC').style.backgroundColor = 'lightsalmon';
     }
   }
-
+  flagImageU = true;
   onChangeFileU(event) {
     if (event.srcElement.files.length > 0) {
       if (event.srcElement.files[0].type.includes('image')) {
+        this.colorUpdate = 'black';
         const files = event.srcElement.files[0];
-        if (files.size <= 1500) {
+        if (files.size <= 1000000) {
+          this.flagImageU = false;
           let color = '';
           if (files === undefined) {
             color = 'lightsalmon';
@@ -1077,41 +1091,88 @@ export class ProductosComponent implements OnInit {
           document.getElementById('filesU').style.backgroundColor = color;
           document.getElementById('filesU').style.color = this.colorUpdate;
         } else {
+          this.flagImageU = true;
           (<HTMLInputElement>document.getElementById('filesU')).value = "";
           document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
           this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
         }
       } else {
+        this.flagImageU = true;
         (<HTMLInputElement>document.getElementById('filesU')).value = "";
         document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
         this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
       }
+    } else {
+      this.flagImageU = true;
+      document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
     }
   }
-
+  flagImageTP = true;
   onChangeFileTP(event) {
-    const files = event.srcElement.files[0];
-    let color = '';
-    if (files === undefined) {
-      color = 'lightsalmon';
+    if (event.srcElement.files.length > 0) {
+      if (event.srcElement.files[0].type.includes('image')) {
+        const files = event.srcElement.files[0];
+        if (files.size <= 1000000) {
+          this.flagImageTP = false;
+          let color = '';
+          if (files === undefined) {
+            color = 'lightsalmon';
+          } else {
+            color = 'lightgreen';
+          }
+          this.pathLogoTP = files;
+          document.getElementById('filesTP').style.backgroundColor = color;
+        } else {
+          this.flagImageTP = true;
+          (<HTMLInputElement>document.getElementById('filesTP')).value = "";
+          document.getElementById('filesTP').style.backgroundColor = 'lightsalmon';
+          this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
+        }
+      } else {
+        this.flagImageTP = true;
+        (<HTMLInputElement>document.getElementById('filesTP')).value = "";
+        document.getElementById('filesTP').style.backgroundColor = 'lightsalmon';
+        this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
+      }
     } else {
-      color = 'lightgreen';
+      this.flagImageTP = true;
+      document.getElementById('filesTP').style.backgroundColor = 'lightsalmon';
     }
-    this.pathLogoTP = files;
-    document.getElementById('filesTP').style.backgroundColor = color;
   }
-
+  flagImageTPU = true;
   onChangeFileTPU(event) {
-    this.colorUpdate = 'black';
-    const files = event.srcElement.files[0];
-    let color = '';
-    if (files === undefined) {
-      color = 'lightsalmon';
+    if (event.srcElement.files.length > 0) {
+      if (event.srcElement.files[0].type.includes('image')) {
+        this.colorUpdate = 'black';
+        const files = event.srcElement.files[0];
+        if (files.size <= 1500) {
+          this.flagImageTPU = false;
+          let color = '';
+          if (files === undefined) {
+            color = 'lightsalmon';
+          } else {
+            color = 'lightgreen';
+          }
+          this.pathLogoTPU = files;
+          document.getElementById('filesTPU').style.backgroundColor = color;
+          document.getElementById('filesTPU').style.color = this.colorUpdate;
+        } else {
+          this.flagImageTPU = true;
+          (<HTMLInputElement>document.getElementById('filesTPU')).value = "";
+          document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
+          this.messageGrowlService.notify('error', 'Error', 'Imagen demasiado pesada, el tamaño de la imagen es de: ' + (files.size / 1000000).toFixed(2) + " Mb.");
+        }
+      } else {
+        this.flagImageTPU = true;
+        (<HTMLInputElement>document.getElementById('filesTPU')).value = "";
+        document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
+        this.messageGrowlService.notify('error', 'Error', 'Solo se admiten imagenes!');
+
+      }
     } else {
-      color = 'lightgreen';
+      this.flagImageTPU = true;
+      document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
     }
-    this.pathLogoTPU = files;
-    document.getElementById('filesTPU').style.backgroundColor = color;
   }
 
   search(id, myArray) {
@@ -1137,6 +1198,10 @@ export class ProductosComponent implements OnInit {
 
   onChangeDescTPC($event) {
     this.desc_tipo_producto = this.fs.toTitleCase(this.desc_tipo_producto);
+  }
+
+  onChangeDescTPU($event) {
+    this.tipoProductoUpdate.desc_tipo_producto = this.fs.toTitleCase(this.tipoProductoUpdate.desc_tipo_producto);
   }
 
   onChangeNombrePC($event) {
@@ -1244,7 +1309,7 @@ export class ProductosComponent implements OnInit {
   }
 
   valueChangeCantSubprod() {
-    document.getElementById('cantSubprod').style.borderColor = '#DADAD2';
+    document.getElementById('cantSubprod').style.borderColor = '';
     const onzaEnMl = 29.5735;
     let prod = this.productos.find(x => x.nombre === this.selected_producto);
     if (prod !== undefined) {
@@ -1268,7 +1333,7 @@ export class ProductosComponent implements OnInit {
   }
 
   valueChangeCantSubprodU() {
-    //document.getElementById('cantSubprodU').style.borderColor = '#DADAD2';
+    //document.getElementById('cantSubprodU').style.borderColor = '';
     const onzaEnMl = 29.5735;
     let prod = this.productos.find(x => x.nombre === this.selected_productoU);
     if (prod !== undefined) {
@@ -1411,19 +1476,19 @@ export class ProductosComponent implements OnInit {
 
   onChangeProdExistentes($event) {
     //this.valueChangeCantSubprod($event);
-    this.borderStyleProdExistente = '#DADAD2';
+    this.borderStyleProdExistente = '';
   }
 
   onChangeProdExistentesU($event) {
-    this.borderStyleProdExistente = '#DADAD2';
+    this.borderStyleProdExistente = '';
   }
 
   onChangeProdSelec($event) {
-    this.borderStyleProdSelec = '#DADAD2';
+    this.borderStyleProdSelec = '';
   }
 
   onChangeProdSelecU($event) {
-    this.borderStyleProdSelec = '#DADAD2';
+    this.borderStyleProdSelec = '';
   }
 
   calcContenido() {
@@ -1968,6 +2033,32 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  /* GESTION DE COMPRAS */
+  showDialogC = true;
+  showDialogCU = false;
+  objCompras: {
+    'fecha': '',
+    'desc_producto': '',
+    'proveedor': '',
+    'cantidad': 0,
+    'total': 0,
+    'num_factura': '',
+    'contenido': 0
+  };
+
+  ngOnInitCompras() {
+    this.kardex = {
+      'fecha': '',
+      'desc_producto': '',
+      'proveedor': '',
+      'cantidad': 0,
+      'total': 0,
+      'num_factura': '',
+      'contenido': 0
+    };
+
+  }
+
   /* GESTION DE KARDEX */
   checkedK = false;
   selectedProdKardex: any;
@@ -1989,13 +2080,13 @@ export class ProductosComponent implements OnInit {
     this.validRuc = true;
     this.showDialogK = false;
     this.showDialogKU = false;
-    
+
   }
 
-  generateKardex(){
+  generateKardex() {
     console.log(this.selectedProdKardex);
     console.log(this.productosShow);
-    
+
   }
 
   saveKardexOp() {
@@ -3208,39 +3299,39 @@ function setOriginalColorsPC() {
   // border Color #dadad2
   // readonly Color #f8f5f0
   // error Color FE2E2E
-  document.getElementById("nombrePC").style.borderColor = "#DADAD2";
-  document.getElementById("pcPC").style.borderColor = "#DADAD2";
-  document.getElementById("pvPC").style.borderColor = "#DADAD2";
-  document.getElementById("tipoPC").style.borderColor = "#DADAD2";
-  document.getElementById("contPC").style.borderColor = "#DADAD2";
+  document.getElementById("nombrePC").style.borderColor = "";
+  document.getElementById("pcPC").style.borderColor = "";
+  document.getElementById("pvPC").style.borderColor = "";
+  document.getElementById("tipoPC").style.borderColor = "";
+  document.getElementById("contPC").style.borderColor = "";
 }
 
 function setOriginalColorsPU() {
-  document.getElementById('nombrePU').style.borderColor = '#DADAD2';
-  document.getElementById("pcPU").style.borderColor = "#DADAD2";
-  document.getElementById("pvPU").style.borderColor = "#DADAD2";;
-  document.getElementById('tipoPU').style.borderColor = '#DADAD2';
-  document.getElementById('contPU').style.borderColor = '#DADAD2';
+  document.getElementById('nombrePU').style.borderColor = '';
+  document.getElementById("pcPU").style.borderColor = "";
+  document.getElementById("pvPU").style.borderColor = "";;
+  document.getElementById('tipoPU').style.borderColor = '';
+  document.getElementById('contPU').style.borderColor = '';
 }
 
 function setOriginalColorsTPC() {
-  document.getElementById('descTPC').style.borderColor = '#DADAD2';
-  document.getElementById('filesTP').style.borderColor = '#DADAD2';
+  document.getElementById('descTPC').style.borderColor = '';
+  document.getElementById('filesTP').style.borderColor = '';
 }
 
 function setOriginalColorsTPU() {
-  document.getElementById('descTPU').style.borderColor = '#DADAD2';
-  document.getElementById('filesTPU').style.borderColor = '#DADAD2';
+  document.getElementById('descTPU').style.borderColor = '';
+  document.getElementById('filesTPU').style.borderColor = '';
 }
 
 function setOriginalColorsPromo() {
-  document.getElementById("nombrePromo").style.borderColor = "#DADAD2";
+  document.getElementById("nombrePromo").style.borderColor = "";
 }
 
 function setOriginalColorsPromoU() {
-  document.getElementById("nombrePromoU").style.borderColor = "#DADAD2";
-  document.getElementById("desdePromoU").style.borderColor = "#DADAD2";
-  document.getElementById("hastaPromoU").style.borderColor = "#DADAD2";
+  document.getElementById("nombrePromoU").style.borderColor = "";
+  document.getElementById("desdePromoU").style.borderColor = "";
+  document.getElementById("hastaPromoU").style.borderColor = "";
 }
 
 function setOriginalColorsProve() {
