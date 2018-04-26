@@ -10,7 +10,7 @@ import { MessageGrowlService } from '../../services/message-growl.service';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import {FormatterService} from "../../services/formatter.service";
-
+import {ConfigListPermissions} from '../../ModelsConfig/configListPermissions';
 @Component({
   selector: 'app-personal',
   templateUrl: './personal.component.html',
@@ -64,19 +64,16 @@ export class PersonalComponent implements OnInit {
   listaEstado: any = [];
   listaCargoPersonal: any = [];
   listaPersonal: any = [];
+  listaPersonal2: any = [];
   es: any;
-  tags = [{ name: 'Administración', checked: false },
-  { name: 'Atención', checked: false },
-  { name: 'Clientes', checked: false },
-  { name: 'Personal', checked: false },
-  { name: 'Productos', checked: false },
-  { name: 'Reportes', checked: false },
-  { name: 'Ventas', checked: false }];
+  tags = [];
   fecha_desde: any;
   fecha_hasta: any;
   selected_user: any;
   lstUsers: any[] = [];
   descripcion;
+  permission:any=[];
+  tagOriginal:any;
 
   constructor(
     private cargoPersonalService: CargoPersonalService,
@@ -99,7 +96,8 @@ export class PersonalComponent implements OnInit {
     this.showDatepicker = false;
     this.idCargoPersona = "";
     this.banCalendar = 1;
-
+    this.tagOriginal=ConfigListPermissions.permissions;
+    //console.log(this.tagOriginal);
     this.es = {
       firstDayOfWeek: 1,
       dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
@@ -150,7 +148,9 @@ export class PersonalComponent implements OnInit {
     ];
     //Load data to localDataSource
     this.cargoPersonalService.getAll().subscribe(tp => {
+       // console.log(tp);
       this.listaCargoPersonal = tp;
+     // this.listaCargoPersonal2.slice(tp);
       this.sourceCargoPer = new LocalDataSource();
       let i = 0;
       for (let est of tp) {
@@ -164,14 +164,18 @@ export class PersonalComponent implements OnInit {
 
       /* Get Personal*/
       this.personalService.getAll().subscribe(tp => {
+        //console.log(tp);
+        this.listaPersonal = tp.slice();
+   //     this.listaPersonal2=tp.slice();
+     /*   console.log('original');
+        console.log(this.listaPersonal2);*/
+        //console.log(this.listaPersonal2);
 
-        this.listaPersonal = tp;
-        console.log(this.listaPersonal);
         this.selected_user = 'Todas';
         let i = 0;
         for (let x of tp) {
-          let desc = this.searchId(x.id_cargo, this.listaCargoPersonal);
-          this.listaPersonal[i].id_cargo = desc;
+
+
           if (this.listaPersonal[i].sexo == 1)
             this.listaPersonal[i].sexo = "Masculino";
           else
@@ -183,9 +187,11 @@ export class PersonalComponent implements OnInit {
             this.listaPersonal[i].estado='Inactivo';
           }
 
+
+
+          let desc = this.searchId(x.id_cargo, this.listaCargoPersonal);
+          this.listaPersonal[i].id_cargo = desc;
           i++;
-
-
         }
 
         this.sourcePer = new LocalDataSource();
@@ -200,7 +206,7 @@ export class PersonalComponent implements OnInit {
         return false;
       });
 
-    //this.sourcePer.load(this.data);
+
 
     // Selecciones
     this.selectEstado = this.listaEstado[0];
@@ -213,7 +219,7 @@ export class PersonalComponent implements OnInit {
   }
 
   getCheck() {
-    console.log(this.modulosPersonal)
+   // console.log(this.modulosPersonal)
   }
 
   hideDetails() {
@@ -342,9 +348,29 @@ export class PersonalComponent implements OnInit {
   }
 
   showPersonal(event: any) {
+    //console.log(this.tagOriginal);
+
+
     this.flagUserFound = true;
     if (event.data != undefined) {
       this.showPersona = event.data;
+    //  console.log(this.showPersona);
+      if(this.showPersona.permission.length>0){
+        this.tags=this.showPersona.permission;
+      }
+      else{
+        this.tags = this.tagOriginal;
+       // console.log(this.tags);
+      }
+    }
+    if (this.showPersona.sexo == "Masculino")
+      this.sexo = 1;
+    else
+      this.sexo = 2;
+    if(this.showPersona.estado=='Activo'){
+      this.showPersona.estado=true;
+    }else{
+      this.showPersona.estado=false;
     }
   }
   // CARGA DE DATOS EN EL FORMULARIO PARA MODIFICAR PERSONAL
@@ -652,7 +678,8 @@ export class PersonalComponent implements OnInit {
         name: this.nombres + this.apellidos,
         password: this.cedula,
         email: this.email,
-        estado:1
+        estado:1,
+
       }
       this.authService.registerUser(newUser).subscribe(data => {
       }, err => {
@@ -729,8 +756,8 @@ export class PersonalComponent implements OnInit {
 
   /* LOG ACTIVITY */
   generateLog() {
-    console.log(this.fecha_desde);
-    console.log(this.fecha_hasta);
+   /* console.log(this.fecha_desde);
+    console.log(this.fecha_hasta);*/
     console.log(this.validateService.getDateTimeEsPrimeNG())
   }
 
@@ -769,6 +796,38 @@ export class PersonalComponent implements OnInit {
     this.descripcion='';
     this.selectEstado='';
     this.descripcionCargoPersonal='';
+  }
+
+  updatePermission(){
+   // console.log(this.showPersona.id_cargo);
+    //console.log(this.listaCargoPersonal);
+   // console.log(this.listaPersonal2);
+   var cargo=this.showPersona.id_cargo;
+    let resp1 = this.listaCargoPersonal.filter(function (obj:any) {
+      return obj.descripcion_cargo_personal==(cargo);
+    });
+    var id=this.showPersona._id;
+
+    var resp=this.listaPersonal.filter((persona:any)=>persona._id===id);
+   // console.log(resp);
+    resp[0].id_cargo=resp1[0]._id;
+    resp[0].permission=this.tags;
+
+    this.personalService.updatePersonal(resp[0]).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Exito', 'Ingreso exitoso!');
+      this.ngOnInit();
+      this.showDialogPerUp = false;
+    }, err => {
+      // Log errors if any
+      console.log(err);
+      this.messageGrowlService.notify('error', 'Error', 'Algo salió mal!');
+    });
+
+  }
+
+  cencelPermission(){
+
+
   }
 }
 

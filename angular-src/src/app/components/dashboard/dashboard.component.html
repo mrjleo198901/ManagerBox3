@@ -1,6 +1,8 @@
+<app-navbar>
+</app-navbar>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
-        <h2>Mi Cuenta</h2>
+        <h2>Bienvenido</h2>
     </div>
 </div>
 
@@ -43,7 +45,7 @@
                     <span class="input-group-addon" id="basic-addon4"><i class="fa fa-user" aria-hidden="true"></i></span>
                     <input type="text" pInputText class="form-control" [(ngModel)]="nombres" (ngModelChange)="onChangeNombres($event)" id="nombres"
                         name="nombres" aria-describedby="basic-addon4" style="z-index: 1" placeholder="Nombres de usuario" (click)="$event.target.select()"
-                        onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                        onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
                         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
                         tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
                 </div>
@@ -54,7 +56,7 @@
                     <span class="input-group-addon" id="basic-addon5"><i class="fa fa-user" aria-hidden="true"></i></span>
                     <input type="text" pInputText class="form-control" [(ngModel)]="apellidos" (ngModelChange)="onChangeApellidos($event)" id="apellidos"
                         name="apellidos" aria-describedby="basic-addon5" style="z-index: 1" placeholder="Apellidos de usuario"
-                        (click)="$event.target.select()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+                        (click)="$event.target.select()" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
                         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
                         tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom">
                 </div>

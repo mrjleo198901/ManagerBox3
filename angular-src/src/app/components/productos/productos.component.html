@@ -1,3 +1,5 @@
+<app-navbar>
+</app-navbar>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
     <h2>Gestión de Productos</h2>
@@ -151,7 +153,7 @@
       <div class="ui-g-12">
         <label>Nombre*:</label>
         <input type="text" [(ngModel)]="desc_tipo_producto" (ngModelChange)="onChangeDescTPC($event)" id="descTPC" name="descTPC"
-          minlength="4" placeholder="Descripción tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          minlength="4" placeholder="Descripción tipo producto" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
           tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " required>
       </div>
@@ -201,7 +203,7 @@
           <img src={{tipoProductoUpdate.path}} width="50%" />
         </ng-template>
         <a href="#" [tooltipHtml]="toolTipTemplateTP" tooltipPlacement="bottom" tooltipAnimation=false>
-          <input #myInput3 type="file" placeholder="File Name" (change)="onChangeFileTPU($event)" id="filesTPU" name="filesTPU" 
+          <input #myInput3 type="file" placeholder="File Name" (change)="onChangeFileTPU($event)" id="filesTPU" name="filesTPU"
           minlength="1" class="form-control inputfile input-sm" accept="image/*" [ngStyle]="{'color': colorUpdate}" title=" " required>
       </a>
       </div>
@@ -229,7 +231,7 @@
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="nombrePC">Nombre*:</label>
       <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="Nombre único del producto"
-        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
     </div>
@@ -358,7 +360,7 @@
     <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
       <label for="nombrePU">Nombre*:</label>
       <input type="text" [(ngModel)]="productoUpdate.nombre" (ngModelChange)="onChangeNombrePU($event)" id="nombrePU" name="nombrePU"
-        placeholder="nombre único del producto" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="nombre único del producto" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom">
     </div>
@@ -376,7 +378,7 @@
         <p>Esta imagen se mostrará por defecto, en el módulo de VENTAS"</p>
       </ng-template>
       <a href="#" [tooltipHtml]="toolTipTemplate" tooltipPlacement="bottom" tooltipAnimation=false>
-          <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileU($event)" id="filesU" name="filesU" 
+          <input #myInput1 type="file" placeholder="File Name" (change)="onChangeFileU($event)" id="filesU" name="filesU"
           class="form-control inputfile input-sm" accept="image/*" [ngStyle]="{'color': colorUpdate}" [disabled]="flagProductoGasto">
       </a>
     </div>
@@ -487,7 +489,7 @@
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
       <label>Nombre*:</label>
       <input type="text" [(ngModel)]="objPromo.nombre" (ngModelChange)="onChangeNombrePromo($event)" id="nombrePromo" name="nombrePromo"
-        placeholder="Nombre único de la promoción" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de la promoción" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
     </div>
@@ -670,7 +672,7 @@
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label>Nombre*:</label>
       <input type="text" [(ngModel)]="objPromoUpdate.nombre" (ngModelChange)="onChangeNombrePromo($event)" id="nombrePromoU" name="nombrePromoU"
-        placeholder="Nombre único de la promoción" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de la promoción" class="form-control" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
           event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="1">
     </div>
@@ -1186,7 +1188,7 @@
       <div class="ui-g-12">
         <label>Nombre y Apellido*:</label>
         <input type="text" [(ngModel)]="representante.nombre" (ngModelChange)="onChangeNombreRepre($event)" id="nombreRepre" name="nombreRepre"
-          placeholder="Nombre de representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+          placeholder="Nombre de representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
           tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" minlength="8" tabindex="10" required>
       </div>
@@ -1298,7 +1300,7 @@
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label for="nombrePC">Nombre*:</label>
       <input type="text" [(ngModel)]="objMat.nombre" (ngModelChange)="onChangeNombreMat($event)" id="nombreMat" name="nombreMat"
-        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
     </div>
@@ -1344,7 +1346,7 @@
     <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
       <label for="nombrePC">Nombre*:</label>
       <input type="text" [(ngModel)]="objMat.nombre" (ngModelChange)="onChangeNombreMat($event)" id="nombreMatU" name="nombreMat"
-        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || 
+        placeholder="Nombre único de la materia prima" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
         tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
     </div>
