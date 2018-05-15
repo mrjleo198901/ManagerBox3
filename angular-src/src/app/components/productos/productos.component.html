@@ -1,5 +1,6 @@
 <app-navbar>
 </app-navbar>
+
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 page-header" style="padding: 0; margin-top: 20px" (window:resize)="onResize($event)">
   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding: 0" [ngStyle]='{"text-align": textAlignTitle}'>
     <h2>Gestión de Productos</h2>
@@ -23,7 +24,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Productos">
+      <tab heading="Productos" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Productos</h3>
@@ -36,7 +37,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Compras" [active]="true">
+      <tab heading="Compras">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Compras</h3>
@@ -220,132 +221,365 @@
 </p-dialog>
 
 <!-- Add P-->
-<p-dialog [(visible)]="showDialogPC" modal="modal" width="900" [responsive]="true" positionTop="45">
+<p-dialog [(visible)]="showDialogPC" modal="modal" width="1000" [responsive]="true" positionTop="35">
   <p-header>
     Registrar Producto
   </p-header>
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-12">
-      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="nombrePC">Nombre*:</label>
-      <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="Nombre único del producto"
-        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
-          event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
-        tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" ">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label for="tipoPC">Tipo Producto*:</label>
-      <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input-sm" [disabled]="flagProductoGasto">
+  <form (ngSubmit)="onAddPSubmit()" #formProd="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint"><b>Nota:</b> Los campos marcados con (*) son obligatorios.</div>
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label for="nombrePC">Nombre<span class="requiredClass">&nbsp;*</span></label>
+        <input type="text" [(ngModel)]="nombre" (ngModelChange)="onChangeNombrePC($event)" id="nombrePC" name="nombrePC" placeholder="Nombre único del producto"
+          class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " required>
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label for="tipoPC">Tipo Producto<span class="requiredClass">&nbsp;*</span></label>
+        <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input-sm" [disabled]="flagProductoGasto"
+          required>
+        <option value="" disabled selected hidden>Selecciona...</option>
         <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
       </select>
-    </div>
-    <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
-      <label for="filesC">Logotipo:</label>
-      <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
-      <input #myInput type="file" placeholder="File Name" (change)="onChangeFileC($event)" id="filesC" name="filesC" class="form-control inputfile input-sm"
-        accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS" tooltipPlacement="bottom" title=" "
-        [disabled]="flagProductoGasto">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Contenido*:</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
-        class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml." tooltipPlacement="bottom"
-        [disabled]="flagSubProd" (click)="$event.target.select()">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label style="color: white">.</label>
-      <p-selectButton [options]="lstContenido" [(ngModel)]="selectedLstContenido" [disabled]="flagSubProd" [style]="{'padding-top':'2px'}"></p-selectButton>
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Cantidad Existente*:</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
-        class="form-control input-sm" (click)="$event.target.select()" [disabled]="flagSubProd">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Cantidad Mínima*:</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantMinPC" name="cantMinPC" placeholder="0.00"
-        class="form-control input-sm" (click)="$event.target.select()" tooltip="Cuando el producto sea menor a esta cantidad, se mostrará una alerta en el módulo de VENTAS."
-        tooltipPlacement="bottom" [disabled]="flagSubProd">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Precio Costo*:</label>
-      <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" placeholder="0.00" class="form-control input-sm"
-        (ngModelChange)="valueChangePrecioCompra($event)" (click)="$event.target.select()" [disabled]="flagSubProd">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Ganancia*:</label>
-      <input currencyMask type="text" [options]="{ suffix :' %',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
-        placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)" (click)="$event.target.select()"
-        tooltip="Los productos con ganancia 0%, no se mostrarán en el módulo de VENTAS." tooltipPlacement="bottom">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
-      <label>Precio Venta*:</label>
-      <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
-        (ngModelChange)="valueChangePrecioVenta($event)" (click)="$event.target.select()" [readonly]="flagProductoGasto">
-    </div>
-    <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6" *ngIf="!flagProductoGasto">
-      <div style="text-align: center">
-        <label>Receta (Subproductos):</label><br>
-        <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px" (ngModelChange)="controlarPrecioCosto($event)"
-          tooltip="Un producto compuesto contiene uno o más productos estándar." tooltipPlacement="bottom">
-        </md-slide-toggle>
       </div>
-    </div>
-    <div class="panel panel-default" style="width: 100%;margin-bottom: 0px" *ngIf="flagSubProd">
-      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
-        <label>Productos Existentes:</label>
-        <p-listbox [options]="productosShow" [(ngModel)]="selected_producto" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','width':'100%','border-color':borderStyleProdExistente}"
-          id="prodExistente" name="prodExistente" (onChange)="onChangeProdExistentes($event)">
-          <ng-template let-car pTemplate="item">
-            {{car.nombre}}
-            <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
-            <span class="badge">{{car.contenido}} ml</span>
-          </ng-template>
-        </p-listbox>
+      <div class="ui-g-6 ui-xl-6 ui-lg-6 ui-md-6 ui-sm-12">
+        <label for="filesC">Logotipo:</label>
+        <div style="display: inline" class="form-hint"> (Peso máximo: 1 Mb, Tamaño preferido: 160 x 160 px)</div>
+        <input #myInput type="file" (change)="onChangeFileC($event)" id="filesC" name="filesC" class="form-control inputfile input-sm"
+          accept="image/*" tooltip="Esta imagen se mostrará por defecto, en el módulo de VENTAS" tooltipPlacement="bottom"
+          title=" " [disabled]="flagProductoGasto">
       </div>
-      <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2" style="text-align: center">
-        <br>
-        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
-          <label>Unidad Medida:</label>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Cantidad Existente<span class="requiredClass">&nbsp;*</span></label>
+        <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_existente" id="cantPC" name="cantPC" placeholder="0.00"
+          class="form-control input-sm" (click)="$event.target.select()" [disabled]="flagSubProd" required>
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Cantidad Mínima<span class="requiredClass">&nbsp;*</span></label>
+        <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cant_minima" id="cantMinPC" name="cantMinPC" placeholder="0.00"
+          class="form-control input-sm" (click)="$event.target.select()" tooltip="Cuando el producto sea menor a esta cantidad, se mostrará una alerta en el módulo de VENTAS."
+          tooltipPlacement="bottom" [disabled]="flagSubProd" required>
+        <button type="button" (click)="showDlgImp=true; calcImp();" *ngIf="precio_costo > 0" class="btn btn-info btn-block btn-sm cuzButton padTop">
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Impuestos Compra
+        </button>
+
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Contenido<span class="requiredClass">&nbsp;*</span></label>
+        <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="contenido" id="contPC" name="contPC" placeholder="0.00"
+          class="form-control input-sm" tooltip="Al almacenar el valor, el sistema realizará la conversión a ml." tooltipPlacement="bottom"
+          [disabled]="flagSubProd || blockFlagCont" (click)="$event.target.select()">
+        <button type="button" (click)="showDlgImpV=true; calcImpV();" *ngIf="precio_venta > 0" class="btn btn-info btn-block btn-sm cuzButton padTop">
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Impuestos Venta
+        </button>
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Unidad de Medida<span class="requiredClass">&nbsp;*</span></label>
+        <select [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" id="tipoUmProd" name="tipoUmProd" class="form-control input-sm"
+          [disabled]="flagSubProd" required>
+          <option *ngFor="let c of lstUnidadMedida" [ngValue]="c">{{c.label}}</option>
+        </select>
+        <select [(ngModel)]="selectedUmMat1" id="UmProd" name="UmProd" class="form-control input-sm padTop" *ngIf="flagUnits" [disabled]="flagSubProd"
+          required>
+          <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
+        </select>
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Precio Costo<span class="requiredClass">&nbsp;*</span></label>
+        <input currencyMask type="text" [(ngModel)]="precio_costo" id="pcPC" name="pcPC" placeholder="0.00" class="form-control input-sm"
+          (ngModelChange)="valueChangePrecioCompra($event)" (click)="$event.target.select()" [disabled]="flagSubProd">
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Ganancia<span class="requiredClass">&nbsp;*</span></label>
+        <input currencyMask type="text" [options]="{ suffix :' %',prefix: ''}" [(ngModel)]="utilidad" id="utilidadPC" name="utilidadPC"
+          placeholder="0.00" class="form-control input-sm" (ngModelChange)="valueChangeGanancia($event)" (click)="$event.target.select()"
+          tooltip="Los productos con ganancia 0%, no se mostrarán en el módulo de VENTAS." tooltipPlacement="bottom">
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6">
+        <label>Precio Venta<span class="requiredClass">&nbsp;*</span></label>
+        <input type="text" currencyMask type="text" [(ngModel)]="precio_venta" id="pvPC" name="pvPC" placeholder="0.00" class="form-control input-sm"
+          (ngModelChange)="valueChangePrecioVenta($event)" (click)="$event.target.select()" [readonly]="flagProductoGasto">
+      </div>
+      <div class="ui-g-3 ui-xl-3 ui-lg-3 ui-md-3 ui-sm-6" *ngIf="!flagProductoGasto">
+        <div style="text-align: center">
+          <label>Receta (Subproductos):</label><br>
+          <md-slide-toggle [color]="color" [checked]="checked" [(ngModel)]="flagSubProd" style="padding-top: 7px" (ngModelChange)="controlarPrecioCosto($event)"
+            id="btnSubProd" name="btnSubProd" tooltip="Un producto compuesto contiene uno o más productos estándar." tooltipPlacement="bottom">
+          </md-slide-toggle>
         </div>
-        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-          <select [(ngModel)]="unidadMedidaSuproducto" id="um" name="um" class="form-control input-sm" style="width: 100%">
+      </div>
+      <div class="panel panel-default" style="width: 100%;margin-bottom: 0px" *ngIf="flagSubProd">
+        <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-5" style="text-align: center">
+          <label>Productos Existentes:</label>
+          <p-listbox [options]="productosShow" [(ngModel)]="selected_producto" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','width':'100%','border-color':borderStyleProdExistente}"
+            id="prodExistente" name="prodExistente" (onChange)="onChangeProdExistentes($event)">
+            <ng-template let-car pTemplate="item">
+              {{car.nombre}}
+              <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
+              <span class="badge">{{car.contenido}} ml</span>
+            </ng-template>
+          </p-listbox>
+        </div>
+        <div class="ui-g-2 ui-xl-2 ui-lg-2 ui-md-2 ui-sm-2" style="text-align: center">
+          <br>
+          <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+            <label>Unidad Medida:</label>
+          </div>
+          <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+            <select [(ngModel)]="unidadMedidaSuproducto" id="um" name="um" class="form-control input-sm" style="width: 100%">
             <option value="" disabled selected hidden>Selecciona...</option>
             <option *ngFor="let c of lstUnidades" [ngValue]="c">{{c.label}}</option>
           </select>
+          </div>
+          <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
+            <label>Cantidad:</label>
+          </div>
+          <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+            <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubprod" id="cantSubprod" name="cantSubprod" placeholder="0.00"
+              class="form-control input-sm" (click)="$event.target.select()">
+          </div>
+          <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
+            <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
+            <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItem()" aria-hidden="true" style="vertical-align: middle"></i>
+          </div>
         </div>
-        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="padding-bottom: 0">
-          <label>Cantidad:</label>
+        <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-12" style="text-align: center">
+          <label>Productos Seleccionados:</label>
+          <p-listbox [options]="subproductoV" [(ngModel)]="selected_prodSelec" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','border-color':borderStyleProdSelec}"
+            id="prodSeleccionado" name="prodSeleccionado" (onChange)="onChangeProdSelec($event)">
+            <ng-template let-car let-i="index" pTemplate="item" id="tmpProd" name="tmpProd" #tmpProd>
+              &nbsp;{{car.nombre}}
+              <span class="badge">{{car.cantidad}}</span>
+              <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
+            </ng-template>
+          </p-listbox>
         </div>
-        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-          <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="cantSubprod" id="cantSubprod" name="cantSubprod" placeholder="0.00"
-            class="form-control input-sm" (click)="$event.target.select()">
-        </div>
-        <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12">
-          <i id="addIcon" class="fa fa-plus-square fa-2x" (click)="addItem()" aria-hidden="true" style="vertical-align: middle"></i>
-          <i id="timesIcon" class="fa fa-minus-square fa-2x" (click)="deleteItem()" aria-hidden="true" style="vertical-align: middle"></i>
-        </div>
-      </div>
-      <div class="ui-g-5 ui-xl-5 ui-lg-5 ui-md-5 ui-sm-12" style="text-align: center">
-        <label>Productos Seleccionados:</label>
-        <p-listbox [options]="subproductoV" [(ngModel)]="selected_prodSelec" filter="filter" [style]="{'text-align':'left','max-height':'200px','height':'200px','border-color':borderStyleProdSelec}"
-          id="prodSeleccionado" name="prodSeleccionado" (onChange)="onChangeProdSelec($event)">
-          <ng-template let-car let-i="index" pTemplate="item" id="tmpProd" name="tmpProd" #tmpProd>
-            &nbsp;{{car.nombre}}
-            <span class="badge">{{car.cantidad}}</span>
-            <span class="badge">$ {{ car.precio_costo | number : '1.2-2'}}</span>
-          </ng-template>
-        </p-listbox>
       </div>
     </div>
-  </div>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
-    <hr>
-    <button class="btn btn-primary" style="font-size: 11px" (click)="onAddPSubmit()">Registrar</button>
-    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPC = false">Cancelar</button>
-  </div>
+    <div class="ui-g-12" style="text-align: center">
+      <hr>
+      <button type="submit" class="btn btn-primary" style="font-size: 11px" [disabled]="!formProd.form.valid">Registrar</button>
+      <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPC = false">Cancelar</button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Impuestos Compra-->
+<p-dialog [(visible)]="showDlgImp" modal="modal" width="550" [responsive]="true" positionTop="35">
+  <p-header>
+    Impuestos Compra
+  </p-header>
+  <form (ngSubmit)="addImpuesto()" #formImp="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="col-sm-4 centerClass">
+          <label>Nombre</label>
+        </div>
+        <div class="col-sm-4 centerClass">
+          <label>Porcentaje</label>
+        </div>
+        <div class="col-sm-4 centerClass">
+          <label>Valor</label>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpIVA" name="descImpIVA" [(ngModel)]="objIva.desc" readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="objIva.porcentaje"
+              (ngModelChange)="valueChangePorIva($event)" id="porcentajeImpIVA" name="PorcentajeImpIVA" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask type="text" class="form-control input-sm" id="valorImpIVA" name="valorImpIVA" [(ngModel)]="objIva.valor"
+              readonly>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpICE" name="descImpICE" [(ngModel)]="objIce.desc" readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" id="PorcentajeImpICE"
+              name="PorcentajeImpICE" [(ngModel)]="objIce.porcentaje" (ngModelChange)="valueChangePorIce($event)" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask type="text" class="form-control input-sm" id="valorImpICE" name="valorImpICE" [(ngModel)]="objIce.valor"
+              readonly>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpOtro" name="descImpOtro" [(ngModel)]="objOtro.desc" (ngModelChange)="onChangeDescOtroImp($event)"
+              placeholder="Nombre">
+          </div>
+        </div>
+        <div class="col-sm-4" sty>
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="objOtro.porcentaje"
+              (ngModelChange)="valueChangePorOtro($event)" id="porcentajeImpNew" name="porcentajeImpNew" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <div class="input-group">
+              <input currencyMask type="text" class="form-control input-sm" [(ngModel)]="objOtro.valor" id="valorImpNew" name="valorImpNew"
+                aria-describedby="basic-addon1" readonly>
+              <span class="input-group-addon input-sm" (click)="addRowImp();" id="basic-addon1" style="background-color: #93C54A">
+              <i class="fa fa-plus fa-lg" aria-hidden="true" style="color: white"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngFor="let field of choiceSet.nombre; trackBy:trackByFn; let i = index;">
+          <div class="form-group col-sm-4">
+            <input type="text" class="form-control input-sm" [(ngModel)]="choiceSet.nombre[i]" (ngModelChange)="onChangeDescV(i)" placeholder="Nombre"
+              (click)="$event.target.select()" id="nombreOtro{{i}}" name="nombreOtro{{i}}" required>
+          </div>
+          <div class="form-group col-sm-4">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="choiceSet.porcentaje[i]"
+              (ngModelChange)="valueChangePorGeneric(i)" (click)="$event.target.select()" id="porcentajeOtro{{i}}" name="porcentajeOtro{{i}}">
+          </div>
+          <div class="form-group col-sm-4">
+            <div class="input-group">
+              <input currencyMask type="text" class="form-control input-sm" [(ngModel)]="choiceSet.valor[i]" id="valorOtro{{i}}" name="valorOtro{{i}}"
+                readonly>
+              <span class="input-group-addon input-sm" (click)="removeChoice(i)" id="basic-addon1" style="background-color: #D95455">
+              <i class="fa fa-minus fa-lg" aria-hidden="true" style="color: white"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <hr>
+    </div>
+    <div class="ui-g-12" style="text-align: center">
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!formImp.form.valid">Guardar</button>
+      <button class="btn btn-default" style="font-size: 11px" (click)="showDlgImp = false">Cancelar</button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Impuestos Venta-->
+<p-dialog [(visible)]="showDlgImpV" modal="modal" width="550" [responsive]="true" positionTop="35">
+  <p-header>
+    Impuestos Venta
+  </p-header>
+  <form (ngSubmit)="addImpuestoV()" #formImpV="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="col-sm-4 centerClass">
+          <label>Nombre</label>
+        </div>
+        <div class="col-sm-4 centerClass">
+          <label>Porcentaje</label>
+        </div>
+        <div class="col-sm-4 centerClass">
+          <label>Valor</label>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpIvaV" name="descImpIvaV" [(ngModel)]="objIvaV.desc" readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="objIvaV.porcentaje"
+              (ngModelChange)="valueChangePorIvaV($event)" id="porcentajeImpIvaV" name="porcentajeImpIvaV" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask type="text" class="form-control input-sm" id="valorImpIvaV" name="valorImpIvaV" [(ngModel)]="objIvaV.valor"
+              readonly>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpIceV" name="descImpIceV" [(ngModel)]="objIceV.desc" readonly>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" id="PorcentajeImpIceV"
+              name="PorcentajeImpIceV" [(ngModel)]="objIceV.porcentaje" (ngModelChange)="valueChangePorIceV($event)" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask type="text" class="form-control input-sm" id="valorImpIceV" name="valorImpIceV" [(ngModel)]="objIceV.valor"
+              readonly>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-sm" id="descImpOtroV" name="descImpOtroV" [(ngModel)]="objOtroV.desc" (ngModelChange)="onChangeDescOtroImpV($event)"
+              placeholder="Nombre">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="objOtroV.porcentaje"
+              (ngModelChange)="valueChangePorOtroV($event)" id="porcentajeImpNewV" name="porcentajeImpNewV" (click)="$event.target.select()">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <div class="input-group">
+              <input currencyMask type="text" class="form-control input-sm" [(ngModel)]="objOtroV.valor" id="valorImpNewV" name="valorImpNewV"
+                aria-describedby="basic-addon1V" readonly>
+              <span class="input-group-addon input-sm" (click)="addRowImpV();" id="basic-addon1V" style="background-color: #93C54A">
+              <i class="fa fa-plus fa-lg" aria-hidden="true" style="color: white"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngFor="let field of choiceSetV.nombre; trackBy:trackByFn; let i = index;">
+          <div class="form-group col-sm-4">
+            <input type="text" class="form-control input-sm" [(ngModel)]="choiceSetV.nombre[i]" (ngModelChange)="onChangeDescV1(i)" placeholder="Nombre"
+              (click)="$event.target.select()" id="nombreOtroV{{i}}" name="nombreOtroV{{i}}" required>
+          </div>
+          <div class="form-group col-sm-4">
+            <input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" class="form-control input-sm" [(ngModel)]="choiceSetV.porcentaje[i]"
+              (ngModelChange)="valueChangePorGenericV(i)" (click)="$event.target.select()" id="porcentajeOtroV{{i}}" name="porcentajeOtroV{{i}}">
+          </div>
+          <div class="form-group col-sm-4">
+            <div class="input-group">
+              <input currencyMask type="text" class="form-control input-sm" [(ngModel)]="choiceSetV.valor[i]" id="valorOtroV{{i}}" name="valorOtroV{{i}}"
+                readonly>
+              <span class="input-group-addon input-sm" (click)="removeChoiceV(i)" style="background-color: #D95455">
+              <i class="fa fa-minus fa-lg" aria-hidden="true" style="color: white"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <hr>
+    </div>
+    <div class="ui-g-12" style="text-align: center">
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!formImpV.form.valid">Guardar</button>
+      <button class="btn btn-default" style="font-size: 11px" (click)="showDlgImpV = false">Cancelar</button>
+    </div>
+  </form>
 </p-dialog>
 
 <!-- Update P -->
@@ -743,7 +977,7 @@
         <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'20%'}"></p-column>
       </p-dataTable>
     </div>
-
+    <!-- Formas de pago -->
     <div class="panel panel-default" style="width: 100%;margin-bottom: 0px;" id="pnlFp">
       <div class="ui-g-12">
         <div class="ui-g-3 ui-g-nopad">
@@ -793,74 +1027,83 @@
   <p-header>
     Producto
   </p-header>
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-12">
-      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
-    </div>
-    <div class="ui-g-12">
-      <label>Descripción Producto*:</label>
-      <p-selectButton [options]="types" [(ngModel)]="selectedIeProd" (onChange)="onClickSelectButton($event)" [style]="{'margin-top':'2px'}"></p-selectButton>
-    </div>
-    <div class="ui-g-12" *ngIf="flagProdK">
-      <input type="text" [(ngModel)]="kardex.desc_producto" (ngModelChange)="onChangeNombrePK($event)" id="desc_productoK" name="desc_productoK"
-        placeholder="Producto Nuevo" class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
-    </div>
-    <div class="ui-g-12" *ngIf="!flagProdK">
-      <p-dropdown [options]="productosShow" [(ngModel)]="selectedProdKardex" (onChange)="generateKardex()" placeholder="Selecciona.."
-        [style]="{'width':'100%'}" filter="true">
-        <ng-template let-brand pTemplate="item">
-          <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
-            <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.label}}--{{brand.id_tipo_producto}}</div>
-          </div>
-        </ng-template>
-      </p-dropdown>
-    </div>
-    <div class="ui-g-6">
-      <label>Cantidad*:</label>
-      <input [(ngModel)]="kardex.cantidad" (ngModelChange)="onChangeUnidades($event)" currencyMask type="text" [options]="{ prefix: ''}"
-        id="cantK" name="cantK" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
-    </div>
-    <div class="ui-g-6">
-      <label>Precio Costo Unitario*:</label>
-      <input [(ngModel)]="kardex.total" (ngModelChange)="onChangeTotalK($event)" currencyMask type="text" [options]="{ prefix: '$ '}"
-        id="totalK" name="totalK" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
-    </div>
-    <div class="ui-g-6">
-      <label>Unidad de Medida*:</label>
-      <select [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" id="tipoUmMat" class="form-control input-sm">
+  <form (ngSubmit)="addProdCompra()" #tpProdCompraForm="ngForm">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="form-hint"><b>Nota:</b> Los campos marcados con (*) son obligatorios.</div>
+      </div>
+      <div class="ui-g-12">
+        <label>Descripción Producto<span style="color: #D9443D;">&nbsp;*</span></label>
+        <p-selectButton name="selectedTipoProd" [options]="typesProd" [(ngModel)]="selectedTipoProd" (onChange)="changeTipoProd($event)"
+          [style]="{'margin-top':'2px'}"></p-selectButton>
+      </div>
+      <div class="ui-g-12" *ngIf="flagProdC">
+        <input type="text" name="desc_productoC" [(ngModel)]="objProdCompras.desc_producto" (ngModelChange)="onChangeNombreProdCompra($event)"
+          minlength="5" id="desc_productoC" placeholder="Producto Nuevo" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          required>
+      </div>
+      <div class="ui-g-12" *ngIf="!flagProdC">
+        <p-dropdown name="selectedProdCompras" [options]="productosShow" [(ngModel)]="objProdCompras.desc_producto" (onChange)="onChangeProdCompra()"
+          placeholder="Selecciona.." [style]="{'width':'100%'}" filter="true" required>
+          <ng-template let-brand pTemplate="item">
+            <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+              <div style="font-size:18px;float:left;margin:10px 10px 0 0">{{brand.label}}--{{brand.id_tipo_producto}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="ui-g-6">
+        <label>Cantidad<span style="color: #D9443D;">&nbsp;*</span></label>
+        <input name="objProdComprasCant" [(ngModel)]="objProdCompras.cantidad" (ngModelChange)="onChangeCantProdCompra($event)" currencyMask
+          type="text" [options]="{ prefix: ''}" id="cantK" name="cantK" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()"
+          required>
+      </div>
+      <div class="ui-g-6">
+        <label>Precio Costo Unitario<span style="color: #D9443D;">&nbsp;*</span></label>
+        <input name="objProdComprasPU" [(ngModel)]="objProdCompras.pcUnitario" (ngModelChange)="onChangePCUProdCompra($event)" currencyMask
+          type="text" [options]="{ prefix: '$ '}" id="totalK" name="totalK" placeholder="0.00" class="form-control input-sm"
+          (click)="$event.target.select()" required>
+      </div>
+      <div class="ui-g-6">
+        <label>Unidad de Medida<span *ngIf="flagProdC" style="color: #D9443D;">&nbsp;*</span></label>
+        <select name="selectedUmMatC" [(ngModel)]="selectedUmMat" (ngModelChange)="onChangeUmMat($event)" id="tipoUmMat" class="form-control input-sm"
+          [disabled]="!flagProdC">
         <option *ngFor="let c of lstUnidadMedida" [ngValue]="c">{{c.label}}</option>
-      </select>
-      <select [(ngModel)]="selectedUmMat1" id="tipoUmMat" class="form-control input-sm" *ngIf="flagUnits" style="margin-top: 10px;">
-        <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
-      </select>
+        </select>
+        <select name="selectedUmMatC1" [(ngModel)]="selectedUmMat1" id="tipoUmMat" class="form-control input-sm" *ngIf="flagUnits"
+          style="margin-top: 10px;" [disabled]="!flagProdC">
+          <option *ngFor="let c of lstUnidadMedida1" [ngValue]="c">{{c.label}}</option>
+        </select>
+      </div>
+      <div class="ui-g-6" *ngIf="flagUnits">
+        <label>Contenido (Si aplica)<span *ngIf="flagProdC" style="color: #D9443D;">&nbsp;*</span></label>
+        <input name="contProdCompra" currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objProdCompras.contenido" id="cantMat"
+          placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()" [disabled]="!flagProdC">
+      </div>
+      <div class="ui-g-6" *ngIf="!flagProdC">
+        <label>Precio Costo Anterior:</label>
+        <p class="ids">&nbsp;{{objProdCompras.pcAnterior | number : '1.2-2'}}</p>
+      </div>
+      <div class="ui-g-6">
+        <label>Total:</label>
+        <p class="ids">&nbsp;{{ objProdCompras.pcUnitario * objProdCompras.cantidad | number : '1.2-2'}}</p>
+      </div>
+      <div class="ui-g-12">
+        <md-checkbox name="checkedC" [(ngModel)]="checkedC" [color]="color">¿Usar éste producto cómo materia prima?</md-checkbox>
+        <hr>
+      </div>
     </div>
-    <div class="ui-g-6" *ngIf="flagUnits">
-      <label>Contenido (Si aplica):</label>
-      <input currencyMask type="text" [options]="{ prefix: ''}" [(ngModel)]="objMat.contenido" id="cantMat" placeholder="0.00"
-        class="form-control input-sm" (click)="$event.target.select()">
-    </div>
-    <div class="ui-g-6" *ngIf="!flagProdK">
-      <label>Precio Costo Actual*:</label>
-      <p class="ids">&nbsp;{{newProd.precio_costo | number : '1.2-2'}}</p>
-    </div>
-    <div class="ui-g-6">
-      <label>Total*:</label>
-      <p class="ids">&nbsp;{{prizeKardex | number : '1.2-2'}}</p>
-    </div>
-    <div class="ui-g-12">
-      <md-checkbox [(ngModel)]="checkedK" [color]="color">¿Usar este producto como materia prima?</md-checkbox>
-    </div>
-  </div>
+    <div class="ui-g-12" style="text-align: center">
 
-  <div class="ui-g-12" style="text-align: center">
-    <hr>
-    <button pButton type="button" (click)="addProdCompra()" label="&nbsp; Añadir &nbsp;"></button>
-    <button pButton type="button" (click)="showDialogProdC = false" label="Cancelar" class="ui-button-warning"></button>
-  </div>
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!tpProdCompraForm.form.valid || !flagCantPC || !flagPrecioCostoPC">
+        &nbsp;&nbsp;&nbsp;Añadir&nbsp;&nbsp;&nbsp;</button>
+      <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProdC = false">Cancelar</button>
+    </div>
+  </form>
 </p-dialog>
 
 <!-- Add Kardex-->
-<p-dialog [(visible)]="showDialogK" modal="modal" width="550" [responsive]="true">
+<!--<p-dialog [(visible)]="showDialogK" modal="modal" width="550" [responsive]="true">
   <p-header>
     Registrar Compra
   </p-header>
@@ -943,10 +1186,10 @@
     <button type="button" style="font-size: 11px" (click)="saveKardex()" class="btn btn-primary" [disabled]="false">Registrar</button>
     <button type="button" style="font-size: 11px" (click)="showDialogK=false" class="btn btn-default">Cancelar</button>
   </div>
-</p-dialog>
+</p-dialog>-->
 
 <!-- Update Kardex-->
-<p-dialog [(visible)]="showDialogKU" modal="modal" width="550" [responsive]="true">
+<!--<p-dialog [(visible)]="showDialogKU" modal="modal" width="550" [responsive]="true">
   <p-header>
     Actualizar Compra
   </p-header>
@@ -1014,9 +1257,6 @@
       <input [(ngModel)]="kardexU.total" (ngModelChange)="onChangeTotalKU($event)" currencyMask type="text" [options]="{ prefix: ''}"
         id="totalKU" name="totalKU" placeholder="0.00" class="form-control input-sm" (click)="$event.target.select()">
     </div>
-    <!--<div class="ui-g-12">
-      <md-checkbox [(ngModel)]="checkedK" [color]="color">¿Usar este producto como materia prima?</md-checkbox>
-    </div>-->
     <div class="ui-g-6" *ngIf="!flagProdK">
       <label>Precio Costo Actual*:</label>&nbsp;{{newProd.precio_costo | number : '1.2-2'}}
     </div>
@@ -1029,7 +1269,7 @@
     <button type="button" style="font-size: 11px" (click)="updateKardex()" class="btn btn-primary" [disabled]="false">Actualizar</button>
     <button type="button" style="font-size: 11px" (click)="showDialogKU=false" class="btn btn-default">Cancelar</button>
   </div>
-</p-dialog>
+</p-dialog>-->
 
 <!-- Add Proveedor-->
 <p-dialog [(visible)]="showDialogProve" modal="modal" width="600" [responsive]="true">

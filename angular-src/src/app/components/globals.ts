@@ -28,5 +28,14 @@ export function sliceElement(newValue: any) {
 }
 
 export var GLOBAL = {
-    url: 'http://localhost:3000/api/'
-  }
+    url: 'http://localhost:3000/api/',
+}
+
+export var UM = {
+    //Unidades de medida
+    onzaEnMl: 29.5735295625,
+    litroEnMl: 1000,
+    onzaEnGr: 28.3495,
+    lbEnGr: 453.592,
+    kgEnGr: 1000
+}

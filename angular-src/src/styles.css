@@ -40,6 +40,39 @@
       font-size: 8px;
   }
 
+  .requiredClass{
+    color: #D9443D;
+  }
+
+  .divNoPad{
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .selectWidth{
+    width: 150%
+  }
+
+  .cuzButton{
+    text-transform: capitalize !important;
+  }
+
+  .padTop{
+      margin-top: 10px;
+  }
+
+  #addDinamic{
+      color: green;
+  }
+
+  .centerClass{
+      text-align: center;
+  }
+
+  .fakeBorder{
+      border: solid 1px blue;
+  }
+
   /*bootswatch*/
   html{
       font-family:sans-serif;

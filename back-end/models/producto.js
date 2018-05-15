@@ -13,8 +13,11 @@ var productoSchema = new mongoose.Schema({
     id_tipo_producto: mongoose.Schema.Types.ObjectId,
     path: String,
     contenido: String,
-    promocion: Array
-
+    promocion: Array,
+    unidad_medida: String,
+    impuestosCompraV: Array,
+    impuestosVentaV: Array
+    
 });
 
 module.exports = restful.model('producto', productoSchema);

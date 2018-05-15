@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { DecimalPipe, DatePipe, SlicePipe } from '@angular/common';
+import { DecimalPipe, DatePipe, SlicePipe, UpperCasePipe } from '@angular/common';
 /*My Components*/
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
@@ -90,7 +90,7 @@ const appRoutes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard] },
   { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
-  { path: 'home', component: HomeComponent},
+  { path: 'home', component: HomeComponent },
 
   { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard] }
 ]
@@ -147,7 +147,7 @@ const appRoutes: Routes = [
   ],
   providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService, ConfigurationService, CiudadService, ComprasService,
     CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService, CoverService, CajaService, MateriaPrimaService,
-    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, SlicePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService],
+    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, SlicePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService, UpperCasePipe],
   bootstrap: [AppComponent]
 })
 

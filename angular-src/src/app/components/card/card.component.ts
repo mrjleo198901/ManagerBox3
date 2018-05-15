@@ -2446,7 +2446,6 @@ export class CardComponent implements OnInit {
   }
 
   /*TAB EGRESO*/
-
   stepMujeresE = 0;
   plusWomanE() {
     if (this.flagEM == true) {
@@ -3343,7 +3342,6 @@ export class CardComponent implements OnInit {
   flagSp = false;
   flagSp1 = false;
 
-
   onResize(event) {
     let x = event.target.innerWidth;
     if (x < 768) {
@@ -3368,4 +3366,5 @@ export class CardComponent implements OnInit {
       this.textAlignTitle = 'left';
     }
   }
+  
 }

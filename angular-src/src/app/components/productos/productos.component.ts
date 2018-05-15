@@ -24,8 +24,11 @@ import { KardexService } from '../../services/kardex.service';
 import { DecimalPipe, SlicePipe } from '@angular/common';
 import { MateriaPrimaService } from '../../services/materia-prima.service';
 import { CiudadService } from '../../services/ciudad.service';
+import { UM } from '../globals';
 
 const URL = 'http://localhost:3000/api/imagen';
+declare var $;
+
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -43,7 +46,7 @@ export class ProductosComponent implements OnInit {
   sourceP: LocalDataSource = new LocalDataSource();
   showDialogTPC = false;
   showDialogTPU = false;
-  showDialogPC = false;
+  showDialogPC = true;
   showDialogPU = false;
   // Atributos Tipo Producto
   desc_tipo_producto;
@@ -152,9 +155,7 @@ export class ProductosComponent implements OnInit {
   es: any;
   filteredProductos: any[];
   selectedProdK;
-  types: any[];
-  selectedIeProd = 'Nuevo';
-  flagProdK = true;
+
   settingsProve = {};
   sourceProve: LocalDataSource = new LocalDataSource();
   showComprasDetail = false;
@@ -259,7 +260,7 @@ export class ProductosComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(document.getElementById("fpEfectivo").offsetHeight)
+    //console.log(document.getElementById("fpEfectivo").offsetHeight)
 
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.todayDate = [initial[0], initial[1], initial[2]].join('/');
@@ -273,9 +274,7 @@ export class ProductosComponent implements OnInit {
       today: 'Hoy',
       clear: 'Borrar'
     }
-    this.types = [];
-    this.types.push({ label: 'Nuevo', value: 'Nuevo' });
-    this.types.push({ label: 'Existente', value: 'Existente' });
+
     this.tipo_resumen_ventas = [];
     this.tipo_resumen_ventas.push({ label: 'Sin Rango de Fechas', value: 0 });
     this.tipo_resumen_ventas.push({ label: 'Con Rango de Fechas', value: 1 });
@@ -528,11 +527,10 @@ export class ProductosComponent implements OnInit {
     this.ngOnInitProducto();
     this.ngOnInitTipoProducto();
     this.ngOnInitMateriaPrima();
+    this.ngOnInitCompras();
+    this.ngOnInitImp();
   }
 
-  formatProdMateriaPrima() {
-
-  }
 
   /* GESTION DE PRODUCTO */
   setCursorAddTP() {
@@ -661,8 +659,13 @@ export class ProductosComponent implements OnInit {
       id_tipo_producto: this.selected_tipo_producto._id,
       path: this.pathLogo,
       contenido: this.contenido,
-      promocion: []
+      promocion: [],
+      unidad_medida: this.selectedUmMat.label + '-' + this.selectedUmMat1.label,
+      impuestosCompraV: this.objImp,
+      impuestosVentaV: this.objImpV
     };
+    console.log(producto);
+
     producto.contenido = this.calcContenido();
 
     if (producto.utilidad === 0) {
@@ -674,7 +677,7 @@ export class ProductosComponent implements OnInit {
         this.ngOnInitProducto();
         this.ngOnInit();
         this.showDialogPC = false;
-        this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+        this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
       }, err => {
         console.log(err);
         this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -691,8 +694,9 @@ export class ProductosComponent implements OnInit {
           this.productoService.registerProducto(producto).subscribe(data => {
             this.ngOnInitProducto();
             this.ngOnInit();
+            this.ngOnInitImp();
             this.showDialogPC = false;
-            this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+            this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
           }, err => {
             console.log(err);
             this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -706,8 +710,9 @@ export class ProductosComponent implements OnInit {
         this.productoService.registerProducto(producto).subscribe(data => {
           this.ngOnInitProducto();
           this.ngOnInit();
+          this.ngOnInitImp();
           this.showDialogPC = false;
-          this.messageGrowlService.notify('success', 'Existo', 'Ingreso Existoso!');
+          this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
         }, err => {
           console.log(err);
           this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
@@ -1234,7 +1239,6 @@ export class ProductosComponent implements OnInit {
     this.precio_venta = (this.precio_costo * gain);*/
     const gain = this.fs.add((this.fs.div(this.utilidad, 100)), 1);
     this.precio_venta = this.fs.times(this.precio_costo, gain);
-    console.log(this.precio_venta);
   }
 
   valueChangePrecioVenta($event) {
@@ -1491,7 +1495,8 @@ export class ProductosComponent implements OnInit {
     this.borderStyleProdSelec = '';
   }
 
-  calcContenido() {
+
+  /*calcContenido() {
     let nContMl = 0;
     if (this.contenido > 0) {
       const onzaEnMl = 29.5735295625;
@@ -1503,6 +1508,42 @@ export class ProductosComponent implements OnInit {
       }
       if (this.selectedLstContenido === 2) {
         nContMl = (this.contenido * onzaEnMl);
+      }
+    }
+    return nContMl;
+  }*/
+
+  blockFlagCont = false;
+  calcContenido() {
+    let nContMl = 0;
+    if (this.contenido > 0) {
+      if (this.selectedUmMat.value == 0) {
+        if (this.selectedUmMat1.label.localeCompare('Gramos') == 0) {
+          nContMl = this.contenido;
+        }
+        if (this.selectedUmMat1.label.localeCompare('Onza') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.onzaEnGr);
+        }
+        if (this.selectedUmMat1.label.localeCompare('Libras') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.lbEnGr);
+        }
+        if (this.selectedUmMat1.label.localeCompare('Kilogramos') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.kgEnGr);
+        }
+      } else {
+        if (this.selectedUmMat.value == 1) {
+          if (this.selectedUmMat1.label.localeCompare('Mililitros') == 0) {
+            nContMl = this.contenido;
+          }
+          if (this.selectedUmMat1.label.localeCompare('Onza Liquida') == 0) {
+            nContMl = this.fs.times(this.contenido, UM.onzaEnMl);
+          }
+          if (this.selectedUmMat1.label.localeCompare('Litros') == 0) {
+            nContMl = this.fs.times(this.contenido, UM.litroEnMl);
+          }
+        } else {
+          nContMl = 0;
+        }
       }
     }
     return nContMl;
@@ -1578,6 +1619,221 @@ export class ProductosComponent implements OnInit {
     this.precio_costoSubProd = 0;
     this.myInputVariable.nativeElement.value = '';
     this.myInputVariable1.nativeElement.value = '';
+  }
+
+  /* Impuestos */
+  showDlgImp = false;
+  showDlgImpV = false;
+  choiceSet = { nombre: [], porcentaje: [], valor: [] };
+  choiceSetV = { nombre: [], porcentaje: [], valor: [] };
+  objIva = {
+    desc: 'IVA',
+    porcentaje: 12,
+    valor: 0
+  }
+  objIce = {
+    desc: 'ICE',
+    porcentaje: 15,
+    valor: 0
+  }
+  objOtro = {
+    desc: 'OTRO',
+    porcentaje: 0,
+    valor: 0
+  }
+  objIvaV = {
+    desc: 'IVA',
+    porcentaje: 12,
+    valor: 0
+  }
+  objIceV = {
+    desc: 'ICE',
+    porcentaje: 15,
+    valor: 0
+  }
+  objOtroV = {
+    desc: 'OTRO',
+    porcentaje: 0,
+    valor: 0
+  }
+
+  ngOnInitImp() {
+    this.choiceSet.nombre = [];
+    this.choiceSet.porcentaje = [];
+    this.choiceSet.valor = [];
+    this.choiceSetV.nombre = [];
+    this.choiceSetV.porcentaje = [];
+    this.choiceSetV.valor = [];
+    this.objIva = {
+      desc: 'IVA',
+      porcentaje: 12,
+      valor: 0
+    }
+    this.objIce = {
+      desc: 'ICE',
+      porcentaje: 15,
+      valor: 0
+    }
+    this.objOtro = {
+      desc: 'OTRO',
+      porcentaje: 0,
+      valor: 0
+    }
+    this.objIvaV = {
+      desc: 'IVA',
+      porcentaje: 12,
+      valor: 0
+    }
+    this.objIceV = {
+      desc: 'ICE',
+      porcentaje: 15,
+      valor: 0
+    }
+    this.objOtroV = {
+      desc: 'OTRO',
+      porcentaje: 0,
+      valor: 0
+    }
+    this.objImp = [...this.objImp, this.objIva];
+    this.objImp = [...this.objImp, this.objIce];
+    this.objImp = [...this.objImp, this.objOtro];
+    this.objImpV = [...this.objImpV, this.objIvaV];
+    this.objImpV = [...this.objImpV, this.objIceV];
+    this.objImpV = [...this.objImpV, this.objOtroV];
+  }
+
+  trackByFn(index: any, item: any) {
+    return index;
+  }
+
+  addRowImp = function () {
+    this.choiceSet.nombre.push('');
+    this.choiceSet.porcentaje.push('');
+    this.choiceSet.valor.push('');
+  };
+
+  addRowImpV = function () {
+    this.choiceSetV.nombre.push('');
+    this.choiceSetV.porcentaje.push('');
+    this.choiceSetV.valor.push('');
+  };
+
+  removeChoice = function (z) {
+    this.choiceSet.nombre.splice(z, 1);
+    this.choiceSet.porcentaje.splice(z, 1);
+    this.choiceSet.valor.splice(z, 1);
+  };
+
+  removeChoiceV = function (z) {
+    this.choiceSetV.nombre.splice(z, 1);
+    this.choiceSetV.porcentaje.splice(z, 1);
+    this.choiceSetV.valor.splice(z, 1);
+  };
+
+  objImp: any[] = [];
+  objImpV: any[] = [];
+  addImpuesto() {
+    this.objImp = [];
+    this.objImp = [...this.objImp, this.objIva];
+    this.objImp = [...this.objImp, this.objIce];
+    this.objImp = [...this.objImp, this.objOtro];
+    let n = this.choiceSet.nombre.length;
+    for (let i = 0; i < n; i++) {
+      let aux = { desc: this.choiceSet.nombre[i], porcentaje: this.choiceSet.porcentaje[i], valor: this.choiceSet.valor[i] };
+      this.objImp = [...this.objImp, aux];
+    }
+    console.log(this.objImp);
+    this.messageGrowlService.notify('info', 'Información', 'Se guardaron los impuestos!');
+    this.showDlgImp = false;
+  }
+
+  addImpuestoV() {
+    this.objImpV = [];
+    this.objImpV = [...this.objImpV, this.objIvaV];
+    this.objImpV = [...this.objImpV, this.objIceV];
+    this.objImpV = [...this.objImpV, this.objOtroV];
+    let n = this.choiceSetV.nombre.length;
+    for (let i = 0; i < n; i++) {
+      let aux = { desc: this.choiceSetV.nombre[i], porcentaje: this.choiceSetV.porcentaje[i], valor: this.choiceSetV.valor[i] };
+      this.objImpV = [...this.objImpV, aux];
+    }
+    console.log(this.objImpV);
+    this.messageGrowlService.notify('info', 'Información', 'Se guardaron los impuestos!');
+    this.showDlgImpV = false;
+  }
+
+  valueChangePorIva($event) {
+    let porcentaje = 1 + (this.fs.div(this.objIva.porcentaje, 100));
+    this.objIva.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porcentaje)));
+  }
+
+  valueChangePorIvaV($event) {
+    let porcentaje = 1 + (this.fs.div(this.objIvaV.porcentaje, 100));
+    this.objIvaV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porcentaje)));
+  }
+
+  valueChangePorIce($event) {
+    let porcentaje = 1 + (this.fs.div(this.objIce.porcentaje, 100));
+    this.objIce.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porcentaje)));
+  }
+
+  valueChangePorIceV($event) {
+    let porcentaje = 1 + (this.fs.div(this.objIceV.porcentaje, 100));
+    this.objIceV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porcentaje)));
+  }
+
+  valueChangePorOtro($event) {
+    let porcentaje = 1 + (this.fs.div(this.objOtro.porcentaje, 100));
+    this.objOtro.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porcentaje)));
+  }
+
+  valueChangePorOtroV($event) {
+    let porcentaje = 1 + (this.fs.div(this.objOtroV.porcentaje, 100));
+    this.objOtroV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porcentaje)));
+  }
+
+  calcImp() {
+    let porIva = this.fs.div(this.objIva.porcentaje, 100) + 1;
+    let porIce = this.fs.div(this.objIce.porcentaje, 100) + 1;
+    let porOtro = this.fs.div(this.objOtro.porcentaje, 100) + 1;
+    this.objIva.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porIva)));
+    this.objIce.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porIce)));
+    this.objOtro.valor = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porOtro)));
+  }
+
+  calcImpV() {
+    let porIva = this.fs.div(this.objIvaV.porcentaje, 100) + 1;
+    let porIce = this.fs.div(this.objIceV.porcentaje, 100) + 1;
+    let porOtro = this.fs.div(this.objOtroV.porcentaje, 100) + 1;
+    this.objIvaV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porIva)));
+    this.objIceV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porIce)));
+    this.objOtroV.valor = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porOtro)));
+  }
+
+  valueChangePorGeneric(i) {
+    let porcentaje = 1 + (this.fs.div(this.choiceSet.porcentaje[i], 100));
+    this.choiceSet.valor[i] = this.fs.sub(this.precio_costo, (this.fs.div(this.precio_costo, porcentaje)));
+  }
+
+  valueChangePorGenericV(i) {
+    let porcentaje = 1 + (this.fs.div(this.choiceSetV.porcentaje[i], 100));
+    this.choiceSetV.valor[i] = this.fs.sub(this.precio_venta, (this.fs.div(this.precio_venta, porcentaje)));
+  }
+
+  onChangeDescOtroImp($event) {
+    this.objOtro.desc = this.objOtro.desc.toUpperCase();
+  }
+
+  onChangeDescOtroImpV($event) {
+    this.objOtroV.desc = this.objOtroV.desc.toUpperCase();
+  }
+
+  onChangeDescV(i) {
+    this.choiceSet.nombre[i] = this.choiceSet.nombre[i].toUpperCase();
+  }
+
+  onChangeDescV1(i) {
+    this.choiceSetV.nombre[i] = this.choiceSetV.nombre[i].toUpperCase();
   }
 
   /* GESTION DE PROMOCIONES */
@@ -2034,8 +2290,20 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE COMPRAS */
-  showDialogC = true;
+  showDialogC = false;
   showDialogCU = false;
+  selectedIeProd = 'Existente';
+  flagProdC = false;
+  typesProd: any[];
+  objProdCompras: {
+    desc_producto: '',
+    cantidad: 0,
+    pcUnitario: 0,
+    unidadMedida: '',
+    contenido: 0,
+    pcAnterior: 0
+  }
+  selectedProdCompras: any;
   objCompras: {
     'fecha': '',
     'desc_producto': '',
@@ -2045,9 +2313,103 @@ export class ProductosComponent implements OnInit {
     'num_factura': '',
     'contenido': 0
   };
+  checkedC = false;
+  selectedTipoProd = 'Existente';
+
+  onClickSelectButton(event) {
+    if (this.selectedIeProd.localeCompare('Existente') == 0) {
+      this.flagProdC = false;
+      this.kardex.desc_producto = this.lstProductos[0];
+      let a: any;
+      a = this.kardex.desc_producto
+      this.newProd = a;
+      this.kardex.contenido = this.newProd.contenido;
+    } else {
+      this.flagProdC = true;
+      this.kardex.desc_producto = '';
+      this.setCursorAddProdCompras();
+    }
+  }
+
+  changeTipoProd(event) {
+    if (this.selectedTipoProd.localeCompare('Existente') == 0) {
+      this.flagProdC = false;
+      this.kardex.desc_producto = this.lstProductos[0];
+      this.setDvProdCompra();
+    } else {
+      this.flagProdC = true;
+      this.objProdCompras.desc_producto = '';
+      this.setCursorAddProdCompras();
+      this.setDvProdCompra();
+    }
+  }
+
+  setCursorAddProdCompras() {
+    setTimeout(function () {
+      document.getElementById('desc_productoC').focus();
+    }, 0);
+  }
+  prodAnterior: any;
+  onChangeProdCompra() {
+    console.log(this.objProdCompras.desc_producto);
+    let name = this.objProdCompras.desc_producto;
+    this.prodAnterior = this.productosShow.filter(function (obj) {
+      return obj.nombre.localeCompare(name) === 0;
+    });
+    console.log(this.prodAnterior);
+    //set values 
+    this.objProdCompras.contenido = this.prodAnterior[0].contenido;
+    this.objProdCompras.pcAnterior = this.prodAnterior[0].precio_costo;
+  }
+
+  addProdCompra() {
+    console.log(this.objProdCompras);
+
+    console.log(this.selectedUmMat);
+    console.log(this.selectedUmMat1);
+  }
+
+  onChangeNombreProdCompra($event) {
+    this.objProdCompras.desc_producto = this.fs.toTitleCase(this.objProdCompras.desc_producto);
+  }
+
+  flagCantPC = false;
+  onChangeCantProdCompra($event) {
+    if (this.objProdCompras.cantidad > 0) {
+      this.flagCantPC = true;
+    } else {
+      this.flagCantPC = false;
+    }
+  }
+
+  flagPrecioCostoPC = false;
+  onChangePCUProdCompra($event) {
+    if (this.objProdCompras.pcUnitario > 0) {
+      this.flagPrecioCostoPC = true;
+    } else {
+      this.flagPrecioCostoPC = false;
+    }
+  }
+
+  setDvProdCompra() {
+    this.flagCantPC = false;
+    this.flagPrecioCostoPC = false;
+    this.objProdCompras = {
+      desc_producto: '',
+      cantidad: 0,
+      pcUnitario: 0,
+      unidadMedida: '',
+      contenido: 0,
+      pcAnterior: 0
+    }
+  }
 
   ngOnInitCompras() {
-    this.kardex = {
+    this.typesProd = [];
+    this.typesProd.push({ label: 'Existente', value: 'Existente' });
+    this.typesProd.push({ label: 'Nuevo', value: 'Nuevo' });
+
+    this.objCompras = {
       'fecha': '',
       'desc_producto': '',
       'proveedor': '',
@@ -2056,12 +2418,17 @@ export class ProductosComponent implements OnInit {
       'num_factura': '',
       'contenido': 0
     };
-
+    this.objProdCompras = {
+      desc_producto: '',
+      cantidad: 0,
+      pcUnitario: 0,
+      unidadMedida: '',
+      contenido: 0,
+      pcAnterior: 0
+    }
   }
 
   /* GESTION DE KARDEX */
-  checkedK = false;
-  selectedProdKardex: any;
   public getDate(): number {
     return this.dt && this.dt.getTime() || new Date().getTime();
   }
@@ -2083,15 +2450,9 @@ export class ProductosComponent implements OnInit {
 
   }
 
-  generateKardex() {
-    console.log(this.selectedProdKardex);
-    console.log(this.productosShow);
-
-  }
-
   saveKardexOp() {
 
-    if (!this.checkedK) {
+    if (!this.checkedC) {
       console.log('producto');
     } else {
       console.log('materia');
@@ -2099,7 +2460,7 @@ export class ProductosComponent implements OnInit {
   }
 
   saveKardex() {
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
       if (!this.validateService.validateKardex(this.kardex)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
@@ -2111,7 +2472,7 @@ export class ProductosComponent implements OnInit {
       }
     }
     //new product
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
       const producto = {
         nombre: this.kardex.desc_producto,
         precio_costo: this.kardex.total / this.kardex.cantidad,
@@ -2182,7 +2543,7 @@ export class ProductosComponent implements OnInit {
   }
 
   saveKardexM() {
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
       if (!this.validateService.validateKardex(this.kardex)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
@@ -2194,7 +2555,7 @@ export class ProductosComponent implements OnInit {
       }
     }
     //new product
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
 
       const materia = {
         nombre: this.kardex.desc_producto,
@@ -2270,47 +2631,22 @@ export class ProductosComponent implements OnInit {
     this.setCursorAddProve();
   }
 
-  onClickSelectButton(event) {
-    if (this.selectedIeProd.localeCompare('Existente') == 0) {
-      this.flagProdK = false;
-      this.kardex.desc_producto = this.lstProductos[0];
-      let a: any;
-      a = this.kardex.desc_producto
-      this.newProd = a;
-      this.kardex.contenido = this.newProd.contenido;
-    } else {
-      this.flagProdK = true;
-      this.kardex.desc_producto = '';
-      this.setCursorAddK();
-    }
-  }
-
   onClickSelectButtonU(event) {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
-      this.flagProdK = false;
+      this.flagProdC = false;
       this.kardexU.desc_producto = this.lstProductos[0];
       let a: any;
       a = this.kardexU.desc_producto
       this.newProd = a;
       this.kardexU.contenido = this.newProd.contenido;
     } else {
-      this.flagProdK = true;
+      this.flagProdC = true;
       this.kardexU.desc_producto = '';
       setTimeout(function () {
         document.getElementById('desc_productoKU').focus();
         setOriginalColorsKardex();
       }, 0);
     }
-  }
-
-  setCursorAddK() {
-    this.kardex.desc_producto = '';
-    this.selectedIeProd = 'Nuevo';
-    this.flagProdK = true;
-    setTimeout(function () {
-      document.getElementById('desc_productoK').focus();
-      setOriginalColorsKardex();
-    }, 0);
   }
 
   setCursorUpdateK(event: any) {
@@ -2320,7 +2656,7 @@ export class ProductosComponent implements OnInit {
     });
     this.kardexU = prodUpdt[0];
     this.selectedIeProd = 'Existente';
-    this.flagProdK = false;
+    this.flagProdC = false;
     setTimeout(function () {
       setOriginalColorsKardex1U();
     }, 0);
@@ -2455,7 +2791,7 @@ export class ProductosComponent implements OnInit {
   }
 
   updateKardex() {
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
       if (!this.validateService.validateKardexU(this.kardexU)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
@@ -2466,7 +2802,7 @@ export class ProductosComponent implements OnInit {
         return false;
       }
     }
-    if (this.flagProdK === true) {
+    if (this.flagProdC === true) {
 
       let prodToUpd: any;
       let a: any = this.kardexU;
@@ -3072,25 +3408,28 @@ export class ProductosComponent implements OnInit {
     if (this.selectedUmMat.value === 0) {
       this.flagUnits = true;
       this.lstUnidadMedida1 = [];
-      this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
-      this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
-      this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
-      this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+      this.lstUnidadMedida1.push({ label: 'Gramos', value: 0 });
+      this.lstUnidadMedida1.push({ label: 'Onza', value: 1 });
+      this.lstUnidadMedida1.push({ label: 'Libras', value: 2 });
+      this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 3 });
       this.selectedUmMat1 = this.lstUnidadMedida1[0];
+      this.blockFlagCont = false;
     }
     if (this.selectedUmMat.value === 1) {
       this.flagUnits = true;
       this.lstUnidadMedida1 = [];
       this.lstUnidadMedida1.push({ label: 'Mililitros', value: 0 });
-      this.lstUnidadMedida1.push({ label: 'Onza Liquida', value: 0 });
-      this.lstUnidadMedida1.push({ label: 'Litros', value: 1 });
+      this.lstUnidadMedida1.push({ label: 'Onza Liquida', value: 1 });
+      this.lstUnidadMedida1.push({ label: 'Litros', value: 2 });
       this.selectedUmMat1 = this.lstUnidadMedida1[0];
-
+      this.blockFlagCont = false;
     }
     if (this.selectedUmMat.value === 2) {
       this.flagUnits = false;
       this.lstUnidadMedida1 = [];
       this.objMat.contenido = 0;
+      this.blockFlagCont = true;
+      this.contenido = 0;
     }
   }
 
@@ -3112,10 +3451,10 @@ export class ProductosComponent implements OnInit {
     this.lstUnidadMedida.push({ label: 'Unidades', value: 2 });
     this.selectedUmMat = this.lstUnidadMedida[0];
     this.lstUnidadMedida1 = [];
-    this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
-    this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
-    this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
-    this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+    this.lstUnidadMedida1.push({ label: 'Gramos', value: 0 });
+    this.lstUnidadMedida1.push({ label: 'Onza', value: 1 });
+    this.lstUnidadMedida1.push({ label: 'Libras', value: 2 });
+    this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 3 });
     this.selectedUmMat1 = this.lstUnidadMedida1[0];
   }
 
@@ -3199,10 +3538,10 @@ export class ProductosComponent implements OnInit {
       if (value.localeCompare('Gramos') || value.localeCompare('Onza') || value.localeCompare('Libras') || value.localeCompare('Kilogramos')) {
 
         this.lstUnidadMedida1 = [];
-        this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
-        this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
-        this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
-        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+        this.lstUnidadMedida1.push({ label: 'Gramos', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Onza', value: 1 });
+        this.lstUnidadMedida1.push({ label: 'Libras', value: 2 });
+        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 3 });
 
         let result = this.lstUnidadMedida.filter(function (obj) {
           return obj.value === 0;
@@ -3218,10 +3557,10 @@ export class ProductosComponent implements OnInit {
       if (value.localeCompare('Mililitros') || value.localeCompare('Onza Liquida') || value.localeCompare('Litros')) {
 
         this.lstUnidadMedida1 = [];
-        this.lstUnidadMedida1.push({ label: 'Gramos', value: 1 });
-        this.lstUnidadMedida1.push({ label: 'Onza', value: 0 });
-        this.lstUnidadMedida1.push({ label: 'Libras', value: 0 });
-        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 2 });
+        this.lstUnidadMedida1.push({ label: 'Gramos', value: 0 });
+        this.lstUnidadMedida1.push({ label: 'Onza', value: 1 });
+        this.lstUnidadMedida1.push({ label: 'Libras', value: 2 });
+        this.lstUnidadMedida1.push({ label: 'Kilogramos', value: 3 });
 
         let result = this.lstUnidadMedida.filter(function (obj) {
           return obj.value === 0;
@@ -3236,7 +3575,6 @@ export class ProductosComponent implements OnInit {
       }
     }
   }
-
 
   onDeleteMat(event): void {
     this.openDialogMat(event.data);
@@ -3260,7 +3598,6 @@ export class ProductosComponent implements OnInit {
       }
     });
   }
-
 
   ngOnInitMateriaPrima() {
     this.setDvMat();
