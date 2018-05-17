@@ -150,3 +150,7 @@ nav ul{overflow:hidden; overflow-y:scroll;}
   background-image: none;
   cursor: default !important;
 }
+
+.noPad{
+  padding: 0px auto 0px auto;
+}

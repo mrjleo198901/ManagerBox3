@@ -252,20 +252,12 @@ export class ValidateService {
       document.getElementById("pvPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    /*if (producto.utilidad == 0) {
-      document.getElementById("utilidadPC").style.borderColor = "#FE2E2E";
-      res = false;
-    }*/
     if (producto.id_tipo_producto == undefined) {
       document.getElementById("tipoPC").style.borderColor = "#FE2E2E";
       res = false;
     }
-    if (producto.contenido == 0) {
+    /*if (producto.contenido == 0) {
       document.getElementById("contPC").style.borderColor = "#FE2E2E";
-      res = false;
-    }
-    /*if (producto.path == undefined) {
-      document.getElementById("filesC").style.borderColor = "#FE2E2E";
       res = false;
     }*/
     return res;

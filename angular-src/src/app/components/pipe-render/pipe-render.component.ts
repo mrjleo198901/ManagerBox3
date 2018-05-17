@@ -13,6 +13,8 @@ export class PipeRenderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    /*var res = this.value.split(" ");
+    console.log(res)*/
     this.renderValue = this.value;
   }
 

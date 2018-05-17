@@ -46,7 +46,7 @@ export class ProductosComponent implements OnInit {
   sourceP: LocalDataSource = new LocalDataSource();
   showDialogTPC = false;
   showDialogTPU = false;
-  showDialogPC = true;
+  showDialogPC = false;
   showDialogPU = false;
   // Atributos Tipo Producto
   desc_tipo_producto;
@@ -88,7 +88,7 @@ export class ProductosComponent implements OnInit {
     columns: {
       _id: {
         title: 'ID',
-        width: '90px',
+        width: '25%',
         filter: false,
         valuePrepareFunction: (_id) => {
           return this.slicePipe.transform(_id, -6)
@@ -96,10 +96,11 @@ export class ProductosComponent implements OnInit {
       },
       desc_tipo_producto: {
         title: 'Nombre',
-        width: '350px'
+        width: '50%'
       },
       path: {
         title: 'Logotipo',
+        width: '25%',
         filter: false,
         type: 'custom',
         renderComponent: ImageRenderComponent
@@ -122,7 +123,6 @@ export class ProductosComponent implements OnInit {
   lstUnidades: SelectItem[];
   unidadMedidaSuproducto: any;
   userform: FormGroup;
-  lstContenido: SelectItem[];
   selectedLstContenido: number = 1;
   @ViewChild('myInput')
   myInputVariable: any;
@@ -155,7 +155,6 @@ export class ProductosComponent implements OnInit {
   es: any;
   filteredProductos: any[];
   selectedProdK;
-
   settingsProve = {};
   sourceProve: LocalDataSource = new LocalDataSource();
   showComprasDetail = false;
@@ -222,15 +221,15 @@ export class ProductosComponent implements OnInit {
 
     this.pathLogo = undefined;
     this.lstUnidades = [];
-    this.lstUnidades.push({ label: 'Litros', value: { id: 1, name: 'Litros', code: 'Lts' } });
-    this.lstUnidades.push({ label: 'Mililitros', value: { id: 2, name: 'Mililitros', code: 'ml' } });
-    this.lstUnidades.push({ label: 'Onzas', value: { id: 3, name: 'Onzas', code: 'oz' } });
-    this.lstUnidades.push({ label: 'Unidades', value: { id: 4, name: 'Onzas', code: 'u' } });
-    this.unidadMedidaSuproducto = this.lstUnidades[0];
-    this.lstContenido = [];
-    this.lstContenido.push({ label: 'l', value: 0 });
-    this.lstContenido.push({ label: 'ml', value: 1 });
-    this.lstContenido.push({ label: 'oz', value: 2 });
+    this.lstUnidades.push({ label: 'Volumen--Litro', value: 1 });
+    this.lstUnidades.push({ label: 'Volumen--Mililitro', value: 2 });
+    this.lstUnidades.push({ label: 'Volumen--Onza Líquida', value: 3 });
+    this.lstUnidades.push({ label: 'Masa--Gramo', value: 4 });
+    this.lstUnidades.push({ label: 'Masa--Onza', value: 5 });
+    this.lstUnidades.push({ label: 'Masa--Libra', value: 6 });
+    this.lstUnidades.push({ label: 'Masa--Kilogramo', value: 7 });
+    this.lstUnidades.push({ label: 'Unidades', value: 8 });
+
     this.objPromo = {
       nombre: '',
       productosV: [],
@@ -259,9 +258,7 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit() {
-
     //console.log(document.getElementById("fpEfectivo").offsetHeight)
-
     var initial = new Date(this.getDate()).toLocaleDateString().split("/");
     this.todayDate = [initial[0], initial[1], initial[2]].join('/');
     this.es = {
@@ -287,7 +284,7 @@ export class ProductosComponent implements OnInit {
     this.lstFrecuencias.push({ label: 'Ultimo Semestre', value: 4 });
     this.lstFrecuencias.push({ label: 'Ultimo Año', value: 5 });
     this.selectedFrecuencia = this.lstFrecuencias[0];
-    this.productos = {
+    /*this.productos = {
       'label': '',
       'value': '',
       'cant_existente': 0,
@@ -299,7 +296,7 @@ export class ProductosComponent implements OnInit {
       'utilidad': 0,
       'contenido': 0,
       '_id': '5993c0a775758c27cccd88ee'
-    };
+    };*/
     /* Get Tipo Productos*/
     this.tipoProductoService.getAll().subscribe(tp => {
       this.tipo_productos = tp;
@@ -309,12 +306,9 @@ export class ProductosComponent implements OnInit {
       localStorage.setItem('lstTipoProductos', JSON.stringify(this.tipo_productos));
       this.sourceTP = new LocalDataSource();
       this.sourceTP.load(this.tipo_productos);
-      const selectShow: { value: string, title: string }[] = [];
-      let ind = 0;
+      const selectShow: any[] = [];
       for (const entry of tp) {
-        const aux = { value: entry.desc_tipo_producto, title: entry.desc_tipo_producto };
-        selectShow[ind] = aux;
-        ind++;
+        selectShow.push({ value: entry._id, title: entry.desc_tipo_producto });
       }
       /* Get Productos*/
       this.productoService.getAll().subscribe(p => {
@@ -324,12 +318,13 @@ export class ProductosComponent implements OnInit {
           if (entry.subproductoV.length < 1)
             this.productosShow.push(entry);
         }
-        console.log(this.productosShow);
+        /* Get Proveedores*/
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
           if (this.lstProveedoresK.length > 0) {
             this.kardex.proveedor = this.lstProveedoresK[0];
           }
+          /* Get Kardex*/
           this.kardexService.getAll().subscribe(data => {
             this.lstKardex = data
             let i = 0;
@@ -404,28 +399,34 @@ export class ProductosComponent implements OnInit {
         }
         let i = 0;
         for (const x of p) {
-          const desc = this.search(x.id_tipo_producto, this.tipo_productos);
-          this.productos[i].id_tipo_producto = desc;
           this.productos[i].label = x.nombre;
           this.productos[i].value = x.nombre;
-          this.productos[i].cant_existente = parseFloat(x.cant_existente);
+          /*this.productos[i].cant_existente = parseFloat(x.cant_existente);
+          this.productos[i].cant_minima = parseFloat(x.cant_minima);
           this.productos[i].contenido = parseFloat(x.contenido);
           this.productos[i].precio_costo = parseFloat(x.precio_costo);
           this.productos[i].precio_venta = parseFloat(x.precio_venta);
-          this.productos[i].utilidad = parseFloat(x.utilidad);
+          this.productos[i].utilidad = parseFloat(x.utilidad);*/
           i++;
         }
         localStorage.setItem('lstProductos', JSON.stringify(this.productos));
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
-        //console.log(this.productos)
+        console.log(this.productos)
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
           columns: {
+            cant_existente: {
+              title: 'Stock',
+              width: '7%',
+              type: 'custom',
+              renderComponent: PipeRenderComponent,
+              filter: false
+            },
             nombre: {
               title: 'Nombre',
-              width: '21%',
+              width: '18%',
               filter: {
                 type: 'completer',
                 config: {
@@ -436,6 +437,29 @@ export class ProductosComponent implements OnInit {
                   },
                 },
               },
+            },
+            contenido: {
+              title: 'Contenido',
+              width: '7%',
+              type: 'custom',
+              renderComponent: PipeRenderComponent,
+              filter: false
+            },
+            unidad_medida: {
+              title: 'UM',
+              width: '7%',
+              filter: false,
+              valuePrepareFunction: (unidad_medida) => {
+                var um = 'Unidades';
+                var res = unidad_medida.split("-");
+                if (res[0].localeCompare('Masa') === 0) {
+                  um = 'Masa-Gramos';
+                }
+                if (res[0].localeCompare('Volumen') === 0) {
+                  um = 'Volumen-Mililitros';
+                }
+                return um;
+              }
             },
             precio_costo: {
               title: 'Precio Costo',
@@ -458,26 +482,17 @@ export class ProductosComponent implements OnInit {
               renderComponent: PipeRenderComponent,
               filter: false
             },
-            contenido: {
-              title: 'Contenido (ml)',
-              width: '7%',
-              type: 'custom',
-              renderComponent: PipeRenderComponent,
-              filter: false
-            },
-            cant_existente: {
-              title: 'Cant. Exis.',
-              width: '7%',
-              type: 'custom',
-              renderComponent: PipeRenderComponent,
-              filter: false
-            },
             subproductoV: {
               title: 'Subproducto',
-              width: '27%',
-              type: 'custom',
-              renderComponent: SubprodRenderComponent,
-              filter: false
+              width: '23%',
+              filter: false,
+              valuePrepareFunction: (subproductoV) => {
+                let fila = '';
+                for (let entry of subproductoV) {
+                  fila += '-' + entry.nombre + ' ' + entry.cantidad + ' ';
+                }
+                return fila;
+              }
             },
             id_tipo_producto: {
               title: 'Tipo Producto',
@@ -486,9 +501,13 @@ export class ProductosComponent implements OnInit {
                 type: 'list',
                 config: {
                   selectText: 'Todos',
-                  list: selectShow,
-                },
+                  list: selectShow
+                }
               },
+              valuePrepareFunction: (id_tipo_producto) => {
+                const desc = this.search(id_tipo_producto, this.tipo_productos);
+                return desc;
+              }
             },
             path: {
               title: 'Logotipo',
@@ -530,7 +549,6 @@ export class ProductosComponent implements OnInit {
     this.ngOnInitCompras();
     this.ngOnInitImp();
   }
-
 
   /* GESTION DE PRODUCTO */
   setCursorAddTP() {
@@ -590,6 +608,7 @@ export class ProductosComponent implements OnInit {
     this.myInputVariable3.nativeElement.value = '';
     this.oldTipoProductoUpdate = event.data;
     if (this.tipoProductoUpdate.path === undefined) {
+      (<HTMLInputElement>document.getElementById('filesTPU')).value = "";
       document.getElementById('filesTPU').style.backgroundColor = 'lightsalmon';
       document.getElementById('filesTPU').style.color = 'black';
     } else {
@@ -598,14 +617,17 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+  oldProductoUpdate: any;
   onUpdateP(event: any) {
+    //this.searchTipoProdById(this.productoUpdate.id_tipo_producto, this.tipo_productos);
     let lst = JSON.parse(localStorage.getItem('lstProductos'));
     let prodUpdt = lst.filter(function (obj) {
       return obj._id.localeCompare(event.data._id) === 0;
     });
     this.productoUpdate = prodUpdt[0];
+    this.productoUpdate.id_tipo_producto = this.searchTipoProdById(this.productoUpdate.id_tipo_producto, this.tipo_productos).desc_tipo_producto;
     this.myInputVariable1.nativeElement.value = '';
-    this.selectedLstContenido = 1;
+    this.oldProductoUpdate = event.data;
     if (this.productoUpdate.path === undefined) {
       (<HTMLInputElement>document.getElementById('filesU')).value = "";
       document.getElementById('filesU').style.backgroundColor = 'lightsalmon';
@@ -664,10 +686,10 @@ export class ProductosComponent implements OnInit {
       impuestosCompraV: this.objImp,
       impuestosVentaV: this.objImpV
     };
-    console.log(producto);
-
+    //Transformar a ml/g
     producto.contenido = this.calcContenido();
-
+    console.log(producto);
+    //Producto materia prima
     if (producto.utilidad === 0) {
       if (!this.validateService.customValidateProductoGasto(producto)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
@@ -684,6 +706,7 @@ export class ProductosComponent implements OnInit {
       });
 
     } else {
+      //Producto estandar
       if (!this.validateService.customValidateProducto(producto)) {
         this.messageGrowlService.notify('error', 'Error', 'Campos vacios!');
         return false;
@@ -720,6 +743,59 @@ export class ProductosComponent implements OnInit {
         console.log(producto)
       }
     }
+  }
+
+  blockFlagCont = false;
+  calcContenido() {
+    let nContMl = 0;
+    if (this.contenido > 0) {
+      if (this.selectedUmMat.value == 0) {
+        if (this.selectedUmMat1.label.localeCompare('Gramos') == 0) {
+          nContMl = this.contenido;
+        }
+        if (this.selectedUmMat1.label.localeCompare('Onza') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.onzaEnGr);
+        }
+        if (this.selectedUmMat1.label.localeCompare('Libras') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.lbEnGr);
+        }
+        if (this.selectedUmMat1.label.localeCompare('Kilogramos') == 0) {
+          nContMl = this.fs.times(this.contenido, UM.kgEnGr);
+        }
+      } else {
+        if (this.selectedUmMat.value == 1) {
+          if (this.selectedUmMat1.label.localeCompare('Mililitros') == 0) {
+            nContMl = this.contenido;
+          }
+          if (this.selectedUmMat1.label.localeCompare('Onza Liquida') == 0) {
+            nContMl = this.fs.times(this.contenido, UM.onzaEnMl);
+          }
+          if (this.selectedUmMat1.label.localeCompare('Litros') == 0) {
+            nContMl = this.fs.times(this.contenido, UM.litroEnMl);
+          }
+        } else {
+          nContMl = 0;
+        }
+      }
+    }
+    return nContMl;
+  }
+
+  calcContenidoU() {
+    let nContMl = 0;
+    if (this.productoUpdate.contenido > 0) {
+      const onzaEnMl = 29.5735295625;
+      if (this.selectedLstContenido === 0) {
+        nContMl = (this.productoUpdate.contenido * 1000);
+      }
+      if (this.selectedLstContenido === 1) {
+        nContMl = this.productoUpdate.contenido;
+      }
+      if (this.selectedLstContenido === 2) {
+        nContMl = (this.productoUpdate.contenido * onzaEnMl);
+      }
+    }
+    return nContMl;
   }
 
   onUpdateTPSubmit() {
@@ -899,7 +975,7 @@ export class ProductosComponent implements OnInit {
       //search and minus precio_compra
       let row = this.subproductoV.find(x => x.nombre === nombre);
       this.precio_costo -= parseFloat(row.precio_costo);
-      let str = (row.cantidad).match(/[a-z]+|\d+/ig);
+      let str = row.cantidad.split(" ");
       this.reCalcContenidoDelete(str[0], str[1], row.value.contenido)
       this.reCalcPrevioVenta();
       this.subproductoV = this.subproductoV.filter(function (obj) {
@@ -918,7 +994,7 @@ export class ProductosComponent implements OnInit {
       //search and minus precio_compra
       let row = this.productoUpdate.subproductoV.find(x => x.nombre === nombre);
       this.productoUpdate.precio_costo -= parseFloat(row.precio_costo);
-      let str = (row.cantidad).match(/[a-z]+|\d+/ig);
+      let str = row.cantidad.split(" ");
       this.reCalcContenidoDeleteU(str[0], str[1], row.value.contenido)
       this.reCalcPrevioVentaU();
       this.productoUpdate.subproductoV = this.productoUpdate.subproductoV.filter(function (obj) {
@@ -940,24 +1016,24 @@ export class ProductosComponent implements OnInit {
         //const precio_costo = 0;
         const aux = {
           nombre: this.selected_producto.nombre,
-          cantidad: this.cantSubprod + ' ' + this.unidadMedidaSuproducto.value.code,
+          cantidad: this.cantSubprod + ' ' + this.unidadMedidaSuproducto.code,
           label: this.selected_producto.nombre,
           value: this.selected_producto,
           precio_costo: this.costoCantSubProd
-        };
+        }
         // search whether subProd already exists
         const index1 = this.subproductoV.findIndex(x => x.nombre === aux.nombre);
         if (index1 === -1) {
           this.cantSubprod = 0;
           this.subproductoV.push(aux);
         } else {
-          let str = (this.subproductoV[index1].cantidad).match(/[a-z]+|\d+/ig);
-          if (str[1].localeCompare(this.unidadMedidaSuproducto.value.code) === 0) {
+          let str = this.subproductoV[index1].cantidad.split(" ")
+          if (str[1].localeCompare(this.unidadMedidaSuproducto.code) === 0) {
             let pc = this.subproductoV[index1].precio_costo;
             const npc = this.reCalcCosto(parseInt(str[0]) + this.cantSubprod);
             const aux = {
               nombre: this.selected_producto.nombre,
-              cantidad: (parseInt(str[0]) + this.cantSubprod) + ' ' + this.unidadMedidaSuproducto.value.code,
+              cantidad: (parseInt(str[0]) + this.cantSubprod) + ' ' + this.unidadMedidaSuproducto.code,
               label: this.selected_producto.nombre,
               value: this.selected_producto,
               precio_costo: npc
@@ -971,14 +1047,13 @@ export class ProductosComponent implements OnInit {
         this.precio_costo = 0;
         this.contenido = 0;
         for (let entry of this.subproductoV) {
-          this.precio_costo += entry.precio_costo;
-          //this.precio_costo += this.fs.add(entry.precio_costo, entry.precio_costo)
-          let str = (entry.cantidad).match(/[a-z]+|\d+/ig);
-          //this.contenido += parseFloat(str[0]);
+          this.precio_costo = this.fs.add(this.precio_costo, entry.precio_costo)
+          let str = entry.cantidad.split(" ");
           this.reCalcContenido(str[0], str[1], entry.value.contenido);
         }
         this.reCalcPrevioVenta();
         this.selected_producto = '';
+        this.lstUnitsComp = [];
       } else {
         this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
         this.borderStyleProdExistente = '#FE2E2E';
@@ -1030,21 +1105,296 @@ export class ProductosComponent implements OnInit {
         this.productoUpdate.contenido = 0;
         for (let entry of this.productoUpdate.subproductoV) {
           this.productoUpdate.precio_costo += entry.precio_costo;
-          let str = (entry.cantidad).match(/[a-z]+|\d+/ig);
-          //this.contenido += parseFloat(str[0]);
+          let str = entry.cantidad.split(" ");
           this.reCalcContenidoU(str[0], str[1], entry.value.contenido);
         }
         this.reCalcPrevioVentaU();
         this.selected_productoU = '';
+        this.lstUnitsComp = [];
       } else {
         this.messageGrowlService.notify('error', 'Error', 'Selecciona un producto existente!');
         this.borderStyleProdExistente = '#FE2E2E';
       }
     } else {
       this.messageGrowlService.notify('error', 'Error', 'La cantidad no puede ser 0!');
-      document.getElementById('cantSubprod').style.borderColor = '#FE2E2E';
+      document.getElementById('cantSubprodU').style.borderColor = '#FE2E2E';
     }
   }
+
+  lstUnitsComp: any[] = [];
+  loadUnits() {
+    let prod = this.productos.find(x => x.nombre === this.selected_producto);
+    this.lstUnitsComp = [];
+    if (prod.unidad_medida.split('-')[0] == 'Masa') {
+      this.lstUnitsComp.push({ label: 'Masa--Gramo', value: 4, code: 'gr' });
+      this.lstUnitsComp.push({ label: 'Masa--Onza', value: 5, code: 'oz' });
+      this.lstUnitsComp.push({ label: 'Masa--Libra', value: 6, code: 'lb' });
+      this.lstUnitsComp.push({ label: 'Masa--Kilogramo', value: 7, code: 'kg' });
+    }
+    if (prod.unidad_medida.split('-')[0] == 'Volumen') {
+      this.lstUnitsComp.push({ label: 'Volumen--Litro', value: 1, code: 'lt' });
+      this.lstUnitsComp.push({ label: 'Volumen--Mililitro', value: 2, code: 'ml' });
+      this.lstUnitsComp.push({ label: 'Volumen--Onza Líquida', value: 3, code: 'ozL' });
+    }
+    if (prod.unidad_medida.split('-')[0] == 'Unidades') {
+      this.lstUnitsComp.push({ label: 'Unidades', value: 8, code: 'u' });
+    }
+    this.unidadMedidaSuproducto = this.lstUnitsComp[0];
+  }
+
+  unitShow = '';
+  valueChangeCantSubprod() {
+    document.getElementById('cantSubprod').style.borderColor = '';
+    let prod = this.productos.find(x => x.nombre === this.selected_producto);
+    if (prod !== undefined) {
+      if (this.unidadMedidaSuproducto.value === 1) {//litro
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubprod, UM.litroEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 2) {//mililitro
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 3) {//onza liquida
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubprod, UM.onzaEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 4) {//gramo
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 5) {//onza
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubprod, UM.onzaEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 6) {//libra
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubprod, UM.lbEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 7) {//kilogramo
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubprod, UM.kgEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 8) {//unidades
+        this.costoCantSubProd = this.fs.times(this.cantSubprod, prod.precio_costo);
+      }
+    }
+  }
+
+  valueChangeCantSubprodU() {
+    document.getElementById('cantSubprodU').style.borderColor = '';
+    let prod = this.productos.find(x => x.nombre === this.selected_productoU);
+    if (prod !== undefined) {
+      if (this.unidadMedidaSuproducto.value === 1) {//litro
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubProdU, UM.litroEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 2) {//mililitro
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.cantSubProdU, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 3) {//onza liquida
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubProdU, UM.onzaEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 4) {//gramo
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.cantSubProdU, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 5) {//onza
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubProdU, UM.onzaEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 6) {//libra
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubProdU, UM.lbEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 7) {//kilogramo
+        this.costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(this.cantSubProdU, UM.kgEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 8) {//unidades
+        this.costoCantSubProd = this.fs.times(this.cantSubProdU, prod.precio_costo);
+      }
+    }
+  }
+
+  reCalcContenido(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    contenido = parseFloat(contenido);
+    if (um.localeCompare('lt') === 0) {
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, UM.litroEnMl));
+    }
+    if (um.localeCompare('ml') === 0) {
+      this.contenido = this.fs.add(this.contenido, cantSubprod);
+    }
+    if (um.localeCompare('ozL') === 0) {
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, UM.onzaEnMl));
+    }
+    if (um.localeCompare('gr') === 0) {
+      this.contenido = this.fs.add(this.contenido, cantSubprod);
+    }
+    if (um.localeCompare('oz') === 0) {
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, UM.onzaEnGr));
+    }
+    if (um.localeCompare('lb') === 0) {
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, UM.lbEnGr));
+    }
+    if (um.localeCompare('kg') === 0) {
+      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, UM.kgEnGr));
+    }
+    if (um.localeCompare('u') === 0) {
+      this.contenido = this.fs.add(this.contenido, contenido);
+    }
+  }
+
+  reCalcContenidoU(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    contenido = parseFloat(contenido);
+    if (um.localeCompare('lt') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.litroEnMl));
+    }
+    if (um.localeCompare('ml') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, cantSubprod);
+    }
+    if (um.localeCompare('ozL') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.onzaEnMl));
+    }
+    if (um.localeCompare('gr') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, cantSubprod);
+    }
+    if (um.localeCompare('oz') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.onzaEnGr));
+    }
+    if (um.localeCompare('lb') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.lbEnGr));
+    }
+    if (um.localeCompare('kg') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.kgEnGr));
+    }
+    if (um.localeCompare('u') === 0) {
+      this.productoUpdate.contenido = this.fs.add(this.productoUpdate.contenido, contenido);
+    }
+  }
+
+  reCalcCosto(cantSubprod) {
+    let prod = this.productos.find(x => x.nombre === this.selected_producto.nombre);
+    let costoCantSubProd = 0;
+    if (prod !== undefined) {
+      if (this.unidadMedidaSuproducto.value === 1) {//litro
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.litroEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 2) {//mililitro
+        costoCantSubProd = this.fs.div(this.fs.times(cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 3) {//onza liquida
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.onzaEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 4) {//gramo
+        costoCantSubProd = this.fs.div(this.fs.times(cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 5) {//onza
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.onzaEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 6) {//libra
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.lbEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 7) {//kilogramo
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.kgEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 8) {//unidades
+        costoCantSubProd = this.fs.times(cantSubprod, prod.precio_costo);
+      }
+    }
+    return costoCantSubProd;
+  }
+
+  reCalcCostoU(cantSubprod) {
+    let prod = this.productos.find(x => x.nombre === this.selected_productoU.nombre);
+    let costoCantSubProd = 0;
+    if (prod !== undefined) {
+      if (this.unidadMedidaSuproducto.value === 1) {//litro
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.litroEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 2) {//mililitro
+        costoCantSubProd = this.fs.div(this.fs.times(cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 3) {//onza liquida
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.onzaEnMl), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 4) {//gramo
+        costoCantSubProd = this.fs.div(this.fs.times(cantSubprod, prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 5) {//onza
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.onzaEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 6) {//libra
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.lbEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 7) {//kilogramo
+        costoCantSubProd = this.fs.div(this.fs.times(this.fs.times(cantSubprod, UM.kgEnGr), prod.precio_costo), prod.contenido);
+      }
+      if (this.unidadMedidaSuproducto.value === 8) {//unidades
+        costoCantSubProd = this.fs.times(cantSubprod, prod.precio_costo);
+      }
+    }
+    return costoCantSubProd;
+  }
+
+  reCalcPrevioVenta() {
+    const gain = this.fs.add(this.fs.div(this.utilidad, 100), 1);
+    this.precio_venta = this.fs.times(this.precio_costo, gain);
+  }
+
+  reCalcPrevioVentaU() {
+    const gain = this.fs.add(this.fs.div(this.productoUpdate.utilidad, 100), 1);
+    this.productoUpdate.precio_venta = this.fs.times(this.productoUpdate.precio_costo, gain);
+  }
+
+  reCalcContenidoDelete(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    contenido = parseFloat(contenido);
+    if (um.localeCompare('lt') === 0) {
+      this.contenido = this.fs.sub(this.contenido, this.fs.times(cantSubprod, UM.litroEnMl));
+    }
+    if (um.localeCompare('ml') === 0) {
+      this.contenido = this.fs.sub(this.contenido, cantSubprod);
+    }
+    if (um.localeCompare('ozL') === 0) {
+      this.contenido = this.fs.sub(this.contenido, this.fs.times(cantSubprod, UM.onzaEnMl))
+    }
+    if (um.localeCompare('gr') === 0) {
+      this.contenido = this.fs.sub(this.contenido, cantSubprod);
+    }
+    if (um.localeCompare('oz') === 0) {
+      this.contenido = this.fs.sub(this.contenido, this.fs.times(cantSubprod, UM.onzaEnGr));
+    }
+    if (um.localeCompare('lb') === 0) {
+      this.contenido = this.fs.sub(this.contenido, this.fs.times(cantSubprod, UM.lbEnGr));
+    }
+    if (um.localeCompare('kg') === 0) {
+      this.contenido = this.fs.sub(this.contenido, this.fs.times(cantSubprod, UM.kgEnGr));
+    }
+    if (um.localeCompare('u') === 0) {
+      this.contenido = this.fs.sub(this.contenido, contenido);
+    }
+  }
+
+  reCalcContenidoDeleteU(cantSubprod, um, contenido) {
+    cantSubprod = parseFloat(cantSubprod);
+    contenido = parseFloat(contenido);
+    if (um.localeCompare('lt') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.litroEnMl));
+    }
+    if (um.localeCompare('ml') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, cantSubprod);
+    }
+    if (um.localeCompare('ozL') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.onzaEnMl))
+    }
+    if (um.localeCompare('gr') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, cantSubprod);
+    }
+    if (um.localeCompare('oz') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.onzaEnGr));
+    }
+    if (um.localeCompare('lb') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.lbEnGr));
+    }
+    if (um.localeCompare('kg') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, this.fs.times(cantSubprod, UM.kgEnGr));
+    }
+    if (um.localeCompare('u') === 0) {
+      this.productoUpdate.contenido = this.fs.sub(this.productoUpdate.contenido, contenido);
+    }
+  }
+
   flagImage = true;
   onChangeFileC(event) {
     if (event.srcElement.files.length > 0) {
@@ -1280,16 +1630,6 @@ export class ProductosComponent implements OnInit {
     this.productoUpdate.utilidad = (this.fs.div(this.fs.times(dif, 100), this.productoUpdate.precio_costo));
   }
 
-  reCalcPrevioVenta() {
-    const gain = (this.utilidad / 100) + 1;
-    this.precio_venta = this.precio_costo * gain;
-  }
-
-  reCalcPrevioVentaU() {
-    const gain = (this.productoUpdate.utilidad / 100) + 1;
-    this.productoUpdate.precio_venta = this.productoUpdate.precio_costo * gain;
-  }
-
   controlarPrecioCosto($event) {
     if (this.flagSubProd) {
       this.contenido = 0;
@@ -1312,179 +1652,14 @@ export class ProductosComponent implements OnInit {
     console.log(value);
   }
 
-  valueChangeCantSubprod() {
-    document.getElementById('cantSubprod').style.borderColor = '';
-    const onzaEnMl = 29.5735;
-    let prod = this.productos.find(x => x.nombre === this.selected_producto);
-    if (prod !== undefined) {
-      //litros
-      if (this.unidadMedidaSuproducto.value.id == 1) {
-        this.costoCantSubProd = ((this.cantSubprod * 1000) * prod.precio_costo) / prod.contenido;
-      }
-      //mililitros
-      if (this.unidadMedidaSuproducto.value.id == 2) {
-        this.costoCantSubProd = ((this.cantSubprod * prod.precio_costo) / prod.contenido);
-      }
-      //onzas
-      if (this.unidadMedidaSuproducto.value.id == 3) {
-        this.costoCantSubProd = ((this.cantSubprod * onzaEnMl) * prod.precio_costo) / prod.contenido;
-      }
-      //unidades
-      if (this.unidadMedidaSuproducto.value.id == 4) {
-        this.costoCantSubProd = parseFloat(prod.precio_costo);
-      }
-    }
-  }
-
-  valueChangeCantSubprodU() {
-    //document.getElementById('cantSubprodU').style.borderColor = '';
-    const onzaEnMl = 29.5735;
-    let prod = this.productos.find(x => x.nombre === this.selected_productoU);
-    if (prod !== undefined) {
-      //litros
-      if (this.unidadMedidaSuproducto.value.id == 1) {
-        this.costoCantSubProd = ((this.cantSubProdU * 1000) * prod.precio_costo) / prod.contenido;
-      }
-      //mililitros
-      if (this.unidadMedidaSuproducto.value.id == 2) {
-        this.costoCantSubProd = ((this.cantSubProdU * prod.precio_costo) / prod.contenido);
-      }
-      //onzas
-      if (this.unidadMedidaSuproducto.value.id == 3) {
-        this.costoCantSubProd = ((this.cantSubProdU * onzaEnMl) * prod.precio_costo) / prod.contenido;
-      }
-      //unidades
-      if (this.unidadMedidaSuproducto.value.id == 4) {
-        this.costoCantSubProd = parseFloat(prod.precio_costo);
-      }
-    }
-  }
-
-  reCalcContenido(cantSubprod, um, contenido) {
-    cantSubprod = parseFloat(cantSubprod);
-    if (um.localeCompare('Lts') === 0) {
-      //this.contenido += (cantSubprod * 1000);
-      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, 1000));
-    }
-    if (um.localeCompare('ml') === 0) {
-      //this.contenido += cantSubprod;
-      this.contenido = this.fs.add(this.contenido, cantSubprod);
-    }
-    if (um.localeCompare('oz') === 0) {
-      ///this.contenido += (cantSubprod * 29.5735);
-      this.contenido = this.fs.add(this.contenido, this.fs.times(cantSubprod, 29.5735));
-    }
-    if (um.localeCompare('u') === 0) {
-      //this.contenido += contenido;
-      this.contenido = this.fs.add(contenido, contenido);
-    }
-  }
-
-  reCalcContenidoU(cantSubprod, um, contenido) {
-    cantSubprod = parseFloat(cantSubprod);
-    if (um.localeCompare('Lts') === 0) {
-      this.productoUpdate.contenido += (cantSubprod * 1000);
-    }
-    if (um.localeCompare('ml') === 0) {
-      this.productoUpdate.contenido += cantSubprod;
-    }
-    if (um.localeCompare('oz') === 0) {
-      this.productoUpdate.contenido += (cantSubprod * 29.5735);
-    }
-    if (um.localeCompare('u') === 0) {
-      this.productoUpdate.contenido += contenido;
-    }
-  }
-
-  reCalcContenidoDelete(cantSubprod, um, contenido) {
-    cantSubprod = parseFloat(cantSubprod);
-    if (um.localeCompare('Lts') === 0) {
-      this.contenido -= (cantSubprod * 1000);
-    }
-    if (um.localeCompare('ml') === 0) {
-      this.contenido -= cantSubprod;
-    }
-    if (um.localeCompare('oz') === 0) {
-      this.contenido -= (cantSubprod * 29.5735);
-    }
-    if (um.localeCompare('u') === 0) {
-      this.contenido -= contenido;
-    }
-  }
-
-  reCalcContenidoDeleteU(cantSubprod, um, contenido) {
-    cantSubprod = parseFloat(cantSubprod);
-    if (um.localeCompare('Lts') === 0) {
-      this.productoUpdate.contenido -= (cantSubprod * 1000);
-    }
-    if (um.localeCompare('ml') === 0) {
-      this.productoUpdate.contenido -= cantSubprod;
-    }
-    if (um.localeCompare('oz') === 0) {
-      this.productoUpdate.contenido -= (cantSubprod * 29.5735);
-    }
-    if (um.localeCompare('u') === 0) {
-      this.productoUpdate.contenido -= contenido;
-    }
-  }
-
-  reCalcCosto(cantSubprod) {
-    const onzaEnMl = 29.5735295625;
-    let prod = this.productos.find(x => x.nombre === this.selected_producto.nombre);
-    let costoCantSubProd = 0;
-    if (prod !== undefined) {
-      //litros
-      if (this.unidadMedidaSuproducto.value.id == 1) {
-        costoCantSubProd = ((cantSubprod * 1000) * prod.precio_costo) / prod.contenido;
-      }
-      //mililitros
-      if (this.unidadMedidaSuproducto.value.id == 2) {
-        costoCantSubProd = ((cantSubprod * prod.precio_costo) / prod.contenido);
-      }
-      //onzas
-      if (this.unidadMedidaSuproducto.value.id == 3) {
-        costoCantSubProd = ((cantSubprod * onzaEnMl) * prod.precio_costo) / prod.contenido;
-      }
-      //unidades
-      if (this.unidadMedidaSuproducto.value.id == 4) {
-        costoCantSubProd = parseFloat(prod.precio_costo);
-      }
-    }
-    return costoCantSubProd;
-  }
-
-  reCalcCostoU(cantSubProdU) {
-    const onzaEnMl = 29.5735295625;
-    let prod = this.productos.find(x => x.nombre === this.selected_productoU.nombre);
-    let costoCantSubProd = 0;
-    if (prod !== undefined) {
-      //litros
-      if (this.unidadMedidaSuproducto.value.id == 1) {
-        costoCantSubProd = ((cantSubProdU * 1000) * prod.precio_costo) / prod.contenido;
-      }
-      //mililitros
-      if (this.unidadMedidaSuproducto.value.id == 2) {
-        costoCantSubProd = ((cantSubProdU * prod.precio_costo) / prod.contenido);
-      }
-      //onzas
-      if (this.unidadMedidaSuproducto.value.id == 3) {
-        costoCantSubProd = ((cantSubProdU * onzaEnMl) * prod.precio_costo) / prod.contenido;
-      }
-      //unidades
-      if (this.unidadMedidaSuproducto.value.id == 4) {
-        costoCantSubProd = parseFloat(prod.precio_costo);
-      }
-    }
-    return costoCantSubProd;
-  }
-
   onChangeProdExistentes($event) {
-    //this.valueChangeCantSubprod($event);
     this.borderStyleProdExistente = '';
+    this.loadUnits();
   }
 
   onChangeProdExistentesU($event) {
     this.borderStyleProdExistente = '';
+    this.loadUnits();
   }
 
   onChangeProdSelec($event) {
@@ -1493,77 +1668,6 @@ export class ProductosComponent implements OnInit {
 
   onChangeProdSelecU($event) {
     this.borderStyleProdSelec = '';
-  }
-
-
-  /*calcContenido() {
-    let nContMl = 0;
-    if (this.contenido > 0) {
-      const onzaEnMl = 29.5735295625;
-      if (this.selectedLstContenido === 0) {
-        nContMl = (this.contenido * 1000);
-      }
-      if (this.selectedLstContenido === 1) {
-        nContMl = this.contenido;
-      }
-      if (this.selectedLstContenido === 2) {
-        nContMl = (this.contenido * onzaEnMl);
-      }
-    }
-    return nContMl;
-  }*/
-
-  blockFlagCont = false;
-  calcContenido() {
-    let nContMl = 0;
-    if (this.contenido > 0) {
-      if (this.selectedUmMat.value == 0) {
-        if (this.selectedUmMat1.label.localeCompare('Gramos') == 0) {
-          nContMl = this.contenido;
-        }
-        if (this.selectedUmMat1.label.localeCompare('Onza') == 0) {
-          nContMl = this.fs.times(this.contenido, UM.onzaEnGr);
-        }
-        if (this.selectedUmMat1.label.localeCompare('Libras') == 0) {
-          nContMl = this.fs.times(this.contenido, UM.lbEnGr);
-        }
-        if (this.selectedUmMat1.label.localeCompare('Kilogramos') == 0) {
-          nContMl = this.fs.times(this.contenido, UM.kgEnGr);
-        }
-      } else {
-        if (this.selectedUmMat.value == 1) {
-          if (this.selectedUmMat1.label.localeCompare('Mililitros') == 0) {
-            nContMl = this.contenido;
-          }
-          if (this.selectedUmMat1.label.localeCompare('Onza Liquida') == 0) {
-            nContMl = this.fs.times(this.contenido, UM.onzaEnMl);
-          }
-          if (this.selectedUmMat1.label.localeCompare('Litros') == 0) {
-            nContMl = this.fs.times(this.contenido, UM.litroEnMl);
-          }
-        } else {
-          nContMl = 0;
-        }
-      }
-    }
-    return nContMl;
-  }
-
-  calcContenidoU() {
-    let nContMl = 0;
-    if (this.productoUpdate.contenido > 0) {
-      const onzaEnMl = 29.5735295625;
-      if (this.selectedLstContenido === 0) {
-        nContMl = (this.productoUpdate.contenido * 1000);
-      }
-      if (this.selectedLstContenido === 1) {
-        nContMl = this.productoUpdate.contenido;
-      }
-      if (this.selectedLstContenido === 2) {
-        nContMl = (this.productoUpdate.contenido * onzaEnMl);
-      }
-    }
-    return nContMl;
   }
 
   ngOnInitTipoProducto() {
@@ -2770,6 +2874,14 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+  searchTipoProdById(id, myArray) {
+    for (const entry of myArray) {
+      if (entry._id === id) {
+        return entry;
+      }
+    }
+  }
+
   searchDescProd(id, myArray) {
     for (const entry of myArray) {
       if (entry._id === id) {
@@ -3447,7 +3559,7 @@ export class ProductosComponent implements OnInit {
     };
     this.lstUnidadMedida = [];
     this.lstUnidadMedida.push({ label: 'Masa', value: 0 });
-    this.lstUnidadMedida.push({ label: 'Capacidad', value: 1 });
+    this.lstUnidadMedida.push({ label: 'Volumen', value: 1 });
     this.lstUnidadMedida.push({ label: 'Unidades', value: 2 });
     this.selectedUmMat = this.lstUnidadMedida[0];
     this.lstUnidadMedida1 = [];
