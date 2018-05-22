@@ -6,9 +6,9 @@ import { DatePipe } from '@angular/common';
 export class ValidateService {
 
   constructor(private messageGrowlService: MessageGrowlService,
-    private datePipe: DatePipe) { 
-      let a = "xaipoGay"
-    }
+    private datePipe: DatePipe) {
+    let a = "xaipoGay"
+  }
 
   validateRegister(user) {
     if (user.name == undefined || user.email == undefined || user.username == undefined || user.npass == undefined ||
@@ -555,6 +555,13 @@ export class ValidateService {
     return true;
   }
 
+  validarNumFact(num) {
+    let valid = false;
+    if (num.length == 15) {
+      valid = true;
+    }
+    return valid;
+  }
   formatDate(date) {
     var monthNames = [
       "Enero", "Febrero", "Marzo",
@@ -803,6 +810,11 @@ export class ValidateService {
     return currentDateTime;
   }
 
+  getDateTimeEsPrimeNG2() {
+    let currentDateTime = this.datePipe.transform(new Date(), 'dd/MM/yyyy HH:mm');
+    return currentDateTime;
+  }
+
   getDateEs() {
     let currentDateTime = this.datePipe.transform(new Date(), 'dd/MM/yyyy');
     return currentDateTime;
@@ -817,6 +829,7 @@ export class ValidateService {
     var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
     var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
     var newCad = localISOTime.substr(0, (localISOTime.length) - 4);
+    console.log(typeof (newCad))
     return newCad
   }
 

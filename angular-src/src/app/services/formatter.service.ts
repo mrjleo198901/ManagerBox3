@@ -5,7 +5,7 @@ export class FormatterService {
 
   constructor() { }
 
-  toUpperCase(str){
+  toUpperCase(str) {
     return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toUpperCase(); });
   }
 
@@ -28,6 +28,62 @@ export class FormatterService {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
   }
+
+  makeCodNum() {
+    var text = "";
+    var possible = "0123456789";
+    for (var i = 0; i < 8; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  }
+
+  modulo11(codigo) {
+    let sum0 = codigo[0];
+    let sum1 = codigo[1];
+    let sum2 = codigo[2];
+    let sum3 = codigo[3];
+    let sum4 = codigo[4];
+    let sum5 = codigo[5];
+    let sum6 = codigo[6];
+    let sum7 = codigo[7];
+
+    let sumTotal = (sum0 * 3) + (sum1 * 2) + (sum2 * 7) + (sum3 * 6) + (sum4 * 5) + (sum5 * 4) + (sum6 * 3) + (sum7 * 2);
+    let resp1 = (sumTotal % 11);
+    let total = 11 - resp1;
+    return total;
+  }
+
+  dinamicModulo11(codigo) {
+    let n = codigo.length;
+    let vec = [];
+    for (let i = 0; i < n; i++) {
+      vec.push(codigo[i]);
+    }
+    let acum = 0;
+    let ind = 2;
+    for (let j = n - 1; j >= 0; j--) {
+      if (ind > 7) {
+        ind = 2;
+      }
+      acum += vec[j] * ind;
+      ind++;
+    }
+    let resp1 = (acum % 11);
+    let total = 11 - resp1;
+    return total;
+  }
+
+  checkDigit11 = function (n, x) {
+
+    var l = n.length, i = 0, j = (l % 8), v = 0;
+
+    for (i = 0, l = l - 1; i < l; i++) {
+      v += parseInt(n[i], 10) * j;
+      j = (j == 2) ? 9 : --j;
+    }
+
+    return v = (v % 11 < 2) ? (x || 0) : (11 - (v % 11));
+  };
 
   add(x, y) {
     return +(x + y).toFixed(12);

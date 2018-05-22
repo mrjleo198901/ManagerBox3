@@ -81,6 +81,13 @@
     padding-top: 0px;
   }
 
+  .padBorderR{
+    margin-right: 0px;
+  }
+  .padBorderL{
+    margin-left: 5px;
+  }
+
   /*bootswatch*/
   html{
       font-family:sans-serif;

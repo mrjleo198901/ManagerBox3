@@ -24,7 +24,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Productos" [active]="true">
+      <tab heading="Productos">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Productos</h3>
@@ -37,7 +37,7 @@
           <hr>
         </div>
       </tab>
-      <tab heading="Compras">
+      <tab heading="Compras" [active]="true">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <hr>
           <h3 style="text-align: center">Compras</h3>
@@ -361,6 +361,7 @@
       </div>
     </div>
     <div class="ui-g-12" style="text-align: center">
+      <hr>
       <button type="submit" class="btn btn-primary" style="font-size: 11px" [disabled]="!formProd.form.valid">Registrar</button>
       <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPC = false">Cancelar</button>
     </div>
@@ -731,6 +732,7 @@
       </div>
     </div>
     <div class="ui-g-12" style="text-align: center">
+      <hr>
       <button type="submit" class="btn btn-primary" style="font-size: 11px" [disabled]="!formProdU.form.valid">Actualizar</button>
       <button class="btn btn-default" style="font-size: 11px" (click)="showDialogPU = false">Cancelar</button>
     </div>
@@ -951,98 +953,141 @@
   </div>
 </p-dialog>
 
-<!-- Add Compras -->
-<p-dialog [(visible)]="showDialogC" modal="modal" width="800" [responsive]="true">
+<!-- Add Compra -->
+<p-dialog [(visible)]="showDialogC" modal="modal" width="900" [responsive]="true">
   <p-header>
     Registrar Factura Compra
   </p-header>
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-12">
-      <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
-    </div>
-    <div class="ui-g-3">
-      <label>Proveedor*:</label>
-      <div class="input-group">
-        <select [(ngModel)]="kardex.proveedor" id="selectProve" name="selectProve" class="form-control input-sm">
-            <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
-          </select>
-        <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
-      </div>
-    </div>
-    <div class="ui-g-3">
-      <label>Vendedor*:</label>
-      <div class="input-group">
-        <select [(ngModel)]="kardex.proveedor" id="selectProve" name="selectProve" class="form-control input-sm">
-            <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
-          </select>
-        <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
-      </div>
-    </div>
-    <div class="ui-g-3">
-      <label>Número Factura*:</label>
-      <input type="text" [(ngModel)]="kardex.num_factura" id="num_facturaK" name="num_facturaK" placeholder="Número de Factura"
-        class="form-control input-sm" required onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'>
-    </div>
-    <div class="ui-g-3">
-      <label>Fecha*:</label>
-      <p-calendar [(ngModel)]="kardex.fecha" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true"
-        yearRange="1950:2030" dataType="string" [readonlyInput]="true" id="fechaK" name="fechaK">
-      </p-calendar>
-    </div>
-    <div class="ui-g-3">
-      <button pButton type="button" (click)="showDialogProdC = true;" label="Añadir producto" class="ui-button-warning"></button>
-    </div>
-    <div class="ui-g-12">
-      <p-dataTable [value]="lstComprasProve" [responsive]="true" [paginator]="true" [rows]="5">
-        <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'25%'}"></p-column>
-        <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'35%'}"></p-column>
-        <p-column field="unidades" header="Unidades" [style]="{'overflow':'visible','width':'20%'}"></p-column>
-        <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'20%'}"></p-column>
-      </p-dataTable>
-    </div>
-    <!-- Formas de pago -->
-    <div class="panel panel-default" style="width: 100%;margin-bottom: 0px;" id="pnlFp">
+  <form (ngSubmit)="onUpdatePromoSubmit()" #formC="ngForm">
+    <div class="ui-g ui-fluid">
       <div class="ui-g-12">
-        <div class="ui-g-3 ui-g-nopad">
-          <label>Forma de Pago*:</label>
+        <div class="form-hint"><b>Nota:</b> Los campos marcados con (*) son obligatorios.</div>
+      </div>
+      <div class="ui-g-3">
+        <label>Número Factura<span class="requiredClass">&nbsp;*</span></label>
+        <input type="text" [(ngModel)]="objCompras.num_factura" (ngModelChange)="onChangeNumFact()" id="num_facturaC" name="num_facturaC"
+          placeholder="Número de Factura" minlength="15" maxlength="15" class="form-control input-sm" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+          tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" required>
+      </div>
+      <div class="ui-g-3">
+        <label>Fecha<span class="requiredClass">&nbsp;*</span></label>
+        <p-calendar [(ngModel)]="objCompras.fecha" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
+          [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true" id="fechaK" name="fechaK" required>
+        </p-calendar>
+      </div>
+      <div class="ui-g-3">
+        <label>Proveedor<span class="requiredClass">&nbsp;*</span></label>
+        <div class="input-group">
+          <select [(ngModel)]="objCompras.proveedor" (ngModelChange)="loadSailers($event)" id="proveC" name="proveC" class="form-control input-sm">
+            <option value="" disabled selected hidden>Selecciona...</option>
+            <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
+          </select>
+          <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
         </div>
-        <div class="ui-g-9 ui-g-nopad">
-          <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP">
-            <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo <i>{{campoFP}}</i>, puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
+      </div>
+      <div class="ui-g-3">
+        <label>Vendedor<span class="requiredClass">&nbsp;*</span></label>
+        <div class="input-group">
+          <select [(ngModel)]="objCompras.vendedor" id="vendedorC" name="vendedorC" class="form-control input-sm">
+            <option value="" selected>Sin Vendedor</option>
+            <option *ngFor="let c of lstProveedoresR" [ngValue]="c" >{{c.nombre}}</option>
+          </select>
+          <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
+        </div>
+      </div>
+      <div class="ui-g-3">
+        <button pButton type="button" (click)="showDialogProdC = true;" label="Añadir producto" class="ui-button-warning"></button>
+      </div>
+      <div class="ui-g-12">
+        <p-dataTable [value]="lstComprasProve" [responsive]="true" [paginator]="true" [rows]="4">
+          <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'17.5%'}">
+            <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+              {{car.fecha | date:'dd/MM/yyyy HH:mm'}}
+            </ng-template>
+          </p-column>
+          <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'35%'}"></p-column>
+          <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'15%'}">
+            <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+              {{car.cantidad | number : '1.2-2'}}
+            </ng-template>
+          </p-column>
+          <p-column field="pcUnitario" header="P. unitario" [style]="{'overflow':'visible','width':'15%'}">
+            <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+              {{car.pcUnitario | number : '1.2-2'}}
+            </ng-template>
+          </p-column>
+          <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'17.5%'}">
+            <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+              {{car.total | number : '1.2-2'}}
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+      <!-- Formas de pago -->
+      <div class="panel panel-default" style="width: 100%; margin: auto 7px auto 7px;">
+        <div class="ui-g-12">
+          <div class="ui-g-4">
+            <label>Forma de Pago<span class="requiredClass">&nbsp;*</span></label>
           </div>
-          <div *ngIf="!flagErrorFP">
-            <p style="color: white;font-size: 12px">Espacio</p>
+          <div class="ui-g-8">
+            <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP">
+              <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo "<i>{{campoFP}}</i>", puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
+            </div>
+            <div *ngIf="!flagErrorFP">
+              <p style="color: white;font-size: 12px">Espacio</p>
+            </div>
+          </div>
+          <div class="ui-g-3">
+            <label>Efectivo:</label>
+            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpEfectivo" id="fpEfectivo" name="fpEfectivo" placeholder="0.00"
+              class="form-control input-sm" (ngModelChange)="onChangeFPE($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+          </div>
+          <div class="ui-g-3">
+            <label>Tarjeta Crédito:</label>
+            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpTarjeta" id="fpTarjeta" name="fpTarjeta" placeholder="0.00"
+              class="form-control input-sm" (ngModelChange)="onChangeFPT($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+          </div>
+          <div class="ui-g-3">
+            <label>Crédito Directo:</label>
+            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpPorCobrar" id="fpPorCobrar" name="fpPorCobrar" placeholder="0.00"
+              class="form-control input-sm" (ngModelChange)="onChangeFPC($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+          </div>
+          <div class="ui-g-3">
+            <label>Cheque:</label>
+            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpCheque" id="fpCheque" name="fpCheque" placeholder="0.00" class="form-control input-sm"
+              (ngModelChange)="onChangeFPCH($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
           </div>
         </div>
-        <div class="ui-g-3">
-          <label>Efectivo:</label>
-          <input currencyMask type="text" [(ngModel)]="fpEfectivo" id="fpEfectivo" name="fpEfectivo" placeholder="0.00" class="form-control input-sm"
-            (ngModelChange)="onChangeFPE($event)" (click)="$event.target.select()" [disabled]="flagConsCero" max="57">
-        </div>
-        <div class="ui-g-3">
-          <label>Tarjeta Crédito:</label>
-          <input currencyMask type="text" [(ngModel)]="fpTarjeta" id="fpTarjeta" name="fpTarjeta" placeholder="0.00" class="form-control input-sm"
-            (ngModelChange)="onChangeFPT($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
-        </div>
-        <div class="ui-g-3">
-          <label>Crédito Directo:</label>
-          <input currencyMask type="text" [(ngModel)]="fpPorCobrar" id="fpPorCobrar" name="fpPorCobrar" placeholder="0.00" class="form-control input-sm"
-            (ngModelChange)="onChangeFPC($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
-        </div>
-        <div class="ui-g-3">
-          <label>Cheque:</label>
-          <input currencyMask type="text" [(ngModel)]="fpCheque" id="fpCheque" name="fpCheque" placeholder="0.00" class="form-control input-sm"
-            (ngModelChange)="onChangeFPCH($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        <div class="ui-g-12">
+          <div class="ui-g-2">
+            <label for="totalPagarC">Subtotal:</label>
+            <input currencyMask type="text" [(ngModel)]="objDesgloce.subtotal" name="subtotal" class="form-control input-sm" readonly>
+          </div>
+          <div class="ui-g-2">
+            <label for="totalPagarC">IVA 12%:</label>
+            <input currencyMask type="text" [(ngModel)]="objDesgloce.iva" name="iva" class="form-control input-sm" readonly>
+          </div>
+          <div class="ui-g-2">
+            <label for="totalPagarC">ICE:</label>
+            <input currencyMask type="text" [(ngModel)]="objDesgloce.ice" name="ice" class="form-control input-sm" readonly>
+          </div>
+          <div class="ui-g-2">
+            <label for="totalPagarC">Descuento:</label>
+            <input currencyMask type="text" [(ngModel)]="objDesgloce.descuento" name="descuento" class="form-control input-sm" readonly>
+          </div>
+          <div class="ui-g-4">
+            <label for="totalPagarC">Total:</label>
+            <input currencyMask type="text" [(ngModel)]="objDesgloce.total" name="totalPagarC" class="form-control input-sm" readonly>
+          </div>
         </div>
       </div>
     </div>
-
-  </div>
-  <hr>
-  <div class="ui-g-12 ui-xl-12 ui-lg-12 ui-md-12 ui-sm-12" style="text-align: center">
-    <button class="btn btn-primary" style="font-size: 11px" (click)="onUpdatePromoSubmit()" tabindex="4">Registrar</button>
-    <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
-  </div>
+    <hr>
+    <div class="ui-g-12" style="text-align: center">
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!formC.form.valid">Registrar</button>
+      <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
+    </div>
+  </form>
 </p-dialog>
 
 <!-- Add ProdCompra -->
@@ -1060,10 +1105,16 @@
         <p-selectButton name="selectedTipoProd" [options]="typesProd" [(ngModel)]="selectedTipoProd" (onChange)="changeTipoProd($event)"
           [style]="{'margin-top':'2px'}"></p-selectButton>
       </div>
-      <div class="ui-g-12" *ngIf="flagProdC">
+      <div class="ui-g-6" *ngIf="flagProdC">
         <input type="text" name="desc_productoC" [(ngModel)]="objProdCompras.desc_producto" (ngModelChange)="onChangeNombreProdCompra($event)"
           minlength="5" id="desc_productoC" placeholder="Producto Nuevo" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
           required>
+      </div>
+      <div class="ui-g-6" *ngIf="flagProdC">
+        <select [(ngModel)]="selected_tipo_producto" id="tipoPC" name="tipoPC" class="form-control input-sm" required>
+          <option value="" disabled selected hidden>Selecciona...</option>
+          <option *ngFor="let c of tipo_productos" [ngValue]="c">{{c.desc_tipo_producto}}</option>
+        </select>
       </div>
       <div class="ui-g-12" *ngIf="!flagProdC">
         <p-dropdown name="selectedProdCompras" [options]="productosShow" [(ngModel)]="objProdCompras.desc_producto" (onChange)="onChangeProdCompra()"
@@ -1117,7 +1168,6 @@
       </div>
     </div>
     <div class="ui-g-12" style="text-align: center">
-
       <button class="btn btn-primary" style="font-size: 11px" [disabled]="!tpProdCompraForm.form.valid || !flagCantPC || !flagPrecioCostoPC">
         &nbsp;&nbsp;&nbsp;Añadir&nbsp;&nbsp;&nbsp;</button>
       <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProdC = false">Cancelar</button>
@@ -1446,30 +1496,30 @@
   <form (ngSubmit)="addRepre()" #heroForm="ngForm">
     <div class="ui-g ui-fluid">
       <div class="ui-g-12">
-        <div class="form-hint">Los campos marcados con (*) son obligatorios:</div>
+        <div class="form-hint"><b>Nota:</b>&nbsp;Los campos marcados con (*) son obligatorios.</div>
       </div>
       <div class="ui-g-12">
-        <label>Nombre y Apellido*:</label>
+        <label>Nombre y Apellido<span class="requiredClass">&nbsp;*</span></label>
         <input type="text" [(ngModel)]="representante.nombre" (ngModelChange)="onChangeNombreRepre($event)" id="nombreRepre" name="nombreRepre"
           placeholder="Nombre de representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 ||
         event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90'
           tooltip="Solo se permiten LETRAS." tooltipPlacement="bottom" minlength="8" tabindex="10" required>
       </div>
       <div class="ui-g-6">
-        <label>Teléfono*:</label>
+        <label>Teléfono<span class="requiredClass">&nbsp;*</span></label>
         <input type="text" [(ngModel)]="representante.telefono" id="telRepre" name="telRepre" placeholder="Teléfono representante"
           class="form-control input-sm" minlength="7" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
           tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" tabindex="11" required>
       </div>
       <div class="ui-g-6">
-        <label>E-mail*:</label>
+        <label>E-mail<span class="requiredClass">&nbsp;*</span></label>
         <input type="text" [(ngModel)]="representante.correo" (ngModelChange)="onChangeEmailRepre($event)" id="correoRepre" name="correoRepre"
           placeholder="Correo representante" class="form-control input-sm" tabindex="12">
       </div>
       <div class="ui-g-12">
-        <label>Descripcion:</label><br>
+        <label>Descripción:</label><br>
         <textarea pInputTextarea [(ngModel)]="representante.descripcion" (ngModelChange)="onChangeDescRepre($event)" id="descRepre"
-          name="descRepre" placeholder="Dirección representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
+          name="descRepre" placeholder="Descripción representante" class="form-control input-sm" onkeypress='return event.charCode >= 97 && event.charCode <= 122 || event.charCode === 241 || event.charCode === 32 || event.charCode === 209 || event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 45 && event.charCode <= 57'
           tooltip="Solo se permiten numeros, letras y ./- para este campo" tooltipPlacement="bottom" title=" " tabindex="13"
           [rows]="3"></textarea>
       </div>

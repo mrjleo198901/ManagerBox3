@@ -158,7 +158,6 @@ export class ProductosComponent implements OnInit {
   settingsProve = {};
   sourceProve: LocalDataSource = new LocalDataSource();
   showComprasDetail = false;
-  lstComprasProve: any[];
   showProveDialog;
   oldProve: any;
   showDialogProveU = false;
@@ -242,15 +241,6 @@ export class ProductosComponent implements OnInit {
       estado: 0,
       tipoPromo: ''
     }
-    this.lstComprasProve = [
-      { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
-      { desc_producto: 'Cerveza pilsener 350ml', fecha: '20/01/2017', unidades: '25', total: '4' },
-      { desc_producto: 'Wiskey grants 1LT', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
-    ];
     //console.log((0.3 - 0.1).toFixed(2));
 
     var x = window.innerWidth;
@@ -412,7 +402,6 @@ export class ProductosComponent implements OnInit {
         localStorage.setItem('lstProductos', JSON.stringify(this.productos));
         this.sourceP = new LocalDataSource();
         this.sourceP.load(this.productos);
-        console.log(this.productos)
         this.settingsP = {
           mode: 'external',
           noDataMessage: 'No existen registros',
@@ -740,7 +729,6 @@ export class ProductosComponent implements OnInit {
           console.log(err);
           this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
         });
-        console.log(producto)
       }
     }
   }
@@ -1737,7 +1725,7 @@ export class ProductosComponent implements OnInit {
   }
   objIce = {
     desc: 'ICE',
-    porcentaje: 15,
+    porcentaje: 0,
     valor: 0
   }
   objOtro = {
@@ -1752,7 +1740,7 @@ export class ProductosComponent implements OnInit {
   }
   objIceV = {
     desc: 'ICE',
-    porcentaje: 15,
+    porcentaje: 0,
     valor: 0
   }
   objOtroV = {
@@ -1775,7 +1763,7 @@ export class ProductosComponent implements OnInit {
     }
     this.objIce = {
       desc: 'ICE',
-      porcentaje: 15,
+      porcentaje: 0,
       valor: 0
     }
     this.objOtro = {
@@ -1790,7 +1778,7 @@ export class ProductosComponent implements OnInit {
     }
     this.objIceV = {
       desc: 'ICE',
-      porcentaje: 15,
+      porcentaje: 0,
       valor: 0
     }
     this.objOtroV = {
@@ -2394,8 +2382,9 @@ export class ProductosComponent implements OnInit {
   }
 
   /* GESTION DE COMPRAS */
-  showDialogC = false;
+  showDialogC = true;
   showDialogCU = false;
+  settingsC = {};
   selectedIeProd = 'Existente';
   flagProdC = false;
   typesProd: any[];
@@ -2403,22 +2392,68 @@ export class ProductosComponent implements OnInit {
     desc_producto: '',
     cantidad: 0,
     pcUnitario: 0,
-    unidadMedida: '',
+    unidadMedida: string,
     contenido: 0,
-    pcAnterior: 0
+    pcAnterior: number,
+    fecha: string,
+    total: number
   }
   selectedProdCompras: any;
   objCompras: {
-    'fecha': '',
-    'desc_producto': '',
-    'proveedor': '',
-    'cantidad': 0,
-    'total': 0,
-    'num_factura': '',
-    'contenido': 0
-  };
+    num_factura: '',
+    fecha: Date,
+    proveedor: any[],
+    vendedor: '',
+    productosV: any[],
+    descuento: 0,
+    total: 0,
+    fpV: {
+      fpEfectivo: 0,
+      fpTarjeta: 0,
+      fpPorCobrar: 0,
+      fpCheque: 0
+    }
+  }
+  lstProveedoresR: any[] = [];
   checkedC = false;
   selectedTipoProd = 'Existente';
+  subTotalPagarC = 0;
+  flagErrorFP = false;
+  campoFP;
+  maximoFP;
+  lstComprasProve: any[];
+  showDialogProdC = false;
+  objDesgloce = {
+    subtotal: 0,
+    iva: 0,
+    ice: 0,
+    descuento: 0,
+    total: 0
+  }
+
+  setCursorAddC() {
+    setTimeout(function () {
+      document.getElementById('num_facturaC').focus();
+    }, 50);
+    this.ngOnInitCompras();
+  }
+  validNumFact = true;
+  onChangeNumFact() {
+    if (this.objCompras.num_factura.length != 15) {
+      document.getElementById("num_facturaC").style.borderLeft = "5px solid #a94442"; /* red */
+      this.validNumFact = true;
+    } else {
+      if (!this.validateService.validarNumFact(this.objCompras.num_factura)) {
+        this.messageGrowlService.notify('error', 'Error', 'Número de factura inválido!');
+        document.getElementById("num_facturaC").style.borderLeft = "5px solid #a94442"; /* red */
+        this.validNumFact = true;
+      } else {
+        this.messageGrowlService.notify('success', 'Éxito', 'Número de factura válido!');
+        document.getElementById("num_facturaC").style.borderLeft = "5px solid #42A948"; /* green */
+        this.validNumFact = false;
+      }
+    }
+  }
 
   onClickSelectButton(event) {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
@@ -2442,7 +2477,6 @@ export class ProductosComponent implements OnInit {
       this.setDvProdCompra();
     } else {
       this.flagProdC = true;
-      this.objProdCompras.desc_producto = '';
       this.setCursorAddProdCompras();
       this.setDvProdCompra();
     }
@@ -2455,7 +2489,6 @@ export class ProductosComponent implements OnInit {
   }
   prodAnterior: any;
   onChangeProdCompra() {
-    console.log(this.objProdCompras.desc_producto);
     let name = this.objProdCompras.desc_producto;
     this.prodAnterior = this.productosShow.filter(function (obj) {
       return obj.nombre.localeCompare(name) === 0;
@@ -2467,10 +2500,77 @@ export class ProductosComponent implements OnInit {
   }
 
   addProdCompra() {
-    console.log(this.objProdCompras);
+    this.subTotalPagarC = 0;
+    let um = this.selectedUmMat.label + '-' + this.selectedUmMat1.label;
+    //Ingresar nuevo producto en tabla producto
+    if (this.selectedTipoProd.localeCompare('Nuevo') === 0) {
+      const gain = this.fs.add((this.fs.div(30, 100)), 1);
+      let pvp = this.fs.times(this.objProdCompras.pcUnitario, gain)
+      const producto = {
+        nombre: this.objProdCompras.desc_producto,
+        precio_costo: this.objProdCompras.pcUnitario,
+        precio_venta: pvp,
+        utilidad: 30,
+        cant_existente: this.objProdCompras.cantidad,
+        cant_minima: 5,
+        subproductoV: [],
+        id_tipo_producto: this.selected_tipo_producto._id,
+        path: this.selected_tipo_producto.path,
+        contenido: this.objProdCompras.contenido,
+        promocion: [],
+        unidad_medida: um,
+        impuestosCompraV: this.objImp,
+        impuestosVentaV: this.objImpV
+      };
+      producto.path = this.selected_tipo_producto.path;
+      console.log(producto);
+      /*this.productoService.registerProducto(producto).subscribe(data => {
+        this.ngOnInitProducto();
+        this.ngOnInit();
+        this.ngOnInitImp();
+        this.showDialogPC = false;
+        this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });*/
+    } else {
+      //Actualizar producto en tabla producto
+      this.prodAnterior[0].cant_existente = parseFloat(this.prodAnterior[0].cant_existente);
+      this.prodAnterior[0].cant_existente += this.objProdCompras.cantidad;
+      this.prodAnterior[0].precio_costo = this.objProdCompras.pcUnitario;
+      const gain = this.fs.add((this.fs.div(parseFloat(this.prodAnterior[0].utilidad), 100)), 1);
+      let pvp = this.fs.times(this.objProdCompras.pcUnitario, gain);
+      this.prodAnterior[0].precio_venta = pvp;
+      console.log(this.prodAnterior);
+    }
+    //Add tabla compras
+    let aux: any = [];
+    aux = {
+      cantidad: this.objProdCompras.cantidad,
+      contenido: this.objProdCompras.contenido,
+      desc_producto: this.objProdCompras.desc_producto,
+      fecha: this.validateService.getDateTimeStamp(),
+      pcAnterior: this.objProdCompras.pcAnterior,
+      pcUnitario: this.objProdCompras.pcUnitario,
+      total: this.fs.times(this.objProdCompras.pcUnitario, this.objProdCompras.cantidad),
+      unidadMedida: um
+    }
+    this.lstComprasProve = [...this.lstComprasProve, aux];
+    this.showDialogProdC = false;
+    console.log(this.lstComprasProve);
 
-    console.log(this.selectedUmMat);
-    console.log(this.selectedUmMat1);
+    this.subTotalPagarC = this.lstComprasProve.reduce(function (prev, cur) {
+      return prev + cur.total;
+    }, 0);
+    this.objDesgloce = {
+      subtotal: this.subTotalPagarC,
+      iva: (this.subTotalPagarC * 1.12) - this.subTotalPagarC,
+      ice: 0,
+      descuento: 0,
+      total: (this.subTotalPagarC * 1.12)
+    }
+
   }
 
   onChangeNombreProdCompra($event) {
@@ -2504,7 +2604,83 @@ export class ProductosComponent implements OnInit {
       pcUnitario: 0,
       unidadMedida: '',
       contenido: 0,
-      pcAnterior: 0
+      pcAnterior: 0,
+      fecha: '',
+      total: 0
+    }
+  }
+
+  loadSailers($event) {
+    let a: any = this.objCompras.proveedor;
+    this.lstProveedoresR = a.representanteV;
+    console.log(this.lstProveedoresR);
+  }
+
+  onChangeFPE($event) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+      this.objCompras.fpV.fpEfectivo = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpEfectivo');
+        if (v != null) {
+          v.click();
+        }
+      }, 0);
+      this.flagErrorFP = true;
+      this.campoFP = 'Efectivo';
+      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+    } else {
+      this.flagErrorFP = false;
+    }
+  }
+
+  onChangeFPT($event) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+      this.objCompras.fpV.fpTarjeta = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpTarjeta');
+        if (v != null) {
+          v.click();
+        }
+      }, 0);
+      this.campoFP = 'Tarjeta de Crédito';
+      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.flagErrorFP = true;
+    } else {
+      this.flagErrorFP = false;
+    }
+  }
+
+  onChangeFPC($event) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+      this.objCompras.fpV.fpPorCobrar = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpPorCobrar');
+        if (v != null) {
+          v.click();
+        }
+      }, 0);
+      this.campoFP = 'Crédito Directo';
+      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.flagErrorFP = true;
+    } else {
+      this.flagErrorFP = false;
+    }
+  }
+
+  onChangeFPCH($event) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+      this.objCompras.fpV.fpCheque = 0;
+      setTimeout(function () {
+        let v = document.getElementById('fpCheque');
+        if (v != null) {
+          v.click();
+        }
+      }, 0);
+      this.campoFP = 'Cheque';
+      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.flagErrorFP = true;
+    } else {
+      this.flagErrorFP = false;
     }
   }
 
@@ -2512,15 +2688,31 @@ export class ProductosComponent implements OnInit {
     this.typesProd = [];
     this.typesProd.push({ label: 'Existente', value: 'Existente' });
     this.typesProd.push({ label: 'Nuevo', value: 'Nuevo' });
+    this.lstComprasProve = [];
+    /*this.lstComprasProve = [
+      { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
+      { desc_producto: 'Cerveza pilsener 350ml', fecha: '20/01/2017', unidades: '25', total: '4' },
+      { desc_producto: 'Wiskey grants 1LT', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
+      { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
+    ];*/
 
     this.objCompras = {
-      'fecha': '',
-      'desc_producto': '',
-      'proveedor': '',
-      'cantidad': 0,
-      'total': 0,
-      'num_factura': '',
-      'contenido': 0
+      num_factura: '',
+      fecha: new Date(),
+      proveedor: [],
+      vendedor: '',
+      productosV: [],
+      descuento: 0,
+      total: 0,
+      fpV: {
+        fpEfectivo: 0,
+        fpTarjeta: 0,
+        fpPorCobrar: 0,
+        fpCheque: 0
+      }
     };
     this.objProdCompras = {
       desc_producto: '',
@@ -2528,8 +2720,111 @@ export class ProductosComponent implements OnInit {
       pcUnitario: 0,
       unidadMedida: '',
       contenido: 0,
-      pcAnterior: 0
+      pcAnterior: 0,
+      fecha: '',
+      total: 0
     }
+    this.settingsC = {
+      mode: 'external',
+      noDataMessage: 'No existen registros',
+      columns: {
+        cant_existente: {
+          title: 'Stock',
+          width: '7%',
+          type: 'custom',
+          renderComponent: PipeRenderComponent,
+          filter: false
+        },
+        nombre: {
+          title: 'Nombre',
+          width: '18%',
+          filter: {
+            type: 'completer',
+            config: {
+              completer: {
+                data: this.productos,
+                searchFields: 'nombre',
+                titleField: 'nombre'
+              },
+            },
+          },
+        },
+        contenido: {
+          title: 'Contenido',
+          width: '7%',
+          type: 'custom',
+          renderComponent: PipeRenderComponent,
+          filter: false
+        },
+        unidad_medida: {
+          title: 'UM',
+          width: '7%',
+          filter: false,
+          valuePrepareFunction: (unidad_medida) => {
+            var um = 'Unidades';
+            var res = unidad_medida.split("-");
+            if (res[0].localeCompare('Masa') === 0) {
+              um = 'Masa-Gramos';
+            }
+            if (res[0].localeCompare('Volumen') === 0) {
+              um = 'Volumen-Mililitros';
+            }
+            return um;
+          }
+        },
+        precio_costo: {
+          title: 'Precio Costo',
+          width: '7%',
+          type: 'custom',
+          renderComponent: PipeRenderComponent,
+          filter: false
+        },
+        utilidad: {
+          title: 'Utilidad (%)',
+          width: '7%',
+          type: 'custom',
+          renderComponent: PipeRenderComponent,
+          filter: false
+        },
+        precio_venta: {
+          title: 'Precio Venta',
+          width: '7%',
+          type: 'custom',
+          renderComponent: PipeRenderComponent,
+          filter: false
+        },
+        subproductoV: {
+          title: 'Subproducto',
+          width: '23%',
+          filter: false,
+          valuePrepareFunction: (subproductoV) => {
+            let fila = '';
+            for (let entry of subproductoV) {
+              fila += '-' + entry.nombre + ' ' + entry.cantidad + ' ';
+            }
+            return fila;
+          }
+        },
+        path: {
+          title: 'Logotipo',
+          width: '7%',
+          filter: false,
+          type: 'custom',
+          renderComponent: ImageRenderComponent
+        }
+      },
+      actions: {
+        columnTitle: '',
+        add: true,
+        edit: true,
+        delete: true
+      },
+      attr: {
+        class: 'table-bordered table-hover table-responsive'
+      }
+    };
+
+    //console.log(this.fs.dinamicModulo11('010520180117912875410012001011006161585281014691'));
   }
 
   /* GESTION DE KARDEX */
