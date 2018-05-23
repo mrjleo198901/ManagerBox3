@@ -954,31 +954,33 @@
 </p-dialog>
 
 <!-- Add Compra -->
-<p-dialog [(visible)]="showDialogC" modal="modal" width="900" [responsive]="true">
+<p-dialog [(visible)]="showDialogC" modal="modal" width="1050" [responsive]="true" positionTop="30">
   <p-header>
     Registrar Factura Compra
   </p-header>
-  <form (ngSubmit)="onUpdatePromoSubmit()" #formC="ngForm">
+  <form (ngSubmit)="onAddCompra()" #formC="ngForm">
     <div class="ui-g ui-fluid">
       <div class="ui-g-12">
         <div class="form-hint"><b>Nota:</b> Los campos marcados con (*) son obligatorios.</div>
       </div>
+      <!-- Datos Generales  -->
       <div class="ui-g-3">
-        <label>Número Factura<span class="requiredClass">&nbsp;*</span></label>
-        <input type="text" [(ngModel)]="objCompras.num_factura" (ngModelChange)="onChangeNumFact()" id="num_facturaC" name="num_facturaC"
-          placeholder="Número de Factura" minlength="15" maxlength="15" class="form-control input-sm" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-          tooltip="Solo se permiten NUMEROS." tooltipPlacement="bottom" required>
+        <label>Número Factura<span class="requiredClass">&nbsp;*</span></label>{{objCompras.num_factura | numFactura}}
+        <input type="text" [(ngModel)]="objCompras.num_factura" [textMask]="{mask: mask}" (ngModelChange)="onChangeNumFact()" id="num_facturaC"
+          name="num_facturaC" placeholder="999-999-999999999" class="form-control input-sm" tooltip="Solo se permiten NUMEROS."
+          tooltipPlacement="bottom" required>
       </div>
       <div class="ui-g-3">
         <label>Fecha<span class="requiredClass">&nbsp;*</span></label>
         <p-calendar [(ngModel)]="objCompras.fecha" [locale]="es" dateFormat="dd/mm/yy" [showIcon]="true" [monthNavigator]="true"
-          [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true" id="fechaK" name="fechaK" required>
+          [yearNavigator]="true" yearRange="1950:2030" dataType="string" [readonlyInput]="true" id="fechaK" name="fechaK">
         </p-calendar>
       </div>
       <div class="ui-g-3">
         <label>Proveedor<span class="requiredClass">&nbsp;*</span></label>
         <div class="input-group">
-          <select [(ngModel)]="objCompras.proveedor" (ngModelChange)="loadSailers($event)" id="proveC" name="proveC" class="form-control input-sm">
+          <select [(ngModel)]="objCompras.proveedor" (ngModelChange)="loadSailers($event)" id="proveC" name="proveC" class="form-control input-sm"
+            required>
             <option value="" disabled selected hidden>Selecciona...</option>
             <option *ngFor="let c of lstProveedoresK" [ngValue]="c" >{{c.nombre_proveedor}}</option>
           </select>
@@ -995,96 +997,107 @@
           <span class="input-group-addon input-sm" id="spanAdd" (click)="showProveK()"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></span>
         </div>
       </div>
-      <div class="ui-g-3">
-        <button pButton type="button" (click)="showDialogProdC = true;" label="Añadir producto" class="ui-button-warning"></button>
-      </div>
+      <!-- Listado productos -->
       <div class="ui-g-12">
         <p-dataTable [value]="lstComprasProve" [responsive]="true" [paginator]="true" [rows]="4">
+          <p-header>
+            <div class="ui-helper-clearfix" style="width:100%">
+              <div class="ui-g-3 ui-g-nopad">
+                <button pButton type="button" icon="fa-plus" (click)="showDialogProdC = true;" label="Añadir producto"></button>
+              </div>
+            </div>
+          </p-header>
+          <p-column [style]="{'overflow':'visible','width':'5%'}">
+            <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
+              <button pButton type="button" (click)="deleteRowCompras(index)" icon="fa-close" class="ui-button-danger" style="height: 20px;"></button>
+            </ng-template>
+          </p-column>
           <p-column field="fecha" header="Fecha" [style]="{'overflow':'visible','width':'17.5%'}">
             <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
               {{car.fecha | date:'dd/MM/yyyy HH:mm'}}
             </ng-template>
           </p-column>
-          <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'35%'}"></p-column>
-          <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'15%'}">
+          <p-column field="desc_producto" header="Descripción Producto" [style]="{'overflow':'visible','width':'33%'}"></p-column>
+          <p-column field="cantidad" header="Cantidad" [style]="{'overflow':'visible','width':'14%'}">
             <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
               {{car.cantidad | number : '1.2-2'}}
             </ng-template>
           </p-column>
-          <p-column field="pcUnitario" header="P. unitario" [style]="{'overflow':'visible','width':'15%'}">
+          <p-column field="pcUnitario" header="P. unitario" [style]="{'overflow':'visible','width':'14%'}">
             <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
               {{car.pcUnitario | number : '1.2-2'}}
             </ng-template>
           </p-column>
-          <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'17.5%'}">
+          <p-column field="total" header="Total" [style]="{'overflow':'visible','width':'16.5%'}">
             <ng-template let-car="rowData" let-index="rowIndex" pTemplate>
               {{car.total | number : '1.2-2'}}
             </ng-template>
           </p-column>
+          <ng-template pTemplate="emptymessage">
+            No existen registros
+          </ng-template>
         </p-dataTable>
       </div>
       <!-- Formas de pago -->
-      <div class="panel panel-default" style="width: 100%; margin: auto 7px auto 7px;">
-        <div class="ui-g-12">
-          <div class="ui-g-4">
-            <label>Forma de Pago<span class="requiredClass">&nbsp;*</span></label>
+      <div class="panel panel-default" style="width: 49%; margin-left: 7px;">
+        <div class="ui-g-3">
+          <label>Forma de Pago<span class="requiredClass">&nbsp;*</span></label>
+        </div>
+        <div class="ui-g-9">
+          <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP" style="height: 27px;">
+            <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo "<i>{{campoFP}}</i>", puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
           </div>
-          <div class="ui-g-8">
-            <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP">
-              <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo "<i>{{campoFP}}</i>", puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
-            </div>
-            <div *ngIf="!flagErrorFP">
-              <p style="color: white;font-size: 12px">Espacio</p>
-            </div>
-          </div>
-          <div class="ui-g-3">
-            <label>Efectivo:</label>
-            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpEfectivo" id="fpEfectivo" name="fpEfectivo" placeholder="0.00"
-              class="form-control input-sm" (ngModelChange)="onChangeFPE($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
-          </div>
-          <div class="ui-g-3">
-            <label>Tarjeta Crédito:</label>
-            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpTarjeta" id="fpTarjeta" name="fpTarjeta" placeholder="0.00"
-              class="form-control input-sm" (ngModelChange)="onChangeFPT($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
-          </div>
-          <div class="ui-g-3">
-            <label>Crédito Directo:</label>
-            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpPorCobrar" id="fpPorCobrar" name="fpPorCobrar" placeholder="0.00"
-              class="form-control input-sm" (ngModelChange)="onChangeFPC($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
-          </div>
-          <div class="ui-g-3">
-            <label>Cheque:</label>
-            <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpCheque" id="fpCheque" name="fpCheque" placeholder="0.00" class="form-control input-sm"
-              (ngModelChange)="onChangeFPCH($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+          <div *ngIf="!flagErrorFP">
+            <p style="color: white;font-size: 12px">Espacio</p>
           </div>
         </div>
-        <div class="ui-g-12">
-          <div class="ui-g-2">
-            <label for="totalPagarC">Subtotal:</label>
-            <input currencyMask type="text" [(ngModel)]="objDesgloce.subtotal" name="subtotal" class="form-control input-sm" readonly>
-          </div>
-          <div class="ui-g-2">
-            <label for="totalPagarC">IVA 12%:</label>
-            <input currencyMask type="text" [(ngModel)]="objDesgloce.iva" name="iva" class="form-control input-sm" readonly>
-          </div>
-          <div class="ui-g-2">
-            <label for="totalPagarC">ICE:</label>
-            <input currencyMask type="text" [(ngModel)]="objDesgloce.ice" name="ice" class="form-control input-sm" readonly>
-          </div>
-          <div class="ui-g-2">
-            <label for="totalPagarC">Descuento:</label>
-            <input currencyMask type="text" [(ngModel)]="objDesgloce.descuento" name="descuento" class="form-control input-sm" readonly>
-          </div>
-          <div class="ui-g-4">
-            <label for="totalPagarC">Total:</label>
-            <input currencyMask type="text" [(ngModel)]="objDesgloce.total" name="totalPagarC" class="form-control input-sm" readonly>
-          </div>
+        <div class="ui-g-6">
+          <label>Efectivo:</label>
+          <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpEfectivo" id="fpEfectivo" name="fpEfectivo" placeholder="0.00"
+            class="form-control input-sm" (ngModelChange)="onChangeFPE($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+        <div class="ui-g-6">
+          <label>Tarjeta Crédito:</label>
+          <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpTarjeta" id="fpTarjeta" name="fpTarjeta" placeholder="0.00"
+            class="form-control input-sm" (ngModelChange)="onChangeFPT($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+        <div class="ui-g-6">
+          <label>Crédito Directo:</label>
+          <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpPorCobrar" id="fpPorCobrar" name="fpPorCobrar" placeholder="0.00"
+            class="form-control input-sm" (ngModelChange)="onChangeFPC($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+        <div class="ui-g-6">
+          <label>Cheque:</label>
+          <input currencyMask type="text" [(ngModel)]="objCompras.fpV.fpCheque" id="fpCheque" name="fpCheque" placeholder="0.00" class="form-control input-sm"
+            (ngModelChange)="onChangeFPCH($event)" (click)="$event.target.select()" [disabled]="flagConsCero">
+        </div>
+      </div>
+      <!-- Desgloce -->
+      <div class="panel panel-default" style="width: 49%; margin-left: 6px;">
+        <div class="ui-g-6">
+          <label for="totalPagarC">Subtotal:</label>
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.subtotal" name="subtotal" class="form-control input-sm" readonly>
+        </div>
+        <div class="ui-g-6">
+          <label for="totalPagarC">IVA 12%:</label>
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.iva" name="iva" class="form-control input-sm" readonly>
+        </div>
+        <div class="ui-g-6">
+          <label for="totalPagarC">ICE:</label>
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.ice" name="ice" class="form-control input-sm" readonly>
+        </div>
+        <div class="ui-g-6">
+          <label for="totalPagarC">Descuento:</label>
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.descuento" name="descuento" class="form-control input-sm" readonly>
+        </div>
+        <div class="ui-g-6 ui-g-offset-6">
+          <label for="totalPagarC">Total:</label>
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.total" name="totalPagarC" class="form-control input-sm" readonly>
         </div>
       </div>
     </div>
-    <hr>
-    <div class="ui-g-12" style="text-align: center">
-      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!formC.form.valid">Registrar</button>
+    <div class="ui-g-12 ui-g-nopad" style="text-align: center">
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!formC.form.valid || validNumFact || !this.lstComprasProve.length > 0 || !(objCompras.fpV.fpEfectivo + objCompras.fpV.fpTarjeta + objCompras.fpV.fpPorCobrar + objCompras.fpV.fpCheque == this.objDesgloce.total)">Registrar</button>
       <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProU = false">Cancelar</button>
     </div>
   </form>

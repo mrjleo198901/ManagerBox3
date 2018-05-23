@@ -75,6 +75,8 @@ import { SubprodRenderComponent } from './components/subprod-render/subprod-rend
 import { ConfigurationComponent } from './components/configuration/configuration.component';
 import { AdministrarComponent } from './components/administrar/administrar.component';
 import { CoverprodRenderComponent } from './components/coverprod-render/coverprod-render.component';
+import { NumFacturaPipe } from './num-factura.pipe';
+import { TextMaskModule } from 'angular2-text-mask';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -122,7 +124,8 @@ const appRoutes: Routes = [
     SubprodRenderComponent,
     ConfigurationComponent,
     AdministrarComponent,
-    CoverprodRenderComponent
+    CoverprodRenderComponent,
+    NumFacturaPipe
   ],
   entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, PrintRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent, CoverprodRenderComponent],
   imports: [
@@ -141,6 +144,7 @@ const appRoutes: Routes = [
     CurrencyMaskModule,
     MdTooltipModule, MdDialogModule, MdCheckboxModule, MdRadioModule, MdSlideToggleModule,
     SimpleNotificationsModule.forRoot(),
+    TextMaskModule,
     GrowlModule, PanelModule, DropdownModule, ButtonModule, DataTableModule, SharedModule, CheckboxModule,
     TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule, PasswordModule,
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule, AutoCompleteModule

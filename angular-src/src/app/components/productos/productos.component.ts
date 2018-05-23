@@ -2405,8 +2405,7 @@ export class ProductosComponent implements OnInit {
     proveedor: any[],
     vendedor: '',
     productosV: any[],
-    descuento: 0,
-    total: 0,
+    desgloce: any,
     fpV: {
       fpEfectivo: 0,
       fpTarjeta: 0,
@@ -2438,20 +2437,16 @@ export class ProductosComponent implements OnInit {
     this.ngOnInitCompras();
   }
   validNumFact = true;
+  public myModel = ''
+  mask = [/\d/, /\d/, /[1-9]/, '-', /\d/, /\d/, /[1-9]/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /[1-9]/];
   onChangeNumFact() {
-    if (this.objCompras.num_factura.length != 15) {
-      document.getElementById("num_facturaC").style.borderLeft = "5px solid #a94442"; /* red */
-      this.validNumFact = true;
+    if (!this.validateService.validarNumFact(this.objCompras.num_factura)) {
+      this.messageGrowlService.notify('success', 'Éxito', 'Número de factura válido!');
+      document.getElementById("num_facturaC").style.borderLeft = "5px solid #42A948";
+      this.validNumFact = false;
     } else {
-      if (!this.validateService.validarNumFact(this.objCompras.num_factura)) {
-        this.messageGrowlService.notify('error', 'Error', 'Número de factura inválido!');
-        document.getElementById("num_facturaC").style.borderLeft = "5px solid #a94442"; /* red */
-        this.validNumFact = true;
-      } else {
-        this.messageGrowlService.notify('success', 'Éxito', 'Número de factura válido!');
-        document.getElementById("num_facturaC").style.borderLeft = "5px solid #42A948"; /* green */
-        this.validNumFact = false;
-      }
+      document.getElementById("num_facturaC").style.borderLeft = "5px solid #a94442";
+      this.validNumFact = true;
     }
   }
 
@@ -2558,19 +2553,42 @@ export class ProductosComponent implements OnInit {
     }
     this.lstComprasProve = [...this.lstComprasProve, aux];
     this.showDialogProdC = false;
-    console.log(this.lstComprasProve);
-
     this.subTotalPagarC = this.lstComprasProve.reduce(function (prev, cur) {
       return prev + cur.total;
     }, 0);
     this.objDesgloce = {
       subtotal: this.subTotalPagarC,
-      iva: (this.subTotalPagarC * 1.12) - this.subTotalPagarC,
+      iva: this.fs.sub(this.fs.times(this.subTotalPagarC, 1.12), this.subTotalPagarC),
       ice: 0,
       descuento: 0,
-      total: (this.subTotalPagarC * 1.12)
+      total: this.fs.times(this.subTotalPagarC, 1.12)
     }
+  }
 
+  deleteRowCompras(index) {
+    this.lstComprasProve.splice(index, 1);
+    this.lstComprasProve = [...this.lstComprasProve];
+    this.subTotalPagarC = this.calcTotalCompras();
+    this.objDesgloce = {
+      subtotal: this.subTotalPagarC,
+      iva: this.fs.sub(this.fs.times(this.subTotalPagarC, 1.12), this.subTotalPagarC),
+      ice: 0,
+      descuento: 0,
+      total: this.fs.times(this.subTotalPagarC, 1.12)
+    }
+  }
+
+  calcTotalCompras() {
+    let sum = 0;
+    return sum = this.lstComprasProve.reduce(function (prev, cur) {
+      return prev + cur.total;
+    }, 0);
+  }
+
+  onAddCompra() {
+    console.log(this.objCompras);
+    this.objCompras.productosV = this.lstComprasProve;
+    this.objCompras.desgloce = this.objDesgloce;
   }
 
   onChangeNombreProdCompra($event) {
@@ -2613,11 +2631,11 @@ export class ProductosComponent implements OnInit {
   loadSailers($event) {
     let a: any = this.objCompras.proveedor;
     this.lstProveedoresR = a.representanteV;
-    console.log(this.lstProveedoresR);
+    //console.log(this.lstProveedoresR);
   }
 
   onChangeFPE($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
       this.objCompras.fpV.fpEfectivo = 0;
       setTimeout(function () {
         let v = document.getElementById('fpEfectivo');
@@ -2625,16 +2643,16 @@ export class ProductosComponent implements OnInit {
           v.click();
         }
       }, 0);
-      this.flagErrorFP = true;
       this.campoFP = 'Efectivo';
-      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
     }
   }
 
   onChangeFPT($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
       this.objCompras.fpV.fpTarjeta = 0;
       setTimeout(function () {
         let v = document.getElementById('fpTarjeta');
@@ -2643,7 +2661,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Tarjeta de Crédito';
-      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2651,7 +2669,7 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFPC($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
       this.objCompras.fpV.fpPorCobrar = 0;
       setTimeout(function () {
         let v = document.getElementById('fpPorCobrar');
@@ -2660,7 +2678,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Crédito Directo';
-      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2668,7 +2686,7 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFPCH($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.subTotalPagarC) {
+    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
       this.objCompras.fpV.fpCheque = 0;
       setTimeout(function () {
         let v = document.getElementById('fpCheque');
@@ -2677,7 +2695,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Cheque';
-      this.maximoFP = this.subTotalPagarC - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2705,8 +2723,7 @@ export class ProductosComponent implements OnInit {
       proveedor: [],
       vendedor: '',
       productosV: [],
-      descuento: 0,
-      total: 0,
+      desgloce: undefined,
       fpV: {
         fpEfectivo: 0,
         fpTarjeta: 0,

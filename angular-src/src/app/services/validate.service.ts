@@ -557,11 +557,13 @@ export class ValidateService {
 
   validarNumFact(num) {
     let valid = false;
-    if (num.length == 15) {
+    var n = num.indexOf("_");
+    if (n !== -1 || num === "") {
       valid = true;
     }
     return valid;
   }
+
   formatDate(date) {
     var monthNames = [
       "Enero", "Febrero", "Marzo",

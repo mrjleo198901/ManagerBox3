@@ -1257,7 +1257,7 @@
           <label>Formas de Pago*:</label>
         </div>
         <div class="ui-g-9 ui-xl-9 ui-lg-9 ui-md-9 ui-sm-9 ui-g-nopad">
-          <div class="ui-state-error ui-message ui-corner-all" *ngIf="flagErrorFP">
+          <div class="ui-state-error ui-message ui-corner-all" style="height: 27px;" *ngIf="flagErrorFP">
             <p style="color: white;font-size: 12px"><i class="fa fa-exclamation-circle"></i> &nbsp;El campo <i>{{campoFP}}</i>, puede ser máximo: <i>{{maximoFP | number : '1.2-2'}}</i></p>
           </div>
           <div *ngIf="!flagErrorFP">
