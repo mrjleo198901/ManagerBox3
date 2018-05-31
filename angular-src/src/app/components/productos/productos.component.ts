@@ -305,9 +305,13 @@ export class ProductosComponent implements OnInit {
         this.productos = p;
         this.productosShow = [];
         for (let entry of p) {
-          if (entry.subproductoV.length < 1)
+          if (entry.subproductoV.length < 1) {
+            entry.id_tipo_producto = this.searchTipoProdById(entry.id_tipo_producto, this.tipo_productos).desc_tipo_producto;
             this.productosShow.push(entry);
+
+          }
         }
+        console.log(this.productosShow);
         /* Get Proveedores*/
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
@@ -383,7 +387,8 @@ export class ProductosComponent implements OnInit {
         this.lstProductos = [];
         if (this.productos.length > 0) {
           for (let entry of this.productos) {
-            if (entry.id_tipo_producto === this.selectedTP._id)
+
+            if (entry.id_tipo_producto === this.selectedTP.desc_tipo_producto)
               this.lstProductos.push(entry);
           }
         }
@@ -2396,13 +2401,14 @@ export class ProductosComponent implements OnInit {
     contenido: 0,
     pcAnterior: number,
     fecha: string,
-    total: number
+    total: number,
+    impuestos: any
   }
   selectedProdCompras: any;
   objCompras: {
     num_factura: '',
     fecha: Date,
-    proveedor: any[],
+    proveedor: any,
     vendedor: '',
     productosV: any[],
     desgloce: any,
@@ -2426,9 +2432,27 @@ export class ProductosComponent implements OnInit {
     subtotal: 0,
     iva: 0,
     ice: 0,
+    otro: 0,
     descuento: 0,
+    propina: 0,
     total: 0
   }
+  prodCompra = {
+    nombre: '',
+    precio_costo: 0,
+    precio_venta: 0,
+    utilidad: 0,
+    cant_existente: 0,
+    cant_minima: 0,
+    subproductoV: [],
+    id_tipo_producto: '',
+    path: '',
+    contenido: 0,
+    promocion: [],
+    unidad_medida: '',
+    impuestosCompraV: [],
+    impuestosVentaV: []
+  };
 
   setCursorAddC() {
     setTimeout(function () {
@@ -2485,10 +2509,9 @@ export class ProductosComponent implements OnInit {
   prodAnterior: any;
   onChangeProdCompra() {
     let name = this.objProdCompras.desc_producto;
-    this.prodAnterior = this.productosShow.filter(function (obj) {
+    this.prodAnterior = this.lstProductos.filter(function (obj) {
       return obj.nombre.localeCompare(name) === 0;
     });
-    console.log(this.prodAnterior);
     //set values 
     this.objProdCompras.contenido = this.prodAnterior[0].contenido;
     this.objProdCompras.pcAnterior = this.prodAnterior[0].precio_costo;
@@ -2497,11 +2520,11 @@ export class ProductosComponent implements OnInit {
   addProdCompra() {
     this.subTotalPagarC = 0;
     let um = this.selectedUmMat.label + '-' + this.selectedUmMat1.label;
-    //Ingresar nuevo producto en tabla producto
+    const gain = this.fs.add((this.fs.div(30, 100)), 1);
+    let pvp = this.fs.times(this.objProdCompras.pcUnitario, gain)
     if (this.selectedTipoProd.localeCompare('Nuevo') === 0) {
-      const gain = this.fs.add((this.fs.div(30, 100)), 1);
-      let pvp = this.fs.times(this.objProdCompras.pcUnitario, gain)
-      const producto = {
+      //Ingresar nuevo producto en tabla producto
+      this.prodCompra = {
         nombre: this.objProdCompras.desc_producto,
         precio_costo: this.objProdCompras.pcUnitario,
         precio_venta: pvp,
@@ -2514,16 +2537,13 @@ export class ProductosComponent implements OnInit {
         contenido: this.objProdCompras.contenido,
         promocion: [],
         unidad_medida: um,
-        impuestosCompraV: this.objImp,
-        impuestosVentaV: this.objImpV
+        impuestosCompraV: this.objImpC,
+        impuestosVentaV: []
       };
-      producto.path = this.selected_tipo_producto.path;
-      console.log(producto);
-      /*this.productoService.registerProducto(producto).subscribe(data => {
+      /*this.productoService.registerProducto(this.prodCompra).subscribe(data => {
         this.ngOnInitProducto();
         this.ngOnInit();
         this.ngOnInitImp();
-        this.showDialogPC = false;
         this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
       }, err => {
         console.log(err);
@@ -2531,38 +2551,96 @@ export class ProductosComponent implements OnInit {
       });*/
     } else {
       //Actualizar producto en tabla producto
-      this.prodAnterior[0].cant_existente = parseFloat(this.prodAnterior[0].cant_existente);
-      this.prodAnterior[0].cant_existente += this.objProdCompras.cantidad;
-      this.prodAnterior[0].precio_costo = this.objProdCompras.pcUnitario;
-      const gain = this.fs.add((this.fs.div(parseFloat(this.prodAnterior[0].utilidad), 100)), 1);
-      let pvp = this.fs.times(this.objProdCompras.pcUnitario, gain);
-      this.prodAnterior[0].precio_venta = pvp;
-      console.log(this.prodAnterior);
+      this.prodCompra = {
+        nombre: this.objProdCompras.desc_producto,
+        precio_costo: this.objProdCompras.pcUnitario,
+        precio_venta: pvp,
+        utilidad: 30,
+        cant_existente: parseFloat(this.prodAnterior[0].cant_existente) + this.objProdCompras.cantidad,
+        cant_minima: this.prodAnterior[0].cant_minima,
+        subproductoV: this.prodAnterior[0].subproductoV,
+        id_tipo_producto: this.prodAnterior[0].id_tipo_producto,
+        path: this.prodAnterior[0].path,
+        contenido: this.prodAnterior[0].contenido,
+        promocion: this.prodAnterior[0].promocion,
+        unidad_medida: this.prodAnterior[0].unidad_medida,
+        impuestosCompraV: this.objImpC,
+        impuestosVentaV: []
+      };
+      /*this.productoService.updateProducto(this.prodAnterior[0]).subscribe(data => {
+        this.ngOnInitProducto();
+        this.ngOnInit();
+        this.ngOnInitImp();
+        this.messageGrowlService.notify('info', 'Éxito', 'Modificación Exitosa!');
+      }, err => {
+        console.log(err);
+        this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+      });*/
     }
     //Add tabla compras
+    this.addLstCompras();
+    this.calcSubTotal();
+    this.calcIva();
+    this.calcIce();
+    this.calcOtros();
+    //Lista de impuestas de la factura
+    /*this.objDesgloce = {
+      subtotal: this.subTotalPagarC,
+      iva: this.fs.sub(this.fs.times(this.subTotalPagarC, 1.12), this.subTotalPagarC),
+      ice: 0,
+      otro: 0,
+      descuento: 0,
+      propina: 0,
+      total: this.fs.times(this.subTotalPagarC, 1.12)
+    }*/
+    this.showDialogProdC = false;
+    this.setDvProdCompra();
+  }
+
+  addLstCompras() {
     let aux: any = [];
     aux = {
       cantidad: this.objProdCompras.cantidad,
       contenido: this.objProdCompras.contenido,
-      desc_producto: this.objProdCompras.desc_producto,
+      desc_producto: this.prodCompra,
       fecha: this.validateService.getDateTimeStamp(),
       pcAnterior: this.objProdCompras.pcAnterior,
       pcUnitario: this.objProdCompras.pcUnitario,
       total: this.fs.times(this.objProdCompras.pcUnitario, this.objProdCompras.cantidad),
-      unidadMedida: um
+      unidadMedida: this.selectedUmMat.label + '-' + this.selectedUmMat1.label,
+      impuestos: Object.assign([{}], this.lstImps)
     }
+    console.log(aux)
     this.lstComprasProve = [...this.lstComprasProve, aux];
-    this.showDialogProdC = false;
-    this.subTotalPagarC = this.lstComprasProve.reduce(function (prev, cur) {
+  }
+  calcSubTotal() {
+    this.objDesgloce.subtotal = this.lstComprasProve.reduce(function (prev, cur) {
       return prev + cur.total;
     }, 0);
-    this.objDesgloce = {
-      subtotal: this.subTotalPagarC,
-      iva: this.fs.sub(this.fs.times(this.subTotalPagarC, 1.12), this.subTotalPagarC),
-      ice: 0,
-      descuento: 0,
-      total: this.fs.times(this.subTotalPagarC, 1.12)
+  }
+  calcIva() {
+    /*let acum = 0;
+    for (let entry of this.lstComprasProve) {
+      acum = this.fs.times(entry.cantidad, this.fs.add(acum, entry.impuestos[0].valor));
     }
+    this.objDesgloce.iva = acum;*/
+  }
+  calcIce() {
+    /*let acum = 0;
+    for (let entry of this.lstComprasProve) {
+      acum = this.fs.add(acum, entry.impuestos[1].valor);
+    }
+    this.objDesgloce.ice = acum;*/
+  }
+  calcOtros() {
+    /*let acum = 0;
+    for (let entry of this.lstComprasProve) {
+      acum = this.fs.add(acum, entry.impuestos[2].valor);
+    }
+    this.objDesgloce.otro = acum;*/
+  }
+  calcTotal() {
+
   }
 
   deleteRowCompras(index) {
@@ -2573,7 +2651,9 @@ export class ProductosComponent implements OnInit {
       subtotal: this.subTotalPagarC,
       iva: this.fs.sub(this.fs.times(this.subTotalPagarC, 1.12), this.subTotalPagarC),
       ice: 0,
+      otro: 0,
       descuento: 0,
+      propina: 0,
       total: this.fs.times(this.subTotalPagarC, 1.12)
     }
   }
@@ -2624,14 +2704,16 @@ export class ProductosComponent implements OnInit {
       contenido: 0,
       pcAnterior: 0,
       fecha: '',
-      total: 0
+      total: 0,
+      impuestos: undefined
     }
   }
-
+  flagRepresentante = false;
   loadSailers($event) {
     let a: any = this.objCompras.proveedor;
+    console.log(a);
     this.lstProveedoresR = a.representanteV;
-    //console.log(this.lstProveedoresR);
+    this.flagRepresentante = true;
   }
 
   onChangeFPE($event) {
@@ -2702,6 +2784,67 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+  representanteC = {
+    nombre: '',
+    telefono: '',
+    correo: '',
+    descripcion: '',
+    value: ''
+  }
+  showRepresentanteC = false;
+  onChangeNombreRepreC($event) {
+    this.representanteC.nombre = this.representanteC.nombre.trim();
+    this.representanteC.nombre = this.fs.toTitleCase(this.representanteC.nombre);
+  }
+
+  onChangeEmailRepreC($event) {
+    this.representanteC.correo = this.representanteC.correo.toLocaleLowerCase();
+    if (this.validateService.validateEmail(this.representanteC.correo)) {
+      document.getElementById("correoRepreC").style.borderLeft = "5px solid #42A948"; /* green */
+      this.flagEmailRepre = false;
+    }
+    else {
+      document.getElementById("correoRepreC").style.borderLeft = "5px solid #a94442"; /* red */
+      this.flagEmailRepre = true;
+    }
+  }
+
+  onChangeDescRepreC($event) {
+    this.representanteC.descripcion = this.representanteC.descripcion.trim();
+  }
+
+  addRepreC() {
+    this.representanteC.value = this.representanteC.nombre;
+    this.objCompras.proveedor.representanteV = [...this.objCompras.proveedor.representanteV, this.representanteC];
+    let a: any = this.objCompras.proveedor;
+    this.lstProveedoresR = a.representanteV;
+    let b: any = this.representanteC
+    this.objCompras.vendedor = b;
+
+    this.proveedorService.update(this.objCompras.proveedor).subscribe(data => {
+      this.messageGrowlService.notify('info', 'Información', 'Ingreso Existoso!');
+      document.getElementById("correoRepreC").style.borderLeft = "5px solid #a94442"; /* red */
+    }, err => {
+      console.log(err);
+    });
+
+    this.showRepresentanteC = false;
+    this.representante = {
+      nombre: '',
+      telefono: '',
+      correo: '',
+      descripcion: '',
+      value: ''
+    }
+    document.getElementById("correoRepreC").style.borderLeft = "5px solid #a94442"; /* red */
+    this.flagEmailRepre = true;
+  }
+
+  valorReal1 = 0;
+  onChangeDescuento() {
+    this.valorReal1 = (this.objDesgloce.descuento / 100) * this.objDesgloce.total;
+  }
+
   ngOnInitCompras() {
     this.typesProd = [];
     this.typesProd.push({ label: 'Existente', value: 'Existente' });
@@ -2716,7 +2859,6 @@ export class ProductosComponent implements OnInit {
       { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
       { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
     ];*/
-
     this.objCompras = {
       num_factura: '',
       fecha: new Date(),
@@ -2739,7 +2881,8 @@ export class ProductosComponent implements OnInit {
       contenido: 0,
       pcAnterior: 0,
       fecha: '',
-      total: 0
+      total: 0,
+      impuestos: undefined
     }
     this.settingsC = {
       mode: 'external',
@@ -2842,6 +2985,132 @@ export class ProductosComponent implements OnInit {
     };
 
     //console.log(this.fs.dinamicModulo11('010520180117912875410012001011006161585281014691'));
+  }
+
+  /* Impuestos */
+  showDlgImpC = false;
+  choiceSetC = { nombre: [], porcentaje: [], valor: [] };
+  objIvaC = {
+    desc: 'IVA',
+    porcentaje: 12,
+    valor: 0
+  }
+  objIceC = {
+    desc: 'ICE',
+    porcentaje: 0,
+    valor: 0
+  }
+  objOtroC = {
+    desc: 'OTRO',
+    porcentaje: 0,
+    valor: 0
+  }
+  objIvaVC = {
+    desc: 'IVA',
+    porcentaje: 12,
+    valor: 0
+  }
+  objIceVC = {
+    desc: 'ICE',
+    porcentaje: 0,
+    valor: 0
+  }
+  objOtroVC = {
+    desc: 'OTRO',
+    porcentaje: 0,
+    valor: 0
+  }
+  objImpC: any[] = [];
+
+  ngOnInitImpC() {
+    this.choiceSetC.nombre = [];
+    this.choiceSetC.porcentaje = [];
+    this.choiceSetC.valor = [];
+    this.objIvaC = {
+      desc: 'IVA',
+      porcentaje: 12,
+      valor: 0
+    }
+    this.objIceC = {
+      desc: 'ICE',
+      porcentaje: 0,
+      valor: 0
+    }
+    this.objOtroC = {
+      desc: 'OTRO',
+      porcentaje: 0,
+      valor: 0
+    }
+    this.objImpC = [...this.objImpC, this.objIvaC];
+    this.objImpC = [...this.objImpC, this.objIceC];
+    this.objImpC = [...this.objImpC, this.objOtroC];
+  }
+
+  addRowImpC = function () {
+    this.choiceSetC.nombre.push('');
+    this.choiceSetC.porcentaje.push('');
+    this.choiceSetC.valor.push('');
+  };
+
+  removeChoiceC = function (z) {
+    this.choiceSetC.nombre.splice(z, 1);
+    this.choiceSetC.porcentaje.splice(z, 1);
+    this.choiceSetC.valor.splice(z, 1);
+  };
+
+  lstImps: any;
+  addImpuestoC() {
+    this.objImpC = [];
+    this.objImpC = [...this.objImpC, this.objIvaC];
+    this.objImpC = [...this.objImpC, this.objIceC];
+    this.objImpC = [...this.objImpC, this.objOtroC];
+    let n = this.choiceSetC.nombre.length;
+    for (let i = 0; i < n; i++) {
+      let aux = { desc: this.choiceSetC.nombre[i], porcentaje: this.choiceSetC.porcentaje[i], valor: this.choiceSetC.valor[i] };
+      this.objImpC = [...this.objImpC, aux];
+    }
+    this.messageGrowlService.notify('info', 'Información', 'Se guardaron los impuestos!');
+    this.showDlgImpC = false;
+    //Crear impuestos venta
+    this.lstImps = Object.assign([{}], this.objImpC);
+    console.log(this.lstImps)
+  }
+
+  valueChangePorIvaC($event) {
+    let porcentaje = this.fs.div(this.objIvaC.porcentaje, 100);
+    this.objIvaC.valor = this.fs.times(this.objProdCompras.pcUnitario, porcentaje);
+  }
+
+  valueChangePorIceC($event) {
+    let porcentaje = this.fs.div(this.objIceC.porcentaje, 100);
+    this.objIceC.valor = this.fs.times(this.objProdCompras.pcUnitario, porcentaje);
+  }
+
+  valueChangePorOtroC($event) {
+    let porcentaje = this.fs.div(this.objOtroC.porcentaje, 100);
+    this.objOtroC.valor = this.fs.times(this.objProdCompras.pcUnitario, porcentaje);
+  }
+
+  calcImpC() {
+    let porIva = this.fs.div(this.objIvaC.porcentaje, 100);
+    let porIce = this.fs.div(this.objIceC.porcentaje, 100);
+    let porOtro = this.fs.div(this.objOtroC.porcentaje, 100);
+    this.objIvaC.valor = this.fs.times(this.objProdCompras.pcUnitario, porIva);
+    this.objIceC.valor = this.fs.times(this.objProdCompras.pcUnitario, porIce);
+    this.objOtroC.valor = this.fs.times(this.objProdCompras.pcUnitario, porOtro);
+  }
+
+  valueChangePorGenericC(i) {
+    let porcentaje = this.fs.div(this.choiceSetC.porcentaje[i], 100);
+    this.choiceSetC.valor[i] = this.fs.times(this.objProdCompras.pcUnitario, porcentaje);
+  }
+
+  onChangeDescOtroImpC($event) {
+    this.objOtroC.desc = this.objOtroC.desc.toUpperCase();
+  }
+
+  onChangeDescVC(i) {
+    this.choiceSetC.nombre[i] = this.choiceSetC.nombre[i].toUpperCase();
   }
 
   /* GESTION DE KARDEX */
@@ -3747,6 +4016,7 @@ export class ProductosComponent implements OnInit {
   addRepre() {
     this.representante.value = this.representante.nombre;
     this.objProve.representanteV = [...this.objProve.representanteV, this.representante];
+
     this.showRepresentante = false;
     this.representante = {
       nombre: '',
@@ -3757,14 +4027,6 @@ export class ProductosComponent implements OnInit {
     }
     document.getElementById("correoRepre").style.borderLeft = "5px solid #a94442"; /* red */
     this.flagEmailRepre = true;
-  }
-
-  doSomething() {
-    if (this.objProve.correo == undefined || this.objProve.correo == '') {
-      console.log('validar sin correo')
-    } else {
-      console.log('validar con correo')
-    }
   }
 
   /* GESTION DE PROMOCIONES */

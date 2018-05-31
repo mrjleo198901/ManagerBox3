@@ -75,8 +75,9 @@ import { SubprodRenderComponent } from './components/subprod-render/subprod-rend
 import { ConfigurationComponent } from './components/configuration/configuration.component';
 import { AdministrarComponent } from './components/administrar/administrar.component';
 import { CoverprodRenderComponent } from './components/coverprod-render/coverprod-render.component';
-import { NumFacturaPipe } from './num-factura.pipe';
+import { NumFacturaPipe } from './pipes/num-factura.pipe';
 import { TextMaskModule } from 'angular2-text-mask';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -125,7 +126,8 @@ const appRoutes: Routes = [
     ConfigurationComponent,
     AdministrarComponent,
     CoverprodRenderComponent,
-    NumFacturaPipe
+    NumFacturaPipe,
+    CapitalizePipe
   ],
   entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, PrintRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent, CoverprodRenderComponent],
   imports: [

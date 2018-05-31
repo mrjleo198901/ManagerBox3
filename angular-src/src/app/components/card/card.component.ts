@@ -263,7 +263,7 @@ export class CardComponent implements OnInit {
     private clienteService: ClienteService,
     private tipoClienteService: TipoClienteService,
     private messageGrowlService: MessageGrowlService,
-    private formatterService: FormatterService,
+    private fs: FormatterService,
     public dialog: MdDialog,
     private tarjetaService: TarjetaService,
     private facturaService: FacturaService,
@@ -371,7 +371,7 @@ export class CardComponent implements OnInit {
 
     setTimeout(function () {
       if (document.getElementById('cedulaNew') !== null)
-      document.getElementById('cedulaNew').focus();
+        document.getElementById('cedulaNew').focus();
     }, 50)
     document.getElementById('basic-addon1').style.backgroundColor = '#f8f5f0';
     this.cantHombres = 0;
@@ -593,7 +593,7 @@ export class CardComponent implements OnInit {
       name: 'asd',
       email: 'mrjleo1989@gmail.com',
       username: this.us.name,
-      npass: this.formatterService.makeId()
+      npass: this.fs.makeId()
     }
     this.cajaService.sendCorte(user).subscribe(data => {
       console.log(data);
@@ -1242,12 +1242,12 @@ export class CardComponent implements OnInit {
 
   onChangeNombre($event) {
     this.nombre = this.nombre.trim();
-    this.nombre = this.formatterService.toTitleCase(this.nombre);
+    this.nombre = this.fs.toTitleCase(this.nombre);
   }
 
   onChangeApellido($event) {
     this.apellido = this.apellido.trim();
-    this.apellido = this.formatterService.toTitleCase(this.apellido);
+    this.apellido = this.fs.toTitleCase(this.apellido);
   }
 
   onChangeEmail($event) {
@@ -1603,12 +1603,10 @@ export class CardComponent implements OnInit {
   totalCovers = 0;
   factorMult = 0;
   addCoverM() {
-
     let cantTotalPersonas = this.cantMujeres;
     for (let entry of this.lstResumenOpen) {
       cantTotalPersonas += entry.cantidad;
     }
-
     if (cantTotalPersonas <= this.numMax) {
       if (this.cantMujeres > 0) {
         let aux = {
@@ -1618,16 +1616,16 @@ export class CardComponent implements OnInit {
           producto: this.selectedCoverM.productoMujeres,
           precio: 0
         }
-        this.factorMult = this.cantMujeres / parseFloat(this.selectedCoverM.numMujeres);
-        aux.precio = this.factorMult * parseFloat(this.selectedCoverM.precioMujeres);
+        this.factorMult = this.fs.div(this.cantMujeres, parseFloat(this.selectedCoverM.numMujeres));
+        aux.precio = this.fs.times(this.factorMult, parseFloat(this.selectedCoverM.precioMujeres));
         this.totalCovers = 0;
         var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
         if (index == -1) {
           this.lstResumenOpen = [...this.lstResumenOpen, aux];
         } else {
-          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
-          this.lstResumenOpen[index].cantidad += aux.cantidad;
-          this.lstResumenOpen[index].precio += aux.precio;
+          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio);
+          this.lstResumenOpen[index].cantidad = this.fs.add(this.lstResumenOpen[index].cantidad, aux.cantidad);
+          this.lstResumenOpen[index].precio = this.fs.add(this.lstResumenOpen[index].precio, aux.precio);
         }
         document.getElementById('coverM').style.borderColor = '';
         this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
@@ -1641,12 +1639,10 @@ export class CardComponent implements OnInit {
   }
 
   addCoverH() {
-
     let cantTotalPersonas = this.cantHombres;
     for (let entry of this.lstResumenOpen) {
       cantTotalPersonas += entry.cantidad;
     }
-
     if (cantTotalPersonas <= this.numMax) {
       if (this.cantHombres > 0) {
         let aux = {
@@ -1656,18 +1652,16 @@ export class CardComponent implements OnInit {
           producto: this.selectedCoverH.productoHombres,
           precio: 0
         }
-
-        this.factorMult = this.cantHombres / parseFloat(this.selectedCoverH.numHombres);
-        aux.precio = this.factorMult * parseFloat(this.selectedCoverH.precioHombres);
-
+        this.factorMult = this.fs.div(this.cantHombres, parseFloat(this.selectedCoverH.numHombres));
+        aux.precio = this.fs.times(this.factorMult, parseFloat(this.selectedCoverH.precioHombres));
         this.totalCovers = 0
         var index = this.lstResumenOpen.findIndex(i => i.nombre === aux.nombre && i.genero === aux.genero);
         if (index == -1) {
           this.lstResumenOpen = [...this.lstResumenOpen, aux];
         } else {
-          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio)
-          this.lstResumenOpen[index].cantidad += aux.cantidad;
-          this.lstResumenOpen[index].precio += aux.precio;
+          this.lstResumenOpen[index].precio = parseFloat(this.lstResumenOpen[index].precio);
+          this.lstResumenOpen[index].cantidad = this.fs.add(this.lstResumenOpen[index].cantidad, aux.cantidad);
+          this.lstResumenOpen[index].precio = this.fs.add(this.lstResumenOpen[index].precio, aux.precio);
         }
         document.getElementById('coverH').style.borderColor = '';
         this.totalCovers = this.calcTotalCovers(this.lstResumenOpen);
@@ -1678,7 +1672,6 @@ export class CardComponent implements OnInit {
     } else {
       this.messageGrowlService.notify('error', 'Error', 'La cantidad máxima de personas por tarjeta es de: ' + this.numMax);
     }
-
   }
 
   calcTotalCovers(lstCovers) {
@@ -3366,5 +3359,5 @@ export class CardComponent implements OnInit {
       this.textAlignTitle = 'left';
     }
   }
-  
+
 }
