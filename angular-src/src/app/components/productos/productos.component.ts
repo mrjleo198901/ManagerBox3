@@ -3071,9 +3071,10 @@ export class ProductosComponent implements OnInit {
     }
     this.messageGrowlService.notify('info', 'Información', 'Se guardaron los impuestos!');
     this.showDlgImpC = false;
-    //Crear impuestos venta
-    this.lstImps = Object.assign([{}], this.objImpC);
-    console.log(this.lstImps)
+    //Crear impuestos compra
+    //this.lstImps = Object.assign([{}], this.objImpC);
+    console.log(this.objImpC)
+    //console.log(this.objProdCompras)
   }
 
   valueChangePorIvaC($event) {

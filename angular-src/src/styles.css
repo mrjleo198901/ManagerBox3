@@ -103,6 +103,11 @@
       width:50%;
     }
 
+    .aLink{
+        font-size: 14px;
+        cursor: pointer;
+    }
+
   /*bootswatch*/
   html{
       font-family:sans-serif;
