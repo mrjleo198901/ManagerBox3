@@ -2402,7 +2402,7 @@ export class ProductosComponent implements OnInit {
     pcAnterior: number,
     fecha: string,
     total: number,
-    impuestos: any
+    impuestos: any[]
   }
   selectedProdCompras: any;
   objCompras: {
@@ -2608,9 +2608,9 @@ export class ProductosComponent implements OnInit {
       pcUnitario: this.objProdCompras.pcUnitario,
       total: this.fs.times(this.objProdCompras.pcUnitario, this.objProdCompras.cantidad),
       unidadMedida: this.selectedUmMat.label + '-' + this.selectedUmMat1.label,
-      impuestos: Object.assign([{}], this.lstImps)
+      impuestos: this.objProdCompras.impuestos
     }
-    console.log(aux)
+    //console.log(aux)
     this.lstComprasProve = [...this.lstComprasProve, aux];
   }
   calcSubTotal() {
@@ -2619,28 +2619,31 @@ export class ProductosComponent implements OnInit {
     }, 0);
   }
   calcIva() {
-    /*let acum = 0;
+    let acum = 0;
     for (let entry of this.lstComprasProve) {
-      acum = this.fs.times(entry.cantidad, this.fs.add(acum, entry.impuestos[0].valor));
+      acum = this.fs.add(acum, this.fs.times(entry.cantidad, entry.impuestos[0].valor));
     }
-    this.objDesgloce.iva = acum;*/
+    this.objDesgloce.iva = acum;
   }
   calcIce() {
-    /*let acum = 0;
+    let acum = 0;
     for (let entry of this.lstComprasProve) {
-      acum = this.fs.add(acum, entry.impuestos[1].valor);
+      acum = this.fs.add(acum, this.fs.times(entry.cantidad, entry.impuestos[1].valor));
     }
-    this.objDesgloce.ice = acum;*/
+    this.objDesgloce.ice = acum;
   }
   calcOtros() {
-    /*let acum = 0;
+    let acum = 0;
     for (let entry of this.lstComprasProve) {
-      acum = this.fs.add(acum, entry.impuestos[2].valor);
+      let n = entry.impuestos.length;
+      for (let i = 2; i < n; i++) {
+        acum = this.fs.add(acum, this.fs.times(entry.cantidad, entry.impuestos[i].valor));
+      }
     }
-    this.objDesgloce.otro = acum;*/
+    this.objDesgloce.otro = acum;
   }
   calcTotal() {
-
+    this.objDesgloce.total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro - this.objDesgloce.descuento + this.objDesgloce.propina;
   }
 
   deleteRowCompras(index) {
@@ -2667,6 +2670,7 @@ export class ProductosComponent implements OnInit {
 
   onAddCompra() {
     console.log(this.objCompras);
+    this.calcTotal();
     this.objCompras.productosV = this.lstComprasProve;
     this.objCompras.desgloce = this.objDesgloce;
   }
@@ -2705,8 +2709,9 @@ export class ProductosComponent implements OnInit {
       pcAnterior: 0,
       fecha: '',
       total: 0,
-      impuestos: undefined
+      impuestos: []
     }
+    this.ngOnInitImpC();
   }
   flagRepresentante = false;
   loadSailers($event) {
@@ -2842,7 +2847,13 @@ export class ProductosComponent implements OnInit {
 
   valorReal1 = 0;
   onChangeDescuento() {
-    this.valorReal1 = (this.objDesgloce.descuento / 100) * this.objDesgloce.total;
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina;
+    this.valorReal1 = this.fs.times(this.fs.div(this.objDesgloce.descuento, 100), total);
+  }
+
+  onChangeDescuento1() {
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina;
+    this.objDesgloce.descuento = this.fs.div(this.fs.times(this.valorReal1, 100), total);
   }
 
   ngOnInitCompras() {
@@ -2882,7 +2893,7 @@ export class ProductosComponent implements OnInit {
       pcAnterior: 0,
       fecha: '',
       total: 0,
-      impuestos: undefined
+      impuestos: []
     }
     this.settingsC = {
       mode: 'external',
@@ -3060,21 +3071,21 @@ export class ProductosComponent implements OnInit {
 
   lstImps: any;
   addImpuestoC() {
-    this.objImpC = [];
-    this.objImpC = [...this.objImpC, this.objIvaC];
-    this.objImpC = [...this.objImpC, this.objIceC];
-    this.objImpC = [...this.objImpC, this.objOtroC];
+    this.objProdCompras.impuestos = [];
+    /*this.objProdCompras.impuestos = [...this.objImpC, this.objIvaC];
+    this.objProdCompras.impuestos = [...this.objImpC, this.objIceC];
+    this.objProdCompras.impuestos = [...this.objImpC, this.objOtroC];*/
+    this.objProdCompras.impuestos.push(this.objIvaC);
+    this.objProdCompras.impuestos.push(this.objIceC);
+    this.objProdCompras.impuestos.push(this.objOtroC);
+
     let n = this.choiceSetC.nombre.length;
     for (let i = 0; i < n; i++) {
       let aux = { desc: this.choiceSetC.nombre[i], porcentaje: this.choiceSetC.porcentaje[i], valor: this.choiceSetC.valor[i] };
-      this.objImpC = [...this.objImpC, aux];
+      this.objProdCompras.impuestos = [...this.objImpC, aux];
     }
     this.messageGrowlService.notify('info', 'Información', 'Se guardaron los impuestos!');
     this.showDlgImpC = false;
-    //Crear impuestos compra
-    //this.lstImps = Object.assign([{}], this.objImpC);
-    console.log(this.objImpC)
-    //console.log(this.objProdCompras)
   }
 
   valueChangePorIvaC($event) {

@@ -1120,19 +1120,21 @@
         <div class="ui-g-4">
           <div class="ui-g-12 ui-g-nopad"><label>Descuento:</label></div>
           <div class="ui-g-6 ui-g-nopad"><input currencyMask [options]="{ suffix :' %',prefix: ''}" type="text" [(ngModel)]="objDesgloce.descuento" (ngModelChange)="onChangeDescuento()"
-              name="descuento" class="form-control input-sm">
+              name="descuento" class="form-control input-sm" (click)="$event.target.select()">
           </div>
-          <div class="ui-g-6 ui-g-nopad"><input currencyMask type="text" [(ngModel)]="valorReal1" name="valorReal1" class="form-control input-sm">
+          <div class="ui-g-6 ui-g-nopad"><input currencyMask type="text" [(ngModel)]="valorReal1" (ngModelChange)="onChangeDescuento1()" name="valorReal1"
+              class="form-control input-sm" (click)="$event.target.select()">
           </div>
 
         </div>
         <div class="ui-g-4">
           <label for="totalPagarC">Propina:</label>
-          <input currencyMask type="text" [(ngModel)]="objDesgloce.propina" name="propina" class="form-control input-sm">
+          <input currencyMask type="text" [(ngModel)]="objDesgloce.propina" name="propina" class="form-control input-sm" (click)="$event.target.select()">
         </div>
         <div class="ui-g-4  ui-g-offset-8">
-          <label for="totalPagarC">Total:</label>
-          <input currencyMask type="text" [(ngModel)]="objDesgloce.total" name="totalPagarC" class="form-control input-sm" readonly>
+          <label>Total:</label>
+          <p class="ids">$&nbsp;{{objDesgloce.subtotal + objDesgloce.iva + objDesgloce.ice + objDesgloce.otro + objDesgloce.propina - valorReal1
+            | number : '1.2-2'}}&nbsp;</p>
         </div>
       </div>
     </div>
@@ -1212,11 +1214,11 @@
       </div>
       <div class="ui-g-6" *ngIf="!flagProdC">
         <label>Precio Costo Anterior:</label>
-        <p class="ids">&nbsp;{{objProdCompras.pcAnterior | number : '1.2-2'}}</p>
+        <p class="ids">$&nbsp;{{objProdCompras.pcAnterior | number : '1.2-2'}}&nbsp;</p>
       </div>
       <div class="ui-g-6">
         <label>Total:</label>
-        <p class="ids">&nbsp;{{ objProdCompras.pcUnitario * objProdCompras.cantidad | number : '1.2-2'}}</p>
+        <p class="ids">$&nbsp;{{ objProdCompras.pcUnitario * objProdCompras.cantidad | number : '1.2-2'}}&nbsp;</p>
       </div>
       <div class="ui-g-12">
         <md-checkbox name="checkedC" [(ngModel)]="checkedC" [color]="color">¿Usar éste producto cómo materia prima?</md-checkbox>
@@ -1224,7 +1226,7 @@
     </div>
     <hr style="margin-top: 0px;">
     <div class="ui-g-12" style="text-align: center">
-      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!tpProdCompraForm.form.valid || !flagCantPC || !flagPrecioCostoPC">
+      <button class="btn btn-primary" style="font-size: 11px" [disabled]="!tpProdCompraForm.form.valid || !flagCantPC || !flagPrecioCostoPC || objProdCompras.impuestos.length == 0">
         &nbsp;&nbsp;&nbsp;Añadir&nbsp;&nbsp;&nbsp;</button>
       <button class="btn btn-default" style="font-size: 11px" (click)="showDialogProdC = false">Cancelar</button>
     </div>
