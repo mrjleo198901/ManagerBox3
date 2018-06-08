@@ -57,17 +57,13 @@ export class NavbarComponent implements OnInit {
         console.log(err)
       })
     })
-
-
     //console.log(this.permissions);
-
 
   }
 
   ngOnInit() {
     this.permissions=JSON.parse(localStorage.getItem('permisos'));
     if(this.permissions!==null){
-
       this.personal=this.permissions[3].checked;
       this.atencion=this.permissions[1].checked;
       this.administracion=this.permissions[0].checked;
@@ -76,6 +72,7 @@ export class NavbarComponent implements OnInit {
       this.reportes=this.permissions[5].checked;
       this.ventas=this.permissions[6].checked;
     }
+ 
   }
 
   onLogOutClick() {

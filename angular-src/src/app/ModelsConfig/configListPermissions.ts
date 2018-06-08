@@ -11,6 +11,4 @@ export var ConfigListPermissions = {
       { name: 'Reportes', checked: false },
       { name: 'Ventas', checked: false }]
 
-
 }
-

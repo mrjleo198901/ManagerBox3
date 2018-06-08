@@ -78,6 +78,7 @@ import { CoverprodRenderComponent } from './components/coverprod-render/coverpro
 import { NumFacturaPipe } from './pipes/num-factura.pipe';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { ComprasComponent } from './components/compras/compras.component';
 
 /*Navigation*/
 const appRoutes: Routes = [
@@ -93,6 +94,7 @@ const appRoutes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'administrar', component: AdministrarComponent, canActivate: [AuthGuard] },
   { path: 'configuration', component: ConfigurationComponent, canActivate: [AuthGuard] },
+  { path: 'compras', component: ComprasComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent },
 
   { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard] }
@@ -127,7 +129,8 @@ const appRoutes: Routes = [
     AdministrarComponent,
     CoverprodRenderComponent,
     NumFacturaPipe,
-    CapitalizePipe
+    CapitalizePipe,
+    ComprasComponent
   ],
   entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, PrintRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent, CoverprodRenderComponent],
   imports: [

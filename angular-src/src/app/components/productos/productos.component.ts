@@ -24,7 +24,9 @@ import { KardexService } from '../../services/kardex.service';
 import { DecimalPipe, SlicePipe } from '@angular/common';
 import { MateriaPrimaService } from '../../services/materia-prima.service';
 import { CiudadService } from '../../services/ciudad.service';
+import { ComprasService } from '../../services/compras.service';
 import { UM } from '../globals';
+import { Producto } from '../../models/producto'
 
 const URL = 'http://localhost:3000/api/imagen';
 declare var $;
@@ -165,7 +167,7 @@ export class ProductosComponent implements OnInit {
   lstProveedoresK: any[];
   todayDate: any;
   selectedTP: any;
-  lstProductos: any[];
+  lstProductos: Producto[];
   lstKardex: any[];
   kardexU = {
     'fecha': '',
@@ -216,7 +218,8 @@ export class ProductosComponent implements OnInit {
     private slicePipe: SlicePipe,
     private kardexService: KardexService,
     private materiaPrimaService: MateriaPrimaService,
-    private ciudadService: CiudadService) {
+    private ciudadService: CiudadService,
+    private comprasService: ComprasService) {
 
     this.pathLogo = undefined;
     this.lstUnidades = [];
@@ -308,10 +311,8 @@ export class ProductosComponent implements OnInit {
           if (entry.subproductoV.length < 1) {
             entry.id_tipo_producto = this.searchTipoProdById(entry.id_tipo_producto, this.tipo_productos).desc_tipo_producto;
             this.productosShow.push(entry);
-
           }
         }
-        console.log(this.productosShow);
         /* Get Proveedores*/
         this.proveedorService.getAll().subscribe(data => {
           this.lstProveedoresK = data;
@@ -396,12 +397,6 @@ export class ProductosComponent implements OnInit {
         for (const x of p) {
           this.productos[i].label = x.nombre;
           this.productos[i].value = x.nombre;
-          /*this.productos[i].cant_existente = parseFloat(x.cant_existente);
-          this.productos[i].cant_minima = parseFloat(x.cant_minima);
-          this.productos[i].contenido = parseFloat(x.contenido);
-          this.productos[i].precio_costo = parseFloat(x.precio_costo);
-          this.productos[i].precio_venta = parseFloat(x.precio_venta);
-          this.productos[i].utilidad = parseFloat(x.utilidad);*/
           i++;
         }
         localStorage.setItem('lstProductos', JSON.stringify(this.productos));
@@ -522,6 +517,15 @@ export class ProductosComponent implements OnInit {
           }
         };
         this.ngOnInitPromo();
+
+        console.log(this.productos);
+        console.log(this.lstProductos);
+        /*console.log(this.lstProductos1);
+        console.log(this.lstProductosP);
+        console.log(this.lstProductosR);
+        console.log(this.lstProductosShow);*/
+        console.log(this.productosShow)
+
       }, err => {
         console.log(err);
         return false;
@@ -2394,12 +2398,12 @@ export class ProductosComponent implements OnInit {
   flagProdC = false;
   typesProd: any[];
   objProdCompras: {
-    desc_producto: '',
+    producto: Producto,
     cantidad: 0,
     pcUnitario: 0,
-    unidadMedida: string,
-    contenido: 0,
-    pcAnterior: number,
+    //unidadMedida: string,
+    //contenido: 0,
+    //pcAnterior: number,
     fecha: string,
     total: number,
     impuestos: any[]
@@ -2411,13 +2415,14 @@ export class ProductosComponent implements OnInit {
     proveedor: any,
     vendedor: '',
     productosV: any[],
-    desgloce: any,
-    fpV: {
+    desglose: any,
+    formaPago: {
       fpEfectivo: 0,
       fpTarjeta: 0,
       fpPorCobrar: 0,
       fpCheque: 0
-    }
+    },
+    total: number
   }
   lstProveedoresR: any[] = [];
   checkedC = false;
@@ -2437,22 +2442,7 @@ export class ProductosComponent implements OnInit {
     propina: 0,
     total: 0
   }
-  prodCompra = {
-    nombre: '',
-    precio_costo: 0,
-    precio_venta: 0,
-    utilidad: 0,
-    cant_existente: 0,
-    cant_minima: 0,
-    subproductoV: [],
-    id_tipo_producto: '',
-    path: '',
-    contenido: 0,
-    promocion: [],
-    unidad_medida: '',
-    impuestosCompraV: [],
-    impuestosVentaV: []
-  };
+  prodCompra: Producto;
 
   setCursorAddC() {
     setTimeout(function () {
@@ -2477,7 +2467,7 @@ export class ProductosComponent implements OnInit {
   onClickSelectButton(event) {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
       this.flagProdC = false;
-      this.kardex.desc_producto = this.lstProductos[0];
+      //this.kardex.desc_producto = this.lstProductos[0];
       let a: any;
       a = this.kardex.desc_producto
       this.newProd = a;
@@ -2489,10 +2479,14 @@ export class ProductosComponent implements OnInit {
     }
   }
 
+  showDialogProdCompra() {
+    this.showDialogProdC = true;
+  }
+
   changeTipoProd(event) {
     if (this.selectedTipoProd.localeCompare('Existente') == 0) {
       this.flagProdC = false;
-      this.kardex.desc_producto = this.lstProductos[0];
+      //this.kardex.desc_producto = this.lstProductos[0];
       this.setDvProdCompra();
     } else {
       this.flagProdC = true;
@@ -2508,13 +2502,12 @@ export class ProductosComponent implements OnInit {
   }
   prodAnterior: any;
   onChangeProdCompra() {
-    let name = this.objProdCompras.desc_producto;
-    this.prodAnterior = this.lstProductos.filter(function (obj) {
+    let name: any = this.prodAnterior;
+    let prod = this.lstProductos.filter(function (obj) {
       return obj.nombre.localeCompare(name) === 0;
     });
-    //set values 
-    this.objProdCompras.contenido = this.prodAnterior[0].contenido;
-    this.objProdCompras.pcAnterior = this.prodAnterior[0].precio_costo;
+    this.objProdCompras.producto = prod[0];
+    console.log(this.objProdCompras.producto);
   }
 
   addProdCompra() {
@@ -2525,7 +2518,7 @@ export class ProductosComponent implements OnInit {
     if (this.selectedTipoProd.localeCompare('Nuevo') === 0) {
       //Ingresar nuevo producto en tabla producto
       this.prodCompra = {
-        nombre: this.objProdCompras.desc_producto,
+        nombre: this.objProdCompras.producto.nombre,
         precio_costo: this.objProdCompras.pcUnitario,
         precio_venta: pvp,
         utilidad: 30,
@@ -2534,7 +2527,7 @@ export class ProductosComponent implements OnInit {
         subproductoV: [],
         id_tipo_producto: this.selected_tipo_producto._id,
         path: this.selected_tipo_producto.path,
-        contenido: this.objProdCompras.contenido,
+        contenido: this.objProdCompras.producto.contenido,
         promocion: [],
         unidad_medida: um,
         impuestosCompraV: this.objImpC,
@@ -2552,7 +2545,7 @@ export class ProductosComponent implements OnInit {
     } else {
       //Actualizar producto en tabla producto
       this.prodCompra = {
-        nombre: this.objProdCompras.desc_producto,
+        nombre: this.objProdCompras.producto.nombre,
         precio_costo: this.objProdCompras.pcUnitario,
         precio_venta: pvp,
         utilidad: 30,
@@ -2601,23 +2594,25 @@ export class ProductosComponent implements OnInit {
     let aux: any = [];
     aux = {
       cantidad: this.objProdCompras.cantidad,
-      contenido: this.objProdCompras.contenido,
-      desc_producto: this.prodCompra,
       fecha: this.validateService.getDateTimeStamp(),
-      pcAnterior: this.objProdCompras.pcAnterior,
+      impuestos: this.objProdCompras.impuestos,
       pcUnitario: this.objProdCompras.pcUnitario,
-      total: this.fs.times(this.objProdCompras.pcUnitario, this.objProdCompras.cantidad),
-      unidadMedida: this.selectedUmMat.label + '-' + this.selectedUmMat1.label,
-      impuestos: this.objProdCompras.impuestos
+      producto: this.prodCompra,
+      total: this.fs.times(this.objProdCompras.pcUnitario, this.objProdCompras.cantidad)
+      /*contenido: this.objProdCompras.contenido,
+      pcAnterior: this.objProdCompras.pcAnterior,
+      unidadMedida: this.selectedUmMat.label + '-' + this.selectedUmMat1.label*/
     }
     //console.log(aux)
     this.lstComprasProve = [...this.lstComprasProve, aux];
   }
+
   calcSubTotal() {
     this.objDesgloce.subtotal = this.lstComprasProve.reduce(function (prev, cur) {
       return prev + cur.total;
     }, 0);
   }
+
   calcIva() {
     let acum = 0;
     for (let entry of this.lstComprasProve) {
@@ -2625,6 +2620,7 @@ export class ProductosComponent implements OnInit {
     }
     this.objDesgloce.iva = acum;
   }
+
   calcIce() {
     let acum = 0;
     for (let entry of this.lstComprasProve) {
@@ -2632,6 +2628,7 @@ export class ProductosComponent implements OnInit {
     }
     this.objDesgloce.ice = acum;
   }
+
   calcOtros() {
     let acum = 0;
     for (let entry of this.lstComprasProve) {
@@ -2642,6 +2639,7 @@ export class ProductosComponent implements OnInit {
     }
     this.objDesgloce.otro = acum;
   }
+
   calcTotal() {
     this.objDesgloce.total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro - this.objDesgloce.descuento + this.objDesgloce.propina;
   }
@@ -2672,11 +2670,18 @@ export class ProductosComponent implements OnInit {
     console.log(this.objCompras);
     this.calcTotal();
     this.objCompras.productosV = this.lstComprasProve;
-    this.objCompras.desgloce = this.objDesgloce;
+    this.objCompras.desglose = this.objDesgloce;
+    this.objCompras.total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina - this.valorReal1
+    /*this.comprasService.register(this.objCompras).subscribe(data => {
+      this.messageGrowlService.notify('success', 'Éxito', 'Ingreso Exitoso!');
+    }, err => {
+      console.log(err);
+      this.messageGrowlService.notify('warn', 'Advertencia', 'Algo salió mal!');
+    });*/
   }
 
   onChangeNombreProdCompra($event) {
-    this.objProdCompras.desc_producto = this.fs.toTitleCase(this.objProdCompras.desc_producto);
+    this.objProdCompras.producto = this.fs.toTitleCase(this.objProdCompras.producto);
   }
 
   flagCantPC = false;
@@ -2701,29 +2706,27 @@ export class ProductosComponent implements OnInit {
     this.flagCantPC = false;
     this.flagPrecioCostoPC = false;
     this.objProdCompras = {
-      desc_producto: '',
+      producto: new Producto,
       cantidad: 0,
       pcUnitario: 0,
-      unidadMedida: '',
-      contenido: 0,
-      pcAnterior: 0,
       fecha: '',
       total: 0,
       impuestos: []
     }
     this.ngOnInitImpC();
   }
+
   flagRepresentante = false;
   loadSailers($event) {
     let a: any = this.objCompras.proveedor;
-    console.log(a);
     this.lstProveedoresR = a.representanteV;
     this.flagRepresentante = true;
   }
 
   onChangeFPE($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
-      this.objCompras.fpV.fpEfectivo = 0;
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina - this.valorReal1
+    if (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque > total) {
+      this.objCompras.formaPago.fpEfectivo = 0;
       setTimeout(function () {
         let v = document.getElementById('fpEfectivo');
         if (v != null) {
@@ -2731,7 +2734,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Efectivo';
-      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = total - (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2739,8 +2742,9 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFPT($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
-      this.objCompras.fpV.fpTarjeta = 0;
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina - this.valorReal1
+    if (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque > total) {
+      this.objCompras.formaPago.fpTarjeta = 0;
       setTimeout(function () {
         let v = document.getElementById('fpTarjeta');
         if (v != null) {
@@ -2748,7 +2752,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Tarjeta de Crédito';
-      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = total - (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2756,8 +2760,9 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFPC($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
-      this.objCompras.fpV.fpPorCobrar = 0;
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina - this.valorReal1
+    if (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque > total) {
+      this.objCompras.formaPago.fpPorCobrar = 0;
       setTimeout(function () {
         let v = document.getElementById('fpPorCobrar');
         if (v != null) {
@@ -2765,7 +2770,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Crédito Directo';
-      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = total - (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2773,8 +2778,9 @@ export class ProductosComponent implements OnInit {
   }
 
   onChangeFPCH($event) {
-    if (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque > this.objDesgloce.total) {
-      this.objCompras.fpV.fpCheque = 0;
+    let total = this.objDesgloce.subtotal + this.objDesgloce.iva + this.objDesgloce.ice + this.objDesgloce.otro + this.objDesgloce.propina - this.valorReal1
+    if (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque > total) {
+      this.objCompras.formaPago.fpCheque = 0;
       setTimeout(function () {
         let v = document.getElementById('fpCheque');
         if (v != null) {
@@ -2782,7 +2788,7 @@ export class ProductosComponent implements OnInit {
         }
       }, 0);
       this.campoFP = 'Cheque';
-      this.maximoFP = this.objDesgloce.total - (this.objCompras.fpV.fpEfectivo + this.objCompras.fpV.fpTarjeta + this.objCompras.fpV.fpPorCobrar + this.objCompras.fpV.fpCheque);
+      this.maximoFP = total - (this.objCompras.formaPago.fpEfectivo + this.objCompras.formaPago.fpTarjeta + this.objCompras.formaPago.fpPorCobrar + this.objCompras.formaPago.fpCheque);
       this.flagErrorFP = true;
     } else {
       this.flagErrorFP = false;
@@ -2861,36 +2867,25 @@ export class ProductosComponent implements OnInit {
     this.typesProd.push({ label: 'Existente', value: 'Existente' });
     this.typesProd.push({ label: 'Nuevo', value: 'Nuevo' });
     this.lstComprasProve = [];
-    /*this.lstComprasProve = [
-      { desc_producto: 'Cerveza budweiser 350ml', fecha: '20/01/2017', unidades: '25', total: '5' },
-      { desc_producto: 'Cerveza pilsener 350ml', fecha: '20/01/2017', unidades: '25', total: '4' },
-      { desc_producto: 'Wiskey grants 1LT', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Pecera jaggerboom', fecha: '20/01/2017', unidades: '25', total: '2' },
-      { desc_producto: 'Cerveza corona pequeña', fecha: '20/01/2017', unidades: '25', total: '7' }
-    ];*/
     this.objCompras = {
       num_factura: '',
       fecha: new Date(),
       proveedor: [],
       vendedor: '',
       productosV: [],
-      desgloce: undefined,
-      fpV: {
+      desglose: undefined,
+      formaPago: {
         fpEfectivo: 0,
         fpTarjeta: 0,
         fpPorCobrar: 0,
         fpCheque: 0
-      }
+      },
+      total: 0
     };
     this.objProdCompras = {
-      desc_producto: '',
+      producto: new Producto,
       cantidad: 0,
       pcUnitario: 0,
-      unidadMedida: '',
-      contenido: 0,
-      pcAnterior: 0,
       fecha: '',
       total: 0,
       impuestos: []
@@ -3331,7 +3326,7 @@ export class ProductosComponent implements OnInit {
   onClickSelectButtonU(event) {
     if (this.selectedIeProd.localeCompare('Existente') == 0) {
       this.flagProdC = false;
-      this.kardexU.desc_producto = this.lstProductos[0];
+      //this.kardexU.desc_producto = this.lstProductos[0];
       let a: any;
       a = this.kardexU.desc_producto
       this.newProd = a;
@@ -3380,7 +3375,7 @@ export class ProductosComponent implements OnInit {
         this.lstProductos.push(entry);
       }
     }
-    this.kardex.desc_producto = this.lstProductos[0];
+    //this.kardex.desc_producto = this.lstProductos[0];
     let a: any;
     a = this.kardex.desc_producto
     this.newProd = a;
@@ -3394,7 +3389,7 @@ export class ProductosComponent implements OnInit {
         this.lstProductos.push(entry);
       }
     }
-    this.kardexU.desc_producto = this.lstProductos[0];
+    //this.kardexU.desc_producto = this.lstProductos[0];
     let a: any;
     a = this.kardexU.desc_producto
     this.newProd = a;

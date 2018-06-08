@@ -1,4 +1,5 @@
-var restful = require("node-restful");
+var restful = require("node-restful")
+
 var mongoose = restful.mongoose;
 
 var cajaSchema = new mongoose.Schema({
