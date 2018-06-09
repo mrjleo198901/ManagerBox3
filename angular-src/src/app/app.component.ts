@@ -21,13 +21,7 @@ export class AppComponent implements OnInit {
 
   onResize(event) {
     let x = event.target.innerWidth;
-    //console.log(x)
-    if (x >= 768 && x < 992) {
-      this.flagSp = true;
-    } else {
-      this.flagSp = false;
-    }
-    if (x >= 992 && x < 1200) {
+    if (x > 1023 && x < 1226) {
       this.flagSp1 = true;
     } else {
       this.flagSp1 = false;
@@ -35,12 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   onRzOnInit(x) {
-    if (x >= 768 && x < 992) {
-      this.flagSp = true;
-    } else {
-      this.flagSp = false;
-    }
-    if (x >= 992 && x < 1200) {
+    if (x > 1023 && x < 1226) {
       this.flagSp1 = true;
     } else {
       this.flagSp1 = false;
