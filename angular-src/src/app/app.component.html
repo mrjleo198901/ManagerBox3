@@ -1,8 +1,9 @@
-
-<br><br><br>
+<br>
+<br><br>
 <div class="container" style="width: 90%" (window:resize)="onResize($event)">
   <div *ngIf="flagSp1">
     <br><br><br><br>
   </div>
+  <app-notification></app-notification>
   <router-outlet></router-outlet>
 </div>

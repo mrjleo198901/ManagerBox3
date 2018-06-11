@@ -54,7 +54,7 @@ export class ValidateService {
     return res;
   }
 
-  validateProveedor(proveedor) {
+  /*validateProveedor(proveedor) {
     let res = true;
     if (proveedor.nombre_proveedor == "") {
       document.getElementById("nombreProve").style.borderColor = "#FE2E2E";
@@ -65,7 +65,7 @@ export class ValidateService {
       res = false;
     }
     return res;
-  }
+  }*/
 
   validateKardex(kardex) {
     let res = true;
