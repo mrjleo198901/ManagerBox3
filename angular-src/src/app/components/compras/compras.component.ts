@@ -68,7 +68,6 @@ export class ComprasComponent implements OnInit {
   }
 
   filterCiudadS(query, countries: any[]): any[] {
-    //in a real application, make a request to a remote url with the query and return filtered results, for demo we filter at client side
     let filtered: any[] = [];
     for (let i = 0; i < countries.length; i++) {
       let country = countries[i];
@@ -223,8 +222,9 @@ export class ComprasComponent implements OnInit {
         if (result.localeCompare('Aceptar') === 0) {
           this.sourceProve.remove(data);
           this.deleteFromLocalStorage(data);
+          console.log(this.lstProveedores);
           // remove from database
-          this.proveedorService.delete(data._id).subscribe(data => {
+          this.proveedorService.delete(data._id).subscribe(dataD => {
             this.messageGrowlService.notify('warn', 'Advertencia', 'Registro eliminado!');
           }, err => {
             console.log(err);
@@ -304,6 +304,10 @@ export class ComprasComponent implements OnInit {
     this.flagEmailRepre = true;
   }
 
+  deleteRepre(i) {
+    this.objProve.representanteV.splice(i);
+  }
+
   setDefaultRepre() {
     this.representante = {
       nombre: '',
@@ -331,7 +335,6 @@ export class ComprasComponent implements OnInit {
         break;
       }
     }
-
     localStorage.setItem('lstProveedor', JSON.stringify(this.lstProveedores));
   }
 

@@ -142,8 +142,11 @@
         <span style="background-color: #2196F3; border-color: #2196F3" class="input-group-addon input-sm classAddIcon" (click)="showRepre()"><i style="color: white" class="fa fa-plus-square fa-lg" aria-hidden="true"></i></span>
         <p-listbox [options]="objProve.representanteV" [style]="{'text-align':'left','max-height':'90px','height':'90px','width':'100%'}"
           id="representante" name="representante">
-          <ng-template let-car pTemplate="item">
+          <ng-template let-car let-i="index" pTemplate="item">
             {{car.nombre}}
+            <span class="badge" style="margin-top: -5px; background-color: white" (click)="deleteRepre(i)">
+                <i style="color: red;" class="fa fa-times fa-lg" aria-hidden="true"></i>
+            </span>
           </ng-template>
         </p-listbox>
       </div>
