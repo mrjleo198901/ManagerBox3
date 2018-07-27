@@ -3,10 +3,17 @@
     text-align: center;
     z-index: 1;
   }
-
-  :host /deep/ .form-control:focus {
+  /*Focus con orange*/
+  /*:host /deep/ .form-control:focus {
     border-color: orange;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 165, 0, 0.6);
+  }*/
+
+  /* Focus con blue ==> default bootstrap*/
+  :host /deep/ .form-control:focus{
+    border-color: #66afe9;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, .6);
+    outline: 0 none;
   }
 
   :host /deep/ .ng2-smart-filter input{

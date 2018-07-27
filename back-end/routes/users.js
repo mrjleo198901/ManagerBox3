@@ -14,8 +14,8 @@ router.post('/register', (req, res, next) => {
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,
-        estado:req.body.estado
-        
+        estado: req.body.estado
+
     });
     User.addUser(newUser, (err, user) => {
         if (err) {
@@ -36,7 +36,6 @@ router.post('/authenticate', (req, res, next) => {
         if (!user) {
             return res.json({ success: false, msg: 'Usuario no encontrado!' });
         }
-        console.log(user)
         User.comparePass(password, user.password, (err, isMatch) => {
 
             if (err) throw err;

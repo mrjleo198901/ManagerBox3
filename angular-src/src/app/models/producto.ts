@@ -13,4 +13,5 @@ export class Producto {
     impuestosCompraV: any[];
     promocion: any[];
     subproductoV: any[];
+    recentIncome: boolean;
 }

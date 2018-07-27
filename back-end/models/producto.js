@@ -16,8 +16,9 @@ var productoSchema = new mongoose.Schema({
     promocion: Array,
     unidad_medida: String,
     impuestosCompraV: Array,
-    impuestosVentaV: Array
-    
+    impuestosVentaV: Array,
+    recentIncome: Boolean
+
 });
 
 module.exports = restful.model('producto', productoSchema);

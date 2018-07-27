@@ -69,25 +69,6 @@ nav ul{overflow:hidden; overflow-y:scroll;}
   padding: 3px 10px
 }
 
-#timesIcon {
-  color: #ff3333;
-  /*text-shadow: 1px 1px 1px #ccc;
-  font-size: 1.5em;
-  cursor: pointer;*/
-  cursor: pointer;
-}
-
-#addIcon {
-  color: #2196F3;
-  cursor: pointer;
-}
-
-#spanAdd{
-  background-color: #2499DC;
-  cursor: pointer;
-  color: #ffffff;
-}
-
 .span {
   width: 14px !important;
   }

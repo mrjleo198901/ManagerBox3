@@ -110,6 +110,22 @@ table > thead > tr > th {
     cursor: pointer;
 }
 
+#addIcon {
+    color: #2196F3;
+    cursor: pointer;
+}
+
+#timesIcon {
+    color: #ff3333;
+    cursor: pointer;
+}
+
+#spanAdd{
+    background-color: #2398E5;
+    cursor: pointer;
+    color: #ffffff;
+}
+
 /*bootswatch*/
 html{
     font-family:sans-serif;

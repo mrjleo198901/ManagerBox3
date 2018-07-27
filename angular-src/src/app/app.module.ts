@@ -132,7 +132,16 @@ const appRoutes: Routes = [
     CapitalizePipe,
     ComprasComponent
   ],
-  entryComponents: [ImageRenderComponent, IconRenderComponent, IconRenderKComponent, PrintRenderComponent, ConfirmDialogComponent, PipeRenderComponent, SubprodRenderComponent, CoverprodRenderComponent],
+  entryComponents: [
+    ImageRenderComponent,
+    IconRenderComponent,
+    IconRenderKComponent,
+    PrintRenderComponent,
+    ConfirmDialogComponent,
+    PipeRenderComponent,
+    SubprodRenderComponent,
+    CoverprodRenderComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -154,9 +163,37 @@ const appRoutes: Routes = [
     TabViewModule, CalendarModule, DataGridModule, DialogModule, ToggleButtonModule, BlockUIModule, PasswordModule,
     SpinnerModule, SelectButtonModule, InputMaskModule, ListboxModule, ProgressBarModule, InputSwitchModule, AutoCompleteModule
   ],
-  providers: [ValidateService, AuthService, AuthGuard, TipoProductoService, ProductoService, FormatterService, ConfigurationService, CiudadService, ComprasService,
-    CargoPersonalService, PersonalService, ClienteService, TipoClienteService, MessageGrowlService, TarjetaService, CoverService, CajaService, MateriaPrimaService,
-    FacturaService, DetalleFacturaService, PromocionService, DecimalPipe, DatePipe, SlicePipe, LocalStorageService, ActiveCardsService, ProveedorService, KardexService, UpperCasePipe],
+  providers: [
+    ValidateService,
+    AuthService,
+    AuthGuard,
+    TipoProductoService,
+    ProductoService,
+    FormatterService,
+    ConfigurationService,
+    CiudadService,
+    ComprasService,
+    CargoPersonalService,
+    PersonalService,
+    ClienteService,
+    TipoClienteService,
+    MessageGrowlService,
+    TarjetaService,
+    CoverService,
+    CajaService,
+    MateriaPrimaService,
+    FacturaService,
+    DetalleFacturaService,
+    PromocionService,
+    DecimalPipe,
+    DatePipe,
+    SlicePipe,
+    LocalStorageService,
+    ActiveCardsService,
+    ProveedorService,
+    KardexService,
+    UpperCasePipe
+  ],
   bootstrap: [AppComponent]
 })
 

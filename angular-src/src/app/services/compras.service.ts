@@ -12,10 +12,10 @@ export class ComprasService {
     this.url = GLOBAL.url;
   }
 
-  register(materia_prima) {
+  register(compras) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post(this.url + 'compras', materia_prima, { headers: headers })
+    return this.http.post(this.url + 'compras', compras, { headers: headers })
       .map(res => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }

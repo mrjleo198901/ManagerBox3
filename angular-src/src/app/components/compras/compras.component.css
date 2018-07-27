@@ -1,0 +1,13 @@
+.odd {
+  background-color:  palegoldenrod;
+}
+.box {
+  border: 1px solid lightgray;
+  padding: 4px;
+  height: 117px;
+  max-height: 117px;
+  overflow-y:auto;
+}
+.listItems{
+  padding: 4px;
+}
